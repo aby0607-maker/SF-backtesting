@@ -46,6 +46,9 @@ export interface StockVerdict {
   stockId: string
   profileId: string
   overallScore: number
+  sectorAvgScore?: number
+  sectorRank?: number
+  sectorTotal?: number
   verdict: VerdictType
   verdictLabel?: string
   peerRank: number
@@ -73,27 +76,38 @@ export interface Signal {
   isPositive?: boolean
 }
 
-// Segment Types
+// Segment Types - Enhanced with sector comparisons
 export interface SegmentScore {
   id: string
   name: string
   score: number
+  sectorAvg?: number
+  sectorRank?: number
+  sectorTotal?: number
   weight: number
   status: 'positive' | 'neutral' | 'negative'
   interpretation: string
+  quickInsight?: string
   metrics?: Metric[]
 }
 
 export interface Metric {
   id: string
   name: string
-  value: string | number
+  value: number | string
   displayValue: string
-  benchmark?: string
-  benchmarkLabel?: string
-  status: 'positive' | 'neutral' | 'negative'
-  trend?: 'up' | 'down' | 'flat'
-  tooltip: string
+  unit?: string
+  sectorAvg?: number | string
+  sectorAvgDisplay?: string
+  comparison?: 'above' | 'below' | 'inline'
+  percentile?: number
+  status: 'excellent' | 'good' | 'fair' | 'poor' | 'positive' | 'neutral' | 'negative'
+  trend?: 'improving' | 'declining' | 'stable'
+  trendDirection?: 'up' | 'down' | 'flat'
+  trend5Y?: number[]
+  tooltipSimple?: string
+  tooltipAdvanced?: string
+  tooltip?: string
   citation?: Citation
 }
 
@@ -101,7 +115,9 @@ export interface Citation {
   source: string
   document: string
   page?: string
+  section?: string
   date: string
+  exactQuote?: string
   url?: string
 }
 
