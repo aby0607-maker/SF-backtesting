@@ -7,6 +7,15 @@ export default {
   theme: {
     extend: {
       colors: {
+        // Dark mode backgrounds
+        dark: {
+          950: '#08080C',  // Deepest
+          900: '#0D0D12',  // Main background
+          800: '#1A1A24',  // Elevated surfaces
+          700: '#252532',  // Cards/inputs
+          600: '#32323F',  // Hover states
+          500: '#3F3F4D',  // Borders
+        },
         // Primary brand color (Purple from Figma)
         primary: {
           50: '#E6D6FD',
@@ -203,6 +212,14 @@ export default {
         'modal': '0 25px 50px -12px rgb(0 0 0 / 0.25)',
         'dropdown': '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
         'purple': '0 4px 14px 0 rgba(126, 95, 247, 0.25)',
+        // Glow effects for dark mode
+        'glow-purple': '0 0 20px rgba(126, 95, 247, 0.5), 0 0 40px rgba(126, 95, 247, 0.2)',
+        'glow-green': '0 0 20px rgba(0, 196, 137, 0.5), 0 0 40px rgba(0, 196, 137, 0.2)',
+        'glow-orange': '0 0 15px rgba(252, 98, 0, 0.4), 0 0 30px rgba(252, 98, 0, 0.15)',
+        'glow-red': '0 0 20px rgba(246, 58, 99, 0.5), 0 0 40px rgba(246, 58, 99, 0.2)',
+        // Glass card shadows
+        'glass': '0 8px 32px rgba(0, 0, 0, 0.3)',
+        'glass-hover': '0 12px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(126, 95, 247, 0.15)',
       },
       animation: {
         'fade-in': 'fadeIn 0.2s ease-out',
@@ -210,6 +227,10 @@ export default {
         'slide-down': 'slideDown 0.3s ease-out',
         'scale-in': 'scaleIn 0.2s ease-out',
         'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'shimmer': 'shimmer 2s linear infinite',
+        'glow-pulse': 'glowPulse 2s ease-in-out infinite',
+        'float': 'float 3s ease-in-out infinite',
+        'score-fill': 'scoreFill 1.2s ease-out forwards',
       },
       keyframes: {
         fadeIn: {
@@ -228,6 +249,28 @@ export default {
           '0%': { transform: 'scale(0.95)', opacity: '0' },
           '100%': { transform: 'scale(1)', opacity: '1' },
         },
+        shimmer: {
+          '0%': { backgroundPosition: '-200% 0' },
+          '100%': { backgroundPosition: '200% 0' },
+        },
+        glowPulse: {
+          '0%, 100%': { opacity: '0.5' },
+          '50%': { opacity: '1' },
+        },
+        float: {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-10px)' },
+        },
+        scoreFill: {
+          '0%': { strokeDashoffset: '283' },
+          '100%': { strokeDashoffset: 'var(--score-offset)' },
+        },
+      },
+      backgroundImage: {
+        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+        'gradient-dark': 'linear-gradient(180deg, #1A1A24 0%, #0D0D12 100%)',
+        'gradient-purple-dark': 'linear-gradient(135deg, rgba(126, 95, 247, 0.15) 0%, transparent 50%)',
+        'shimmer': 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.05) 50%, transparent 100%)',
       },
     },
   },
