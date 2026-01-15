@@ -15,39 +15,66 @@ function SkeletonBlock({ className }: { className?: string }) {
   return <div className={cn('bg-dark-600 rounded animate-pulse', className)} />
 }
 
-// Generate 16-parameter Red Flag Framework
+// Severity types
+type RedFlagSeverity = 'critical' | 'high' | 'medium' | 'monitor'
+
+// Generate comprehensive 35-parameter Red Flag Framework
 function generateRedFlagFramework(verdict: StockVerdict) {
+  // Complete 35-parameter Red Flag Framework for Indian retail investors
   const allFlags = [
-    // Financial (5 parameters)
-    { id: 'rf-de', category: 'financial' as const, title: 'Debt/Equity Ratio', threshold: '>2.0', currentValue: '0.0', isTriggered: false, severity: 'critical' as const, description: 'Debt-free company', action: 'No action needed' },
-    { id: 'rf-icr', category: 'financial' as const, title: 'Interest Coverage', threshold: '<1.5', currentValue: '∞', isTriggered: false, severity: 'critical' as const, description: 'No debt, no interest', action: 'No action needed' },
-    { id: 'rf-ocf', category: 'financial' as const, title: 'Negative OCF', threshold: '<0', currentValue: 'Positive', isTriggered: false, severity: 'high' as const, description: 'Operating cash flow positive', action: 'Monitor quarterly' },
-    { id: 'rf-cr', category: 'financial' as const, title: 'Current Ratio', threshold: '<1.0', currentValue: '4.2', isTriggered: false, severity: 'high' as const, description: 'Strong liquidity position', action: 'No action needed' },
-    { id: 'rf-quickratio', category: 'financial' as const, title: 'Quick Ratio', threshold: '<0.5', currentValue: '3.8', isTriggered: false, severity: 'medium' as const, description: 'Excellent quick ratio', action: 'No action needed' },
-    // Governance (4 parameters)
-    { id: 'rf-pledge', category: 'governance' as const, title: 'Promoter Pledge', threshold: '>20%', currentValue: '0%', isTriggered: false, severity: 'critical' as const, description: 'No promoter pledging', action: 'No action needed' },
-    { id: 'rf-rpt', category: 'governance' as const, title: 'Related Party Transactions', threshold: '>10%', currentValue: '3%', isTriggered: false, severity: 'high' as const, description: 'RPT within acceptable limits', action: 'Monitor annually' },
-    { id: 'rf-audit', category: 'governance' as const, title: 'Audit Qualification', threshold: 'Any', currentValue: 'None', isTriggered: false, severity: 'critical' as const, description: 'Clean audit report', action: 'No action needed' },
-    { id: 'rf-board', category: 'governance' as const, title: 'Board Changes', threshold: '>2/year', currentValue: '0', isTriggered: false, severity: 'medium' as const, description: 'Stable board composition', action: 'No action needed' },
-    // Quality (3 parameters)
-    { id: 'rf-rev-profit', category: 'quality' as const, title: 'Revenue-Profit Divergence', threshold: '>30%', currentValue: '5%', isTriggered: false, severity: 'high' as const, description: 'Revenue and profit aligned', action: 'No action needed' },
-    { id: 'rf-recv', category: 'quality' as const, title: 'Receivables Spike', threshold: '>50% YoY', currentValue: '12%', isTriggered: false, severity: 'medium' as const, description: 'Normal receivables growth', action: 'Monitor quarterly' },
-    { id: 'rf-inv', category: 'quality' as const, title: 'Inventory Bloat', threshold: '>60% YoY', currentValue: 'N/A', isTriggered: false, severity: 'medium' as const, description: 'Not applicable - service company', action: 'No action needed' },
-    // Structural (2 parameters)
-    { id: 'rf-client', category: 'structural' as const, title: 'Single Client', threshold: '>30% revenue', currentValue: '8%', isTriggered: false, severity: 'high' as const, description: 'Diversified customer base', action: 'No action needed' },
-    { id: 'rf-geo', category: 'structural' as const, title: 'Geographic Concentration', threshold: '>70%', currentValue: '85%', isTriggered: true, severity: 'medium' as const, description: 'India-focused business (85%)', action: 'Monitor international expansion' },
-    // Historical (2 parameters)
-    { id: 'rf-miss', category: 'historical' as const, title: 'Guidance Misses', threshold: '>2 consecutive', currentValue: '0', isTriggered: false, severity: 'high' as const, description: 'Meeting guidance consistently', action: 'No action needed' },
-    { id: 'rf-cfo', category: 'historical' as const, title: 'CFO Changes', threshold: '>1 in 2 years', currentValue: '0', isTriggered: false, severity: 'medium' as const, description: 'Stable management', action: 'No action needed' },
+    // ===== CRITICAL (8 flags) - Always Block/Alert - Score Impact: -2 to -3 pts =====
+    { id: 'rf-asm', severity: 'critical' as RedFlagSeverity, title: 'ASM List', source: 'BSE/NSE', threshold: 'On list', currentValue: 'Clear', isTriggered: false, description: 'Stock on Additional Surveillance Measure', action: 'Exchange flagged for unusual activity', scoreImpact: -3 },
+    { id: 'rf-gsm', severity: 'critical' as RedFlagSeverity, title: 'GSM List', source: 'BSE/NSE', threshold: 'On list', currentValue: 'Clear', isTriggered: false, description: 'Stock on Graded Surveillance Measure', action: 'Serious compliance/trading concerns', scoreImpact: -3 },
+    { id: 'rf-default', severity: 'critical' as RedFlagSeverity, title: 'Default Probability >15%', source: 'ML Model', threshold: '>15%', currentValue: '2%', isTriggered: false, description: 'High likelihood of debt default', action: 'Company may not survive', scoreImpact: -3 },
+    { id: 'rf-pledge', severity: 'critical' as RedFlagSeverity, title: 'Promoter Pledging >20%', source: 'Ownership', threshold: '>20%', currentValue: '0%', isTriggered: false, description: 'No promoter pledging', action: 'Forced selling risk in downturn', scoreImpact: -2 },
+    { id: 'rf-sms', severity: 'critical' as RedFlagSeverity, title: 'Pump & Dump Alert', source: 'External', threshold: 'Circulating', currentValue: 'Clear', isTriggered: false, description: 'Stock circulating in SMS/WhatsApp tips', action: 'Manipulation in progress', scoreImpact: -3 },
+    { id: 'rf-audit', severity: 'critical' as RedFlagSeverity, title: 'Auditor Qualification', source: 'Annual Report', threshold: 'Qualified/Adverse', currentValue: 'Clean', isTriggered: false, description: 'Clean audit report', action: 'Accounting irregularities', scoreImpact: -3 },
+    { id: 'rf-icr', severity: 'critical' as RedFlagSeverity, title: 'Interest Coverage <1.5x', source: 'Ratios', threshold: '<1.5x', currentValue: '∞', isTriggered: false, description: 'No debt, comfortable coverage', action: 'Cannot service debt', scoreImpact: -2 },
+    { id: 'rf-shell', severity: 'critical' as RedFlagSeverity, title: 'Shell Company Flag', source: 'MCA/Exchange', threshold: 'Flagged', currentValue: 'Clear', isTriggered: false, description: 'Not flagged as shell company', action: 'No real business operations', scoreImpact: -3 },
+
+    // ===== HIGH (12 flags) - Always Show - Score Impact: -1 to -1.5 pts =====
+    { id: 'rf-pledge-rising', severity: 'high' as RedFlagSeverity, title: 'Promoter Pledging Rising', source: 'Ownership', threshold: '>5% QoQ', currentValue: '0%', isTriggered: false, description: 'Pledging stable', action: 'Monitor promoter position', scoreImpact: -1.5 },
+    { id: 'rf-promoter-exit', severity: 'high' as RedFlagSeverity, title: 'Promoter Stake Declining', source: 'Ownership', threshold: '>3% in 6M', currentValue: 'Stable', isTriggered: false, description: 'Promoter stake stable', action: 'Insider selling signal', scoreImpact: -1.5 },
+    { id: 'rf-smart-money-exit', severity: 'high' as RedFlagSeverity, title: 'FII + DII Both Exiting', source: 'Ownership', threshold: '>2% in 3M', currentValue: 'Stable', isTriggered: false, description: 'Institutional ownership stable', action: 'Smart money leaving', scoreImpact: -1.5 },
+    { id: 'rf-neg-ocf', severity: 'high' as RedFlagSeverity, title: 'Negative OCF 3 Quarters', source: 'Cash Flow', threshold: '3 consecutive', currentValue: 'Positive', isTriggered: false, description: 'Operating cash flow positive', action: 'Profits not converting to cash', scoreImpact: -1.5 },
+    { id: 'rf-earnings-cash', severity: 'high' as RedFlagSeverity, title: 'Earnings vs Cash Divergence', source: 'Financials', threshold: 'PAT↑ OCF↓', currentValue: 'Aligned', isTriggered: false, description: 'PAT and OCF aligned', action: 'Possible earnings manipulation', scoreImpact: -1.5 },
+    { id: 'rf-rpt', severity: 'high' as RedFlagSeverity, title: 'Related Party Transactions', source: 'Income Statement', threshold: '>10% revenue', currentValue: '3%', isTriggered: false, description: 'RPT within acceptable limits', action: 'Self-dealing concerns', scoreImpact: -1 },
+    { id: 'rf-receivables', severity: 'high' as RedFlagSeverity, title: 'Revenue Recognition Red Flag', source: 'Balance Sheet', threshold: 'Recv 2x Rev growth', currentValue: 'Normal', isTriggered: false, description: 'Receivables growth normal', action: 'Fake sales booking', scoreImpact: -1.5 },
+    { id: 'rf-auditor-change', severity: 'high' as RedFlagSeverity, title: 'Auditor Change', source: 'Annual Report', threshold: 'Unexplained', currentValue: 'No change', isTriggered: false, description: 'Stable auditor relationship', action: 'Covering up issues', scoreImpact: -1 },
+    { id: 'rf-mgmt-churn', severity: 'high' as RedFlagSeverity, title: 'Management Churn', source: 'Filings', threshold: 'CFO/CEO exit', currentValue: 'Stable', isTriggered: false, description: 'Stable management team', action: 'Governance instability', scoreImpact: -1 },
+    { id: 'rf-credit-downgrade', severity: 'high' as RedFlagSeverity, title: 'Credit Rating Downgrade', source: 'Rating Agency', threshold: 'Downgrade', currentValue: 'Stable', isTriggered: false, description: 'Credit rating stable', action: 'Credit quality deteriorating', scoreImpact: -1.5 },
+    { id: 'rf-sebi', severity: 'high' as RedFlagSeverity, title: 'SEBI Order/Investigation', source: 'SEBI', threshold: 'Active', currentValue: 'Clear', isTriggered: false, description: 'No SEBI action', action: 'Regulatory trouble', scoreImpact: -1.5 },
+    { id: 'rf-forensic', severity: 'high' as RedFlagSeverity, title: 'Forensic Accounting Concerns', source: 'Research', threshold: 'Flagged', currentValue: 'Clear', isTriggered: false, description: 'No forensic flags', action: 'Accounting red flags', scoreImpact: -1.5 },
+
+    // ===== MEDIUM (10 flags) - Show in Segment - Score Impact: -0.5 pts =====
+    { id: 'rf-short-interest', severity: 'medium' as RedFlagSeverity, title: 'High Short Interest', source: 'F&O Data', threshold: '>2x avg OI', currentValue: 'Normal', isTriggered: false, description: 'Normal short interest', action: 'Bears betting against', scoreImpact: -0.5 },
+    { id: 'rf-analyst-downgrade', severity: 'medium' as RedFlagSeverity, title: 'Analyst Downgrade Cluster', source: 'Broker Ratings', threshold: '3+ in 30 days', currentValue: '0', isTriggered: false, description: 'No recent downgrades', action: 'Consensus turning negative', scoreImpact: -0.5 },
+    { id: 'rf-debt-rising', severity: 'medium' as RedFlagSeverity, title: 'Debt Increasing Rapidly', source: 'Balance Sheet', threshold: 'D/E +0.5x YoY', currentValue: '0', isTriggered: false, description: 'Debt-free company', action: 'Leverage risk building', scoreImpact: -0.5 },
+    { id: 'rf-contingent', severity: 'medium' as RedFlagSeverity, title: 'Contingent Liabilities High', source: 'Balance Sheet', threshold: '>20% net worth', currentValue: '5%', isTriggered: false, description: 'Low contingent liabilities', action: 'Hidden obligations', scoreImpact: -0.5 },
+    { id: 'rf-inventory', severity: 'medium' as RedFlagSeverity, title: 'Inventory Pileup', source: 'Balance Sheet', threshold: '>30% YoY', currentValue: 'N/A', isTriggered: false, description: 'Service company - N/A', action: 'Demand slowdown signal', scoreImpact: -0.5 },
+    { id: 'rf-customer-conc', severity: 'medium' as RedFlagSeverity, title: 'Customer Concentration', source: 'Income Statement', threshold: '>25% revenue', currentValue: '8%', isTriggered: false, description: 'Diversified customer base', action: 'Single point of failure', scoreImpact: -0.5 },
+    { id: 'rf-promoter-loans', severity: 'medium' as RedFlagSeverity, title: 'Promoter Entity Loans', source: 'Related Party', threshold: 'Present', currentValue: 'None', isTriggered: false, description: 'No loans to promoter entities', action: 'Cash siphoning risk', scoreImpact: -0.5 },
+    { id: 'rf-dilution', severity: 'medium' as RedFlagSeverity, title: 'Frequent Equity Dilution', source: 'Capital Structure', threshold: '>2 raises in 3Y', currentValue: '1', isTriggered: false, description: 'Limited dilution', action: 'Shareholder dilution', scoreImpact: -0.5 },
+    { id: 'rf-dividend-cut', severity: 'medium' as RedFlagSeverity, title: 'Dividend Cut/Skip', source: 'Dividend History', threshold: '>50% cut', currentValue: 'N/A', isTriggered: false, description: 'Growth company - no dividend', action: 'Cash flow stress', scoreImpact: -0.5 },
+    { id: 'rf-working-capital', severity: 'medium' as RedFlagSeverity, title: 'Working Capital Deterioration', source: 'Balance Sheet', threshold: 'CCC +30 days', currentValue: 'Improving', isTriggered: false, description: 'Working capital healthy', action: 'Operational stress', scoreImpact: -0.5 },
+
+    // ===== MONITOR (5 flags) - Informational - No Score Impact =====
+    { id: 'rf-volatility', severity: 'monitor' as RedFlagSeverity, title: 'Volatility Warning', source: 'Price Data', threshold: 'Beta >1.5', currentValue: '1.3', isTriggered: false, description: 'Moderate volatility', action: 'High price swings', scoreImpact: 0 },
+    { id: 'rf-liquidity', severity: 'monitor' as RedFlagSeverity, title: 'Liquidity Warning', source: 'Volume', threshold: '<₹1 Cr daily', currentValue: '₹150 Cr', isTriggered: false, description: 'Good liquidity', action: 'Hard to exit', scoreImpact: 0 },
+    { id: 'rf-sector-headwind', severity: 'monitor' as RedFlagSeverity, title: 'Sector Headwind', source: 'News', threshold: 'Regulatory/macro', currentValue: 'None', isTriggered: false, description: 'No sector headwinds', action: 'External risk factor', scoreImpact: 0 },
+    { id: 'rf-peer-underperform', severity: 'monitor' as RedFlagSeverity, title: 'Peer Underperformance', source: 'Price', threshold: '-20% vs peers', currentValue: '+5%', isTriggered: false, description: 'Outperforming peers', action: 'Relative weakness', scoreImpact: 0 },
+    { id: 'rf-insider-selling', severity: 'monitor' as RedFlagSeverity, title: 'Insider Selling Pattern', source: 'SAST', threshold: 'Multiple insiders', currentValue: 'None', isTriggered: false, description: 'No insider selling', action: 'Confidence concern', scoreImpact: 0 },
   ]
 
   // Override with actual red flags from verdict if present
   const triggeredFlags = verdict.redFlags?.map(f => ({
     ...f,
-    category: (f as any).category || 'financial' as const,
+    severity: (f.severity as RedFlagSeverity) || 'medium' as RedFlagSeverity,
     isTriggered: true,
+    source: 'Analysis',
     currentValue: (f as any).currentValue || 'Triggered',
-    threshold: (f as any).threshold || 'Exceeded'
+    threshold: (f as any).threshold || 'Exceeded',
+    scoreImpact: f.severity === 'critical' ? -2.5 : f.severity === 'high' ? -1.25 : -0.5
   })) || []
 
   // Merge triggered flags with framework
@@ -63,17 +90,27 @@ function generateRedFlagFramework(verdict: StockVerdict) {
   const finalFlags = [...mergedFlags, ...additionalTriggered]
   const triggered = finalFlags.filter(f => f.isTriggered)
 
+  // Calculate total score impact (capped at -5)
+  const rawScoreImpact = triggered.reduce((sum, f) => sum + (f.scoreImpact || 0), 0)
+  const scoreImpact = Math.max(-5, rawScoreImpact)
+
   return {
     triggeredCount: triggered.length,
-    totalParameters: 16,
+    totalParameters: 35,
+    scoreImpact,
     flags: finalFlags,
     triggeredFlags: triggered,
-    byCategory: {
-      financial: finalFlags.filter(f => f.category === 'financial'),
-      governance: finalFlags.filter(f => f.category === 'governance'),
-      quality: finalFlags.filter(f => f.category === 'quality'),
-      structural: finalFlags.filter(f => f.category === 'structural'),
-      historical: finalFlags.filter(f => f.category === 'historical'),
+    bySeverity: {
+      critical: finalFlags.filter(f => f.severity === 'critical'),
+      high: finalFlags.filter(f => f.severity === 'high'),
+      medium: finalFlags.filter(f => f.severity === 'medium'),
+      monitor: finalFlags.filter(f => f.severity === 'monitor'),
+    },
+    triggeredBySeverity: {
+      critical: triggered.filter(f => f.severity === 'critical'),
+      high: triggered.filter(f => f.severity === 'high'),
+      medium: triggered.filter(f => f.severity === 'medium'),
+      monitor: triggered.filter(f => f.severity === 'monitor'),
     }
   }
 }
@@ -91,14 +128,15 @@ function RedFlagScanner({
   onToggle: () => void
 }) {
   const framework = generateRedFlagFramework(verdict)
-  const criticalFlags = framework.triggeredFlags.filter(f => f.severity === 'critical')
-  const highFlags = framework.triggeredFlags.filter(f => f.severity === 'high')
-  const otherFlags = framework.triggeredFlags.filter(f => f.severity !== 'critical' && f.severity !== 'high')
+  const { triggeredBySeverity, bySeverity, scoreImpact } = framework
 
   // Get negative news as potential red flag signals
   const negativeNews = news.filter(n => n.sentiment === 'negative')
-  const hasCritical = criticalFlags.length > 0
-  const hasIssues = framework.triggeredCount > 0 || negativeNews.length > 0
+  const hasCritical = triggeredBySeverity.critical.length > 0
+  const hasHigh = triggeredBySeverity.high.length > 0
+  const hasMedium = triggeredBySeverity.medium.length > 0
+  const hasMonitor = triggeredBySeverity.monitor.length > 0
+  const hasAnyIssue = framework.triggeredCount > 0
 
   return (
     <motion.div
@@ -107,7 +145,7 @@ function RedFlagScanner({
       className={cn(
         'rounded-2xl border overflow-hidden',
         hasCritical ? 'bg-destructive-500/5 border-destructive-500/20' :
-        hasIssues ? 'bg-warning-500/5 border-warning-500/20' :
+        hasHigh ? 'bg-warning-500/5 border-warning-500/20' :
         'bg-success-500/5 border-success-500/20'
       )}
     >
@@ -117,63 +155,96 @@ function RedFlagScanner({
           <div className="flex items-center gap-2">
             {hasCritical ? (
               <AlertTriangle className="w-5 h-5 text-destructive-400" />
-            ) : hasIssues ? (
+            ) : hasHigh ? (
               <AlertCircle className="w-5 h-5 text-warning-400" />
             ) : (
               <Check className="w-5 h-5 text-success-400" />
             )}
             <h3 className="font-semibold text-white">Red Flag Scanner</h3>
           </div>
-          <div className={cn(
-            'px-2.5 py-1 rounded-full text-xs font-medium',
-            framework.triggeredCount === 0 ? 'bg-success-500/20 text-success-400' :
-            hasCritical ? 'bg-destructive-500/20 text-destructive-400' :
-            'bg-warning-500/20 text-warning-400'
-          )}>
-            {framework.triggeredCount}/{framework.totalParameters}
+          <div className="flex items-center gap-2">
+            {scoreImpact !== 0 && (
+              <span className="text-xs text-destructive-400 font-medium">
+                {scoreImpact.toFixed(1)} pts
+              </span>
+            )}
+            <div className={cn(
+              'px-2.5 py-1 rounded-full text-xs font-medium',
+              framework.triggeredCount === 0 ? 'bg-success-500/20 text-success-400' :
+              hasCritical ? 'bg-destructive-500/20 text-destructive-400' :
+              'bg-warning-500/20 text-warning-400'
+            )}>
+              {framework.triggeredCount}/{framework.totalParameters}
+            </div>
           </div>
         </div>
 
-        {/* Critical Flags - Always show prominently if present */}
-        {criticalFlags.length > 0 && (
+        {/* ===== CRITICAL FLAGS - Always show prominently ===== */}
+        {hasCritical && (
           <div className="mt-3 space-y-2">
-            {criticalFlags.map(flag => (
+            <div className="flex items-center gap-2 mb-1">
+              <span className="w-2 h-2 rounded-full bg-destructive-500" />
+              <span className="text-xs font-medium text-destructive-400 uppercase tracking-wide">Critical ({triggeredBySeverity.critical.length})</span>
+            </div>
+            {triggeredBySeverity.critical.map(flag => (
               <div key={flag.id} className="flex items-start gap-3 p-3 bg-destructive-500/10 rounded-xl border border-destructive-500/20">
-                <span className="px-1.5 py-0.5 text-[10px] font-bold bg-destructive-500 text-white rounded uppercase">
-                  Critical
+                <span className="px-1.5 py-0.5 text-[10px] font-bold bg-destructive-500 text-white rounded">
+                  🔴
                 </span>
                 <div className="flex-1">
                   <span className="font-medium text-white text-sm">{flag.title}</span>
                   <p className="text-xs text-neutral-400 mt-0.5">{flag.description}</p>
-                  {flag.currentValue && flag.threshold && (
-                    <p className="text-xs text-destructive-400 mt-1">
-                      Current: {flag.currentValue} • Threshold: {flag.threshold}
-                    </p>
-                  )}
+                  <div className="flex items-center gap-2 mt-1 text-xs">
+                    <span className="text-destructive-400">Current: {flag.currentValue}</span>
+                    <span className="text-neutral-500">•</span>
+                    <span className="text-neutral-500">Source: {flag.source}</span>
+                  </div>
                 </div>
               </div>
             ))}
           </div>
         )}
 
-        {/* High severity flags shown upfront */}
-        {highFlags.length > 0 && (
+        {/* ===== HIGH FLAGS - Always show ===== */}
+        {hasHigh && (
           <div className="mt-3 space-y-2">
-            {highFlags.slice(0, 2).map(flag => (
+            <div className="flex items-center gap-2 mb-1">
+              <span className="w-2 h-2 rounded-full bg-warning-500" />
+              <span className="text-xs font-medium text-warning-400 uppercase tracking-wide">High ({triggeredBySeverity.high.length})</span>
+            </div>
+            {triggeredBySeverity.high.map(flag => (
               <div key={flag.id} className="flex items-start gap-3 p-3 bg-warning-500/10 rounded-xl border border-warning-500/20">
-                <span className="px-1.5 py-0.5 text-[10px] font-bold bg-warning-500 text-white rounded uppercase">
-                  High
+                <span className="px-1.5 py-0.5 text-[10px] font-bold bg-warning-500 text-white rounded">
+                  🟠
                 </span>
                 <div className="flex-1">
                   <span className="font-medium text-white text-sm">{flag.title}</span>
                   <p className="text-xs text-neutral-400 mt-0.5">{flag.description}</p>
+                  <span className="text-xs text-warning-400 mt-1 block">
+                    {flag.currentValue} • {flag.source}
+                  </span>
                 </div>
               </div>
             ))}
           </div>
         )}
 
-        {/* Negative News as Red Flag Signals */}
+        {/* ===== MEDIUM FLAGS - Collapsed summary ===== */}
+        {hasMedium && !isExpanded && (
+          <div className="mt-3 p-3 bg-dark-700/50 rounded-xl border border-white/5">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-yellow-500" />
+                <span className="text-xs font-medium text-yellow-400">
+                  {triggeredBySeverity.medium.length} Medium Flags
+                </span>
+              </div>
+              <span className="text-xs text-neutral-500">[Expand to see]</span>
+            </div>
+          </div>
+        )}
+
+        {/* ===== NEWS SIGNALS ===== */}
         {negativeNews.length > 0 && (
           <div className="mt-3 p-3 bg-dark-700/50 rounded-xl border border-white/5">
             <div className="flex items-center gap-2 mb-2">
@@ -191,15 +262,21 @@ function RedFlagScanner({
           </div>
         )}
 
-        {/* No issues summary */}
-        {!hasIssues && (
-          <p className="text-sm text-neutral-400 mt-2">
-            All 16 risk parameters passed. No critical issues detected.
-          </p>
+        {/* ===== ALL CLEAR STATE ===== */}
+        {!hasAnyIssue && negativeNews.length === 0 && (
+          <div className="mt-3 p-3 bg-success-500/10 rounded-xl border border-success-500/20">
+            <div className="flex items-center gap-2">
+              <Check className="w-4 h-4 text-success-400" />
+              <span className="text-sm text-success-400 font-medium">No Critical Red Flags</span>
+            </div>
+            <p className="text-xs text-neutral-400 mt-1">
+              All {framework.totalParameters} risk parameters passed screening.
+            </p>
+          </div>
         )}
       </div>
 
-      {/* Expandable section */}
+      {/* ===== EXPANDABLE SECTION ===== */}
       <AnimatePresence>
         {isExpanded && (
           <motion.div
@@ -210,35 +287,70 @@ function RedFlagScanner({
             className="overflow-hidden"
           >
             <div className="px-4 pb-4 pt-2 border-t border-white/5">
-              {/* Other triggered flags */}
-              {otherFlags.length > 0 && (
-                <div className="space-y-2 mb-3">
-                  <span className="text-xs font-medium text-neutral-500 uppercase tracking-wide">Other Flags</span>
-                  {otherFlags.map(flag => (
-                    <div key={flag.id} className="flex items-center justify-between py-2 px-3 bg-dark-700/50 rounded-lg text-sm">
-                      <div className="flex items-center gap-2">
-                        <AlertCircle className="w-3.5 h-3.5 text-warning-400" />
-                        <span className="text-neutral-300">{flag.title}</span>
+              {/* Medium Flags - Full list */}
+              {hasMedium && (
+                <div className="mb-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="w-2 h-2 rounded-full bg-yellow-500" />
+                    <span className="text-xs font-medium text-yellow-400 uppercase tracking-wide">Medium ({triggeredBySeverity.medium.length})</span>
+                  </div>
+                  <div className="space-y-1.5">
+                    {triggeredBySeverity.medium.map(flag => (
+                      <div key={flag.id} className="flex items-center justify-between py-2 px-3 bg-dark-700/50 rounded-lg text-sm">
+                        <div className="flex items-center gap-2">
+                          <span className="text-yellow-500">🟡</span>
+                          <span className="text-neutral-300">{flag.title}</span>
+                        </div>
+                        <span className="text-xs text-neutral-500">{flag.currentValue}</span>
                       </div>
-                      <span className="text-xs text-neutral-500">{flag.currentValue}</span>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
               )}
 
-              {/* Full scan status */}
-              <div className="grid grid-cols-5 gap-2">
-                {Object.entries(framework.byCategory).map(([cat, flags]) => {
-                  const triggered = flags.filter(f => f.isTriggered).length
+              {/* Monitor Flags - Informational */}
+              {hasMonitor && (
+                <div className="mb-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="w-2 h-2 rounded-full bg-neutral-500" />
+                    <span className="text-xs font-medium text-neutral-400 uppercase tracking-wide">Monitor ({triggeredBySeverity.monitor.length})</span>
+                  </div>
+                  <div className="space-y-1.5">
+                    {triggeredBySeverity.monitor.map(flag => (
+                      <div key={flag.id} className="flex items-center justify-between py-2 px-3 bg-dark-700/30 rounded-lg text-sm">
+                        <div className="flex items-center gap-2">
+                          <span className="text-neutral-500">⚠️</span>
+                          <span className="text-neutral-400">{flag.title}</span>
+                        </div>
+                        <span className="text-xs text-neutral-500">{flag.currentValue}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Full scan status by severity */}
+              <div className="grid grid-cols-4 gap-2">
+                {[
+                  { key: 'critical', label: 'Critical', color: 'destructive', emoji: '🔴' },
+                  { key: 'high', label: 'High', color: 'warning', emoji: '🟠' },
+                  { key: 'medium', label: 'Medium', color: 'yellow', emoji: '🟡' },
+                  { key: 'monitor', label: 'Monitor', color: 'neutral', emoji: '⚠️' },
+                ].map(({ key, label, emoji }) => {
+                  const total = bySeverity[key as keyof typeof bySeverity].length
+                  const triggered = triggeredBySeverity[key as keyof typeof triggeredBySeverity].length
                   return (
-                    <div key={cat} className="text-center p-2 bg-dark-700/30 rounded-lg">
+                    <div key={key} className="text-center p-2 bg-dark-700/30 rounded-lg">
+                      <div className="text-sm mb-0.5">{emoji}</div>
                       <div className={cn(
                         'text-lg font-bold',
-                        triggered === 0 ? 'text-success-400' : 'text-warning-400'
+                        triggered === 0 ? 'text-success-400' :
+                        key === 'critical' ? 'text-destructive-400' :
+                        key === 'high' ? 'text-warning-400' : 'text-neutral-300'
                       )}>
-                        {triggered}/{flags.length}
+                        {triggered}/{total}
                       </div>
-                      <div className="text-[10px] text-neutral-500 capitalize">{cat}</div>
+                      <div className="text-[10px] text-neutral-500">{label}</div>
                     </div>
                   )
                 })}
@@ -261,7 +373,7 @@ function RedFlagScanner({
         ) : (
           <>
             <ChevronDown className="w-4 h-4" />
-            View All Parameters
+            View All {framework.totalParameters} Parameters
           </>
         )}
       </button>
@@ -507,115 +619,7 @@ export function StockAnalysis() {
       {/* ============== PROS/CONS (Quick View) ============== */}
       <ProsCons verdict={verdict} />
 
-      {/* ============== RED FLAG SCANNER ============== */}
-      <RedFlagScanner
-        verdict={verdict}
-        news={news}
-        isExpanded={isRedFlagExpanded}
-        onToggle={() => setIsRedFlagExpanded(!isRedFlagExpanded)}
-      />
-
-      {/* ============== UPCOMING EVENTS (if any) ============== */}
-      {upcomingEvents.length > 0 && (
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="rounded-2xl bg-dark-800 border border-white/5 p-4"
-        >
-          <div className="flex items-center gap-2 mb-3">
-            <Calendar className="w-4 h-4 text-primary-400" />
-            <span className="font-semibold text-white text-sm">Upcoming Events</span>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {upcomingEvents.slice(0, 3).map((event) => (
-              <div
-                key={event.id}
-                className={cn(
-                  'flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs',
-                  event.importance === 'high' ? 'bg-primary-500/10 text-primary-300' : 'bg-dark-700 text-neutral-400'
-                )}
-              >
-                <span>{getEventIcon(event.type)}</span>
-                <span className="font-medium">{event.title}</span>
-                <span className="text-neutral-500">•</span>
-                <span>{formatEventDate(event.date)}</span>
-              </div>
-            ))}
-          </div>
-        </motion.div>
-      )}
-
-      {/* ============== ENTRY ASSESSMENT ============== */}
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.25 }}
-        className="rounded-2xl bg-dark-800 border border-white/5 p-5"
-      >
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-primary-400" />
-            <h3 className="font-semibold text-white">Entry Assessment</h3>
-          </div>
-          <span className={cn(
-            'px-2.5 py-1 rounded-lg text-xs font-medium',
-            verdict.verdict === 'STRONG BUY' || verdict.verdict === 'BUY'
-              ? 'bg-success-500/20 text-success-400'
-              : verdict.verdict === 'HOLD' || verdict.verdict === 'STRONG HOLD'
-                ? 'bg-warning-500/20 text-warning-400'
-                : 'bg-destructive-500/20 text-destructive-400'
-          )}>
-            {verdict.verdict === 'STRONG BUY' || verdict.verdict === 'BUY' ? 'FAVORABLE' :
-             verdict.verdict === 'HOLD' || verdict.verdict === 'STRONG HOLD' ? 'NEUTRAL' : 'WAIT'}
-          </span>
-        </div>
-
-        {/* Position Sizing */}
-        <div className="grid grid-cols-2 gap-3 mb-4">
-          <div className="p-3 bg-dark-700/50 rounded-xl">
-            <span className="text-xs text-neutral-500 block mb-1">Suggested Allocation</span>
-            <span className="text-white font-medium text-sm">
-              {typeof verdict.positionSizing === 'string'
-                ? verdict.positionSizing
-                : verdict.positionSizing.recommendedAllocation}
-            </span>
-          </div>
-          {verdict.entryTiming?.fairValueRange && (
-            <div className="p-3 bg-dark-700/50 rounded-xl">
-              <span className="text-xs text-neutral-500 block mb-1">Fair Value Range</span>
-              <span className="text-white font-medium text-sm">{verdict.entryTiming.fairValueRange}</span>
-            </div>
-          )}
-        </div>
-
-        {/* Exit Triggers (collapsed in quick view) */}
-        {verdict.exitTriggers && verdict.exitTriggers.length > 0 && (
-          <div className="pt-3 border-t border-white/5">
-            <div className="flex items-center gap-2 mb-2">
-              <LogOut className="w-3.5 h-3.5 text-neutral-400" />
-              <span className="text-xs font-medium text-neutral-400">Exit Triggers</span>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {verdict.exitTriggers.slice(0, 3).map((trigger) => (
-                <span
-                  key={trigger.id}
-                  className={cn(
-                    'px-2 py-1 rounded text-xs',
-                    trigger.status === 'safe' ? 'bg-dark-700 text-neutral-400' :
-                    trigger.status === 'warning' ? 'bg-warning-500/10 text-warning-400' :
-                    'bg-destructive-500/10 text-destructive-400'
-                  )}
-                >
-                  {trigger.metric} {trigger.condition} {trigger.threshold}
-                </span>
-              ))}
-            </div>
-          </div>
-        )}
-      </motion.div>
-
-      {/* ============== EXPAND TOGGLE ============== */}
+      {/* ============== FULL ANALYSIS TOGGLE (below Pros/Cons) ============== */}
       <motion.button
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -721,6 +725,114 @@ export function StockAnalysis() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* ============== RED FLAG SCANNER ============== */}
+      <RedFlagScanner
+        verdict={verdict}
+        news={news}
+        isExpanded={isRedFlagExpanded}
+        onToggle={() => setIsRedFlagExpanded(!isRedFlagExpanded)}
+      />
+
+      {/* ============== UPCOMING EVENTS (if any) ============== */}
+      {upcomingEvents.length > 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="rounded-2xl bg-dark-800 border border-white/5 p-4"
+        >
+          <div className="flex items-center gap-2 mb-3">
+            <Calendar className="w-4 h-4 text-primary-400" />
+            <span className="font-semibold text-white text-sm">Upcoming Events</span>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {upcomingEvents.slice(0, 3).map((event) => (
+              <div
+                key={event.id}
+                className={cn(
+                  'flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs',
+                  event.importance === 'high' ? 'bg-primary-500/10 text-primary-300' : 'bg-dark-700 text-neutral-400'
+                )}
+              >
+                <span>{getEventIcon(event.type)}</span>
+                <span className="font-medium">{event.title}</span>
+                <span className="text-neutral-500">•</span>
+                <span>{formatEventDate(event.date)}</span>
+              </div>
+            ))}
+          </div>
+        </motion.div>
+      )}
+
+      {/* ============== ENTRY ASSESSMENT ============== */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.25 }}
+        className="rounded-2xl bg-dark-800 border border-white/5 p-5"
+      >
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <Sparkles className="w-4 h-4 text-primary-400" />
+            <h3 className="font-semibold text-white">Entry Assessment</h3>
+          </div>
+          <span className={cn(
+            'px-2.5 py-1 rounded-lg text-xs font-medium',
+            verdict.verdict === 'STRONG BUY' || verdict.verdict === 'BUY'
+              ? 'bg-success-500/20 text-success-400'
+              : verdict.verdict === 'HOLD' || verdict.verdict === 'STRONG HOLD'
+                ? 'bg-warning-500/20 text-warning-400'
+                : 'bg-destructive-500/20 text-destructive-400'
+          )}>
+            {verdict.verdict === 'STRONG BUY' || verdict.verdict === 'BUY' ? 'FAVORABLE' :
+             verdict.verdict === 'HOLD' || verdict.verdict === 'STRONG HOLD' ? 'NEUTRAL' : 'WAIT'}
+          </span>
+        </div>
+
+        {/* Position Sizing */}
+        <div className="grid grid-cols-2 gap-3 mb-4">
+          <div className="p-3 bg-dark-700/50 rounded-xl">
+            <span className="text-xs text-neutral-500 block mb-1">Suggested Allocation</span>
+            <span className="text-white font-medium text-sm">
+              {typeof verdict.positionSizing === 'string'
+                ? verdict.positionSizing
+                : verdict.positionSizing.recommendedAllocation}
+            </span>
+          </div>
+          {verdict.entryTiming?.fairValueRange && (
+            <div className="p-3 bg-dark-700/50 rounded-xl">
+              <span className="text-xs text-neutral-500 block mb-1">Fair Value Range</span>
+              <span className="text-white font-medium text-sm">{verdict.entryTiming.fairValueRange}</span>
+            </div>
+          )}
+        </div>
+
+        {/* Exit Triggers */}
+        {verdict.exitTriggers && verdict.exitTriggers.length > 0 && (
+          <div className="pt-3 border-t border-white/5">
+            <div className="flex items-center gap-2 mb-2">
+              <LogOut className="w-3.5 h-3.5 text-neutral-400" />
+              <span className="text-xs font-medium text-neutral-400">Exit Triggers</span>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {verdict.exitTriggers.slice(0, 3).map((trigger) => (
+                <span
+                  key={trigger.id}
+                  className={cn(
+                    'px-2 py-1 rounded text-xs',
+                    trigger.status === 'safe' ? 'bg-dark-700 text-neutral-400' :
+                    trigger.status === 'warning' ? 'bg-warning-500/10 text-warning-400' :
+                    'bg-destructive-500/10 text-destructive-400'
+                  )}
+                >
+                  {trigger.metric} {trigger.condition} {trigger.threshold}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+      </motion.div>
 
       {/* ============== ACTIONS ============== */}
       <motion.div
