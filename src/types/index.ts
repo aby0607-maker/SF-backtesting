@@ -1,6 +1,9 @@
 // User Profile Types
-export type InvestmentThesis = 'growth' | 'value' | 'dividend' | 'quality' | 'agnostic'
-export type RiskTolerance = 'conservative' | 'moderate' | 'aggressive'
+export type InvestmentThesis =
+  | 'growth' | 'value' | 'dividend' | 'quality' | 'agnostic'
+  | 'balanced' | 'comprehensive' | 'learning' | 'compounding' | 'remote'
+  | 'momentum' | 'income' | 'preservation'
+export type RiskTolerance = 'very-conservative' | 'conservative' | 'moderate' | 'aggressive'
 export type TimeHorizon = 'short' | 'medium' | 'long' | 'very-long'
 export type ExperienceLevel = 'beginner' | 'intermediate' | 'advanced'
 

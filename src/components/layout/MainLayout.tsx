@@ -1,6 +1,7 @@
 import { Outlet } from 'react-router-dom'
 import { Header } from './Header'
 import { BottomNav } from './BottomNav'
+import { ChatFAB } from './ChatFAB'
 
 export function MainLayout() {
   return (
@@ -14,6 +15,9 @@ export function MainLayout() {
           <Outlet />
         </div>
       </main>
+
+      {/* Floating Chat FAB */}
+      <ChatFAB />
 
       {/* Bottom navigation */}
       <BottomNav />

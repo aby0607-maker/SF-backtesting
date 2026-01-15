@@ -1,14 +1,15 @@
 import { NavLink } from 'react-router-dom'
-import { Home, Search, Briefcase, BookOpen, MessageSquare } from 'lucide-react'
+import { Home, Search, Briefcase, BookOpen, Bell } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
 
+// Chat removed - now accessible via floating FAB
 const navItems = [
   { to: '/dashboard', icon: Home, label: 'Home' },
   { to: '/discover', icon: Search, label: 'Discover' },
   { to: '/portfolio', icon: Briefcase, label: 'Portfolio' },
   { to: '/journal', icon: BookOpen, label: 'Journal' },
-  { to: '/chat', icon: MessageSquare, label: 'Chat' },
+  { to: '/alerts', icon: Bell, label: 'Alerts' },
 ]
 
 export function BottomNav() {
