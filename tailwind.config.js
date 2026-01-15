@@ -7,100 +7,7 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Dark mode backgrounds
-        dark: {
-          950: '#08080C',  // Deepest
-          900: '#0D0D12',  // Main background
-          800: '#1A1A24',  // Elevated surfaces
-          700: '#252532',  // Cards/inputs
-          600: '#32323F',  // Hover states
-          500: '#3F3F4D',  // Borders
-        },
-        // Primary brand color (Purple from Figma)
-        primary: {
-          50: '#E6D6FD',
-          100: '#C8AEFC',
-          200: '#8B85FA',
-          300: '#985DF9',
-          400: '#6B49F8',
-          500: '#7E5FF7',  // Main primary
-          600: '#712FDE',
-          700: '#5A25B2',
-          800: '#3F1A7C',
-          900: '#26104A',
-          950: '#0C0519',
-        },
-        // Morning Glory (Teal - used for success states)
-        teal: {
-          50: '#E2F0F2',
-          100: '#C3F3E5',
-          200: '#A4EED7',
-          300: '#87E8CB',
-          400: '#77E6C4',
-          500: '#69E2B0',
-          600: '#53B597',
-          700: '#3E8971',
-          800: '#2A5A4C',
-          900: '#1F443A',
-          950: '#0A1713',
-        },
-        // Information (Blue)
-        info: {
-          50: '#CCF3EB',
-          100: '#9AE7CF',
-          200: '#67C2FF',
-          300: '#4FBBFF',
-          400: '#1DA4FF',
-          500: '#00C4B8',
-          600: '#0278CC',
-          700: '#015C8A',
-          800: '#003E66',
-          900: '#001F34',
-          950: '#000E1A',
-        },
-        // Success (Green)
-        success: {
-          50: '#CCF3EB',
-          100: '#9AE7CF',
-          200: '#67DDB8',
-          300: '#35D0A0',
-          400: '#02B17A',
-          500: '#00C489',
-          600: '#009DED',
-          700: '#03895F',
-          800: '#004E36',
-          900: '#003D2A',
-          950: '#00271B',
-        },
-        // Warning (Orange)
-        warning: {
-          50: '#FED0B3',
-          100: '#FEB180',
-          200: '#FDA167',
-          300: '#FE8240',
-          400: '#FC721A',
-          500: '#FC6200',
-          600: '#CA4E00',
-          700: '#973B00',
-          800: '#662700',
-          900: '#4C1D00',
-          950: '#321400',
-        },
-        // Destructive (Red)
-        destructive: {
-          50: '#FEEBEF',
-          100: '#FEB0C1',
-          200: '#FB9EB2',
-          300: '#FA7592',
-          400: '#FB4E73',
-          500: '#F63A63',
-          600: '#C62E4F',
-          700: '#AD2945',
-          800: '#621728',
-          900: '#4A1120',
-          950: '#2B030E',
-        },
-        // Neutral (Grays)
+        // Neutral grays from Figma
         neutral: {
           50: '#F9FAFB',
           100: '#F3F4F6',
@@ -113,43 +20,117 @@ export default {
           800: '#1F2937',
           900: '#111827',
         },
-        // Verdict colors (mapped to design system)
+        // Primary Purple from Figma
+        primary: {
+          50: '#F3EEFF',
+          100: '#E6D6FD',
+          200: '#C8AEFC',
+          300: '#A985FA',
+          400: '#8B5DF9',
+          500: '#7E5FF7',
+          600: '#712FDE',
+          700: '#5A25B2',
+          800: '#3F1A7C',
+          900: '#26104A',
+          950: '#0C0519',
+        },
+        // Morning Glory Teal from Figma
+        teal: {
+          50: '#E2F9F2',
+          100: '#C3F3E5',
+          200: '#A4EED7',
+          300: '#87E8CB',
+          400: '#77E6C4',
+          500: '#69E2BD',
+          600: '#53B597',
+          700: '#3E8971',
+          800: '#2A5A4C',
+          900: '#1F443A',
+          950: '#0A1713',
+        },
+        // Information Blue from Figma
+        info: {
+          50: '#E6F7FF',
+          100: '#CCF3EB',
+          200: '#9AE7CF',
+          300: '#67C2FF',
+          400: '#4FBBFF',
+          500: '#00C4B8',
+          600: '#0278CC',
+          700: '#015C8A',
+          800: '#003E66',
+          900: '#001F34',
+          950: '#000E1A',
+        },
+        // Success Green from Figma
+        success: {
+          50: '#ECFDF5',
+          100: '#D1FAE5',
+          200: '#A7F3D0',
+          300: '#6EE7B7',
+          400: '#34D399',
+          500: '#00C489',
+          600: '#009D6D',
+          700: '#03895F',
+          800: '#065F46',
+          900: '#004E36',
+          950: '#00271B',
+        },
+        // Warning Orange from Figma
+        warning: {
+          50: '#FFF7ED',
+          100: '#FED0B3',
+          200: '#FEB180',
+          300: '#FDA167',
+          400: '#FC721A',
+          500: '#FC6200',
+          600: '#CA4E00',
+          700: '#973800',
+          800: '#662700',
+          900: '#4C1D00',
+          950: '#321400',
+        },
+        // Destructive Red from Figma
+        destructive: {
+          50: '#FEF2F2',
+          100: '#FEE2E2',
+          200: '#FECACA',
+          300: '#FCA5A5',
+          400: '#FB4E73',
+          500: '#F63A63',
+          600: '#C62E4F',
+          700: '#AD2945',
+          800: '#991B1B',
+          900: '#621728',
+          950: '#2B030E',
+        },
+        // Verdict colors
         verdict: {
-          buy: '#00C489',      // Success green
-          hold: '#FC6200',     // Warning orange
-          avoid: '#F63A63',    // Destructive red
+          buy: '#00C489',
+          strongBuy: '#009D6D',
+          hold: '#FC6200',
+          strongHold: '#CA4E00',
+          avoid: '#F63A63',
         },
-        // Score colors (gradient from red to green)
+        // Score colors
         score: {
-          low: '#F63A63',      // 0-4 (destructive)
-          medium: '#FC6200',   // 4-6 (warning)
-          high: '#00C489',     // 6-8 (success)
-          excellent: '#03895F', // 8-10 (success dark)
+          excellent: '#009D6D',
+          high: '#00C489',
+          medium: '#FC6200',
+          low: '#F63A63',
         },
-        // Segment status
-        segment: {
-          positive: '#00C489',
-          neutral: '#6B7280',
-          negative: '#F63A63',
-        },
-        // Alert severity
-        alert: {
-          critical: '#F63A63',
-          high: '#FC6200',
-          medium: '#FE8240',
-          low: '#00C4B8',
-        },
-        // Background colors
+        // Surface colors for light mode
         surface: {
-          DEFAULT: '#ffffff',
+          DEFAULT: '#FFFFFF',
           secondary: '#F9FAFB',
           tertiary: '#F3F4F6',
         },
-        // Text colors
+        // Content colors
         content: {
           DEFAULT: '#111827',
           secondary: '#4B5563',
           tertiary: '#9CA3AF',
+          inverse: '#FFFFFF',
         },
       },
       fontFamily: {
@@ -157,85 +138,63 @@ export default {
         mono: ['JetBrains Mono', 'Menlo', 'monospace'],
       },
       fontSize: {
-        // From Figma design system
-        'display': ['4rem', { lineHeight: '3.5rem', fontWeight: '700', letterSpacing: '-0.02em' }], // 64px
-        'h1': ['2.5rem', { lineHeight: '3rem', fontWeight: '700' }],      // 40px
-        'h2': ['2.25rem', { lineHeight: '2.75rem', fontWeight: '600' }],  // 36px
-        'h3': ['2rem', { lineHeight: '2.5rem', fontWeight: '600' }],      // 32px
-        'h4': ['1.75rem', { lineHeight: '2.25rem', fontWeight: '600' }],  // 28px
-        'h5': ['1.5rem', { lineHeight: '2rem', fontWeight: '600' }],      // 24px
-        'h6': ['1.25rem', { lineHeight: '1.75rem', fontWeight: '600' }],  // 20px
-        'body-lg': ['1.125rem', { lineHeight: '1.75rem' }],               // 18px
-        'body': ['1rem', { lineHeight: '1.5rem' }],                       // 16px
-        'body-sm': ['0.875rem', { lineHeight: '1.25rem' }],               // 14px
-        'caption': ['0.75rem', { lineHeight: '1rem' }],                   // 12px
-      },
-      spacing: {
-        // From Figma spacing system (4px base)
-        '0.5': '0.125rem',  // 2px
-        '1': '0.25rem',     // 4px
-        '2': '0.5rem',      // 8px
-        '3': '0.75rem',     // 12px
-        '4': '1rem',        // 16px
-        '5': '1.25rem',     // 20px
-        '6': '1.5rem',      // 24px
-        '8': '2rem',        // 32px
-        '10': '2.5rem',     // 40px
-        '12': '3rem',       // 48px
-        '16': '4rem',       // 64px
-        '20': '5rem',       // 80px
-        '24': '6rem',       // 96px
-        '32': '8rem',       // 128px
-        '40': '10rem',      // 160px
-        '48': '12rem',      // 192px
-        '56': '14rem',      // 224px
-        '64': '16rem',      // 256px
+        'display': ['4rem', { lineHeight: '1', fontWeight: '700', letterSpacing: '-0.02em' }],
+        'h1': ['2.5rem', { lineHeight: '1.2', fontWeight: '700' }],
+        'h2': ['2.25rem', { lineHeight: '1.25', fontWeight: '600' }],
+        'h3': ['2rem', { lineHeight: '1.25', fontWeight: '600' }],
+        'h4': ['1.75rem', { lineHeight: '1.3', fontWeight: '600' }],
+        'h5': ['1.5rem', { lineHeight: '1.35', fontWeight: '600' }],
+        'h6': ['1.25rem', { lineHeight: '1.4', fontWeight: '600' }],
+        'body-lg': ['1.125rem', { lineHeight: '1.6' }],
+        'body': ['1rem', { lineHeight: '1.6' }],
+        'body-sm': ['0.875rem', { lineHeight: '1.5' }],
+        'caption': ['0.75rem', { lineHeight: '1.4' }],
+        'overline': ['0.6875rem', { lineHeight: '1.4', fontWeight: '600', letterSpacing: '0.05em' }],
       },
       borderRadius: {
         'none': '0',
-        'sm': '4px',
-        'DEFAULT': '6px',
-        'md': '8px',
-        'lg': '12px',
-        'xl': '16px',
-        '2xl': '20px',
-        '3xl': '24px',
-        'card': '12px',
-        'button': '8px',
-        'input': '8px',
-        'badge': '6px',
+        'sm': '0.25rem',
+        'DEFAULT': '0.5rem',
+        'md': '0.625rem',
+        'lg': '0.75rem',
+        'xl': '1rem',
+        '2xl': '1.25rem',
+        '3xl': '1.5rem',
+        'card': '1rem',
+        'button': '0.75rem',
+        'input': '0.75rem',
+        'badge': '9999px',
         'full': '9999px',
       },
       boxShadow: {
-        'card': '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
-        'card-hover': '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
-        'modal': '0 25px 50px -12px rgb(0 0 0 / 0.25)',
-        'dropdown': '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
-        'purple': '0 4px 14px 0 rgba(126, 95, 247, 0.25)',
-        // Glow effects for dark mode
-        'glow-purple': '0 0 20px rgba(126, 95, 247, 0.5), 0 0 40px rgba(126, 95, 247, 0.2)',
-        'glow-green': '0 0 20px rgba(0, 196, 137, 0.5), 0 0 40px rgba(0, 196, 137, 0.2)',
-        'glow-orange': '0 0 15px rgba(252, 98, 0, 0.4), 0 0 30px rgba(252, 98, 0, 0.15)',
-        'glow-red': '0 0 20px rgba(246, 58, 99, 0.5), 0 0 40px rgba(246, 58, 99, 0.2)',
-        // Glass card shadows
-        'glass': '0 8px 32px rgba(0, 0, 0, 0.3)',
-        'glass-hover': '0 12px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(126, 95, 247, 0.15)',
+        'xs': '0 1px 2px rgba(0, 0, 0, 0.05)',
+        'sm': '0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)',
+        'DEFAULT': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+        'md': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+        'lg': '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+        'xl': '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+        'card': '0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04)',
+        'card-hover': '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 4px 10px -2px rgba(0, 0, 0, 0.04)',
+        'modal': '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+        'dropdown': '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+        'purple': '0 4px 14px rgba(126, 95, 247, 0.25)',
       },
       animation: {
-        'fade-in': 'fadeIn 0.2s ease-out',
-        'slide-up': 'slideUp 0.3s ease-out',
-        'slide-down': 'slideDown 0.3s ease-out',
-        'scale-in': 'scaleIn 0.2s ease-out',
-        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'fade-in': 'fadeIn 0.3s ease-out',
+        'fade-up': 'fadeUp 0.4s ease-out forwards',
+        'slide-up': 'slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+        'slide-down': 'slideDown 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+        'scale-in': 'scaleIn 0.3s ease-out',
         'shimmer': 'shimmer 2s linear infinite',
-        'glow-pulse': 'glowPulse 2s ease-in-out infinite',
-        'float': 'float 3s ease-in-out infinite',
-        'score-fill': 'scoreFill 1.2s ease-out forwards',
       },
       keyframes: {
         fadeIn: {
           '0%': { opacity: '0' },
           '100%': { opacity: '1' },
+        },
+        fadeUp: {
+          '0%': { opacity: '0', transform: 'translateY(10px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
         },
         slideUp: {
           '0%': { transform: 'translateY(10px)', opacity: '0' },
@@ -253,24 +212,6 @@ export default {
           '0%': { backgroundPosition: '-200% 0' },
           '100%': { backgroundPosition: '200% 0' },
         },
-        glowPulse: {
-          '0%, 100%': { opacity: '0.5' },
-          '50%': { opacity: '1' },
-        },
-        float: {
-          '0%, 100%': { transform: 'translateY(0)' },
-          '50%': { transform: 'translateY(-10px)' },
-        },
-        scoreFill: {
-          '0%': { strokeDashoffset: '283' },
-          '100%': { strokeDashoffset: 'var(--score-offset)' },
-        },
-      },
-      backgroundImage: {
-        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-        'gradient-dark': 'linear-gradient(180deg, #1A1A24 0%, #0D0D12 100%)',
-        'gradient-purple-dark': 'linear-gradient(135deg, rgba(126, 95, 247, 0.15) 0%, transparent 50%)',
-        'shimmer': 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.05) 50%, transparent 100%)',
       },
     },
   },
