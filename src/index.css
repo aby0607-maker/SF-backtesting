@@ -5,12 +5,15 @@
 @tailwind components;
 @tailwind utilities;
 
-/* CSS Variables */
+/* CSS Variables - Apple-inspired */
 :root {
-  --color-primary: #7E5FF7;
-  --color-success: #00C489;
-  --color-warning: #FC6200;
-  --color-destructive: #F63A63;
+  --color-primary: #6366f1;
+  --color-success: #22c55e;
+  --color-warning: #f59e0b;
+  --color-destructive: #ef4444;
+  --color-bg: #0a0a0a;
+  --color-surface: #141414;
+  --color-border: rgba(255, 255, 255, 0.08);
 }
 
 /* Base styles - Universal Dark Mode */
@@ -34,11 +37,11 @@
   }
 }
 
-/* Scrollbar - Dark themed */
+/* Scrollbar - Minimal dark themed */
 @layer utilities {
   .scrollbar-thin {
     scrollbar-width: thin;
-    scrollbar-color: #3F3F4D transparent;
+    scrollbar-color: #2c2c2e transparent;
   }
 
   .scrollbar-thin::-webkit-scrollbar {
@@ -51,12 +54,12 @@
   }
 
   .scrollbar-thin::-webkit-scrollbar-thumb {
-    background-color: #3F3F4D;
+    background-color: #2c2c2e;
     border-radius: 3px;
   }
 
   .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-    background-color: #4D4D5C;
+    background-color: #3a3a3c;
   }
 
   .scrollbar-hidden {
@@ -69,29 +72,29 @@
   }
 
   .text-gradient-primary {
-    @apply bg-gradient-to-r from-primary-400 to-primary-300 bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-primary-400 to-primary-500 bg-clip-text text-transparent;
   }
 
   .glass {
-    @apply bg-white/5 backdrop-blur-xl border border-white/10;
+    @apply bg-white/5 backdrop-blur-xl border border-white/5;
   }
 
   .shimmer {
-    background: linear-gradient(90deg, #252532 0%, #32323F 50%, #252532 100%);
+    background: linear-gradient(90deg, #1c1c1e 0%, #2c2c2e 50%, #1c1c1e 100%);
     background-size: 200% 100%;
     animation: shimmer 1.5s infinite;
   }
 }
 
-/* Components - Dark Mode */
+/* Components - Clean Dark Mode */
 @layer components {
-  /* Cards - Dark glass style */
+  /* Cards - Clean, minimal */
   .card {
     @apply bg-dark-800 rounded-2xl p-5 border border-white/5;
   }
 
   .card-elevated {
-    @apply bg-dark-700 rounded-2xl shadow-lg p-5 border border-white/10;
+    @apply bg-dark-700 rounded-2xl p-5 border border-white/5;
   }
 
   .card-interactive {
@@ -99,55 +102,51 @@
   }
 
   .card-interactive:hover {
-    @apply bg-dark-700 border-white/10 -translate-y-0.5;
+    @apply bg-dark-700 border-white/10;
   }
 
-  /* Buttons - Purple primary */
+  /* Buttons - Clean, no glows */
   .btn-primary {
     @apply inline-flex items-center justify-center gap-2
            bg-primary-500 text-white
-           px-5 py-2.5 rounded-xl font-semibold text-sm
-           transition-all duration-200
+           px-5 py-2.5 rounded-xl font-medium text-sm
+           transition-colors duration-200
            hover:bg-primary-400 active:bg-primary-600
-           disabled:bg-dark-600 disabled:text-gray-500 disabled:cursor-not-allowed;
-  }
-
-  .btn-primary:not(:disabled):hover {
-    box-shadow: 0 0 20px rgba(126, 95, 247, 0.4);
+           disabled:bg-dark-600 disabled:text-neutral-500 disabled:cursor-not-allowed;
   }
 
   .btn-secondary {
     @apply inline-flex items-center justify-center gap-2
-           bg-dark-700 text-gray-200
-           px-5 py-2.5 rounded-xl font-semibold text-sm
-           transition-all duration-200 border border-white/10
-           hover:bg-dark-600 hover:border-white/20 active:bg-dark-500
-           disabled:bg-dark-800 disabled:text-gray-600 disabled:cursor-not-allowed;
+           bg-dark-700 text-neutral-200
+           px-5 py-2.5 rounded-xl font-medium text-sm
+           transition-colors duration-200 border border-white/10
+           hover:bg-dark-600 active:bg-dark-500
+           disabled:bg-dark-800 disabled:text-neutral-600 disabled:cursor-not-allowed;
   }
 
   .btn-ghost {
     @apply inline-flex items-center justify-center gap-2
-           text-gray-300
+           text-neutral-400
            px-4 py-2 rounded-xl font-medium text-sm
-           transition-all duration-200
+           transition-colors duration-200
            hover:bg-white/5 hover:text-white active:bg-white/10;
   }
 
   .btn-outline {
     @apply inline-flex items-center justify-center gap-2
-           border-2 border-primary-500 text-primary-400
-           px-5 py-2 rounded-xl font-semibold text-sm
-           transition-all duration-200
+           border border-primary-500/50 text-primary-400
+           px-5 py-2.5 rounded-xl font-medium text-sm
+           transition-colors duration-200
            hover:bg-primary-500/10 active:bg-primary-500/20;
   }
 
   .btn-icon {
     @apply inline-flex items-center justify-center
            w-10 h-10 rounded-full
-           text-gray-400
-           transition-all duration-200
-           hover:bg-white/10 hover:text-white
-           active:bg-white/15;
+           text-neutral-400
+           transition-colors duration-200
+           hover:bg-white/5 hover:text-white
+           active:bg-white/10;
   }
 
   /* Inputs - Dark style */
@@ -221,9 +220,9 @@
     @apply h-px bg-white/10;
   }
 
-  /* Score colors - Brighter for dark mode */
-  .score-excellent { @apply text-success-400; }
-  .score-high { @apply text-success-500; }
+  /* Score colors - Refined for dark mode */
+  .score-excellent { @apply text-success-500; }
+  .score-high { @apply text-teal-400; }
   .score-medium { @apply text-warning-400; }
   .score-low { @apply text-destructive-400; }
 

@@ -22,27 +22,28 @@ interface SegmentBarProps {
   showInsights?: boolean
 }
 
+// Apple-inspired softer colors
 function getScoreColor(score: number): string {
-  if (score >= 8) return '#00C489'
-  if (score >= 6) return '#69E2B0'
-  if (score >= 4) return '#FC6200'
-  return '#F63A63'
+  if (score >= 8) return '#22c55e'  // success-500
+  if (score >= 6) return '#2dd4bf'  // teal-400
+  if (score >= 4) return '#fbbf24'  // warning-400
+  return '#f87171'  // destructive-400
 }
 
 function getScoreColorClass(score: number): string {
-  if (score >= 8) return 'text-success-400'
+  if (score >= 8) return 'text-success-500'
   if (score >= 6) return 'text-teal-400'
   if (score >= 4) return 'text-warning-400'
   return 'text-destructive-400'
 }
 
-// Get rank badge style
+// Simplified rank badge - more minimal
 function getRankBadgeStyle(rank: number, total: number) {
   const percentile = ((total - rank + 1) / total) * 100
-  if (percentile >= 80) return 'bg-success-500/20 text-success-400 border-success-500/30' // Top 20%
-  if (percentile >= 50) return 'bg-primary-500/20 text-primary-400 border-primary-500/30' // Top 50%
-  if (percentile >= 30) return 'bg-warning-500/20 text-warning-400 border-warning-500/30' // Top 70%
-  return 'bg-destructive-500/20 text-destructive-400 border-destructive-500/30' // Bottom 30%
+  if (percentile >= 80) return 'bg-dark-600 text-success-400 border-transparent'
+  if (percentile >= 50) return 'bg-dark-600 text-neutral-300 border-transparent'
+  if (percentile >= 30) return 'bg-dark-600 text-warning-400 border-transparent'
+  return 'bg-dark-600 text-destructive-400 border-transparent'
 }
 
 // Get comparison indicator
@@ -81,16 +82,16 @@ export function SegmentBar({
           >
             {/* Main Row */}
             <div className="flex items-center gap-3">
-              {/* Status indicator */}
+              {/* Status indicator - cleaner, no glow */}
               <motion.span
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ delay: index * 0.05 + 0.2, type: 'spring' }}
                 className={cn(
                   'w-2 h-2 rounded-full flex-shrink-0',
-                  segment.status === 'positive' && 'bg-success-500 shadow-[0_0_6px_rgba(0,196,137,0.6)]',
-                  segment.status === 'neutral' && 'bg-gray-500',
-                  segment.status === 'negative' && 'bg-destructive-500 shadow-[0_0_6px_rgba(246,58,99,0.6)]'
+                  segment.status === 'positive' && 'bg-success-500',
+                  segment.status === 'neutral' && 'bg-neutral-500',
+                  segment.status === 'negative' && 'bg-destructive-400'
                 )}
               />
 
