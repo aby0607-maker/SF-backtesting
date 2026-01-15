@@ -297,98 +297,133 @@ export function Dashboard() {
         </div>
 
         {/* Trending This Week */}
-        <div className="mb-4">
-          <div className="flex items-center gap-1.5 mb-3">
-            <Flame className="w-3.5 h-3.5 text-warning-400" />
-            <span className="text-xs font-medium text-neutral-400 uppercase tracking-wide">Trending This Week</span>
+        <div className="mb-5">
+          <div className="flex items-center gap-2 mb-3">
+            <div className="w-7 h-7 rounded-lg bg-warning-500/20 flex items-center justify-center">
+              <Flame className="w-4 h-4 text-warning-400" />
+            </div>
+            <span className="text-sm font-medium text-white">Trending This Week</span>
           </div>
-          <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1">
-            {isLoading ? (
-              <>
-                <div className="w-36 h-24 bg-dark-700 rounded-lg animate-pulse flex-shrink-0" />
-                <div className="w-36 h-24 bg-dark-700 rounded-lg animate-pulse flex-shrink-0" />
-                <div className="w-36 h-24 bg-dark-700 rounded-lg animate-pulse flex-shrink-0" />
-              </>
-            ) : (
-              trendingStocks.map(stock => (
+
+          {isLoading ? (
+            <div className="space-y-2">
+              <div className="h-16 bg-dark-700 rounded-xl animate-pulse" />
+              <div className="h-16 bg-dark-700 rounded-xl animate-pulse" />
+            </div>
+          ) : (
+            <div className="space-y-2">
+              {trendingStocks.map(stock => (
                 <Link
                   key={stock.symbol}
                   to={`/stock/${stock.symbol.toLowerCase()}`}
-                  className="flex-shrink-0 w-36 p-3 bg-dark-700/50 rounded-xl border border-white/5 hover:border-white/10 hover:bg-dark-700 transition-all"
+                  className="flex items-center justify-between p-3 bg-dark-700/40 rounded-xl border border-white/5 hover:border-warning-500/30 hover:bg-dark-700/60 transition-all group"
                 >
-                  <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-sm font-medium text-white truncate">{stock.shortName}</span>
-                    <span className={cn('text-sm font-bold', getScoreColor(stock.score))}>
+                  <div className="flex items-center gap-3 flex-1 min-w-0">
+                    {/* Score Circle */}
+                    <div className={cn(
+                      'w-10 h-10 rounded-xl flex items-center justify-center font-bold text-sm flex-shrink-0',
+                      stock.score >= 8 ? 'bg-success-500/20 text-success-400' :
+                      stock.score >= 6.5 ? 'bg-teal-500/20 text-teal-400' :
+                      stock.score >= 5 ? 'bg-warning-500/20 text-warning-400' :
+                      'bg-destructive-500/20 text-destructive-400'
+                    )}>
                       {stock.score.toFixed(1)}
-                    </span>
-                  </div>
-                  {/* Rank badge */}
-                  {stock.sectorRank && (
-                    <div className="flex items-center gap-1 mb-1.5">
-                      <Trophy className={cn('w-3 h-3', getRankColor(stock.sectorRank, stock.sectorTotal || 6))} />
-                      <span className="text-[10px] text-neutral-400">
-                        #{stock.sectorRank}/{stock.sectorTotal}
-                      </span>
                     </div>
-                  )}
-                  <span className={cn(
-                    'text-xs',
-                    stock.change >= 0 ? 'text-success-400' : 'text-destructive-400'
-                  )}>
-                    {stock.change >= 0 ? '+' : ''}{stock.change.toFixed(1)}%
-                  </span>
-                  <p className="text-[10px] text-neutral-500 mt-1 line-clamp-1">{stock.reason}</p>
+
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-2 mb-0.5">
+                        <span className="font-medium text-white truncate">{stock.name}</span>
+                        <VerdictBadge verdict={stock.verdict} size="sm" />
+                      </div>
+                      <div className="flex items-center gap-2 text-xs">
+                        <span className="text-neutral-500">{stock.reason}</span>
+                        <span className="text-neutral-600">•</span>
+                        <div className="flex items-center gap-1">
+                          <Trophy className={cn('w-3 h-3', getRankColor(stock.sectorRank || 1, stock.sectorTotal || 6))} />
+                          <span className="text-neutral-400">#{stock.sectorRank}/{stock.sectorTotal}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <span className={cn(
+                      'text-sm font-medium',
+                      stock.change >= 0 ? 'text-success-400' : 'text-destructive-400'
+                    )}>
+                      {stock.change >= 0 ? '+' : ''}{stock.change.toFixed(1)}%
+                    </span>
+                    <ChevronRight className="w-4 h-4 text-neutral-600 group-hover:text-neutral-400 group-hover:translate-x-0.5 transition-all" />
+                  </div>
                 </Link>
-              ))
-            )}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Similar to Your Picks */}
         <div>
-          <div className="flex items-center gap-1.5 mb-3">
-            <Sparkles className="w-3.5 h-3.5 text-primary-400" />
-            <span className="text-xs font-medium text-neutral-400 uppercase tracking-wide">Similar to Your Picks</span>
+          <div className="flex items-center gap-2 mb-3">
+            <div className="w-7 h-7 rounded-lg bg-primary-500/20 flex items-center justify-center">
+              <Sparkles className="w-4 h-4 text-primary-400" />
+            </div>
+            <span className="text-sm font-medium text-white">Similar to Your Picks</span>
           </div>
-          <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1">
-            {isLoading ? (
-              <>
-                <div className="w-36 h-24 bg-dark-700 rounded-lg animate-pulse flex-shrink-0" />
-                <div className="w-36 h-24 bg-dark-700 rounded-lg animate-pulse flex-shrink-0" />
-              </>
-            ) : (
-              similarStocks.map(stock => (
+
+          {isLoading ? (
+            <div className="space-y-2">
+              <div className="h-16 bg-dark-700 rounded-xl animate-pulse" />
+              <div className="h-16 bg-dark-700 rounded-xl animate-pulse" />
+            </div>
+          ) : (
+            <div className="space-y-2">
+              {similarStocks.map(stock => (
                 <Link
                   key={stock.symbol}
                   to={`/stock/${stock.symbol.toLowerCase()}`}
-                  className="flex-shrink-0 w-36 p-3 bg-dark-700/50 rounded-xl border border-white/5 hover:border-white/10 hover:bg-dark-700 transition-all"
+                  className="flex items-center justify-between p-3 bg-dark-700/40 rounded-xl border border-white/5 hover:border-primary-500/30 hover:bg-dark-700/60 transition-all group"
                 >
-                  <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-sm font-medium text-white truncate">{stock.shortName}</span>
-                    <span className={cn('text-sm font-bold', getScoreColor(stock.score))}>
+                  <div className="flex items-center gap-3 flex-1 min-w-0">
+                    {/* Score Circle */}
+                    <div className={cn(
+                      'w-10 h-10 rounded-xl flex items-center justify-center font-bold text-sm flex-shrink-0',
+                      stock.score >= 8 ? 'bg-success-500/20 text-success-400' :
+                      stock.score >= 6.5 ? 'bg-teal-500/20 text-teal-400' :
+                      stock.score >= 5 ? 'bg-warning-500/20 text-warning-400' :
+                      'bg-destructive-500/20 text-destructive-400'
+                    )}>
                       {stock.score.toFixed(1)}
-                    </span>
-                  </div>
-                  {/* Rank badge */}
-                  {stock.sectorRank && (
-                    <div className="flex items-center gap-1 mb-1.5">
-                      <Trophy className={cn('w-3 h-3', getRankColor(stock.sectorRank, stock.sectorTotal || 6))} />
-                      <span className="text-[10px] text-neutral-400">
-                        #{stock.sectorRank}/{stock.sectorTotal}
-                      </span>
                     </div>
-                  )}
-                  <span className={cn(
-                    'text-xs',
-                    stock.change >= 0 ? 'text-success-400' : 'text-destructive-400'
-                  )}>
-                    {stock.change >= 0 ? '+' : ''}{stock.change.toFixed(1)}%
-                  </span>
-                  <p className="text-[10px] text-neutral-500 mt-1 line-clamp-1">{stock.reason}</p>
+
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-2 mb-0.5">
+                        <span className="font-medium text-white truncate">{stock.name}</span>
+                        <VerdictBadge verdict={stock.verdict} size="sm" />
+                      </div>
+                      <div className="flex items-center gap-2 text-xs">
+                        <span className="text-primary-400">{stock.reason}</span>
+                        <span className="text-neutral-600">•</span>
+                        <div className="flex items-center gap-1">
+                          <Trophy className={cn('w-3 h-3', getRankColor(stock.sectorRank || 1, stock.sectorTotal || 6))} />
+                          <span className="text-neutral-400">#{stock.sectorRank}/{stock.sectorTotal}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <span className={cn(
+                      'text-sm font-medium',
+                      stock.change >= 0 ? 'text-success-400' : 'text-destructive-400'
+                    )}>
+                      {stock.change >= 0 ? '+' : ''}{stock.change.toFixed(1)}%
+                    </span>
+                    <ChevronRight className="w-4 h-4 text-neutral-600 group-hover:text-neutral-400 group-hover:translate-x-0.5 transition-all" />
+                  </div>
                 </Link>
-              ))
-            )}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       </motion.section>
 
