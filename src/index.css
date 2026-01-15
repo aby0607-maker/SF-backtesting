@@ -13,7 +13,7 @@
   --color-destructive: #F63A63;
 }
 
-/* Base styles - Light Mode matching Figma */
+/* Base styles - Universal Dark Mode */
 @layer base {
   html {
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
@@ -22,23 +22,23 @@
   }
 
   body {
-    @apply bg-neutral-50 text-neutral-900 min-h-screen;
+    @apply bg-dark-900 text-white min-h-screen;
   }
 
   *:focus-visible {
-    @apply outline-none ring-2 ring-primary-500/40 ring-offset-2 ring-offset-white;
+    @apply outline-none ring-2 ring-primary-500/40 ring-offset-2 ring-offset-dark-900;
   }
 
   ::selection {
-    @apply bg-primary-100 text-primary-900;
+    @apply bg-primary-500/30 text-white;
   }
 }
 
-/* Scrollbar */
+/* Scrollbar - Dark themed */
 @layer utilities {
   .scrollbar-thin {
     scrollbar-width: thin;
-    scrollbar-color: #D1D5DB transparent;
+    scrollbar-color: #3F3F4D transparent;
   }
 
   .scrollbar-thin::-webkit-scrollbar {
@@ -51,12 +51,12 @@
   }
 
   .scrollbar-thin::-webkit-scrollbar-thumb {
-    background-color: #D1D5DB;
+    background-color: #3F3F4D;
     border-radius: 3px;
   }
 
   .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-    background-color: #9CA3AF;
+    background-color: #4D4D5C;
   }
 
   .scrollbar-hidden {
@@ -69,29 +69,29 @@
   }
 
   .text-gradient-primary {
-    @apply bg-gradient-to-r from-primary-500 to-primary-400 bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-primary-400 to-primary-300 bg-clip-text text-transparent;
   }
 
   .glass {
-    @apply bg-white/80 backdrop-blur-lg;
+    @apply bg-white/5 backdrop-blur-xl border border-white/10;
   }
 
   .shimmer {
-    background: linear-gradient(90deg, #F3F4F6 0%, #E5E7EB 50%, #F3F4F6 100%);
+    background: linear-gradient(90deg, #252532 0%, #32323F 50%, #252532 100%);
     background-size: 200% 100%;
     animation: shimmer 1.5s infinite;
   }
 }
 
-/* Components - Light Mode */
+/* Components - Dark Mode */
 @layer components {
-  /* Cards */
+  /* Cards - Dark glass style */
   .card {
-    @apply bg-white rounded-2xl shadow-card p-6 border border-neutral-100;
+    @apply bg-dark-800 rounded-2xl p-5 border border-white/5;
   }
 
   .card-elevated {
-    @apply bg-white rounded-2xl shadow-md p-6 border border-neutral-100;
+    @apply bg-dark-700 rounded-2xl shadow-lg p-5 border border-white/10;
   }
 
   .card-interactive {
@@ -99,59 +99,62 @@
   }
 
   .card-interactive:hover {
-    @apply shadow-card-hover border-neutral-200 -translate-y-0.5;
+    @apply bg-dark-700 border-white/10 -translate-y-0.5;
   }
 
-  /* Buttons - Purple primary from Figma */
+  /* Buttons - Purple primary */
   .btn-primary {
     @apply inline-flex items-center justify-center gap-2
            bg-primary-500 text-white
            px-5 py-2.5 rounded-xl font-semibold text-sm
            transition-all duration-200
-           hover:bg-primary-600 active:bg-primary-700
-           shadow-sm hover:shadow-md
-           disabled:bg-neutral-200 disabled:text-neutral-400 disabled:cursor-not-allowed;
+           hover:bg-primary-400 active:bg-primary-600
+           disabled:bg-dark-600 disabled:text-gray-500 disabled:cursor-not-allowed;
+  }
+
+  .btn-primary:not(:disabled):hover {
+    box-shadow: 0 0 20px rgba(126, 95, 247, 0.4);
   }
 
   .btn-secondary {
     @apply inline-flex items-center justify-center gap-2
-           bg-neutral-100 text-neutral-700
+           bg-dark-700 text-gray-200
            px-5 py-2.5 rounded-xl font-semibold text-sm
-           transition-all duration-200
-           hover:bg-neutral-200 active:bg-neutral-300
-           disabled:bg-neutral-100 disabled:text-neutral-400 disabled:cursor-not-allowed;
+           transition-all duration-200 border border-white/10
+           hover:bg-dark-600 hover:border-white/20 active:bg-dark-500
+           disabled:bg-dark-800 disabled:text-gray-600 disabled:cursor-not-allowed;
   }
 
   .btn-ghost {
     @apply inline-flex items-center justify-center gap-2
-           text-neutral-600
+           text-gray-300
            px-4 py-2 rounded-xl font-medium text-sm
            transition-all duration-200
-           hover:bg-neutral-100 active:bg-neutral-200;
+           hover:bg-white/5 hover:text-white active:bg-white/10;
   }
 
   .btn-outline {
     @apply inline-flex items-center justify-center gap-2
-           border-2 border-primary-500 text-primary-600
+           border-2 border-primary-500 text-primary-400
            px-5 py-2 rounded-xl font-semibold text-sm
            transition-all duration-200
-           hover:bg-primary-50 active:bg-primary-100;
+           hover:bg-primary-500/10 active:bg-primary-500/20;
   }
 
   .btn-icon {
     @apply inline-flex items-center justify-center
            w-10 h-10 rounded-full
-           text-neutral-500
+           text-gray-400
            transition-all duration-200
-           hover:bg-neutral-100 hover:text-neutral-700
-           active:bg-neutral-200;
+           hover:bg-white/10 hover:text-white
+           active:bg-white/15;
   }
 
-  /* Inputs */
+  /* Inputs - Dark style */
   .input {
     @apply w-full px-4 py-3
-           bg-white border border-neutral-200 rounded-xl
-           text-neutral-900 placeholder:text-neutral-400
+           bg-dark-700 border border-white/10 rounded-xl
+           text-white placeholder:text-gray-500
            transition-all duration-200
            focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 focus:outline-none;
   }
@@ -160,7 +163,7 @@
     @apply border-destructive-500 focus:border-destructive-500 focus:ring-destructive-500/20;
   }
 
-  /* Badges - Pill style */
+  /* Badges - Pill style with dark backgrounds */
   .badge {
     @apply inline-flex items-center gap-1.5
            px-3 py-1 rounded-full
@@ -168,70 +171,70 @@
   }
 
   .badge-buy, .badge-strong-buy {
-    @apply bg-success-100 text-success-700;
+    @apply bg-success-500/20 text-success-400;
   }
 
   .badge-hold, .badge-strong-hold {
-    @apply bg-warning-100 text-warning-700;
+    @apply bg-warning-500/20 text-warning-400;
   }
 
   .badge-avoid {
-    @apply bg-destructive-100 text-destructive-600;
+    @apply bg-destructive-500/20 text-destructive-400;
   }
 
   .badge-score-excellent, .badge-score-high {
-    @apply bg-success-100 text-success-700;
+    @apply bg-success-500/20 text-success-400;
   }
 
   .badge-score-medium {
-    @apply bg-warning-100 text-warning-700;
+    @apply bg-warning-500/20 text-warning-400;
   }
 
   .badge-score-low {
-    @apply bg-destructive-100 text-destructive-600;
+    @apply bg-destructive-500/20 text-destructive-400;
   }
 
-  /* Tabs */
+  /* Tabs - Dark pill style */
   .tabs {
-    @apply flex gap-1 p-1 bg-neutral-100 rounded-2xl;
+    @apply flex gap-1 p-1 bg-dark-800 rounded-2xl border border-white/5;
   }
 
   .tab {
-    @apply px-4 py-2.5 text-sm font-medium text-neutral-500
+    @apply px-4 py-2.5 text-sm font-medium text-gray-400
            rounded-xl transition-all duration-200
-           hover:text-neutral-700;
+           hover:text-gray-200;
   }
 
   .tab-active {
-    @apply bg-white text-neutral-900 shadow-sm;
+    @apply bg-dark-600 text-white;
   }
 
   /* Links */
   .link {
-    @apply text-primary-600 font-medium
+    @apply text-primary-400 font-medium
            transition-colors duration-200
-           hover:text-primary-700 hover:underline;
+           hover:text-primary-300 hover:underline;
   }
 
   /* Dividers */
   .divider {
-    @apply h-px bg-neutral-200;
+    @apply h-px bg-white/10;
   }
 
-  /* Score colors */
-  .score-excellent { @apply text-success-600; }
+  /* Score colors - Brighter for dark mode */
+  .score-excellent { @apply text-success-400; }
   .score-high { @apply text-success-500; }
-  .score-medium { @apply text-warning-500; }
-  .score-low { @apply text-destructive-500; }
+  .score-medium { @apply text-warning-400; }
+  .score-low { @apply text-destructive-400; }
 
   /* Metric indicators */
-  .metric-above { @apply text-success-600; }
-  .metric-below { @apply text-destructive-500; }
-  .metric-inline { @apply text-neutral-500; }
+  .metric-above { @apply text-success-400; }
+  .metric-below { @apply text-destructive-400; }
+  .metric-inline { @apply text-gray-400; }
 
   /* Progress bars */
   .progress-bar {
-    @apply h-2 bg-neutral-100 rounded-full overflow-hidden;
+    @apply h-2 bg-dark-600 rounded-full overflow-hidden;
   }
 
   .progress-fill {
@@ -240,26 +243,26 @@
 
   /* Stat cards */
   .stat-card {
-    @apply flex flex-col items-center justify-center p-5 rounded-2xl bg-neutral-50 border border-neutral-100;
+    @apply flex flex-col items-center justify-center p-5 rounded-2xl bg-dark-700/50 border border-white/5;
   }
 
   .stat-value {
-    @apply text-2xl font-bold text-neutral-900;
+    @apply text-2xl font-bold text-white;
   }
 
   .stat-label {
-    @apply text-xs text-neutral-500 mt-1 font-medium;
+    @apply text-xs text-gray-500 mt-1 font-medium;
   }
 
   /* List items */
   .list-item {
     @apply flex items-center gap-3 p-3 -mx-3 rounded-xl
            transition-all duration-200
-           hover:bg-neutral-50;
+           hover:bg-white/5;
   }
 
   .list-item-active {
-    @apply bg-primary-50 hover:bg-primary-50;
+    @apply bg-primary-500/10 hover:bg-primary-500/15;
   }
 
   /* Segment dots */
@@ -268,7 +271,7 @@
   }
 
   .segment-positive { @apply bg-success-500; }
-  .segment-neutral { @apply bg-neutral-400; }
+  .segment-neutral { @apply bg-gray-500; }
   .segment-negative { @apply bg-destructive-500; }
 }
 
@@ -296,6 +299,13 @@
 .line-clamp-2 {
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }

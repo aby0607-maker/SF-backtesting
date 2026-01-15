@@ -7,7 +7,31 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Neutral grays from Figma
+        // Dark mode backgrounds
+        dark: {
+          950: '#08080C',
+          900: '#0D0D12',
+          800: '#1A1A24',
+          700: '#252532',
+          600: '#32323F',
+          500: '#3F3F4D',
+          400: '#4D4D5C',
+          300: '#5C5C6B',
+        },
+        // Gray scale for dark mode text
+        gray: {
+          50: '#F9FAFB',
+          100: '#F3F4F6',
+          200: '#E5E7EB',
+          300: '#D1D5DB',
+          400: '#9CA3AF',
+          500: '#6B7280',
+          600: '#4B5563',
+          700: '#374151',
+          800: '#1F2937',
+          900: '#111827',
+        },
+        // Neutral grays
         neutral: {
           50: '#F9FAFB',
           100: '#F3F4F6',
@@ -119,19 +143,6 @@ export default {
           medium: '#FC6200',
           low: '#F63A63',
         },
-        // Surface colors for light mode
-        surface: {
-          DEFAULT: '#FFFFFF',
-          secondary: '#F9FAFB',
-          tertiary: '#F3F4F6',
-        },
-        // Content colors
-        content: {
-          DEFAULT: '#111827',
-          secondary: '#4B5563',
-          tertiary: '#9CA3AF',
-          inverse: '#FFFFFF',
-        },
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
@@ -167,17 +178,20 @@ export default {
         'full': '9999px',
       },
       boxShadow: {
-        'xs': '0 1px 2px rgba(0, 0, 0, 0.05)',
-        'sm': '0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)',
-        'DEFAULT': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-        'md': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-        'lg': '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
-        'xl': '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
-        'card': '0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04)',
-        'card-hover': '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 4px 10px -2px rgba(0, 0, 0, 0.04)',
-        'modal': '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-        'dropdown': '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
-        'purple': '0 4px 14px rgba(126, 95, 247, 0.25)',
+        'xs': '0 1px 2px rgba(0, 0, 0, 0.3)',
+        'sm': '0 1px 3px rgba(0, 0, 0, 0.4), 0 1px 2px rgba(0, 0, 0, 0.3)',
+        'DEFAULT': '0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3)',
+        'md': '0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3)',
+        'lg': '0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.3)',
+        'xl': '0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 10px 10px -5px rgba(0, 0, 0, 0.3)',
+        'card': '0 2px 8px rgba(0, 0, 0, 0.3), 0 1px 3px rgba(0, 0, 0, 0.2)',
+        'card-hover': '0 10px 30px rgba(0, 0, 0, 0.4), 0 4px 12px rgba(0, 0, 0, 0.3)',
+        'modal': '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
+        'dropdown': '0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.3)',
+        'glow-purple': '0 0 20px rgba(126, 95, 247, 0.4), 0 0 40px rgba(126, 95, 247, 0.2)',
+        'glow-green': '0 0 20px rgba(0, 196, 137, 0.4), 0 0 40px rgba(0, 196, 137, 0.2)',
+        'glow-orange': '0 0 15px rgba(252, 98, 0, 0.4), 0 0 30px rgba(252, 98, 0, 0.15)',
+        'glow-red': '0 0 20px rgba(246, 58, 99, 0.4), 0 0 40px rgba(246, 58, 99, 0.2)',
       },
       animation: {
         'fade-in': 'fadeIn 0.3s ease-out',
@@ -186,6 +200,7 @@ export default {
         'slide-down': 'slideDown 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
         'scale-in': 'scaleIn 0.3s ease-out',
         'shimmer': 'shimmer 2s linear infinite',
+        'pulse-glow': 'pulseGlow 2s ease-in-out infinite',
       },
       keyframes: {
         fadeIn: {
@@ -211,6 +226,10 @@ export default {
         shimmer: {
           '0%': { backgroundPosition: '-200% 0' },
           '100%': { backgroundPosition: '200% 0' },
+        },
+        pulseGlow: {
+          '0%, 100%': { opacity: '0.6' },
+          '50%': { opacity: '1' },
         },
       },
     },
