@@ -1,6 +1,9 @@
 // User Profile Types
-export type InvestmentThesis = 'growth' | 'value' | 'dividend' | 'quality' | 'agnostic'
-export type RiskTolerance = 'conservative' | 'moderate' | 'aggressive'
+export type InvestmentThesis =
+  | 'growth' | 'value' | 'dividend' | 'quality' | 'agnostic'
+  | 'balanced' | 'comprehensive' | 'learning' | 'compounding' | 'remote'
+  | 'momentum' | 'income' | 'preservation'
+export type RiskTolerance = 'very-conservative' | 'conservative' | 'moderate' | 'aggressive'
 export type TimeHorizon = 'short' | 'medium' | 'long' | 'very-long'
 export type ExperienceLevel = 'beginner' | 'intermediate' | 'advanced'
 
@@ -23,39 +26,112 @@ export interface UserProfile {
 }
 
 // Stock Types
-export type VerdictType = 'STRONG_BUY' | 'BUY' | 'HOLD' | 'AVOID' | 'STRONG_AVOID'
+export type VerdictType = 'STRONG BUY' | 'BUY' | 'HOLD' | 'AVOID' | 'STRONG HOLD'
 
 export interface Stock {
+  id: string
   symbol: string
   name: string
-  displayName: string
   sector: string
   subSector: string
   currentPrice: number
+  previousClose: number
+  change: number
+  changePercent: number
   marketCap: number
+  high52w: number
+  low52w: number
   beta: number
-  fiftyTwoWeekHigh: number
-  fiftyTwoWeekLow: number
-  dayChange: number
-  dayChangePercent: number
+  peerGroup: string[]
+}
+
+// Structured Position Sizing (per tech spec)
+export interface PositionSizingDetails {
+  recommendedAllocation: string
+  reasoning?: string
+  maxAllocation?: string
+  warning?: string
+  learningNote?: string
+  entryStrategy?: string
+}
+
+// Structured Entry Timing (per tech spec)
+export interface EntryTimingDetails {
+  currentPrice: string
+  fairValueRange?: string
+  suggestion: string
+  positionInRange?: string
+  assessment?: string
+}
+
+// Exit Trigger (per Scorecard Architecture)
+export interface ExitTrigger {
+  id: string
+  metric: string
+  condition: string
+  threshold: string
+  currentValue: string
+  status: 'safe' | 'warning' | 'danger'
+  rationale: string
+}
+
+// Portfolio Fit Analysis (per tech spec)
+export interface PortfolioFit {
+  thesisFit: boolean
+  riskFit: boolean
+  diversificationFit: boolean
+  suggestionText: string
+}
+
+// Full Peer Ranking Object (per tech spec)
+export interface PeerRanking {
+  rank: number
+  category: string
+  total: number
+  above?: string[]
+  below?: string[]
+  commentary?: string
+  learningNote?: string
+}
+
+// Learning Highlight for beginner profiles
+export interface LearningHighlight {
+  metric: string
+  explanation: string
+  comparison?: string
 }
 
 export interface StockVerdict {
-  stockSymbol: string
+  stockId: string
   profileId: string
   overallScore: number
+  sectorAvgScore?: number
+  sectorRank?: number
+  sectorTotal?: number
   verdict: VerdictType
-  verdictLabel: string
+  verdictLabel?: string
+  verdictColor?: 'green' | 'yellow' | 'red'
+  summary?: string
   peerRank: number
   peerTotal: number
-  peerCategory: string
+  peerCategory?: string
+  peerGroup?: string
+  peerRanking?: PeerRanking
   topSignals: Signal[]
   topConcerns: Signal[]
   verdictRationale: string
-  positionSizing: string
+  positionSizing: string | PositionSizingDetails
   entryGuidance: string
+  entryTiming?: EntryTimingDetails
+  exitTriggers?: ExitTrigger[]
+  portfolioFit?: PortfolioFit
   segments: SegmentScore[]
-  redFlags: RedFlag[]
+  redFlags?: RedFlag[]
+  redFlagFramework?: RedFlagFramework
+  riskWarning?: string
+  learningPrompt?: string
+  blindSpotAlert?: string
+  learningHighlights?: LearningHighlight[]
 }
 
 export interface Signal {
@@ -64,29 +140,48 @@ export interface Signal {
   metric?: string
   value?: string
   benchmark?: string
+  isPositive?: boolean
+  whyMatters?: string
+  scoreContribution?: string
 }
 
-// Segment Types
+// Score band for visual display
+export type ScoreBand = 'green' | 'yellow' | 'red'
+
+// Segment Types - Enhanced with sector comparisons
 export interface SegmentScore {
   id: string
   name: string
   score: number
+  scoreBand?: ScoreBand
+  sectorAvg?: number
+  sectorRank?: number
+  sectorTotal?: number
   weight: number
   status: 'positive' | 'neutral' | 'negative'
   interpretation: string
-  metrics: Metric[]
+  quickInsight?: string
+  metrics?: Metric[]
+  summaryByProfile?: Record<string, string>
 }
 
 export interface Metric {
   id: string
   name: string
-  value: string | number
+  value: number | string
   displayValue: string
-  benchmark?: string
-  benchmarkLabel?: string
-  status: 'positive' | 'neutral' | 'negative'
-  trend?: 'up' | 'down' | 'flat'
-  tooltip: string
+  unit?: string
+  sectorAvg?: number | string
+  sectorAvgDisplay?: string
+  comparison?: 'above' | 'below' | 'inline'
+  percentile?: number
+  status: 'excellent' | 'good' | 'fair' | 'poor' | 'positive' | 'neutral' | 'negative'
+  trend?: 'improving' | 'declining' | 'stable'
+  trendDirection?: 'up' | 'down' | 'flat'
+  trend5Y?: number[]
+  tooltipSimple?: string
+  tooltipAdvanced?: string
+  tooltip?: string
   citation?: Citation
 }
 
@@ -94,20 +189,98 @@ export interface Citation {
   source: string
   document: string
   page?: string
+  section?: string
   date: string
+  exactQuote?: string
   url?: string
 }
 
-// Red Flag Types
-export type RedFlagSeverity = 'critical' | 'high' | 'medium'
+// Enhanced Trend Intelligence types (for A7 - Historical Trajectory)
+export type TrendDirection = 'up' | 'down' | 'neutral'
+export type VerificationStatus = 'active' | 'pending' | 'stale'
+
+export interface TrendIntelligence {
+  currentValue: number | string
+  displayValue: string
+  status: 'excellent' | 'good' | 'fair' | 'poor'
+  peerBenchmark: number | string
+  peerBenchmarkDisplay: string
+  sectorPercentile: number
+  trajectory: TrendDirection
+  trajectoryPeriods: number // e.g., 5 for "5-period direction"
+  verificationStatus: VerificationStatus
+  historicalData: TrendDataPoint[]
+}
+
+export interface TrendDataPoint {
+  period: string // e.g., "Q3 23", "Q4 23", "Q1 24"
+  value: number
+  displayValue?: string
+}
+
+// Evidence Drill-Down types (for A9 - 3-Level Citations)
+export interface EvidenceChain {
+  level1: {
+    source: string
+    documentType: string
+    filingDate: string
+  }
+  level2: {
+    calculation: string
+    rawDataPoints: string[]
+    methodology: string
+  }
+  level3: {
+    segmentContribution: string
+    weightInScore: number
+    impactDescription: string
+  }
+}
+
+// Enhanced Metric with full transparency fields
+export interface EnhancedMetric extends Metric {
+  trendIntelligence?: TrendIntelligence
+  evidenceChain?: EvidenceChain
+  groundingSources?: GroundingSource[]
+  contextualExplanation?: string // AI-generated contextual meaning
+  liveAdjustEnabled?: boolean
+}
+
+export interface GroundingSource {
+  name: string
+  url: string
+  type: 'primary' | 'secondary'
+}
+
+// Red Flag Types (per tech spec: Critical, High, Medium, Low)
+export type RedFlagSeverity = 'critical' | 'high' | 'medium' | 'low'
+export type RedFlagCategory = 'financial' | 'governance' | 'quality' | 'structural' | 'historical'
 
 export interface RedFlag {
   id: string
   type: string
+  category: RedFlagCategory
   title: string
   description: string
   severity: RedFlagSeverity
   action: string
+  currentValue?: string
+  threshold?: string
+  isTriggered: boolean
+}
+
+// Full 16-parameter Red Flag Framework
+export interface RedFlagFramework {
+  triggeredCount: number
+  totalParameters: number
+  flags: RedFlag[]
+  byCategory: {
+    financial: RedFlag[]
+    governance: RedFlag[]
+    quality: RedFlag[]
+    structural: RedFlag[]
+    historical: RedFlag[]
+  }
 }
 
 // Portfolio Types
