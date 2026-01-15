@@ -1,7 +1,9 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Search, Flame, Star, Sparkles, BarChart2, ChevronRight } from 'lucide-react'
-import { cn, getVerdictBadgeClass } from '@/lib/utils'
+import { Search, Flame, Star, Sparkles, BarChart2, ChevronRight, Trophy } from 'lucide-react'
+import { motion } from 'framer-motion'
+import { cn } from '@/lib/utils'
+import { VerdictBadge } from '@/components/ui'
 
 const tabs = [
   { id: 'trending', label: 'Trending', icon: Flame },
@@ -12,98 +14,147 @@ const tabs = [
 
 // Placeholder data
 const trendingStocks = [
-  { symbol: 'ZOMATO', name: 'Eternal (Zomato)', sector: 'Food Tech', score: 7.5, verdict: 'BUY', analyses: 1247 },
-  { symbol: 'TATAMOTORS', name: 'Tata Motors', sector: 'Auto', score: 8.1, verdict: 'STRONG BUY', analyses: 892 },
-  { symbol: 'IRFC', name: 'IRFC', sector: 'NBFC', score: 6.8, verdict: 'HOLD', analyses: 756 },
+  { symbol: 'ZOMATO', name: 'Eternal (Zomato)', sector: 'Food Tech', score: 7.5, verdict: 'BUY', analyses: 1247, sectorRank: 1, sectorTotal: 6 },
+  { symbol: 'TATAMOTORS', name: 'Tata Motors', sector: 'Auto', score: 8.1, verdict: 'STRONG BUY', analyses: 892, sectorRank: 2, sectorTotal: 8 },
+  { symbol: 'IRFC', name: 'IRFC', sector: 'NBFC', score: 6.8, verdict: 'HOLD', analyses: 756, sectorRank: 4, sectorTotal: 10 },
 ]
 
 const topRatedStocks = [
-  { symbol: 'TCS', name: 'TCS', sector: 'IT', score: 8.8, verdict: 'STRONG BUY' },
-  { symbol: 'HDFCBANK', name: 'HDFC Bank', sector: 'Banking', score: 8.5, verdict: 'STRONG BUY' },
-  { symbol: 'RELIANCE', name: 'Reliance Industries', sector: 'Conglomerate', score: 8.2, verdict: 'BUY' },
+  { symbol: 'TCS', name: 'TCS', sector: 'IT', score: 8.8, verdict: 'STRONG BUY', sectorRank: 1, sectorTotal: 5 },
+  { symbol: 'HDFCBANK', name: 'HDFC Bank', sector: 'Banking', score: 8.5, verdict: 'STRONG BUY', sectorRank: 1, sectorTotal: 8 },
+  { symbol: 'RELIANCE', name: 'Reliance Industries', sector: 'Conglomerate', score: 8.2, verdict: 'BUY', sectorRank: 1, sectorTotal: 4 },
 ]
 
 const forYouStocks = [
-  { symbol: 'DMART', name: 'Avenue Supermarts', sector: 'Retail', score: 7.8, verdict: 'BUY', reason: 'Matches your growth preference' },
-  { symbol: 'PIDILITE', name: 'Pidilite Industries', sector: 'Chemicals', score: 8.0, verdict: 'BUY', reason: 'High ROE like stocks you favor' },
+  { symbol: 'DMART', name: 'Avenue Supermarts', sector: 'Retail', score: 7.8, verdict: 'BUY', reason: 'Matches your growth preference', sectorRank: 1, sectorTotal: 5 },
+  { symbol: 'PIDILITE', name: 'Pidilite Industries', sector: 'Chemicals', score: 8.0, verdict: 'BUY', reason: 'High ROE like stocks you favor', sectorRank: 1, sectorTotal: 6 },
 ]
 
 const sectors = [
-  { name: 'Banking', topStock: 'HDFCBANK', avgScore: 7.8 },
-  { name: 'IT Services', topStock: 'TCS', avgScore: 8.2 },
-  { name: 'Pharma', topStock: 'SUNPHARMA', avgScore: 7.1 },
-  { name: 'FMCG', topStock: 'HINDUNILVR', avgScore: 7.5 },
+  { name: 'Banking', topStock: 'HDFCBANK', avgScore: 7.8, stockCount: 8 },
+  { name: 'IT Services', topStock: 'TCS', avgScore: 8.2, stockCount: 5 },
+  { name: 'Pharma', topStock: 'SUNPHARMA', avgScore: 7.1, stockCount: 6 },
+  { name: 'FMCG', topStock: 'HINDUNILVR', avgScore: 7.5, stockCount: 7 },
 ]
+
+function getScoreColor(score: number): string {
+  if (score >= 8) return 'text-success-400'
+  if (score >= 6.5) return 'text-teal-400'
+  if (score >= 5) return 'text-warning-400'
+  return 'text-destructive-400'
+}
+
+function getRankColor(rank: number, total: number): string {
+  const percentile = ((total - rank + 1) / total) * 100
+  if (percentile >= 80) return 'text-success-400'
+  if (percentile >= 50) return 'text-teal-400'
+  if (percentile >= 30) return 'text-warning-400'
+  return 'text-neutral-400'
+}
 
 export function Discover() {
   const [activeTab, setActiveTab] = useState('trending')
+  const [searchQuery, setSearchQuery] = useState('')
 
   return (
-    <div className="space-y-6 animate-fade-in">
+    <div className="space-y-5">
       {/* Header */}
-      <div>
-        <h1 className="text-h2 flex items-center gap-2">
-          <Search className="w-7 h-7 text-primary-600" />
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+      >
+        <h1 className="text-2xl font-bold text-white flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-primary-500/20 flex items-center justify-center">
+            <Search className="w-5 h-5 text-primary-400" />
+          </div>
           Discover
         </h1>
-        <p className="text-body text-content-secondary mt-1">
+        <p className="text-sm text-neutral-400 mt-1 ml-[52px]">
           Find your next investment opportunity
         </p>
-      </div>
+      </motion.div>
 
       {/* Search Bar */}
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-content-tertiary" />
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1 }}
+        className="relative"
+      >
+        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-500" />
         <input
           type="text"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Search stocks by name or symbol..."
-          className="input pl-10"
+          className="w-full pl-12 pr-4 py-3 bg-dark-800 border border-white/10 rounded-xl text-white placeholder:text-neutral-500 focus:outline-none focus:border-primary-500/50 transition-colors"
         />
-      </div>
+      </motion.div>
 
       {/* Tabs */}
-      <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-thin">
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.15 }}
+        className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1"
+      >
         {tabs.map(tab => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={cn(
-              'flex items-center gap-2 px-4 py-2 rounded-full text-body-sm font-medium whitespace-nowrap transition-colors',
+              'flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap transition-all',
               activeTab === tab.id
-                ? 'bg-primary-600 text-white'
-                : 'bg-surface-tertiary text-content-secondary hover:bg-gray-200'
+                ? 'bg-primary-500 text-white'
+                : 'bg-dark-700 text-neutral-400 hover:bg-dark-600 hover:text-white'
             )}
           >
             <tab.icon className="w-4 h-4" />
             {tab.label}
           </button>
         ))}
-      </div>
+      </motion.div>
 
       {/* Tab Content */}
-      <div className="card">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+        className="rounded-xl bg-dark-800 border border-white/5 p-4"
+      >
         {activeTab === 'trending' && (
           <>
-            <h2 className="text-h4 mb-4">🔥 Most Analyzed This Week</h2>
-            <div className="space-y-3">
+            <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+              <Flame className="w-5 h-5 text-warning-400" />
+              Most Analyzed This Week
+            </h2>
+            <div className="space-y-2">
               {trendingStocks.map(stock => (
                 <Link
                   key={stock.symbol}
                   to={`/stock/${stock.symbol.toLowerCase()}`}
-                  className="flex items-center justify-between p-3 -mx-3 rounded-lg hover:bg-surface-secondary transition-colors group"
+                  className="flex items-center justify-between p-3 rounded-xl bg-dark-700/50 hover:bg-dark-700 border border-white/5 hover:border-white/10 transition-all group"
                 >
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <span className="font-medium">{stock.name}</span>
-                      <span className={cn('badge', getVerdictBadgeClass(stock.verdict))}>
-                        {stock.score}/10
-                      </span>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="font-medium text-white">{stock.name}</span>
+                      <VerdictBadge verdict={stock.verdict} size="sm" />
                     </div>
-                    <div className="text-body-sm text-content-secondary">
-                      {stock.sector} • {stock.analyses.toLocaleString()} analyses
+                    <div className="flex items-center gap-3 text-xs text-neutral-500">
+                      <span>{stock.sector}</span>
+                      <span>{stock.analyses.toLocaleString()} analyses</span>
+                      <div className="flex items-center gap-1">
+                        <Trophy className={cn('w-3 h-3', getRankColor(stock.sectorRank, stock.sectorTotal))} />
+                        <span>#{stock.sectorRank}/{stock.sectorTotal}</span>
+                      </div>
                     </div>
                   </div>
-                  <ChevronRight className="w-5 h-5 text-content-tertiary group-hover:text-primary-600" />
+                  <div className="flex items-center gap-3">
+                    <span className={cn('text-lg font-bold', getScoreColor(stock.score))}>
+                      {stock.score.toFixed(1)}
+                    </span>
+                    <ChevronRight className="w-5 h-5 text-neutral-600 group-hover:text-neutral-400 group-hover:translate-x-0.5 transition-all" />
+                  </div>
                 </Link>
               ))}
             </div>
@@ -112,26 +163,47 @@ export function Discover() {
 
         {activeTab === 'top-rated' && (
           <>
-            <h2 className="text-h4 mb-4">⭐ Highest Scored Stocks</h2>
-            <div className="space-y-3">
+            <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+              <Star className="w-5 h-5 text-warning-400" />
+              Highest Scored Stocks
+            </h2>
+            <div className="space-y-2">
               {topRatedStocks.map((stock, i) => (
                 <Link
                   key={stock.symbol}
                   to={`/stock/${stock.symbol.toLowerCase()}`}
-                  className="flex items-center justify-between p-3 -mx-3 rounded-lg hover:bg-surface-secondary transition-colors group"
+                  className="flex items-center justify-between p-3 rounded-xl bg-dark-700/50 hover:bg-dark-700 border border-white/5 hover:border-white/10 transition-all group"
                 >
                   <div className="flex items-center gap-3">
-                    <span className="w-6 h-6 bg-primary-100 text-primary-600 rounded-full flex items-center justify-center text-body-sm font-bold">
+                    <span className={cn(
+                      'w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold',
+                      i === 0 ? 'bg-warning-500/20 text-warning-400' :
+                      i === 1 ? 'bg-neutral-400/20 text-neutral-300' :
+                      i === 2 ? 'bg-orange-500/20 text-orange-400' :
+                      'bg-dark-600 text-neutral-400'
+                    )}>
                       {i + 1}
                     </span>
                     <div>
-                      <div className="font-medium">{stock.name}</div>
-                      <div className="text-body-sm text-content-secondary">{stock.sector}</div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-medium text-white">{stock.name}</span>
+                        <VerdictBadge verdict={stock.verdict} size="sm" />
+                      </div>
+                      <div className="flex items-center gap-2 text-xs text-neutral-500">
+                        <span>{stock.sector}</span>
+                        <div className="flex items-center gap-1">
+                          <Trophy className={cn('w-3 h-3', getRankColor(stock.sectorRank, stock.sectorTotal))} />
+                          <span>#{stock.sectorRank}/{stock.sectorTotal}</span>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                  <span className={cn('badge', getVerdictBadgeClass(stock.verdict))}>
-                    {stock.score}/10
-                  </span>
+                  <div className="flex items-center gap-3">
+                    <span className={cn('text-lg font-bold', getScoreColor(stock.score))}>
+                      {stock.score.toFixed(1)}
+                    </span>
+                    <ChevronRight className="w-5 h-5 text-neutral-600 group-hover:text-neutral-400 group-hover:translate-x-0.5 transition-all" />
+                  </div>
                 </Link>
               ))}
             </div>
@@ -140,26 +212,34 @@ export function Discover() {
 
         {activeTab === 'for-you' && (
           <>
-            <h2 className="text-h4 mb-4">✨ Personalized for You</h2>
-            <div className="space-y-3">
+            <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-primary-400" />
+              Personalized for You
+            </h2>
+            <div className="space-y-2">
               {forYouStocks.map(stock => (
                 <Link
                   key={stock.symbol}
                   to={`/stock/${stock.symbol.toLowerCase()}`}
-                  className="flex items-center justify-between p-3 -mx-3 rounded-lg hover:bg-surface-secondary transition-colors group"
+                  className="flex items-center justify-between p-3 rounded-xl bg-dark-700/50 hover:bg-dark-700 border border-white/5 hover:border-white/10 transition-all group"
                 >
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <span className="font-medium">{stock.name}</span>
-                      <span className={cn('badge', getVerdictBadgeClass(stock.verdict))}>
-                        {stock.score}/10
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="font-medium text-white">{stock.name}</span>
+                      <VerdictBadge verdict={stock.verdict} size="sm" />
+                    </div>
+                    <div className="flex items-center gap-2 text-xs">
+                      <span className="text-primary-400">
+                        {stock.reason}
                       </span>
                     </div>
-                    <div className="text-body-sm text-primary-600">
-                      💡 {stock.reason}
-                    </div>
                   </div>
-                  <ChevronRight className="w-5 h-5 text-content-tertiary group-hover:text-primary-600" />
+                  <div className="flex items-center gap-3">
+                    <span className={cn('text-lg font-bold', getScoreColor(stock.score))}>
+                      {stock.score.toFixed(1)}
+                    </span>
+                    <ChevronRight className="w-5 h-5 text-neutral-600 group-hover:text-neutral-400 group-hover:translate-x-0.5 transition-all" />
+                  </div>
                 </Link>
               ))}
             </div>
@@ -168,26 +248,34 @@ export function Discover() {
 
         {activeTab === 'sectors' && (
           <>
-            <h2 className="text-h4 mb-4">📊 Browse by Sector</h2>
+            <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+              <BarChart2 className="w-5 h-5 text-teal-400" />
+              Browse by Sector
+            </h2>
             <div className="grid grid-cols-2 gap-3">
               {sectors.map(sector => (
-                <div
+                <button
                   key={sector.name}
-                  className="p-4 bg-surface-secondary rounded-lg hover:bg-surface-tertiary transition-colors cursor-pointer"
+                  className="p-4 bg-dark-700/50 rounded-xl border border-white/5 hover:border-white/10 hover:bg-dark-700 transition-all text-left"
                 >
-                  <div className="font-medium mb-1">{sector.name}</div>
-                  <div className="text-body-sm text-content-secondary">
-                    Top: {sector.topStock}
+                  <div className="font-medium text-white mb-1">{sector.name}</div>
+                  <div className="text-xs text-neutral-500 mb-2">
+                    {sector.stockCount} stocks
                   </div>
-                  <div className="text-body-sm text-content-tertiary">
-                    Avg Score: {sector.avgScore}/10
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-neutral-400">
+                      Top: {sector.topStock}
+                    </span>
+                    <span className={cn('text-sm font-bold', getScoreColor(sector.avgScore))}>
+                      {sector.avgScore.toFixed(1)}
+                    </span>
                   </div>
-                </div>
+                </button>
               ))}
             </div>
           </>
         )}
-      </div>
+      </motion.div>
     </div>
   )
 }
