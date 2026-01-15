@@ -28,7 +28,7 @@ interface AppState {
 
 export const useAppStore = create<AppState>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       // Initial state
       currentProfileId: 'ankit',
       currentProfile: profiles.find(p => p.id === 'ankit') || null,

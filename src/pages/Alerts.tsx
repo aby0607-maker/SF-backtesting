@@ -1,4 +1,4 @@
-import { Bell, Settings, Check, Trash2 } from 'lucide-react'
+import { Bell, Settings, Check } from 'lucide-react'
 import { cn, formatRelativeTime } from '@/lib/utils'
 
 // Placeholder data

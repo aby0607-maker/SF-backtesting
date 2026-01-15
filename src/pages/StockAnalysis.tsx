@@ -1,5 +1,5 @@
 import { useParams, Link } from 'react-router-dom'
-import { ArrowLeft, Share2, BookmarkPlus, AlertTriangle, ChevronRight, ExternalLink } from 'lucide-react'
+import { ArrowLeft, Share2, BookmarkPlus, AlertTriangle, ChevronRight } from 'lucide-react'
 import { useAppStore } from '@/store/useAppStore'
 import { cn, formatCurrency, formatPercent, getScoreColor, getVerdictBadgeClass } from '@/lib/utils'
 

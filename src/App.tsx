@@ -1,5 +1,4 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
-import { useAppStore } from '@/store/useAppStore'
 
 // Layout
 import { MainLayout } from '@/components/layout/MainLayout'
@@ -20,8 +19,6 @@ import { Alerts } from '@/pages/Alerts'
 import { Settings } from '@/pages/Settings'
 
 function App() {
-  const { currentProfile } = useAppStore()
-
   return (
     <Routes>
       {/* Profile Selection - Entry point for demo */}

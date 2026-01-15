@@ -1,4 +1,4 @@
-import { BarChart3, Clock, TrendingUp, ArrowRight } from 'lucide-react'
+import { BarChart3, Clock, ArrowRight } from 'lucide-react'
 
 export function Backtest() {
   return (

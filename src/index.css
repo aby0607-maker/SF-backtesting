@@ -1,3 +1,6 @@
+/* Import Inter font - must be first */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -14,7 +17,7 @@
     @apply bg-surface text-content;
   }
 
-  /* Focus styles */
+  /* Focus styles with primary purple */
   *:focus-visible {
     @apply outline-none ring-2 ring-primary-500 ring-offset-2;
   }
@@ -44,10 +47,16 @@
   .scrollbar-thin::-webkit-scrollbar-thumb:hover {
     background-color: #9ca3af;
   }
+
+  /* Text gradient for headings */
+  .text-gradient-primary {
+    @apply bg-gradient-to-r from-primary-500 to-primary-700 bg-clip-text text-transparent;
+  }
 }
 
 /* Component utilities */
 @layer components {
+  /* Cards */
   .card {
     @apply bg-white rounded-card shadow-card p-4;
   }
@@ -56,44 +65,141 @@
     @apply transition-shadow duration-200 hover:shadow-card-hover;
   }
 
-  .btn-primary {
-    @apply bg-primary-600 text-white px-4 py-2 rounded-button font-medium
-           hover:bg-primary-700 active:bg-primary-800
-           transition-colors duration-150;
+  .card-interactive {
+    @apply card card-hover cursor-pointer;
   }
 
+  /* Primary button - Purple */
+  .btn-primary {
+    @apply bg-primary-500 text-white px-4 py-2 rounded-button font-medium
+           hover:bg-primary-600 active:bg-primary-700
+           shadow-purple hover:shadow-lg
+           transition-all duration-150;
+  }
+
+  .btn-primary:disabled {
+    @apply bg-primary-300 cursor-not-allowed shadow-none;
+  }
+
+  /* Secondary button */
   .btn-secondary {
     @apply bg-surface-tertiary text-content px-4 py-2 rounded-button font-medium
-           hover:bg-gray-200 active:bg-gray-300
+           hover:bg-neutral-200 active:bg-neutral-300
            transition-colors duration-150;
   }
 
+  /* Ghost button */
   .btn-ghost {
     @apply text-content-secondary px-4 py-2 rounded-button font-medium
-           hover:bg-surface-tertiary active:bg-gray-200
+           hover:bg-surface-tertiary active:bg-neutral-200
            transition-colors duration-150;
   }
 
+  /* Outline button */
+  .btn-outline {
+    @apply border-2 border-primary-500 text-primary-600 px-4 py-2 rounded-button font-medium
+           hover:bg-primary-50 active:bg-primary-100
+           transition-colors duration-150;
+  }
+
+  /* Input fields */
   .input {
-    @apply w-full px-3 py-2 border border-gray-300 rounded-input
+    @apply w-full px-3 py-2 border border-neutral-300 rounded-input bg-white
            focus:border-primary-500 focus:ring-1 focus:ring-primary-500
            placeholder:text-content-tertiary
            transition-colors duration-150;
   }
 
+  .input-error {
+    @apply border-destructive-500 focus:border-destructive-500 focus:ring-destructive-500;
+  }
+
+  /* Base badge */
   .badge {
     @apply inline-flex items-center px-2.5 py-0.5 rounded-badge text-body-sm font-medium;
   }
 
+  /* Verdict badges */
   .badge-buy {
-    @apply bg-verdict-buy/10 text-verdict-buy;
+    @apply bg-success-100 text-success-700;
+  }
+
+  .badge-strong-buy {
+    @apply bg-success-500 text-white;
   }
 
   .badge-hold {
-    @apply bg-verdict-hold/10 text-verdict-hold;
+    @apply bg-warning-100 text-warning-700;
   }
 
   .badge-avoid {
-    @apply bg-verdict-avoid/10 text-verdict-avoid;
+    @apply bg-destructive-100 text-destructive-700;
+  }
+
+  /* Score badges */
+  .badge-score-excellent {
+    @apply bg-success-100 text-success-700;
+  }
+
+  .badge-score-high {
+    @apply bg-teal-100 text-teal-700;
+  }
+
+  .badge-score-medium {
+    @apply bg-warning-100 text-warning-700;
+  }
+
+  .badge-score-low {
+    @apply bg-destructive-100 text-destructive-700;
+  }
+
+  /* Alert badges */
+  .badge-alert-critical {
+    @apply bg-destructive-100 text-destructive-700;
+  }
+
+  .badge-alert-high {
+    @apply bg-warning-100 text-warning-700;
+  }
+
+  .badge-alert-medium {
+    @apply bg-warning-50 text-warning-600;
+  }
+
+  .badge-alert-low {
+    @apply bg-info-100 text-info-700;
+  }
+
+  /* Segment status indicators */
+  .segment-positive {
+    @apply bg-success-500;
+  }
+
+  .segment-neutral {
+    @apply bg-neutral-400;
+  }
+
+  .segment-negative {
+    @apply bg-destructive-500;
+  }
+
+  /* Tab styles */
+  .tab {
+    @apply px-4 py-2 text-body-sm font-medium text-content-secondary
+           rounded-lg transition-colors duration-150;
+  }
+
+  .tab-active {
+    @apply bg-primary-500 text-white;
+  }
+
+  .tab:not(.tab-active):hover {
+    @apply bg-surface-tertiary;
+  }
+
+  /* Link styles */
+  .link {
+    @apply text-primary-600 hover:text-primary-700 underline-offset-2
+           hover:underline transition-colors duration-150;
   }
 }
