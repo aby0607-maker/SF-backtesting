@@ -268,3 +268,138 @@ export function getCategoryLabel(category: NewsItem['category']): string {
   }
   return labels[category]
 }
+
+// Thesis Impact Analysis
+export interface ThesisImpact {
+  thesis: 'growth' | 'value' | 'dividend' | 'quality' | 'agnostic'
+  impact: 'positive' | 'negative' | 'neutral'
+  scoreChange: string
+  reason: string
+}
+
+// Calculate thesis impact for a news item
+export function getThesisImpact(news: NewsItem, thesis: string): ThesisImpact {
+  const thesisType = thesis as ThesisImpact['thesis']
+
+  // Map segments to thesis relevance
+  const thesisSegmentWeights: Record<string, Record<string, number>> = {
+    growth: { growth: 3, profitability: 2, income_statement: 2, product: 2, financial_ratios: 1 },
+    value: { valuation: 3, profitability: 2, balance_sheet: 2, financial_ratios: 2, ownership: 1 },
+    dividend: { income_statement: 3, valuation: 2, profitability: 2, balance_sheet: 1, ownership: 1 },
+    quality: { profitability: 3, financial_ratios: 2, balance_sheet: 2, growth: 1, management: 2 },
+    agnostic: { growth: 1, profitability: 1, valuation: 1, balance_sheet: 1, financial_ratios: 1 },
+  }
+
+  const weights = thesisSegmentWeights[thesisType] || thesisSegmentWeights.agnostic
+  let relevanceScore = 0
+
+  news.impactSegments.forEach(segment => {
+    const normalizedSegment = segment.toLowerCase().replace(/\s+/g, '_')
+    relevanceScore += weights[normalizedSegment] || 0.5
+  })
+
+  // Calculate impact
+  const baseImpact = news.sentiment === 'positive' ? 0.1 : news.sentiment === 'negative' ? -0.1 : 0
+  const scoreChange = (baseImpact * relevanceScore * (news.importance === 'high' ? 1.5 : news.importance === 'medium' ? 1 : 0.5)).toFixed(1)
+
+  // Generate reason based on thesis
+  let reason = ''
+  switch (thesisType) {
+    case 'growth':
+      reason = news.sentiment === 'positive'
+        ? `Supports growth trajectory${news.impactSegments.includes('growth') ? ' - directly impacts growth metrics' : ''}`
+        : news.sentiment === 'negative'
+          ? `May slow growth momentum${news.impactSegments.includes('growth') ? ' - affects key growth drivers' : ''}`
+          : 'Monitor for growth implications'
+      break
+    case 'value':
+      reason = news.sentiment === 'positive'
+        ? `Strengthens value proposition${news.impactSegments.includes('valuation') ? ' - may improve valuation metrics' : ''}`
+        : news.sentiment === 'negative'
+          ? `Potential margin of safety concern${news.impactSegments.includes('valuation') ? ' - watch for valuation impact' : ''}`
+          : 'Limited impact on value thesis'
+      break
+    case 'dividend':
+      reason = news.sentiment === 'positive'
+        ? `Supports income stability${news.impactSegments.includes('income_statement') ? ' - positive for dividend capacity' : ''}`
+        : news.sentiment === 'negative'
+          ? `Monitor dividend sustainability${news.impactSegments.includes('income_statement') ? ' - could affect payout' : ''}`
+          : 'Neutral for dividend outlook'
+      break
+    case 'quality':
+      reason = news.sentiment === 'positive'
+        ? `Reinforces quality attributes${news.impactSegments.includes('profitability') ? ' - strengthens earnings quality' : ''}`
+        : news.sentiment === 'negative'
+          ? `Quality concern${news.impactSegments.includes('profitability') ? ' - may affect profitability metrics' : ''}`
+          : 'Monitor for quality signals'
+      break
+    default:
+      reason = news.sentiment === 'positive' ? 'Generally positive development' : news.sentiment === 'negative' ? 'Area of concern' : 'Neutral impact'
+  }
+
+  return {
+    thesis: thesisType,
+    impact: news.sentiment,
+    scoreChange: Number(scoreChange) > 0 ? `+${scoreChange}` : scoreChange,
+    reason
+  }
+}
+
+// Upcoming Events
+export interface UpcomingEvent {
+  id: string
+  stockId: string
+  type: 'earnings' | 'agm' | 'dividend' | 'board_meeting' | 'result'
+  title: string
+  date: string
+  description: string
+  importance: 'high' | 'medium' | 'low'
+}
+
+// Mock upcoming events
+const upcomingEvents: UpcomingEvent[] = [
+  // Zomato events
+  { id: 'zom-ev-1', stockId: 'ZOMATO', type: 'earnings', title: 'Q4 FY25 Results', date: '2025-04-28', description: 'Quarterly earnings announcement', importance: 'high' },
+  { id: 'zom-ev-2', stockId: 'ZOMATO', type: 'agm', title: 'Annual General Meeting', date: '2025-07-15', description: 'FY25 AGM', importance: 'medium' },
+  { id: 'zom-ev-3', stockId: 'ZOMATO', type: 'board_meeting', title: 'Board Meeting', date: '2025-02-10', description: 'Strategic review meeting', importance: 'low' },
+
+  // Axis Bank events
+  { id: 'axis-ev-1', stockId: 'AXISBANK', type: 'earnings', title: 'Q4 FY25 Results', date: '2025-04-25', description: 'Quarterly earnings announcement', importance: 'high' },
+  { id: 'axis-ev-2', stockId: 'AXISBANK', type: 'dividend', title: 'Dividend Ex-Date', date: '2025-05-10', description: 'Interim dividend ex-date', importance: 'medium' },
+  { id: 'axis-ev-3', stockId: 'AXISBANK', type: 'agm', title: 'Annual General Meeting', date: '2025-07-20', description: 'FY25 AGM', importance: 'medium' },
+
+  // TCS events
+  { id: 'tcs-ev-1', stockId: 'TCS', type: 'earnings', title: 'Q4 FY25 Results', date: '2025-04-10', description: 'Quarterly earnings announcement', importance: 'high' },
+  { id: 'tcs-ev-2', stockId: 'TCS', type: 'dividend', title: 'Final Dividend Ex-Date', date: '2025-05-25', description: 'Final dividend for FY25', importance: 'high' },
+  { id: 'tcs-ev-3', stockId: 'TCS', type: 'agm', title: 'Annual General Meeting', date: '2025-06-15', description: 'FY25 AGM', importance: 'medium' },
+  { id: 'tcs-ev-4', stockId: 'TCS', type: 'result', title: 'Q1 FY26 Results', date: '2025-07-10', description: 'Q1 FY26 earnings preview', importance: 'high' },
+]
+
+export function getUpcomingEvents(stockId: string): UpcomingEvent[] {
+  return upcomingEvents
+    .filter(e => e.stockId === stockId.toUpperCase())
+    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+}
+
+export function formatEventDate(dateStr: string): string {
+  const date = new Date(dateStr)
+  const now = new Date()
+  const diffDays = Math.ceil((date.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
+
+  if (diffDays < 0) return 'Passed'
+  if (diffDays === 0) return 'Today'
+  if (diffDays === 1) return 'Tomorrow'
+  if (diffDays <= 7) return `In ${diffDays} days`
+  return date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })
+}
+
+export function getEventIcon(type: UpcomingEvent['type']): string {
+  const icons: Record<UpcomingEvent['type'], string> = {
+    earnings: '📊',
+    agm: '🏛️',
+    dividend: '💰',
+    board_meeting: '👥',
+    result: '📈'
+  }
+  return icons[type]
+}

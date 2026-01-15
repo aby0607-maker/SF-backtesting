@@ -61,6 +61,17 @@ export interface EntryTimingDetails {
   assessment?: string
 }
 
+// Exit Trigger (per Scorecard Architecture)
+export interface ExitTrigger {
+  id: string
+  metric: string
+  condition: string
+  threshold: string
+  currentValue: string
+  status: 'safe' | 'warning' | 'danger'
+  rationale: string
+}
+
 // Portfolio Fit Analysis (per tech spec)
 export interface PortfolioFit {
   thesisFit: boolean
@@ -109,9 +120,11 @@ export interface StockVerdict {
   positionSizing: string | PositionSizingDetails
   entryGuidance: string
   entryTiming?: EntryTimingDetails
+  exitTriggers?: ExitTrigger[]
   portfolioFit?: PortfolioFit
   segments: SegmentScore[]
   redFlags?: RedFlag[]
+  redFlagFramework?: RedFlagFramework
   riskWarning?: string
   learningPrompt?: string
   blindSpotAlert?: string
@@ -238,14 +251,33 @@ export interface GroundingSource {
 
 // Red Flag Types (per tech spec: Critical, High, Medium, Low)
 export type RedFlagSeverity = 'critical' | 'high' | 'medium' | 'low'
+export type RedFlagCategory = 'financial' | 'governance' | 'quality' | 'structural' | 'historical'
 
 export interface RedFlag {
   id: string
   type: string
+  category: RedFlagCategory
   title: string
   description: string
   severity: RedFlagSeverity
   action: string
+  currentValue?: string
+  threshold?: string
+  isTriggered: boolean
+}
+
+// Full 16-parameter Red Flag Framework
+export interface RedFlagFramework {
+  triggeredCount: number
+  totalParameters: number
+  flags: RedFlag[]
+  byCategory: {
+    financial: RedFlag[]
+    governance: RedFlag[]
+    quality: RedFlag[]
+    structural: RedFlag[]
+    historical: RedFlag[]
+  }
 }
 
 // Portfolio Types

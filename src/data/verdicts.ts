@@ -91,6 +91,12 @@ export const verdicts: StockVerdict[] = [
       positionInRange: '55th percentile',
       assessment: 'MODERATE ENTRY',
     },
+    exitTriggers: [
+      { id: 'et-1', metric: 'P/S Ratio', condition: '>', threshold: '15x', currentValue: '12x', status: 'safe', rationale: 'Growth premium becoming excessive' },
+      { id: 'et-2', metric: 'Revenue Growth', condition: '<', threshold: '30%', currentValue: '70%', status: 'safe', rationale: 'Growth thesis broken if slowing significantly' },
+      { id: 'et-3', metric: 'Market Share', condition: '<', threshold: '45%', currentValue: '55%', status: 'safe', rationale: 'Competitive moat weakening' },
+      { id: 'et-4', metric: 'FII Holding', condition: '<', threshold: '40%', currentValue: '52%', status: 'safe', rationale: 'Smart money exodus signal' },
+    ],
     portfolioFit: {
       thesisFit: true,
       riskFit: true,
@@ -202,7 +208,7 @@ export const verdicts: StockVerdict[] = [
         ],
       },
     ],
-    redFlags: [{ id: 'rf1', type: 'valuation', title: 'Premium Valuation', description: 'P/S ratio 12x vs sector avg 6x. Priced for perfection.', severity: 'medium', action: 'Monitor for any execution miss' }],
+    redFlags: [{ id: 'rf1', type: 'valuation', category: 'quality', title: 'Premium Valuation', description: 'P/S ratio 12x vs sector avg 6x. Priced for perfection.', severity: 'medium', action: 'Monitor for any execution miss', isTriggered: true, currentValue: '12x', threshold: '<6x' }],
   },
 
   // ==================== ZOMATO × SNEHA (Value) ====================
@@ -233,8 +239,8 @@ export const verdicts: StockVerdict[] = [
       { id: 'balance', name: 'Balance Sheet', score: 8.0, sectorAvg: 6.2, sectorRank: 1, sectorTotal: 6, weight: 0.15, status: 'positive', interpretation: 'Strong balance sheet only positive', metrics: [] },
     ],
     redFlags: [
-      { id: 'rf1', type: 'valuation', title: 'Extreme Overvaluation', description: 'P/E 180x is 9x your max threshold of 20x', severity: 'critical', action: 'Wait for significant correction' },
-      { id: 'rf2', type: 'dividend', title: 'Zero Shareholder Returns', description: 'No dividend, no buyback', severity: 'high', action: 'Not suitable for dividend portfolio' },
+      { id: 'rf1', type: 'valuation', category: 'quality', title: 'Extreme Overvaluation', description: 'P/E 180x is 9x your max threshold of 20x', severity: 'critical', action: 'Wait for significant correction', isTriggered: true, currentValue: '180x', threshold: '<20x' },
+      { id: 'rf2', type: 'dividend', category: 'financial', title: 'Zero Shareholder Returns', description: 'No dividend, no buyback', severity: 'high', action: 'Not suitable for dividend portfolio', isTriggered: true, currentValue: '0%', threshold: '>0%' },
     ],
   },
 
