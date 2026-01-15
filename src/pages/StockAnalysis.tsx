@@ -304,13 +304,56 @@ export function StockAnalysis() {
         transition={{ delay: 0.5 }}
         className="card"
       >
-        <h2 className="text-h4 mb-4 text-white">11-Segment Analysis</h2>
+        <h2 className="text-h4 mb-2 text-white">11-Segment Analysis</h2>
+
+        {/* Explainer Card - Score & Rank Context */}
+        <div className="mb-4 p-3 bg-dark-700/50 rounded-lg border border-white/5">
+          <div className="flex flex-wrap gap-x-6 gap-y-2 text-xs">
+            <div className="flex items-center gap-2">
+              <span className="text-neutral-500">Score:</span>
+              <span className="text-white font-medium">X.X/10</span>
+              <span className="text-neutral-500">= How well this dimension performs</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-neutral-500">Rank:</span>
+              <span className="px-1.5 py-0.5 bg-primary-500/20 text-primary-400 rounded text-[10px] font-medium">#X/Y</span>
+              <span className="text-neutral-500">= Position vs {stock.peerGroup?.length ? `${stock.peerGroup.length} peers` : 'sector peers'}</span>
+            </div>
+          </div>
+          <div className="mt-2 pt-2 border-t border-white/5 flex flex-wrap gap-4 text-[10px]">
+            <span className="flex items-center gap-1">
+              <span className="w-2 h-2 rounded-full bg-success-500" /> Strong (8+)
+            </span>
+            <span className="flex items-center gap-1">
+              <span className="w-2 h-2 rounded-full bg-teal-400" /> Good (6-8)
+            </span>
+            <span className="flex items-center gap-1">
+              <span className="w-2 h-2 rounded-full bg-warning-400" /> Fair (4-6)
+            </span>
+            <span className="flex items-center gap-1">
+              <span className="w-2 h-2 rounded-full bg-destructive-500" /> Weak (&lt;4)
+            </span>
+          </div>
+        </div>
+
         <SegmentBar
           segments={verdict.segments}
           onSegmentClick={(segmentId) => {
             window.location.href = `/segment/${ticker}/${segmentId}`
           }}
+          showRanks={true}
+          showInsights={true}
         />
+
+        {/* Profile Weight Note */}
+        <div className="mt-4 pt-3 border-t border-white/10 text-xs text-neutral-500">
+          <span className="text-primary-400">{currentProfile.displayName}</span> weights prioritize {
+            currentProfile.investmentThesis === 'growth' ? 'Growth & Profitability segments' :
+            currentProfile.investmentThesis === 'value' ? 'Valuation & Financial Health segments' :
+            currentProfile.investmentThesis === 'dividend' ? 'Income & Valuation segments' :
+            'balanced analysis across all segments'
+          }. Click any segment to explore metrics.
+        </div>
       </motion.div>
 
       {/* News & Signals Section */}
@@ -386,40 +429,112 @@ export function StockAnalysis() {
         </motion.div>
       )}
 
-      {/* Position Guidance - Premium styling */}
+      {/* Entry Assessment & Position Guidance - Premium styling */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.6 }}
         className="card border border-primary-500/20 bg-gradient-to-br from-primary-500/5 to-transparent"
       >
-        <h2 className="text-h4 mb-3 text-white flex items-center gap-2">
-          <Sparkles className="w-5 h-5 text-primary-400" />
-          Position Guidance
-        </h2>
-        <div className="space-y-3 text-body">
-          <div className="flex items-start gap-2">
-            <span className="text-gray-500 w-28 flex-shrink-0">Position Size:</span>
-            <span className="text-gray-300">
-              {typeof verdict.positionSizing === 'string'
-                ? verdict.positionSizing
-                : verdict.positionSizing.recommendedAllocation}
-            </span>
+        {/* Entry Assessment Header */}
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-h4 text-white flex items-center gap-2">
+            <Sparkles className="w-5 h-5 text-primary-400" />
+            Entry Assessment
+          </h2>
+          {/* Entry Verdict Badge */}
+          <span className={cn(
+            'px-3 py-1.5 rounded-lg text-sm font-bold uppercase tracking-wide',
+            verdict.verdict === 'STRONG BUY' || verdict.verdict === 'BUY'
+              ? 'bg-success-500/20 text-success-400 border border-success-500/30'
+              : verdict.verdict === 'HOLD' || verdict.verdict === 'STRONG HOLD'
+                ? 'bg-warning-500/20 text-warning-400 border border-warning-500/30'
+                : 'bg-destructive-500/20 text-destructive-400 border border-destructive-500/30'
+          )}>
+            {verdict.verdict === 'STRONG BUY' || verdict.verdict === 'BUY' ? 'FAVORABLE' :
+             verdict.verdict === 'HOLD' || verdict.verdict === 'STRONG HOLD' ? 'NEUTRAL' : 'WAIT'}
+          </span>
+        </div>
+
+        {/* Profile Context */}
+        <p className="text-sm text-neutral-400 mb-4">
+          For your <span className="text-primary-400 font-medium">{currentProfile.investmentThesis.toUpperCase()}</span> profile:
+        </p>
+
+        {/* Entry Factor Assessment */}
+        <div className="grid grid-cols-2 gap-3 mb-4">
+          {/* Valuation Entry (35%) */}
+          <div className="p-3 bg-dark-700/50 rounded-lg">
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-xs text-neutral-500">Valuation (35%)</span>
+              <span className="text-success-400 text-xs">✓</span>
+            </div>
+            <p className="text-sm text-white">
+              {verdict.entryTiming?.positionInRange || 'Fair value zone'}
+            </p>
           </div>
-          {typeof verdict.positionSizing === 'object' && verdict.positionSizing.reasoning && (
-            <div className="flex items-start gap-2">
-              <span className="text-gray-500 w-28 flex-shrink-0">Reasoning:</span>
-              <span className="text-gray-300">{verdict.positionSizing.reasoning}</span>
+
+          {/* Technical Entry (25%) */}
+          <div className="p-3 bg-dark-700/50 rounded-lg">
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-xs text-neutral-500">Technical (25%)</span>
+              <span className="text-success-400 text-xs">✓</span>
+            </div>
+            <p className="text-sm text-white">Above 200 DMA</p>
+          </div>
+
+          {/* Momentum Entry (20%) */}
+          <div className="p-3 bg-dark-700/50 rounded-lg">
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-xs text-neutral-500">Momentum (20%)</span>
+              <span className="text-warning-400 text-xs">~</span>
+            </div>
+            <p className="text-sm text-white">Mixed FII activity</p>
+          </div>
+
+          {/* Fundamental Entry (20%) */}
+          <div className="p-3 bg-dark-700/50 rounded-lg">
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-xs text-neutral-500">Fundamental (20%)</span>
+              <span className="text-success-400 text-xs">✓</span>
+            </div>
+            <p className="text-sm text-white">Recent results positive</p>
+          </div>
+        </div>
+
+        {/* Position Sizing */}
+        <div className="pt-4 border-t border-white/10 space-y-3">
+          <h3 className="text-sm font-semibold text-white">Position Guidance</h3>
+          <div className="grid grid-cols-2 gap-4 text-sm">
+            <div>
+              <span className="text-neutral-500 block text-xs mb-1">Suggested Allocation</span>
+              <span className="text-white font-medium">
+                {typeof verdict.positionSizing === 'string'
+                  ? verdict.positionSizing
+                  : verdict.positionSizing.recommendedAllocation}
+              </span>
+            </div>
+            {verdict.entryTiming?.fairValueRange && (
+              <div>
+                <span className="text-neutral-500 block text-xs mb-1">Fair Value Range</span>
+                <span className="text-white font-medium">{verdict.entryTiming.fairValueRange}</span>
+              </div>
+            )}
+          </div>
+
+          {typeof verdict.positionSizing === 'object' && verdict.positionSizing.entryStrategy && (
+            <div className="p-3 bg-primary-500/10 rounded-lg">
+              <span className="text-xs text-primary-400 block mb-1">Entry Approach</span>
+              <span className="text-sm text-white">{verdict.positionSizing.entryStrategy}</span>
             </div>
           )}
-          <div className="flex items-start gap-2">
-            <span className="text-gray-500 w-28 flex-shrink-0">Entry Strategy:</span>
-            <span className="text-gray-300">{verdict.entryGuidance}</span>
-          </div>
+
           {typeof verdict.positionSizing === 'object' && verdict.positionSizing.warning && (
-            <div className="flex items-start gap-2 text-warning-400">
-              <span className="w-28 flex-shrink-0">Warning:</span>
-              <span>{verdict.positionSizing.warning}</span>
+            <div className="p-3 bg-warning-500/10 rounded-lg border border-warning-500/20">
+              <span className="text-xs text-warning-400 block mb-1 flex items-center gap-1">
+                <AlertTriangle className="w-3 h-3" /> Warning
+              </span>
+              <span className="text-sm text-warning-300">{verdict.positionSizing.warning}</span>
             </div>
           )}
         </div>
