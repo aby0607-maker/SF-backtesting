@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react'
-import { useParams, Link } from 'react-router-dom'
+import { useState, useEffect, useRef } from 'react'
+import { useParams, Link, useLocation, useSearchParams } from 'react-router-dom'
 import { ArrowLeft, Share2, BookmarkPlus, AlertTriangle, TrendingUp, TrendingDown, Sparkles, Newspaper, ChevronRight, ChevronDown, ChevronUp, Check, X, AlertCircle, Calendar, LogOut, MessageCircle, GitCompare, UserCheck } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAppStore } from '@/store/useAppStore'
@@ -119,24 +119,38 @@ function generateRedFlagFramework(verdict: StockVerdict) {
 function RedFlagScanner({
   verdict,
   news,
-  isExpanded,
-  onToggle
 }: {
   verdict: StockVerdict
   news: NewsItem[]
-  isExpanded: boolean
-  onToggle: () => void
 }) {
   const framework = generateRedFlagFramework(verdict)
   const { triggeredBySeverity, bySeverity, scoreImpact } = framework
+
+  // Track which severity categories are expanded
+  const [expandedCategories, setExpandedCategories] = useState<Record<string, boolean>>({
+    critical: false,
+    high: false,
+    medium: false,
+    monitor: false
+  })
+
+  const toggleCategory = (key: string) => {
+    setExpandedCategories(prev => ({ ...prev, [key]: !prev[key] }))
+  }
 
   // Get negative news as potential red flag signals
   const negativeNews = news.filter(n => n.sentiment === 'negative')
   const hasCritical = triggeredBySeverity.critical.length > 0
   const hasHigh = triggeredBySeverity.high.length > 0
-  const hasMedium = triggeredBySeverity.medium.length > 0
-  const hasMonitor = triggeredBySeverity.monitor.length > 0
   const hasAnyIssue = framework.triggeredCount > 0
+
+  // Severity category config
+  const categories = [
+    { key: 'critical', label: 'Critical', emoji: '🔴', colorClass: 'destructive', count: 8, description: 'Blocking issues - immediate action required' },
+    { key: 'high', label: 'High', emoji: '🟠', colorClass: 'warning', count: 12, description: 'Significant concerns - caution advised' },
+    { key: 'medium', label: 'Medium', emoji: '🟡', colorClass: 'yellow', count: 10, description: 'Monitor closely - potential risks' },
+    { key: 'monitor', label: 'Monitor', emoji: '⚪', colorClass: 'neutral', count: 5, description: 'Informational - awareness items' },
+  ]
 
   return (
     <motion.div
@@ -149,9 +163,9 @@ function RedFlagScanner({
         'bg-success-500/5 border-success-500/20'
       )}
     >
-      {/* Header - Always visible */}
+      {/* Header - Summary */}
       <div className="p-4">
-        <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             {hasCritical ? (
               <AlertTriangle className="w-5 h-5 text-destructive-400" />
@@ -174,75 +188,122 @@ function RedFlagScanner({
               hasCritical ? 'bg-destructive-500/20 text-destructive-400' :
               'bg-warning-500/20 text-warning-400'
             )}>
-              {framework.triggeredCount}/{framework.totalParameters}
+              {framework.triggeredCount} issues / {framework.totalParameters} checked
             </div>
           </div>
         </div>
 
-        {/* ===== CRITICAL FLAGS - Always show prominently ===== */}
-        {hasCritical && (
-          <div className="mt-3 space-y-2">
-            <div className="flex items-center gap-2 mb-1">
-              <span className="w-2 h-2 rounded-full bg-destructive-500" />
-              <span className="text-xs font-medium text-destructive-400 uppercase tracking-wide">Critical ({triggeredBySeverity.critical.length})</span>
+        {/* Status message */}
+        {!hasAnyIssue && (
+          <div className="mb-3 p-2.5 bg-success-500/10 rounded-lg border border-success-500/20">
+            <div className="flex items-center gap-2">
+              <Check className="w-4 h-4 text-success-400" />
+              <span className="text-sm text-success-400 font-medium">All Clear</span>
+              <span className="text-xs text-neutral-400">- No red flags detected</span>
             </div>
-            {triggeredBySeverity.critical.map(flag => (
-              <div key={flag.id} className="flex items-start gap-3 p-3 bg-destructive-500/10 rounded-xl border border-destructive-500/20">
-                <span className="px-1.5 py-0.5 text-[10px] font-bold bg-destructive-500 text-white rounded">
-                  🔴
-                </span>
-                <div className="flex-1">
-                  <span className="font-medium text-white text-sm">{flag.title}</span>
-                  <p className="text-xs text-neutral-400 mt-0.5">{flag.description}</p>
-                  <div className="flex items-center gap-2 mt-1 text-xs">
-                    <span className="text-destructive-400">Current: {flag.currentValue}</span>
-                    <span className="text-neutral-500">•</span>
-                    <span className="text-neutral-500">Source: {flag.source}</span>
+          </div>
+        )}
+
+        {/* ===== 4 SEVERITY CATEGORIES - Progressive Disclosure ===== */}
+        <div className="space-y-2">
+          {categories.map(({ key, label, emoji, colorClass, description }) => {
+            const allFlags = bySeverity[key as keyof typeof bySeverity]
+            const triggeredFlags = triggeredBySeverity[key as keyof typeof triggeredBySeverity]
+            const isExpanded = expandedCategories[key]
+            const hasTriggered = triggeredFlags.length > 0
+
+            const colorMap: Record<string, { bg: string, border: string, text: string, activeBg: string }> = {
+              destructive: { bg: 'bg-destructive-500/10', border: 'border-destructive-500/20', text: 'text-destructive-400', activeBg: 'bg-destructive-500/20' },
+              warning: { bg: 'bg-warning-500/10', border: 'border-warning-500/20', text: 'text-warning-400', activeBg: 'bg-warning-500/20' },
+              yellow: { bg: 'bg-yellow-500/10', border: 'border-yellow-500/20', text: 'text-yellow-400', activeBg: 'bg-yellow-500/20' },
+              neutral: { bg: 'bg-neutral-500/10', border: 'border-neutral-500/20', text: 'text-neutral-400', activeBg: 'bg-neutral-500/20' },
+            }
+            const colors = colorMap[colorClass]
+
+            return (
+              <div key={key} className={cn('rounded-xl border overflow-hidden', hasTriggered ? colors.border : 'border-white/5')}>
+                {/* Category Header - Clickable */}
+                <button
+                  onClick={() => toggleCategory(key)}
+                  className={cn(
+                    'w-full p-3 flex items-center justify-between transition-colors',
+                    hasTriggered ? colors.bg : 'bg-dark-700/30 hover:bg-dark-700/50'
+                  )}
+                >
+                  <div className="flex items-center gap-3">
+                    <span className="text-base">{emoji}</span>
+                    <div className="text-left">
+                      <div className="flex items-center gap-2">
+                        <span className={cn('font-medium text-sm', hasTriggered ? colors.text : 'text-white')}>
+                          {label}
+                        </span>
+                        <span className={cn(
+                          'px-1.5 py-0.5 rounded text-[10px] font-bold',
+                          triggeredFlags.length === 0 ? 'bg-success-500/20 text-success-400' : colors.activeBg + ' ' + colors.text
+                        )}>
+                          {triggeredFlags.length}/{allFlags.length}
+                        </span>
+                      </div>
+                      <span className="text-[10px] text-neutral-500">{description}</span>
+                    </div>
                   </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
+                  <ChevronDown className={cn(
+                    'w-4 h-4 text-neutral-500 transition-transform',
+                    isExpanded && 'rotate-180'
+                  )} />
+                </button>
 
-        {/* ===== HIGH FLAGS - Always show ===== */}
-        {hasHigh && (
-          <div className="mt-3 space-y-2">
-            <div className="flex items-center gap-2 mb-1">
-              <span className="w-2 h-2 rounded-full bg-warning-500" />
-              <span className="text-xs font-medium text-warning-400 uppercase tracking-wide">High ({triggeredBySeverity.high.length})</span>
-            </div>
-            {triggeredBySeverity.high.map(flag => (
-              <div key={flag.id} className="flex items-start gap-3 p-3 bg-warning-500/10 rounded-xl border border-warning-500/20">
-                <span className="px-1.5 py-0.5 text-[10px] font-bold bg-warning-500 text-white rounded">
-                  🟠
-                </span>
-                <div className="flex-1">
-                  <span className="font-medium text-white text-sm">{flag.title}</span>
-                  <p className="text-xs text-neutral-400 mt-0.5">{flag.description}</p>
-                  <span className="text-xs text-warning-400 mt-1 block">
-                    {flag.currentValue} • {flag.source}
-                  </span>
-                </div>
+                {/* Expanded Parameter List */}
+                <AnimatePresence>
+                  {isExpanded && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.2 }}
+                      className="overflow-hidden"
+                    >
+                      <div className="px-3 pb-3 space-y-1.5">
+                        {allFlags.map(flag => (
+                          <div
+                            key={flag.id}
+                            className={cn(
+                              'flex items-center justify-between py-2 px-3 rounded-lg text-sm',
+                              flag.isTriggered ? colors.bg : 'bg-dark-700/20'
+                            )}
+                          >
+                            <div className="flex items-center gap-2 flex-1 min-w-0">
+                              {flag.isTriggered ? (
+                                <X className={cn('w-3.5 h-3.5 flex-shrink-0', colors.text)} />
+                              ) : (
+                                <Check className="w-3.5 h-3.5 text-success-400 flex-shrink-0" />
+                              )}
+                              <span className={cn(
+                                'truncate',
+                                flag.isTriggered ? 'text-white font-medium' : 'text-neutral-400'
+                              )}>
+                                {flag.title}
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-2 flex-shrink-0 ml-2">
+                              <span className={cn(
+                                'text-xs',
+                                flag.isTriggered ? colors.text : 'text-success-400'
+                              )}>
+                                {flag.isTriggered ? flag.currentValue : 'Clear'}
+                              </span>
+                              <span className="text-[10px] text-neutral-600">{flag.source}</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
-            ))}
-          </div>
-        )}
-
-        {/* ===== MEDIUM FLAGS - Collapsed summary ===== */}
-        {hasMedium && !isExpanded && (
-          <div className="mt-3 p-3 bg-dark-700/50 rounded-xl border border-white/5">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-yellow-500" />
-                <span className="text-xs font-medium text-yellow-400">
-                  {triggeredBySeverity.medium.length} Medium Flags
-                </span>
-              </div>
-              <span className="text-xs text-neutral-500">[Expand to see]</span>
-            </div>
-          </div>
-        )}
+            )
+          })}
+        </div>
 
         {/* ===== NEWS SIGNALS ===== */}
         {negativeNews.length > 0 && (
@@ -261,122 +322,7 @@ function RedFlagScanner({
             </div>
           </div>
         )}
-
-        {/* ===== ALL CLEAR STATE ===== */}
-        {!hasAnyIssue && negativeNews.length === 0 && (
-          <div className="mt-3 p-3 bg-success-500/10 rounded-xl border border-success-500/20">
-            <div className="flex items-center gap-2">
-              <Check className="w-4 h-4 text-success-400" />
-              <span className="text-sm text-success-400 font-medium">No Critical Red Flags</span>
-            </div>
-            <p className="text-xs text-neutral-400 mt-1">
-              All {framework.totalParameters} risk parameters passed screening.
-            </p>
-          </div>
-        )}
       </div>
-
-      {/* ===== EXPANDABLE SECTION ===== */}
-      <AnimatePresence>
-        {isExpanded && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="overflow-hidden"
-          >
-            <div className="px-4 pb-4 pt-2 border-t border-white/5">
-              {/* Medium Flags - Full list */}
-              {hasMedium && (
-                <div className="mb-4">
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="w-2 h-2 rounded-full bg-yellow-500" />
-                    <span className="text-xs font-medium text-yellow-400 uppercase tracking-wide">Medium ({triggeredBySeverity.medium.length})</span>
-                  </div>
-                  <div className="space-y-1.5">
-                    {triggeredBySeverity.medium.map(flag => (
-                      <div key={flag.id} className="flex items-center justify-between py-2 px-3 bg-dark-700/50 rounded-lg text-sm">
-                        <div className="flex items-center gap-2">
-                          <span className="text-yellow-500">🟡</span>
-                          <span className="text-neutral-300">{flag.title}</span>
-                        </div>
-                        <span className="text-xs text-neutral-500">{flag.currentValue}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Monitor Flags - Informational */}
-              {hasMonitor && (
-                <div className="mb-4">
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="w-2 h-2 rounded-full bg-neutral-500" />
-                    <span className="text-xs font-medium text-neutral-400 uppercase tracking-wide">Monitor ({triggeredBySeverity.monitor.length})</span>
-                  </div>
-                  <div className="space-y-1.5">
-                    {triggeredBySeverity.monitor.map(flag => (
-                      <div key={flag.id} className="flex items-center justify-between py-2 px-3 bg-dark-700/30 rounded-lg text-sm">
-                        <div className="flex items-center gap-2">
-                          <span className="text-neutral-500">⚠️</span>
-                          <span className="text-neutral-400">{flag.title}</span>
-                        </div>
-                        <span className="text-xs text-neutral-500">{flag.currentValue}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Full scan status by severity */}
-              <div className="grid grid-cols-4 gap-2">
-                {[
-                  { key: 'critical', label: 'Critical', color: 'destructive', emoji: '🔴' },
-                  { key: 'high', label: 'High', color: 'warning', emoji: '🟠' },
-                  { key: 'medium', label: 'Medium', color: 'yellow', emoji: '🟡' },
-                  { key: 'monitor', label: 'Monitor', color: 'neutral', emoji: '⚠️' },
-                ].map(({ key, label, emoji }) => {
-                  const total = bySeverity[key as keyof typeof bySeverity].length
-                  const triggered = triggeredBySeverity[key as keyof typeof triggeredBySeverity].length
-                  return (
-                    <div key={key} className="text-center p-2 bg-dark-700/30 rounded-lg">
-                      <div className="text-sm mb-0.5">{emoji}</div>
-                      <div className={cn(
-                        'text-lg font-bold',
-                        triggered === 0 ? 'text-success-400' :
-                        key === 'critical' ? 'text-destructive-400' :
-                        key === 'high' ? 'text-warning-400' : 'text-neutral-300'
-                      )}>
-                        {triggered}/{total}
-                      </div>
-                      <div className="text-[10px] text-neutral-500">{label}</div>
-                    </div>
-                  )
-                })}
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Toggle button */}
-      <button
-        onClick={onToggle}
-        className="w-full py-2.5 text-xs text-neutral-400 hover:text-white flex items-center justify-center gap-1 border-t border-white/5 transition-colors"
-      >
-        {isExpanded ? (
-          <>
-            <ChevronUp className="w-4 h-4" />
-            Hide Details
-          </>
-        ) : (
-          <>
-            <ChevronDown className="w-4 h-4" />
-            View All {framework.totalParameters} Parameters
-          </>
-        )}
-      </button>
     </motion.div>
   )
 }
@@ -448,15 +394,18 @@ function ProsCons({ verdict }: { verdict: StockVerdict }) {
 export function StockAnalysis() {
   const { ticker } = useParams<{ ticker: string }>()
   const { currentProfile } = useAppStore()
+  const location = useLocation()
+  const [searchParams] = useSearchParams()
+  const segmentsRef = useRef<HTMLDivElement>(null)
+
   const [isLoading, setIsLoading] = useState(true)
   const [stock, setStock] = useState<Stock | null>(null)
   const [verdict, setVerdict] = useState<StockVerdict | null>(null)
   const [news, setNews] = useState<NewsItem[]>([])
   const [upcomingEvents, setUpcomingEvents] = useState<UpcomingEvent[]>([])
 
-  // Progressive disclosure state
-  const [isFullView, setIsFullView] = useState(false)
-  const [isRedFlagExpanded, setIsRedFlagExpanded] = useState(false)
+  // Progressive disclosure state - check URL for initial state
+  const [isFullView, setIsFullView] = useState(() => searchParams.get('view') === 'full')
 
   useEffect(() => {
     if (!ticker || !currentProfile) return
@@ -476,6 +425,19 @@ export function StockAnalysis() {
 
     return () => clearTimeout(timer)
   }, [ticker, currentProfile])
+
+  // Handle URL params for navigation from segment deep-dive
+  useEffect(() => {
+    if (searchParams.get('view') === 'full') {
+      setIsFullView(true)
+    }
+    // Scroll to segments section if hash is present
+    if (location.hash === '#segments' && segmentsRef.current) {
+      setTimeout(() => {
+        segmentsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }, 100)
+    }
+  }, [searchParams, location.hash, isLoading])
 
   if (!ticker || !currentProfile) return null
 
@@ -656,23 +618,24 @@ export function StockAnalysis() {
             className="space-y-4 overflow-hidden"
           >
             {/* 11-Segment Analysis */}
-            <div className="rounded-2xl bg-dark-800 border border-white/5 p-5">
-              <h3 className="font-semibold text-white mb-4">11-Segment Analysis</h3>
-
-              {/* Legend */}
-              <div className="flex flex-wrap gap-3 mb-4 text-[10px] text-neutral-500">
-                <span className="flex items-center gap-1">
-                  <span className="w-2 h-2 rounded-full bg-success-500" /> Strong (8+)
-                </span>
-                <span className="flex items-center gap-1">
-                  <span className="w-2 h-2 rounded-full bg-teal-400" /> Good (6-8)
-                </span>
-                <span className="flex items-center gap-1">
-                  <span className="w-2 h-2 rounded-full bg-warning-400" /> Fair (4-6)
-                </span>
-                <span className="flex items-center gap-1">
-                  <span className="w-2 h-2 rounded-full bg-destructive-500" /> Weak (&lt;4)
-                </span>
+            <div ref={segmentsRef} id="segments" className="rounded-2xl bg-dark-800 border border-white/5 p-5">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="font-semibold text-white">11-Segment Analysis</h3>
+                {/* Legend - compact */}
+                <div className="flex gap-3 text-[10px] text-neutral-500">
+                  <span className="flex items-center gap-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-success-500" /> 8+
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-teal-400" /> 6-8
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-warning-400" /> 4-6
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-destructive-500" /> &lt;4
+                  </span>
+                </div>
               </div>
 
               <SegmentBar
@@ -680,13 +643,10 @@ export function StockAnalysis() {
                 onSegmentClick={(segmentId) => {
                   window.location.href = `/segment/${ticker}/${segmentId}`
                 }}
-                showRanks={true}
-                showInsights={true}
               />
 
-              <div className="mt-4 pt-3 border-t border-white/5 text-xs text-neutral-500">
-                <span className="text-primary-400">{currentProfile.displayName}</span> profile weights applied.
-                Click any segment for deep dive.
+              <div className="mt-3 pt-2 border-t border-white/5 text-xs text-neutral-500">
+                <span className="text-primary-400">{currentProfile.displayName}</span> weights • Tap for details
               </div>
             </div>
 
@@ -730,8 +690,6 @@ export function StockAnalysis() {
       <RedFlagScanner
         verdict={verdict}
         news={news}
-        isExpanded={isRedFlagExpanded}
-        onToggle={() => setIsRedFlagExpanded(!isRedFlagExpanded)}
       />
 
       {/* ============== UPCOMING EVENTS (if any) ============== */}
