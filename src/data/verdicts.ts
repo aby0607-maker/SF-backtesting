@@ -402,6 +402,270 @@ export const verdicts: StockVerdict[] = [
       { id: 'balance', name: 'Balance Sheet', score: 9.5, sectorAvg: 8.0, sectorRank: 1, sectorTotal: 5, weight: 0.10, status: 'positive', interpretation: 'Very strong', quickInsight: '✅ ₹50,000 Cr cash', metrics: [] },
     ],
   },
+
+  // ==================== PRIYA (Practical/Balanced - wants simple verdicts) ====================
+  // Zomato × Priya
+  {
+    stockId: 'zomato', profileId: 'priya', overallScore: 7.2, sectorAvgScore: 6.1, sectorRank: 2, sectorTotal: 6, verdict: 'BUY', peerRank: 2, peerTotal: 6, peerGroup: 'New Economy',
+    topSignals: [{ title: 'Growth Leader', description: '70% revenue growth', isPositive: true }, { title: 'Just Turned Profitable', description: 'Finally making money', isPositive: true }],
+    topConcerns: [{ title: 'Expensive Valuation', description: 'Premium priced', isPositive: false }],
+    verdictRationale: "Strong growth story that's finally profitable. Worth considering for growth exposure.",
+    positionSizing: '5-8% of portfolio', entryGuidance: 'Can buy at current levels.',
+    segments: [
+      { id: 'profitability', name: 'Profitability', score: 6.5, sectorAvg: 4.2, sectorRank: 2, sectorTotal: 6, weight: 0.10, status: 'neutral', interpretation: 'Recently profitable', metrics: [] },
+      { id: 'growth', name: 'Growth', score: 9.5, sectorAvg: 6.2, sectorRank: 1, sectorTotal: 6, weight: 0.15, status: 'positive', interpretation: 'Exceptional growth', metrics: [] },
+      { id: 'valuation', name: 'Valuation', score: 5.0, sectorAvg: 6.5, sectorRank: 5, sectorTotal: 6, weight: 0.10, status: 'negative', interpretation: 'Premium valuation', metrics: [] },
+      { id: 'financials', name: 'Financial Health', score: 8.5, sectorAvg: 5.8, sectorRank: 1, sectorTotal: 6, weight: 0.12, status: 'positive', interpretation: 'Strong balance sheet', metrics: [] },
+    ],
+  },
+  // Axis Bank × Priya
+  {
+    stockId: 'axisbank', profileId: 'priya', overallScore: 7.4, sectorAvgScore: 7.2, sectorRank: 2, sectorTotal: 8, verdict: 'BUY', peerRank: 2, peerTotal: 8, peerGroup: 'Private Banks',
+    topSignals: [{ title: 'Solid Bank', description: 'Top 3 private bank', isPositive: true }, { title: 'Good Growth', description: '18% loan growth', isPositive: true }],
+    topConcerns: [{ title: 'NIM Pressure', description: 'Margins under pressure', isPositive: false }],
+    verdictRationale: "Well-run private bank with good growth. Solid addition to any portfolio.",
+    positionSizing: '8-10% of portfolio', entryGuidance: 'Good entry point.',
+    segments: [
+      { id: 'profitability', name: 'Profitability', score: 7.8, sectorAvg: 7.5, sectorRank: 2, sectorTotal: 8, weight: 0.12, status: 'positive', interpretation: 'Good profitability', metrics: [] },
+      { id: 'growth', name: 'Growth', score: 7.5, sectorAvg: 7.0, sectorRank: 2, sectorTotal: 8, weight: 0.12, status: 'positive', interpretation: 'Strong growth', metrics: [] },
+      { id: 'valuation', name: 'Valuation', score: 7.0, sectorAvg: 6.8, sectorRank: 3, sectorTotal: 8, weight: 0.10, status: 'positive', interpretation: 'Fair valuation', metrics: [] },
+      { id: 'financials', name: 'Financial Health', score: 7.5, sectorAvg: 7.2, sectorRank: 3, sectorTotal: 8, weight: 0.12, status: 'positive', interpretation: 'Healthy balance sheet', metrics: [] },
+    ],
+  },
+  // TCS × Priya
+  {
+    stockId: 'tcs', profileId: 'priya', overallScore: 7.0, sectorAvgScore: 6.5, sectorRank: 2, sectorTotal: 5, verdict: 'HOLD', peerRank: 2, peerTotal: 5, peerGroup: 'IT Services',
+    topSignals: [{ title: 'Quality Business', description: 'Best-in-class IT company', isPositive: true }, { title: 'Pays Dividends', description: '1.5% yield', isPositive: true }],
+    topConcerns: [{ title: 'Slow Growth', description: 'Only 7% growth', isPositive: false }],
+    verdictRationale: "Rock-solid company but expensive. Hold if you own, wait for dip to buy.",
+    positionSizing: '5-8% of portfolio', entryGuidance: 'Wait for 5-10% correction.',
+    segments: [
+      { id: 'profitability', name: 'Profitability', score: 9.0, sectorAvg: 8.2, sectorRank: 1, sectorTotal: 5, weight: 0.12, status: 'positive', interpretation: 'Excellent margins', metrics: [] },
+      { id: 'growth', name: 'Growth', score: 5.5, sectorAvg: 6.0, sectorRank: 4, sectorTotal: 5, weight: 0.10, status: 'neutral', interpretation: 'Moderate growth', metrics: [] },
+      { id: 'valuation', name: 'Valuation', score: 6.0, sectorAvg: 6.8, sectorRank: 4, sectorTotal: 5, weight: 0.12, status: 'neutral', interpretation: 'Slightly expensive', metrics: [] },
+      { id: 'financials', name: 'Financial Health', score: 9.5, sectorAvg: 8.0, sectorRank: 1, sectorTotal: 5, weight: 0.12, status: 'positive', interpretation: 'Fortress balance sheet', metrics: [] },
+    ],
+  },
+
+  // ==================== FATIMA (FIRE - Long-term compounder focus) ====================
+  // Zomato × Fatima
+  {
+    stockId: 'zomato', profileId: 'fatima', overallScore: 7.8, sectorAvgScore: 6.1, sectorRank: 1, sectorTotal: 6, verdict: 'BUY', peerRank: 1, peerTotal: 6, peerGroup: 'New Economy',
+    topSignals: [{ title: 'Long Runway', description: '15+ years of growth ahead', isPositive: true }, { title: 'Market Leader', description: 'Dominant in food delivery', isPositive: true }, { title: 'SIP Worthy', description: 'Good for systematic investment', isPositive: true }],
+    topConcerns: [{ title: 'Volatility', description: 'Price swings can be large', isPositive: false }],
+    verdictRationale: "Perfect for long-term wealth building. India's food delivery leader with decades of runway.",
+    positionSizing: '8-10% via SIP', entryGuidance: 'Start SIP immediately, ignore short-term volatility.',
+    segments: [
+      { id: 'profitability', name: 'Profitability', score: 6.5, sectorAvg: 4.2, sectorRank: 2, sectorTotal: 6, weight: 0.12, status: 'neutral', interpretation: 'Improving rapidly', metrics: [] },
+      { id: 'growth', name: 'Growth', score: 9.5, sectorAvg: 6.2, sectorRank: 1, sectorTotal: 6, weight: 0.18, status: 'positive', interpretation: 'Exceptional for compounding', metrics: [] },
+      { id: 'valuation', name: 'Valuation', score: 6.0, sectorAvg: 6.5, sectorRank: 4, sectorTotal: 6, weight: 0.08, status: 'neutral', interpretation: 'Premium but justified', metrics: [] },
+      { id: 'financials', name: 'Financial Health', score: 8.5, sectorAvg: 5.8, sectorRank: 1, sectorTotal: 6, weight: 0.15, status: 'positive', interpretation: 'Strong for long hold', metrics: [] },
+    ],
+  },
+  // Axis Bank × Fatima
+  {
+    stockId: 'axisbank', profileId: 'fatima', overallScore: 7.5, sectorAvgScore: 7.2, sectorRank: 2, sectorTotal: 8, verdict: 'BUY', peerRank: 2, peerTotal: 8, peerGroup: 'Private Banks',
+    topSignals: [{ title: 'Compounding Machine', description: '15%+ ROE sustainable', isPositive: true }, { title: 'Banking Tailwind', description: 'Credit growth story intact', isPositive: true }],
+    topConcerns: [{ title: 'Cyclical Risk', description: 'Banks can be cyclical', isPositive: false }],
+    verdictRationale: "Quality bank that can compound wealth over decades. Core holding for FIRE portfolio.",
+    positionSizing: '10-12% of portfolio', entryGuidance: 'Add via SIP, accumulate on dips.',
+    segments: [
+      { id: 'profitability', name: 'Profitability', score: 7.8, sectorAvg: 7.5, sectorRank: 2, sectorTotal: 8, weight: 0.15, status: 'positive', interpretation: 'Consistent profitability', metrics: [] },
+      { id: 'growth', name: 'Growth', score: 7.5, sectorAvg: 7.0, sectorRank: 2, sectorTotal: 8, weight: 0.15, status: 'positive', interpretation: 'Steady growth', metrics: [] },
+      { id: 'valuation', name: 'Valuation', score: 7.0, sectorAvg: 6.8, sectorRank: 3, sectorTotal: 8, weight: 0.08, status: 'positive', interpretation: 'Reasonable for quality', metrics: [] },
+      { id: 'financials', name: 'Financial Health', score: 7.5, sectorAvg: 7.2, sectorRank: 3, sectorTotal: 8, weight: 0.15, status: 'positive', interpretation: 'Clean book', metrics: [] },
+    ],
+  },
+  // TCS × Fatima
+  {
+    stockId: 'tcs', profileId: 'fatima', overallScore: 7.2, sectorAvgScore: 6.5, sectorRank: 1, sectorTotal: 5, verdict: 'BUY', peerRank: 1, peerTotal: 5, peerGroup: 'IT Services',
+    topSignals: [{ title: 'Dividend Compounder', description: 'Growing dividends for 20+ years', isPositive: true }, { title: 'Recession Resistant', description: 'Essential IT services', isPositive: true }],
+    topConcerns: [{ title: 'Growth Slowing', description: 'Mature business', isPositive: false }],
+    verdictRationale: "Dividend aristocrat with consistent returns. Core holding for steady compounding.",
+    positionSizing: '8-10% of portfolio', entryGuidance: 'Good for lump sum + DRIPs.',
+    segments: [
+      { id: 'profitability', name: 'Profitability', score: 9.0, sectorAvg: 8.2, sectorRank: 1, sectorTotal: 5, weight: 0.15, status: 'positive', interpretation: 'Best-in-class margins', metrics: [] },
+      { id: 'growth', name: 'Growth', score: 5.5, sectorAvg: 6.0, sectorRank: 4, sectorTotal: 5, weight: 0.10, status: 'neutral', interpretation: 'Slow but steady', metrics: [] },
+      { id: 'valuation', name: 'Valuation', score: 6.5, sectorAvg: 6.8, sectorRank: 3, sectorTotal: 5, weight: 0.10, status: 'neutral', interpretation: 'Fair for quality', metrics: [] },
+      { id: 'financials', name: 'Financial Health', score: 9.5, sectorAvg: 8.0, sectorRank: 1, sectorTotal: 5, weight: 0.15, status: 'positive', interpretation: 'Rock solid', metrics: [] },
+    ],
+  },
+
+  // ==================== NIKHIL (NRI - Remote investing, liquidity focus) ====================
+  // Zomato × Nikhil
+  {
+    stockId: 'zomato', profileId: 'nikhil', overallScore: 6.8, sectorAvgScore: 6.1, sectorRank: 2, sectorTotal: 6, verdict: 'HOLD', peerRank: 2, peerTotal: 6, peerGroup: 'New Economy',
+    topSignals: [{ title: 'High Liquidity', description: 'Easy to buy/sell', isPositive: true }, { title: 'India Story', description: 'Pure play on India consumption', isPositive: true }],
+    topConcerns: [{ title: 'Volatility Risk', description: 'Sharp swings when abroad', isPositive: false }, { title: 'No Dividends', description: 'No regular income', isPositive: false }],
+    verdictRationale: "Liquid but volatile. Better suited for India-based investors who can monitor closely.",
+    positionSizing: '3-5% max', entryGuidance: 'Small position only.',
+    segments: [
+      { id: 'profitability', name: 'Profitability', score: 6.5, sectorAvg: 4.2, sectorRank: 2, sectorTotal: 6, weight: 0.10, status: 'neutral', interpretation: 'Improving', metrics: [] },
+      { id: 'growth', name: 'Growth', score: 9.5, sectorAvg: 6.2, sectorRank: 1, sectorTotal: 6, weight: 0.12, status: 'positive', interpretation: 'Strong growth', metrics: [] },
+      { id: 'valuation', name: 'Valuation', score: 5.0, sectorAvg: 6.5, sectorRank: 5, sectorTotal: 6, weight: 0.10, status: 'negative', interpretation: 'Expensive', metrics: [] },
+      { id: 'ownership', name: 'Ownership', score: 7.5, sectorAvg: 6.0, sectorRank: 2, sectorTotal: 6, weight: 0.12, status: 'positive', interpretation: 'FII friendly', metrics: [] },
+    ],
+  },
+  // Axis Bank × Nikhil
+  {
+    stockId: 'axisbank', profileId: 'nikhil', overallScore: 7.8, sectorAvgScore: 7.2, sectorRank: 1, sectorTotal: 8, verdict: 'BUY', peerRank: 1, peerTotal: 8, peerGroup: 'Private Banks',
+    topSignals: [{ title: 'NRI Friendly', description: 'Easy NRE/NRO accounts', isPositive: true }, { title: 'High Liquidity', description: 'Nifty 50 constituent', isPositive: true }, { title: 'Repatriation Easy', description: 'Dividend in USD possible', isPositive: true }],
+    topConcerns: [{ title: 'Currency Risk', description: 'INR depreciation', isPositive: false }],
+    verdictRationale: "Ideal for NRI investors. Liquid, established, easy to manage from abroad.",
+    positionSizing: '10-12% of portfolio', entryGuidance: 'Good core holding.',
+    segments: [
+      { id: 'profitability', name: 'Profitability', score: 7.8, sectorAvg: 7.5, sectorRank: 2, sectorTotal: 8, weight: 0.12, status: 'positive', interpretation: 'Consistent', metrics: [] },
+      { id: 'growth', name: 'Growth', score: 7.5, sectorAvg: 7.0, sectorRank: 2, sectorTotal: 8, weight: 0.12, status: 'positive', interpretation: 'Steady', metrics: [] },
+      { id: 'ownership', name: 'Ownership', score: 8.0, sectorAvg: 7.0, sectorRank: 1, sectorTotal: 8, weight: 0.15, status: 'positive', interpretation: 'FII 52% - liquid', metrics: [] },
+      { id: 'broker', name: 'Broker Ratings', score: 7.5, sectorAvg: 7.0, sectorRank: 3, sectorTotal: 8, weight: 0.10, status: 'positive', interpretation: 'Well covered', metrics: [] },
+    ],
+  },
+  // TCS × Nikhil
+  {
+    stockId: 'tcs', profileId: 'nikhil', overallScore: 8.0, sectorAvgScore: 6.5, sectorRank: 1, sectorTotal: 5, verdict: 'BUY', peerRank: 1, peerTotal: 5, peerGroup: 'IT Services',
+    topSignals: [{ title: 'Perfect for NRIs', description: 'Global business, INR earnings', isPositive: true }, { title: 'Dividend Income', description: 'Regular cash flow', isPositive: true }, { title: 'Most Liquid', description: 'Easy entry/exit', isPositive: true }],
+    topConcerns: [{ title: 'Premium Valuation', description: 'Quality premium', isPositive: false }],
+    verdictRationale: "Best large-cap for NRI investors. Liquid, safe, pays dividends. Ideal core holding.",
+    positionSizing: '12-15% of portfolio', entryGuidance: 'Core holding, buy on any dips.',
+    segments: [
+      { id: 'profitability', name: 'Profitability', score: 9.0, sectorAvg: 8.2, sectorRank: 1, sectorTotal: 5, weight: 0.12, status: 'positive', interpretation: 'Best margins', metrics: [] },
+      { id: 'ownership', name: 'Ownership', score: 9.0, sectorAvg: 7.5, sectorRank: 1, sectorTotal: 5, weight: 0.15, status: 'positive', interpretation: 'High FII, liquid', metrics: [] },
+      { id: 'broker', name: 'Broker Ratings', score: 7.0, sectorAvg: 6.8, sectorRank: 2, sectorTotal: 5, weight: 0.12, status: 'positive', interpretation: 'Global coverage', metrics: [] },
+      { id: 'financials', name: 'Financial Health', score: 9.5, sectorAvg: 8.0, sectorRank: 1, sectorTotal: 5, weight: 0.15, status: 'positive', interpretation: 'Impeccable', metrics: [] },
+    ],
+  },
+
+  // ==================== MEERA (Momentum - Technical/breakout focus) ====================
+  // Zomato × Meera
+  {
+    stockId: 'zomato', profileId: 'meera', overallScore: 8.5, sectorAvgScore: 6.1, sectorRank: 1, sectorTotal: 6, verdict: 'STRONG BUY', peerRank: 1, peerTotal: 6, peerGroup: 'New Economy',
+    topSignals: [{ title: 'Strong Momentum', description: '+115% in 12 months', isPositive: true }, { title: 'Volume Breakout', description: 'Institutional accumulation', isPositive: true }, { title: 'Above All MAs', description: 'Bullish structure', isPositive: true }],
+    topConcerns: [{ title: 'Overbought RSI', description: 'May consolidate', isPositive: false }],
+    verdictRationale: "Momentum darling! Strong technicals, institutional buying. Ride the trend with stops.",
+    positionSizing: '8-10% with strict stop loss', entryGuidance: 'Buy above ₹260 with SL at ₹230.',
+    segments: [
+      { id: 'price', name: 'Price & Volume', score: 9.5, sectorAvg: 6.0, sectorRank: 1, sectorTotal: 6, weight: 0.25, status: 'positive', interpretation: 'Strong breakout', metrics: [] },
+      { id: 'technical', name: 'Technical', score: 9.0, sectorAvg: 5.5, sectorRank: 1, sectorTotal: 6, weight: 0.25, status: 'positive', interpretation: 'Bullish setup', metrics: [] },
+      { id: 'fno', name: 'F&O Activity', score: 8.0, sectorAvg: 5.5, sectorRank: 1, sectorTotal: 6, weight: 0.15, status: 'positive', interpretation: 'Long buildup', metrics: [] },
+      { id: 'growth', name: 'Growth', score: 9.5, sectorAvg: 6.2, sectorRank: 1, sectorTotal: 6, weight: 0.10, status: 'positive', interpretation: 'Supports momentum', metrics: [] },
+    ],
+  },
+  // Axis Bank × Meera
+  {
+    stockId: 'axisbank', profileId: 'meera', overallScore: 6.5, sectorAvgScore: 7.2, sectorRank: 5, sectorTotal: 8, verdict: 'HOLD', peerRank: 5, peerTotal: 8, peerGroup: 'Private Banks',
+    topSignals: [{ title: 'Consolidating', description: 'Range-bound for now', isPositive: false }],
+    topConcerns: [{ title: 'No Momentum', description: 'Sideways action', isPositive: false }, { title: 'Underperforming Sector', description: 'Banking lagging', isPositive: false }],
+    verdictRationale: "No clear momentum. Wait for breakout above ₹1,150 before entering.",
+    positionSizing: 'No position', entryGuidance: 'Add to watchlist, wait for breakout.',
+    segments: [
+      { id: 'price', name: 'Price & Volume', score: 5.5, sectorAvg: 6.5, sectorRank: 6, sectorTotal: 8, weight: 0.25, status: 'neutral', interpretation: 'Sideways', metrics: [] },
+      { id: 'technical', name: 'Technical', score: 5.0, sectorAvg: 6.2, sectorRank: 6, sectorTotal: 8, weight: 0.25, status: 'neutral', interpretation: 'No signal', metrics: [] },
+      { id: 'fno', name: 'F&O Activity', score: 6.0, sectorAvg: 6.2, sectorRank: 4, sectorTotal: 8, weight: 0.15, status: 'neutral', interpretation: 'Mixed signals', metrics: [] },
+      { id: 'growth', name: 'Growth', score: 7.5, sectorAvg: 7.0, sectorRank: 2, sectorTotal: 8, weight: 0.05, status: 'positive', interpretation: 'Decent fundamentals', metrics: [] },
+    ],
+  },
+  // TCS × Meera
+  {
+    stockId: 'tcs', profileId: 'meera', overallScore: 5.2, sectorAvgScore: 6.5, sectorRank: 4, sectorTotal: 5, verdict: 'AVOID', peerRank: 4, peerTotal: 5, peerGroup: 'IT Services',
+    topSignals: [{ title: 'Weak Momentum', description: 'IT sector underperforming', isPositive: false }],
+    topConcerns: [{ title: 'Downtrend', description: 'Below 50-DMA', isPositive: false }, { title: 'No Catalyst', description: 'Boring price action', isPositive: false }],
+    verdictRationale: "No momentum, no trade. IT sector weak. Look elsewhere for momentum plays.",
+    positionSizing: 'No position', entryGuidance: 'Not a momentum candidate.',
+    segments: [
+      { id: 'price', name: 'Price & Volume', score: 4.5, sectorAvg: 6.0, sectorRank: 5, sectorTotal: 5, weight: 0.25, status: 'negative', interpretation: 'Weak', metrics: [] },
+      { id: 'technical', name: 'Technical', score: 4.0, sectorAvg: 5.8, sectorRank: 5, sectorTotal: 5, weight: 0.25, status: 'negative', interpretation: 'Bearish', metrics: [] },
+      { id: 'fno', name: 'F&O Activity', score: 5.0, sectorAvg: 6.2, sectorRank: 4, sectorTotal: 5, weight: 0.15, status: 'neutral', interpretation: 'No conviction', metrics: [] },
+      { id: 'profitability', name: 'Profitability', score: 9.0, sectorAvg: 8.2, sectorRank: 1, sectorTotal: 5, weight: 0.05, status: 'positive', interpretation: 'Great but irrelevant', metrics: [] },
+    ],
+  },
+
+  // ==================== DINESH (Dividend - Income focus) ====================
+  // Zomato × Dinesh
+  {
+    stockId: 'zomato', profileId: 'dinesh', overallScore: 3.5, sectorAvgScore: 6.1, sectorRank: 6, sectorTotal: 6, verdict: 'AVOID', peerRank: 6, peerTotal: 6, peerGroup: 'New Economy',
+    topSignals: [{ title: 'None', description: 'Not suitable for income', isPositive: false }],
+    topConcerns: [{ title: 'Zero Dividends', description: 'No income generation', isPositive: false }, { title: 'No Payout History', description: 'Never paid dividends', isPositive: false }],
+    verdictRationale: "Zero dividends, not for income investors. Look at ITC, Coal India instead.",
+    positionSizing: 'No position', entryGuidance: 'Not suitable for your goals.',
+    segments: [
+      { id: 'profitability', name: 'Profitability', score: 6.5, sectorAvg: 4.2, sectorRank: 2, sectorTotal: 6, weight: 0.20, status: 'neutral', interpretation: 'Just profitable', metrics: [] },
+      { id: 'valuation', name: 'Valuation', score: 2.0, sectorAvg: 6.5, sectorRank: 6, sectorTotal: 6, weight: 0.15, status: 'negative', interpretation: 'No yield', metrics: [] },
+      { id: 'growth', name: 'Growth', score: 9.5, sectorAvg: 6.2, sectorRank: 1, sectorTotal: 6, weight: 0.05, status: 'positive', interpretation: 'Irrelevant for income', metrics: [] },
+      { id: 'income', name: 'Income Statement', score: 5.0, sectorAvg: 5.5, sectorRank: 4, sectorTotal: 6, weight: 0.15, status: 'neutral', interpretation: 'No dividend capacity', metrics: [] },
+    ],
+  },
+  // Axis Bank × Dinesh
+  {
+    stockId: 'axisbank', profileId: 'dinesh', overallScore: 6.8, sectorAvgScore: 7.2, sectorRank: 4, sectorTotal: 8, verdict: 'HOLD', peerRank: 4, peerTotal: 8, peerGroup: 'Private Banks',
+    topSignals: [{ title: 'Dividend Growth', description: 'Increasing payouts', isPositive: true }],
+    topConcerns: [{ title: 'Low Yield', description: 'Only 0.8% yield', isPositive: false }, { title: 'Growth Focus', description: 'Retains earnings', isPositive: false }],
+    verdictRationale: "Growing dividends but low yield. Better options exist for income. Hold if you have.",
+    positionSizing: '5% max', entryGuidance: 'Consider HDFC Bank for better yield.',
+    segments: [
+      { id: 'profitability', name: 'Profitability', score: 7.8, sectorAvg: 7.5, sectorRank: 2, sectorTotal: 8, weight: 0.20, status: 'positive', interpretation: 'Can pay more', metrics: [] },
+      { id: 'valuation', name: 'Valuation', score: 5.5, sectorAvg: 6.8, sectorRank: 6, sectorTotal: 8, weight: 0.15, status: 'neutral', interpretation: 'Low yield', metrics: [] },
+      { id: 'income', name: 'Income Statement', score: 7.5, sectorAvg: 7.2, sectorRank: 2, sectorTotal: 8, weight: 0.15, status: 'positive', interpretation: 'Dividend capacity', metrics: [] },
+      { id: 'balance', name: 'Balance Sheet', score: 7.5, sectorAvg: 7.0, sectorRank: 3, sectorTotal: 8, weight: 0.12, status: 'positive', interpretation: 'Sustainable', metrics: [] },
+    ],
+  },
+  // TCS × Dinesh
+  {
+    stockId: 'tcs', profileId: 'dinesh', overallScore: 8.2, sectorAvgScore: 6.5, sectorRank: 1, sectorTotal: 5, verdict: 'BUY', peerRank: 1, peerTotal: 5, peerGroup: 'IT Services',
+    topSignals: [{ title: 'Dividend Champion', description: '1.5% yield + special dividends', isPositive: true }, { title: '20+ Year Track Record', description: 'Never cut dividends', isPositive: true }, { title: 'Buybacks Too', description: 'Returns cash regularly', isPositive: true }],
+    topConcerns: [{ title: 'Yield Not Highest', description: 'ITC/Coal India pay more', isPositive: false }],
+    verdictRationale: "Best dividend stock in IT. Consistent payouts, occasional special dividends. Core income holding.",
+    positionSizing: '10-12% of portfolio', entryGuidance: 'Buy for dividend income stream.',
+    segments: [
+      { id: 'profitability', name: 'Profitability', score: 9.0, sectorAvg: 8.2, sectorRank: 1, sectorTotal: 5, weight: 0.20, status: 'positive', interpretation: 'Funds dividends', metrics: [] },
+      { id: 'valuation', name: 'Valuation', score: 7.5, sectorAvg: 6.8, sectorRank: 2, sectorTotal: 5, weight: 0.15, status: 'positive', interpretation: 'Good yield for quality', metrics: [] },
+      { id: 'income', name: 'Income Statement', score: 8.5, sectorAvg: 7.0, sectorRank: 1, sectorTotal: 5, weight: 0.15, status: 'positive', interpretation: 'Strong cash generation', metrics: [] },
+      { id: 'balance', name: 'Balance Sheet', score: 9.5, sectorAvg: 8.0, sectorRank: 1, sectorTotal: 5, weight: 0.12, status: 'positive', interpretation: 'Can sustain payouts', metrics: [] },
+    ],
+  },
+
+  // ==================== RAJAN (Retirement - Capital preservation) ====================
+  // Zomato × Rajan
+  {
+    stockId: 'zomato', profileId: 'rajan', overallScore: 2.8, sectorAvgScore: 6.1, sectorRank: 6, sectorTotal: 6, verdict: 'AVOID', peerRank: 6, peerTotal: 6, peerGroup: 'New Economy',
+    topSignals: [{ title: 'None', description: 'Too risky for retirement', isPositive: false }],
+    topConcerns: [{ title: 'High Volatility', description: 'Can drop 30%+ quickly', isPositive: false }, { title: 'No Track Record', description: 'Young company', isPositive: false }, { title: 'No Dividends', description: 'No income', isPositive: false }],
+    verdictRationale: "NOT for retirement corpus. Too volatile, no dividends, no track record. Stick to blue chips.",
+    positionSizing: 'Zero', entryGuidance: 'Avoid completely.',
+    segments: [
+      { id: 'profitability', name: 'Profitability', score: 6.5, sectorAvg: 4.2, sectorRank: 2, sectorTotal: 6, weight: 0.15, status: 'neutral', interpretation: 'Just profitable', metrics: [] },
+      { id: 'financials', name: 'Financial Health', score: 8.5, sectorAvg: 5.8, sectorRank: 1, sectorTotal: 6, weight: 0.18, status: 'positive', interpretation: 'Only positive', metrics: [] },
+      { id: 'valuation', name: 'Valuation', score: 2.0, sectorAvg: 6.5, sectorRank: 6, sectorTotal: 6, weight: 0.15, status: 'negative', interpretation: 'Very expensive', metrics: [] },
+      { id: 'price', name: 'Price Stability', score: 2.0, sectorAvg: 6.0, sectorRank: 6, sectorTotal: 6, weight: 0.15, status: 'negative', interpretation: 'Very volatile', metrics: [] },
+    ],
+  },
+  // Axis Bank × Rajan
+  {
+    stockId: 'axisbank', profileId: 'rajan', overallScore: 7.5, sectorAvgScore: 7.2, sectorRank: 2, sectorTotal: 8, verdict: 'BUY', peerRank: 2, peerTotal: 8, peerGroup: 'Private Banks',
+    topSignals: [{ title: 'Blue Chip Bank', description: 'Top 3 private bank', isPositive: true }, { title: 'Stable Dividends', description: 'Regular payouts', isPositive: true }],
+    topConcerns: [{ title: 'Some Volatility', description: 'Banks can swing', isPositive: false }],
+    verdictRationale: "Suitable for retirement with caution. Blue chip bank, established track record.",
+    positionSizing: '8-10% max', entryGuidance: 'Can buy for stability.',
+    segments: [
+      { id: 'profitability', name: 'Profitability', score: 7.8, sectorAvg: 7.5, sectorRank: 2, sectorTotal: 8, weight: 0.15, status: 'positive', interpretation: 'Consistent', metrics: [] },
+      { id: 'financials', name: 'Financial Health', score: 7.5, sectorAvg: 7.2, sectorRank: 3, sectorTotal: 8, weight: 0.18, status: 'positive', interpretation: 'Sound', metrics: [] },
+      { id: 'ownership', name: 'Ownership', score: 7.5, sectorAvg: 7.0, sectorRank: 2, sectorTotal: 8, weight: 0.15, status: 'positive', interpretation: 'Well governed', metrics: [] },
+      { id: 'broker', name: 'Broker Ratings', score: 7.5, sectorAvg: 7.0, sectorRank: 3, sectorTotal: 8, weight: 0.10, status: 'positive', interpretation: 'Positive outlook', metrics: [] },
+    ],
+  },
+  // TCS × Rajan
+  {
+    stockId: 'tcs', profileId: 'rajan', overallScore: 9.0, sectorAvgScore: 6.5, sectorRank: 1, sectorTotal: 5, verdict: 'STRONG BUY', peerRank: 1, peerTotal: 5, peerGroup: 'IT Services',
+    topSignals: [{ title: 'Perfect for Retirement', description: 'Safe, stable, dividend paying', isPositive: true }, { title: 'Tata Pedigree', description: '50+ year track record', isPositive: true }, { title: 'Low Volatility', description: 'Steady performer', isPositive: true }],
+    topConcerns: [{ title: 'Slower Growth', description: 'But that means stability', isPositive: false }],
+    verdictRationale: "Ideal retirement stock. Safe as it gets in equities. Pays dividends, minimal volatility, Tata governance.",
+    positionSizing: '15-20% of portfolio', entryGuidance: 'Core holding, buy and hold forever.',
+    segments: [
+      { id: 'profitability', name: 'Profitability', score: 9.0, sectorAvg: 8.2, sectorRank: 1, sectorTotal: 5, weight: 0.15, status: 'positive', interpretation: 'Excellent', metrics: [] },
+      { id: 'financials', name: 'Financial Health', score: 9.5, sectorAvg: 8.0, sectorRank: 1, sectorTotal: 5, weight: 0.18, status: 'positive', interpretation: 'Fortress', metrics: [] },
+      { id: 'ownership', name: 'Ownership', score: 9.0, sectorAvg: 7.5, sectorRank: 1, sectorTotal: 5, weight: 0.15, status: 'positive', interpretation: 'Tata governance', metrics: [] },
+      { id: 'valuation', name: 'Valuation', score: 7.0, sectorAvg: 6.8, sectorRank: 2, sectorTotal: 5, weight: 0.12, status: 'positive', interpretation: 'Quality premium OK', metrics: [] },
+    ],
+  },
 ]
 
 // Helper functions

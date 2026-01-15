@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowRight, TrendingUp, Bell, Plus, Search, Flame, Sparkles, ChevronRight } from 'lucide-react'
+import { ArrowRight, TrendingUp, Bell, Plus, Search, Flame, Sparkles, ChevronRight, Trophy, BarChart2 } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { useAppStore } from '@/store/useAppStore'
 import { cn, formatCurrency, formatPercent } from '@/lib/utils'
@@ -13,7 +13,12 @@ import type { Stock, Alert, StockVerdict } from '@/types'
 interface WatchlistItem extends Stock {
   score: number
   verdict: string
+  sectorRank: number
+  sectorTotal: number
+  sectorAvgScore: number
+  verdictPeerGroup: string
   quickInsight?: string
+  topSignal?: string
 }
 
 // Discovery stock (trending or similar)
@@ -25,21 +30,33 @@ interface DiscoveryStock {
   verdict: string
   change: number
   reason: string
+  sectorRank?: number
+  sectorTotal?: number
 }
 
-// Get score color
+// Get score color based on score
 function getScoreColor(score: number): string {
   if (score >= 8) return 'text-success-400'
-  if (score >= 6) return 'text-teal-400'
-  if (score >= 4) return 'text-warning-400'
+  if (score >= 6.5) return 'text-teal-400'
+  if (score >= 5) return 'text-warning-400'
   return 'text-destructive-400'
 }
 
-function getScoreBgColor(score: number): string {
-  if (score >= 8) return 'bg-success-500'
-  if (score >= 6) return 'bg-teal-500'
-  if (score >= 4) return 'bg-warning-500'
-  return 'bg-destructive-500'
+// Get score label for context
+function getScoreLabel(score: number): { label: string; color: string } {
+  if (score >= 8) return { label: 'Strong', color: 'text-success-400' }
+  if (score >= 6.5) return { label: 'Good', color: 'text-teal-400' }
+  if (score >= 5) return { label: 'Fair', color: 'text-warning-400' }
+  return { label: 'Weak', color: 'text-destructive-400' }
+}
+
+// Get rank badge color
+function getRankColor(rank: number, total: number): string {
+  const percentile = ((total - rank + 1) / total) * 100
+  if (percentile >= 80) return 'text-success-400'
+  if (percentile >= 50) return 'text-teal-400'
+  if (percentile >= 30) return 'text-warning-400'
+  return 'text-neutral-400'
 }
 
 // Skeleton component for loading state
@@ -48,7 +65,7 @@ function SkeletonStockCard() {
     <div className="p-4 bg-dark-700/30 rounded-xl border border-white/5 animate-pulse">
       <div className="flex items-start justify-between mb-3">
         <div className="h-5 w-28 bg-dark-600 rounded" />
-        <div className="h-6 w-12 bg-dark-600 rounded" />
+        <div className="h-6 w-16 bg-dark-600 rounded" />
       </div>
       <div className="h-4 w-20 bg-dark-600 rounded mb-2" />
       <div className="h-3 w-full bg-dark-600 rounded" />
@@ -75,7 +92,12 @@ export function Dashboard() {
           ...stock,
           score: verdict?.overallScore || 7.0,
           verdict: verdict?.verdict || 'HOLD',
-          quickInsight: verdict?.topSignals?.[0]?.title || getDefaultInsight(stock, verdict || null),
+          sectorRank: verdict?.sectorRank || 3,
+          sectorTotal: verdict?.sectorTotal || 8,
+          sectorAvgScore: verdict?.sectorAvgScore || 6.5,
+          verdictPeerGroup: verdict?.peerGroup || stock.sector,
+          quickInsight: getDefaultInsight(stock, verdict || null),
+          topSignal: verdict?.topSignals?.[0]?.title,
         }
       })
       setWatchlist(watchlistData)
@@ -84,17 +106,17 @@ export function Dashboard() {
       const profileAlerts = getAlertsForProfile(currentProfile.id)
       setAlerts(profileAlerts.slice(0, 3))
 
-      // Mock trending stocks (would come from API)
+      // Mock trending stocks with sector ranks
       setTrendingStocks([
-        { symbol: 'SWIGGY', name: 'Swiggy', shortName: 'Swiggy', score: 7.8, verdict: 'BUY', change: 4.2, reason: 'IPO momentum continues' },
-        { symbol: 'PAYTM', name: 'One97 Communications', shortName: 'Paytm', score: 6.2, verdict: 'HOLD', change: -1.8, reason: 'Profitability improving' },
-        { symbol: 'NYKAA', name: 'FSN E-Commerce', shortName: 'Nykaa', score: 5.8, verdict: 'HOLD', change: 2.1, reason: 'Beauty segment strong' },
+        { symbol: 'SWIGGY', name: 'Swiggy', shortName: 'Swiggy', score: 7.8, verdict: 'BUY', change: 4.2, reason: 'IPO momentum', sectorRank: 2, sectorTotal: 6 },
+        { symbol: 'PAYTM', name: 'One97', shortName: 'Paytm', score: 6.2, verdict: 'HOLD', change: -1.8, reason: 'Profitability turn', sectorRank: 4, sectorTotal: 6 },
+        { symbol: 'NYKAA', name: 'FSN E-Commerce', shortName: 'Nykaa', score: 5.8, verdict: 'HOLD', change: 2.1, reason: 'Beauty strong', sectorRank: 5, sectorTotal: 6 },
       ])
 
-      // Mock similar stocks based on user's watchlist
+      // Mock similar stocks
       setSimilarStocks([
-        { symbol: 'DMART', name: 'Avenue Supermarts', shortName: 'DMart', score: 8.1, verdict: 'BUY', change: 1.5, reason: 'Similar to your growth picks' },
-        { symbol: 'INFY', name: 'Infosys', shortName: 'Infosys', score: 7.2, verdict: 'BUY', change: 0.8, reason: 'IT sector like TCS' },
+        { symbol: 'DMART', name: 'Avenue Supermarts', shortName: 'DMart', score: 8.1, verdict: 'BUY', change: 1.5, reason: 'Growth pick', sectorRank: 1, sectorTotal: 5 },
+        { symbol: 'INFY', name: 'Infosys', shortName: 'Infosys', score: 7.2, verdict: 'BUY', change: 0.8, reason: 'IT like TCS', sectorRank: 2, sectorTotal: 8 },
       ])
 
       setIsLoading(false)
@@ -159,54 +181,96 @@ export function Dashboard() {
           </div>
         ) : (
           <StaggerContainer className="space-y-3" staggerDelay={0.05} initialDelay={0.1}>
-            {watchlist.map(stock => (
-              <StaggerItem key={stock.symbol}>
-                <Link
-                  to={`/stock/${stock.symbol.toLowerCase()}`}
-                  className="block p-4 bg-dark-700/30 rounded-xl border border-white/5 hover:border-white/10 hover:bg-dark-700/50 transition-all group"
-                >
-                  {/* Top row: Name, Verdict, Score */}
-                  <div className="flex items-start justify-between mb-2">
-                    <div className="flex items-center gap-2">
-                      <span className="font-medium text-white">{stock.name}</span>
-                      <VerdictBadge verdict={stock.verdict} size="sm" animated={false} />
+            {watchlist.map(stock => {
+              const scoreInfo = getScoreLabel(stock.score)
+              const vsSector = stock.score - stock.sectorAvgScore
+
+              return (
+                <StaggerItem key={stock.symbol}>
+                  <Link
+                    to={`/stock/${stock.symbol.toLowerCase()}`}
+                    className="block p-4 bg-dark-700/30 rounded-xl border border-white/5 hover:border-white/10 hover:bg-dark-700/50 transition-all group"
+                  >
+                    {/* Top row: Name, Verdict Badge */}
+                    <div className="flex items-start justify-between mb-2">
+                      <div className="flex items-center gap-2 flex-1 min-w-0">
+                        <span className="font-medium text-white truncate">{stock.name}</span>
+                        <VerdictBadge verdict={stock.verdict} size="sm" animated={false} />
+                      </div>
+                      <ChevronRight className="w-4 h-4 text-neutral-600 group-hover:text-neutral-400 group-hover:translate-x-0.5 transition-all flex-shrink-0 ml-2" />
                     </div>
-                    <div className="flex items-center gap-2">
-                      <span className={cn('text-xl font-bold', getScoreColor(stock.score))}>
-                        {stock.score.toFixed(1)}
+
+                    {/* Score Section - Enhanced */}
+                    <div className="flex items-center gap-4 mb-3">
+                      {/* Score with /10 */}
+                      <div className="flex items-baseline gap-1">
+                        <span className={cn('text-2xl font-bold', getScoreColor(stock.score))}>
+                          {stock.score.toFixed(1)}
+                        </span>
+                        <span className="text-sm text-neutral-500">/10</span>
+                      </div>
+
+                      {/* Vertical divider */}
+                      <div className="w-px h-8 bg-white/10" />
+
+                      {/* Sector Rank */}
+                      <div className="flex items-center gap-1.5">
+                        <Trophy className={cn('w-3.5 h-3.5', getRankColor(stock.sectorRank, stock.sectorTotal))} />
+                        <span className={cn('text-sm font-medium', getRankColor(stock.sectorRank, stock.sectorTotal))}>
+                          #{stock.sectorRank}
+                        </span>
+                        <span className="text-xs text-neutral-500">
+                          of {stock.sectorTotal}
+                        </span>
+                      </div>
+
+                      {/* Vertical divider */}
+                      <div className="w-px h-8 bg-white/10" />
+
+                      {/* vs Sector */}
+                      <div className="flex items-center gap-1">
+                        <BarChart2 className="w-3.5 h-3.5 text-neutral-500" />
+                        <span className={cn(
+                          'text-xs font-medium',
+                          vsSector > 0 ? 'text-success-400' : vsSector < 0 ? 'text-destructive-400' : 'text-neutral-400'
+                        )}>
+                          {vsSector >= 0 ? '+' : ''}{vsSector.toFixed(1)}
+                        </span>
+                        <span className="text-xs text-neutral-500">vs sector</span>
+                      </div>
+                    </div>
+
+                    {/* Price and insight row */}
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <span className="text-sm text-neutral-400">{formatCurrency(stock.currentPrice)}</span>
+                        <span className={cn(
+                          'text-sm font-medium',
+                          stock.changePercent >= 0 ? 'text-success-400' : 'text-destructive-400'
+                        )}>
+                          {stock.changePercent >= 0 ? '+' : ''}{formatPercent(stock.changePercent)}
+                        </span>
+                      </div>
+
+                      {/* Score label */}
+                      <span className={cn('text-xs font-medium px-2 py-0.5 rounded', scoreInfo.color, 'bg-white/5')}>
+                        {scoreInfo.label} {stock.verdictPeerGroup}
                       </span>
-                      <ChevronRight className="w-4 h-4 text-neutral-600 group-hover:text-neutral-400 group-hover:translate-x-0.5 transition-all" />
                     </div>
-                  </div>
 
-                  {/* Price row */}
-                  <div className="flex items-center gap-3 mb-2">
-                    <span className="text-sm text-neutral-400">{formatCurrency(stock.currentPrice)}</span>
-                    <span className={cn(
-                      'text-sm font-medium',
-                      stock.changePercent >= 0 ? 'text-success-400' : 'text-destructive-400'
-                    )}>
-                      {stock.changePercent >= 0 ? '+' : ''}{formatPercent(stock.changePercent)}
-                    </span>
-                    {/* Score bar */}
-                    <div className="flex-1 h-1 bg-dark-600 rounded-full overflow-hidden max-w-[80px]">
-                      <div
-                        className={cn('h-full rounded-full', getScoreBgColor(stock.score))}
-                        style={{ width: `${(stock.score / 10) * 100}%` }}
-                      />
-                    </div>
-                  </div>
-
-                  {/* Insight row */}
-                  {stock.quickInsight && (
-                    <div className="flex items-center gap-1.5">
-                      <Sparkles className="w-3 h-3 text-primary-400 flex-shrink-0" />
-                      <span className="text-xs text-neutral-500 truncate">{stock.quickInsight}</span>
-                    </div>
-                  )}
-                </Link>
-              </StaggerItem>
-            ))}
+                    {/* Top signal insight */}
+                    {stock.topSignal && (
+                      <div className="mt-2 pt-2 border-t border-white/5">
+                        <div className="flex items-center gap-1.5">
+                          <Sparkles className="w-3 h-3 text-primary-400 flex-shrink-0" />
+                          <span className="text-xs text-neutral-400">{stock.topSignal}</span>
+                        </div>
+                      </div>
+                    )}
+                  </Link>
+                </StaggerItem>
+              )
+            })}
           </StaggerContainer>
         )}
       </motion.section>
@@ -241,23 +305,32 @@ export function Dashboard() {
           <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1">
             {isLoading ? (
               <>
-                <div className="w-32 h-20 bg-dark-700 rounded-lg animate-pulse flex-shrink-0" />
-                <div className="w-32 h-20 bg-dark-700 rounded-lg animate-pulse flex-shrink-0" />
-                <div className="w-32 h-20 bg-dark-700 rounded-lg animate-pulse flex-shrink-0" />
+                <div className="w-36 h-24 bg-dark-700 rounded-lg animate-pulse flex-shrink-0" />
+                <div className="w-36 h-24 bg-dark-700 rounded-lg animate-pulse flex-shrink-0" />
+                <div className="w-36 h-24 bg-dark-700 rounded-lg animate-pulse flex-shrink-0" />
               </>
             ) : (
               trendingStocks.map(stock => (
                 <Link
                   key={stock.symbol}
                   to={`/stock/${stock.symbol.toLowerCase()}`}
-                  className="flex-shrink-0 w-32 p-3 bg-dark-700/50 rounded-xl border border-white/5 hover:border-white/10 hover:bg-dark-700 transition-all"
+                  className="flex-shrink-0 w-36 p-3 bg-dark-700/50 rounded-xl border border-white/5 hover:border-white/10 hover:bg-dark-700 transition-all"
                 >
-                  <div className="flex items-center justify-between mb-1">
+                  <div className="flex items-center justify-between mb-1.5">
                     <span className="text-sm font-medium text-white truncate">{stock.shortName}</span>
                     <span className={cn('text-sm font-bold', getScoreColor(stock.score))}>
                       {stock.score.toFixed(1)}
                     </span>
                   </div>
+                  {/* Rank badge */}
+                  {stock.sectorRank && (
+                    <div className="flex items-center gap-1 mb-1.5">
+                      <Trophy className={cn('w-3 h-3', getRankColor(stock.sectorRank, stock.sectorTotal || 6))} />
+                      <span className="text-[10px] text-neutral-400">
+                        #{stock.sectorRank}/{stock.sectorTotal}
+                      </span>
+                    </div>
+                  )}
                   <span className={cn(
                     'text-xs',
                     stock.change >= 0 ? 'text-success-400' : 'text-destructive-400'
@@ -280,22 +353,31 @@ export function Dashboard() {
           <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1">
             {isLoading ? (
               <>
-                <div className="w-32 h-20 bg-dark-700 rounded-lg animate-pulse flex-shrink-0" />
-                <div className="w-32 h-20 bg-dark-700 rounded-lg animate-pulse flex-shrink-0" />
+                <div className="w-36 h-24 bg-dark-700 rounded-lg animate-pulse flex-shrink-0" />
+                <div className="w-36 h-24 bg-dark-700 rounded-lg animate-pulse flex-shrink-0" />
               </>
             ) : (
               similarStocks.map(stock => (
                 <Link
                   key={stock.symbol}
                   to={`/stock/${stock.symbol.toLowerCase()}`}
-                  className="flex-shrink-0 w-32 p-3 bg-dark-700/50 rounded-xl border border-white/5 hover:border-white/10 hover:bg-dark-700 transition-all"
+                  className="flex-shrink-0 w-36 p-3 bg-dark-700/50 rounded-xl border border-white/5 hover:border-white/10 hover:bg-dark-700 transition-all"
                 >
-                  <div className="flex items-center justify-between mb-1">
+                  <div className="flex items-center justify-between mb-1.5">
                     <span className="text-sm font-medium text-white truncate">{stock.shortName}</span>
                     <span className={cn('text-sm font-bold', getScoreColor(stock.score))}>
                       {stock.score.toFixed(1)}
                     </span>
                   </div>
+                  {/* Rank badge */}
+                  {stock.sectorRank && (
+                    <div className="flex items-center gap-1 mb-1.5">
+                      <Trophy className={cn('w-3 h-3', getRankColor(stock.sectorRank, stock.sectorTotal || 6))} />
+                      <span className="text-[10px] text-neutral-400">
+                        #{stock.sectorRank}/{stock.sectorTotal}
+                      </span>
+                    </div>
+                  )}
                   <span className={cn(
                     'text-xs',
                     stock.change >= 0 ? 'text-success-400' : 'text-destructive-400'
