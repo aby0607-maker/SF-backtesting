@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import { ArrowLeft, ExternalLink, Info, ArrowUpRight, ArrowDownRight, Minus, ChevronDown, ChevronUp, TrendingUp, TrendingDown } from 'lucide-react'
+import { ArrowLeft, Info, ArrowUpRight, ArrowDownRight } from 'lucide-react'
 import { useAppStore } from '@/store/useAppStore'
 import { cn, getScoreColor } from '@/lib/utils'
 import { getStockBySymbol, getVerdictForStock } from '@/data'
-import { ScoreRing, RankingBadge, SparklineChart, MetricBar } from '@/components/charts'
+import { ScoreRing, RankingBadge } from '@/components/charts'
+import { EnhancedMetricCard } from '@/components/analysis'
 import { Skeleton } from '@/components/ui'
 import type { SegmentScore, Metric } from '@/types'
 
@@ -14,7 +15,6 @@ export function SegmentDeepDive() {
   const [isLoading, setIsLoading] = useState(true)
   const [segment, setSegment] = useState<SegmentScore | null>(null)
   const [stockName, setStockName] = useState('')
-  const [expandedMetric, setExpandedMetric] = useState<string | null>(null)
 
   useEffect(() => {
     if (!ticker || !segmentId || !currentProfile) return
@@ -88,22 +88,6 @@ export function SegmentDeepDive() {
         </div>
       </div>
     )
-  }
-
-  const toggleMetric = (metricId: string) => {
-    setExpandedMetric(expandedMetric === metricId ? null : metricId)
-  }
-
-  const getComparisonIcon = (comparison?: string) => {
-    if (comparison === 'above') return <ArrowUpRight className="w-4 h-4 text-success-500" />
-    if (comparison === 'below') return <ArrowDownRight className="w-4 h-4 text-destructive-500" />
-    return <Minus className="w-4 h-4 text-neutral-400" />
-  }
-
-  const getTrendIcon = (trend?: string) => {
-    if (trend === 'improving') return <TrendingUp className="w-4 h-4 text-success-500" />
-    if (trend === 'declining') return <TrendingDown className="w-4 h-4 text-destructive-500" />
-    return <Minus className="w-4 h-4 text-neutral-400" />
   }
 
   return (
@@ -208,171 +192,17 @@ export function SegmentDeepDive() {
         </div>
       </div>
 
-      {/* Metrics Section */}
+      {/* Metrics Section - Enhanced with Trend Intelligence */}
       {segment.metrics && segment.metrics.length > 0 && (
         <div className="card">
           <h2 className="text-h4 mb-6">Key Metrics</h2>
           <div className="space-y-4">
             {segment.metrics.map((metric: Metric) => (
-              <div
+              <EnhancedMetricCard
                 key={metric.id}
-                className="rounded-xl border border-neutral-200 overflow-hidden transition-all duration-250 hover:border-neutral-300"
-              >
-                {/* Metric Header - Always visible */}
-                <button
-                  onClick={() => toggleMetric(metric.id)}
-                  className="w-full p-4 flex items-center gap-4 bg-white hover:bg-neutral-50 transition-colors"
-                >
-                  {/* Status indicator */}
-                  <span className={cn(
-                    'w-3 h-3 rounded-full flex-shrink-0',
-                    metric.status === 'excellent' && 'bg-success-500',
-                    metric.status === 'good' && 'bg-success-400',
-                    (metric.status === 'positive') && 'bg-success-400',
-                    (metric.status === 'fair' || metric.status === 'neutral') && 'bg-neutral-400',
-                    (metric.status === 'poor' || metric.status === 'negative') && 'bg-destructive-500'
-                  )} />
-
-                  {/* Metric name and value */}
-                  <div className="flex-1 text-left">
-                    <div className="flex items-center gap-2">
-                      <span className="font-medium text-neutral-900">{metric.name}</span>
-                      {metric.trend && getTrendIcon(metric.trend)}
-                    </div>
-                    {metric.tooltipSimple && (
-                      <p className="text-caption text-neutral-500 mt-0.5">{metric.tooltipSimple}</p>
-                    )}
-                  </div>
-
-                  {/* Value display */}
-                  <div className="flex items-center gap-4">
-                    {/* Mini sparkline if trend data exists */}
-                    {metric.trend5Y && metric.trend5Y.length > 0 && (
-                      <div className="hidden md:block">
-                        <SparklineChart
-                          data={metric.trend5Y}
-                          width={64}
-                          height={24}
-                          showArea
-                        />
-                      </div>
-                    )}
-
-                    {/* Value and comparison */}
-                    <div className="text-right">
-                      <div className="flex items-center gap-2">
-                        <span className="text-h5 font-semibold text-neutral-900">{metric.displayValue}</span>
-                        {metric.comparison && getComparisonIcon(metric.comparison)}
-                      </div>
-                      {metric.sectorAvgDisplay && (
-                        <span className="text-caption text-neutral-500">
-                          Sector: {metric.sectorAvgDisplay}
-                        </span>
-                      )}
-                    </div>
-
-                    {/* Percentile badge */}
-                    {metric.percentile && (
-                      <div className={cn(
-                        'hidden md:flex px-2 py-1 rounded-lg text-caption font-medium',
-                        metric.percentile >= 75 && 'bg-success-100 text-success-700',
-                        metric.percentile >= 50 && metric.percentile < 75 && 'bg-success-50 text-success-600',
-                        metric.percentile >= 25 && metric.percentile < 50 && 'bg-warning-100 text-warning-700',
-                        metric.percentile < 25 && 'bg-destructive-100 text-destructive-700'
-                      )}>
-                        P{metric.percentile}
-                      </div>
-                    )}
-
-                    {/* Expand/collapse icon */}
-                    {expandedMetric === metric.id ? (
-                      <ChevronUp className="w-5 h-5 text-neutral-400" />
-                    ) : (
-                      <ChevronDown className="w-5 h-5 text-neutral-400" />
-                    )}
-                  </div>
-                </button>
-
-                {/* Expanded content */}
-                {expandedMetric === metric.id && (
-                  <div className="px-4 pb-4 bg-neutral-50 animate-fade-in">
-                    <div className="pt-4 border-t border-neutral-200">
-                      {/* Visual comparison bar */}
-                      {typeof metric.value === 'number' && typeof metric.sectorAvg === 'number' && (
-                        <div className="mb-4">
-                          <MetricBar
-                            value={metric.value}
-                            sectorAvg={metric.sectorAvg}
-                            label={metric.name}
-                            unit={metric.unit}
-                          />
-                        </div>
-                      )}
-
-                      {/* 5-Year Trend Chart */}
-                      {metric.trend5Y && metric.trend5Y.length > 0 && (
-                        <div className="mb-4 p-4 bg-white rounded-xl">
-                          <div className="flex items-center justify-between mb-3">
-                            <span className="text-body-sm font-medium text-neutral-700">5-Year Trend</span>
-                            <span className={cn(
-                              'text-caption font-medium flex items-center gap-1',
-                              metric.trend === 'improving' ? 'text-success-600' : metric.trend === 'declining' ? 'text-destructive-500' : 'text-neutral-500'
-                            )}>
-                              {metric.trend === 'improving' && <><TrendingUp className="w-3 h-3" /> Improving</>}
-                              {metric.trend === 'declining' && <><TrendingDown className="w-3 h-3" /> Declining</>}
-                              {metric.trend === 'stable' && 'Stable'}
-                            </span>
-                          </div>
-                          <SparklineChart
-                            data={metric.trend5Y}
-                            width={280}
-                            height={60}
-                            showArea
-                            showDots
-                          />
-                          <div className="flex justify-between mt-2 text-caption text-neutral-400">
-                            <span>5Y Ago</span>
-                            <span>Current</span>
-                          </div>
-                        </div>
-                      )}
-
-                      {/* Advanced tooltip explanation */}
-                      {metric.tooltipAdvanced && (
-                        <div className="mb-4 p-3 bg-white rounded-xl">
-                          <span className="text-caption font-medium text-neutral-500 uppercase tracking-wider">Deep Dive</span>
-                          <p className="text-body-sm text-neutral-700 mt-1">{metric.tooltipAdvanced}</p>
-                        </div>
-                      )}
-
-                      {/* Citation */}
-                      {metric.citation && (
-                        <div className="flex items-center justify-between p-3 bg-white rounded-xl">
-                          <div className="flex-1">
-                            <span className="text-caption font-medium text-neutral-500 uppercase tracking-wider">Source</span>
-                            <p className="text-body-sm text-neutral-700 mt-1">
-                              {metric.citation.document}
-                              {metric.citation.page && `, Page ${metric.citation.page}`}
-                            </p>
-                            <p className="text-caption text-neutral-500">{metric.citation.date}</p>
-                          </div>
-                          {metric.citation.url && (
-                            <a
-                              href={metric.citation.url}
-                              className="btn-ghost text-body-sm flex items-center gap-1"
-                              target="_blank"
-                              rel="noopener noreferrer"
-                            >
-                              <ExternalLink className="w-4 h-4" />
-                              View
-                            </a>
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                )}
-              </div>
+                metric={metric}
+                stockName={stockName}
+              />
             ))}
           </div>
         </div>

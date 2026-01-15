@@ -1,13 +1,21 @@
 import type { StockVerdict, Citation } from '@/types'
 
-// Helper to create citations
-const createCitation = (source: string, document: string, date: string, page?: string): Citation => ({
+// Helper to create citations with proper structure per tech spec
+const createCitation = (
+  source: string,
+  document: string,
+  date: string,
+  page?: string,
+  exactQuote?: string,
+  section?: string
+): Citation => ({
   source,
   document,
   page,
   date,
-  section: 'Financial Statements',
-  url: '#',
+  section: section || 'Financial Statements',
+  exactQuote: exactQuote || `Data sourced from ${document}`,
+  url: `https://www.bseindia.com/stock-share-price/${source.toLowerCase().replace(/\s+/g, '-')}/`,
 })
 
 // 9 Stock × Profile verdict combinations with FULL metrics
@@ -21,9 +29,19 @@ export const verdicts: StockVerdict[] = [
     sectorRank: 1,
     sectorTotal: 6,
     verdict: 'STRONG BUY',
+    verdictColor: 'green',
+    summary: "Exceptional growth story with improving profitability. Best pure-play on India's food economy digitization.",
     peerRank: 1,
     peerTotal: 6,
     peerGroup: 'New Economy',
+    peerRanking: {
+      rank: 1,
+      category: 'New Economy / Food Tech',
+      total: 6,
+      above: [],
+      below: ['Swiggy', 'BigBasket', 'Jubilant FoodWorks', 'Devyani International', 'Westlife Foodworld'],
+      commentary: 'Top-ranked in food tech on growth metrics, despite premium valuation',
+    },
     topSignals: [
       {
         title: 'Revenue Growth 70%+ YoY',
@@ -32,6 +50,8 @@ export const verdicts: StockVerdict[] = [
         value: '70%',
         benchmark: 'Sector avg 25%',
         isPositive: true,
+        whyMatters: 'Key for growth investors - demonstrates market expansion and demand strength',
+        scoreContribution: '+1.8',
       },
       {
         title: 'Path to Profitability Clear',
@@ -40,29 +60,57 @@ export const verdicts: StockVerdict[] = [
         value: '2.1%',
         benchmark: 'Previous: -8%',
         isPositive: true,
+        whyMatters: 'Proves unit economics work at scale - path to sustained profitability visible',
+        scoreContribution: '+1.2',
       },
       {
         title: 'Market Share Dominance',
         description: '#1 in food delivery (55%+ share), #1 in quick commerce',
         isPositive: true,
+        whyMatters: 'Network effects create moat - harder for competitors to displace',
+        scoreContribution: '+0.8',
       },
     ],
     topConcerns: [
-      { title: 'Premium Valuation', description: 'P/S ratio of 12x vs sector avg 6x', isPositive: false },
-      { title: 'Competitive Intensity', description: 'Swiggy, Amazon, BigBasket competing aggressively', isPositive: false },
+      { title: 'Premium Valuation', description: 'P/S ratio of 12x vs sector avg 6x', isPositive: false, whyMatters: 'High expectations baked into price - limited margin for error' },
+      { title: 'Competitive Intensity', description: 'Swiggy, Amazon, BigBasket competing aggressively', isPositive: false, whyMatters: 'May need to sustain high marketing spend, compressing margins' },
     ],
     verdictRationale: "For your growth-focused thesis, Eternal represents the best pure-play on India's food economy digitization. Revenue growth of 70%+ significantly exceeds your 20% threshold.",
-    positionSizing: '8-10% allocation (₹80K-1L of ₹10L portfolio)',
+    positionSizing: {
+      recommendedAllocation: '8-10%',
+      reasoning: 'Your moderate risk tolerance accepts this volatility (35% historical). Current portfolio: 0% in Food Tech - good diversification add.',
+      maxAllocation: '12%',
+      warning: 'Do not exceed 15% given still-thin margins',
+      entryStrategy: 'Start with 5%, add remaining on 10%+ dips',
+    },
     entryGuidance: 'Stock 12% below 52W high. Consider SIP - 50% now, 50% on 10% correction.',
+    entryTiming: {
+      currentPrice: '₹265',
+      fairValueRange: '₹240 - ₹300',
+      suggestion: 'Current price in fair value zone. Moderate entry appropriate.',
+      positionInRange: '55th percentile',
+      assessment: 'MODERATE ENTRY',
+    },
+    portfolioFit: {
+      thesisFit: true,
+      riskFit: true,
+      diversificationFit: true,
+      suggestionText: 'Good fit: Matches growth thesis, adds Food Tech exposure (0% currently), acceptable volatility for your risk profile.',
+    },
     segments: [
       {
-        id: 'profitability', name: 'Profitability', score: 6.5, sectorAvg: 4.2, sectorRank: 2, sectorTotal: 6, weight: 0.10, status: 'neutral',
+        id: 'profitability', name: 'Profitability', score: 6.5, scoreBand: 'yellow', sectorAvg: 4.2, sectorRank: 2, sectorTotal: 6, weight: 0.10, status: 'neutral',
         interpretation: 'Recently turned profitable; margins improving', quickInsight: 'First profitable quarter in Q2 FY25',
+        summaryByProfile: {
+          growth: 'Profitability improving rapidly - key milestone for growth validation',
+          value: 'Thin margins not suitable for value investing yet',
+          beginner: 'Company just started making money - good sign!',
+        },
         metrics: [
-          { id: 'roe', name: 'Return on Equity', value: 3.2, displayValue: '3.2%', unit: '%', sectorAvg: -5.1, sectorAvgDisplay: '-5.1%', comparison: 'above', percentile: 72, status: 'good', trend: 'improving', trend5Y: [-45, -32, -18, -5, 3.2], tooltipSimple: 'How much profit the company makes from shareholder money', citation: createCitation('Annual Report', 'Eternal Ltd FY24', '2024-04-15', '45') },
-          { id: 'npm', name: 'Net Profit Margin', value: 2.1, displayValue: '2.1%', unit: '%', sectorAvg: -8.5, sectorAvgDisplay: '-8.5%', comparison: 'above', percentile: 85, status: 'good', trend: 'improving', trend5Y: [-25, -18, -12, -3, 2.1], tooltipSimple: 'Profit kept from each ₹100 of revenue', citation: createCitation('Q3 Results', 'Eternal Ltd Q3 FY25', '2025-01-14', '12') },
-          { id: 'roce', name: 'Return on Capital', value: 4.8, displayValue: '4.8%', unit: '%', sectorAvg: -2.3, sectorAvgDisplay: '-2.3%', comparison: 'above', percentile: 78, status: 'good', trend: 'improving', trend5Y: [-38, -22, -8, 2, 4.8], tooltipSimple: 'How efficiently the company uses all its capital' },
-          { id: 'opm', name: 'Operating Margin', value: 5.2, displayValue: '5.2%', unit: '%', sectorAvg: -4.2, sectorAvgDisplay: '-4.2%', comparison: 'above', percentile: 82, status: 'good', trend: 'improving', trend5Y: [-20, -15, -8, 1, 5.2], tooltipSimple: 'Profit from core business operations' },
+          { id: 'roe', name: 'Return on Equity', value: 3.2, displayValue: '3.2%', unit: '%', sectorAvg: -5.1, sectorAvgDisplay: '-5.1%', comparison: 'above', percentile: 72, status: 'good', trend: 'improving', trend5Y: [-45, -32, -18, -5, 3.2], tooltipSimple: 'How much profit the company makes from shareholder money', tooltipAdvanced: 'ROE of 3.2% shows first positive returns after years of losses. For growth stocks, trajectory matters more than absolute value.', citation: createCitation('Eternal Ltd', 'Annual Report FY24', '2024-04-15', '45', 'Return on Equity improved to 3.2% from -5.1% in FY23, reflecting operational leverage gains.', 'Standalone Financial Results') },
+          { id: 'npm', name: 'Net Profit Margin', value: 2.1, displayValue: '2.1%', unit: '%', sectorAvg: -8.5, sectorAvgDisplay: '-8.5%', comparison: 'above', percentile: 85, status: 'good', trend: 'improving', trend5Y: [-25, -18, -12, -3, 2.1], tooltipSimple: 'Profit kept from each ₹100 of revenue', tooltipAdvanced: 'Net Margin of 2.1% is the first positive reading in company history. Food delivery contribution margins now positive.', citation: createCitation('Eternal Ltd', 'Q3 Results FY25', '2025-01-14', '12', 'Net Profit Margin of 2.1% achieved through improved take rates and reduced delivery costs.', 'Management Discussion') },
+          { id: 'roce', name: 'Return on Capital', value: 4.8, displayValue: '4.8%', unit: '%', sectorAvg: -2.3, sectorAvgDisplay: '-2.3%', comparison: 'above', percentile: 78, status: 'good', trend: 'improving', trend5Y: [-38, -22, -8, 2, 4.8], tooltipSimple: 'How efficiently the company uses all its capital', tooltipAdvanced: 'ROCE of 4.8% demonstrates improving capital efficiency. Should exceed 10% within 2-3 years if current trajectory holds.', citation: createCitation('Eternal Ltd', 'Annual Report FY24', '2024-04-15', '52', 'Capital employed efficiency improved with ROCE turning positive at 4.8%.', 'Financial Highlights') },
+          { id: 'opm', name: 'Operating Margin', value: 5.2, displayValue: '5.2%', unit: '%', sectorAvg: -4.2, sectorAvgDisplay: '-4.2%', comparison: 'above', percentile: 82, status: 'good', trend: 'improving', trend5Y: [-20, -15, -8, 1, 5.2], tooltipSimple: 'Profit from core business operations', tooltipAdvanced: 'Operating Margin of 5.2% shows food delivery unit economics have turned positive. Blinkit still at lower margins but improving.', citation: createCitation('Eternal Ltd', 'Investor Presentation Q3 FY25', '2025-01-14', '18', 'Adjusted EBITDA margin improved to 5.2% driven by food delivery and going-out segments.', 'Segment Performance') },
         ],
       },
       {
@@ -123,7 +171,20 @@ export const verdicts: StockVerdict[] = [
           { id: 'dii', name: 'DII Holding', value: 18, displayValue: '18%', unit: '%', sectorAvg: 15, sectorAvgDisplay: '15%', comparison: 'above', percentile: 65, status: 'good', trend: 'improving', trend5Y: [12, 14, 15, 17, 18], tooltipSimple: 'Domestic institutional investor ownership' },
         ],
       },
-      { id: 'fno', name: 'F&O Activity', score: 6.8, sectorAvg: 5.5, sectorRank: 2, sectorTotal: 6, weight: 0.05, status: 'neutral', interpretation: 'Moderate OI buildup; neutral sentiment', quickInsight: 'Balanced F&O positioning', metrics: [] },
+      {
+        id: 'fno', name: 'F&O Activity', score: 6.8, scoreBand: 'yellow', sectorAvg: 5.5, sectorRank: 2, sectorTotal: 6, weight: 0.05, status: 'neutral',
+        interpretation: 'Moderate OI buildup; neutral sentiment', quickInsight: 'Balanced F&O positioning',
+        summaryByProfile: {
+          growth: 'F&O data shows institutional interest - positive for liquidity',
+          value: 'Not a primary factor for value investing',
+          beginner: 'This is advanced trading data - you can skip for now',
+        },
+        metrics: [
+          { id: 'oi_change', name: 'Open Interest Change', value: 8.5, displayValue: '+8.5%', unit: '%', sectorAvg: 5.2, sectorAvgDisplay: '+5.2%', comparison: 'above', percentile: 68, status: 'good', trend: 'improving', tooltipSimple: 'Shows how many new futures/options contracts are being opened', tooltipAdvanced: 'Rising OI with rising price indicates fresh long positions being built - bullish signal.', citation: createCitation('NSE', 'F&O Data', '2025-01-14', undefined, 'Open Interest in ZOMATO futures increased by 8.5% in the last trading session.', 'Derivatives Market') },
+          { id: 'pcr', name: 'Put-Call Ratio', value: 0.85, displayValue: '0.85', sectorAvg: 1.1, sectorAvgDisplay: '1.1', comparison: 'above', percentile: 72, status: 'good', trend: 'stable', tooltipSimple: 'Ratio of put options to call options - lower means more bullish bets', tooltipAdvanced: 'PCR of 0.85 indicates more call buying than put buying, suggesting bullish sentiment among options traders.', citation: createCitation('NSE', 'Options Chain Data', '2025-01-14', undefined, 'Put-Call ratio for ZOMATO stands at 0.85, below neutral level of 1.0.', 'Options Market') },
+          { id: 'max_pain', name: 'Max Pain', value: 260, displayValue: '₹260', sectorAvg: 0, sectorAvgDisplay: 'N/A', comparison: 'inline', percentile: 50, status: 'fair', trend: 'stable', tooltipSimple: 'Price where options writers have least losses - often acts as magnet', tooltipAdvanced: 'Max Pain at ₹260 vs CMP of ₹265 suggests stock is slightly above the level where most options expire worthless.', citation: createCitation('NSE', 'Options Expiry Analysis', '2025-01-14', undefined, 'Maximum Pain point for monthly expiry calculated at ₹260.', 'Derivatives Analytics') },
+        ],
+      },
       {
         id: 'income', name: 'Income Statement', score: 8.0, sectorAvg: 5.5, sectorRank: 1, sectorTotal: 6, weight: 0.08, status: 'positive',
         interpretation: 'Revenue scaling; operating leverage kicking in', quickInsight: 'Revenue and profits both growing',

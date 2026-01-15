@@ -323,12 +323,28 @@ export function StockAnalysis() {
         <div className="space-y-3 text-body">
           <div className="flex items-start gap-2">
             <span className="text-gray-500 w-28 flex-shrink-0">Position Size:</span>
-            <span className="text-gray-300">{verdict.positionSizing}</span>
+            <span className="text-gray-300">
+              {typeof verdict.positionSizing === 'string'
+                ? verdict.positionSizing
+                : verdict.positionSizing.recommendedAllocation}
+            </span>
           </div>
+          {typeof verdict.positionSizing === 'object' && verdict.positionSizing.reasoning && (
+            <div className="flex items-start gap-2">
+              <span className="text-gray-500 w-28 flex-shrink-0">Reasoning:</span>
+              <span className="text-gray-300">{verdict.positionSizing.reasoning}</span>
+            </div>
+          )}
           <div className="flex items-start gap-2">
             <span className="text-gray-500 w-28 flex-shrink-0">Entry Strategy:</span>
             <span className="text-gray-300">{verdict.entryGuidance}</span>
           </div>
+          {typeof verdict.positionSizing === 'object' && verdict.positionSizing.warning && (
+            <div className="flex items-start gap-2 text-warning-400">
+              <span className="w-28 flex-shrink-0">Warning:</span>
+              <span>{verdict.positionSizing.warning}</span>
+            </div>
+          )}
         </div>
       </motion.div>
 
