@@ -7,227 +7,289 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Primary brand color (Purple from Figma)
+        // Modern Apple-like primary (Indigo-Purple)
         primary: {
-          50: '#E6D6FD',
-          100: '#C8AEFC',
-          200: '#8B85FA',
-          300: '#985DF9',
-          400: '#6B49F8',
-          500: '#7E5FF7',  // Main primary
-          600: '#712FDE',
-          700: '#5A25B2',
-          800: '#3F1A7C',
-          900: '#26104A',
-          950: '#0C0519',
+          50: '#F5F3FF',
+          100: '#EDE9FE',
+          200: '#DDD6FE',
+          300: '#C4B5FD',
+          400: '#A78BFA',
+          500: '#8B5CF6',
+          600: '#7C3AED',
+          700: '#6D28D9',
+          800: '#5B21B6',
+          900: '#4C1D95',
+          950: '#2E1065',
         },
-        // Morning Glory (Teal - used for success states)
-        teal: {
-          50: '#E2F0F2',
-          100: '#C3F3E5',
-          200: '#A4EED7',
-          300: '#87E8CB',
-          400: '#77E6C4',
-          500: '#69E2B0',
-          600: '#53B597',
-          700: '#3E8971',
-          800: '#2A5A4C',
-          900: '#1F443A',
-          950: '#0A1713',
-        },
-        // Information (Blue)
-        info: {
-          50: '#CCF3EB',
-          100: '#9AE7CF',
-          200: '#67C2FF',
-          300: '#4FBBFF',
-          400: '#1DA4FF',
-          500: '#00C4B8',
-          600: '#0278CC',
-          700: '#015C8A',
-          800: '#003E66',
-          900: '#001F34',
-          950: '#000E1A',
-        },
-        // Success (Green)
+        // Success - Refined emerald
         success: {
-          50: '#CCF3EB',
-          100: '#9AE7CF',
-          200: '#67DDB8',
-          300: '#35D0A0',
-          400: '#02B17A',
-          500: '#00C489',
-          600: '#009DED',
-          700: '#03895F',
-          800: '#004E36',
-          900: '#003D2A',
-          950: '#00271B',
+          50: '#ECFDF5',
+          100: '#D1FAE5',
+          200: '#A7F3D0',
+          300: '#6EE7B7',
+          400: '#34D399',
+          500: '#10B981',
+          600: '#059669',
+          700: '#047857',
+          800: '#065F46',
+          900: '#064E3B',
         },
-        // Warning (Orange)
+        // Warning - Warm amber
         warning: {
-          50: '#FED0B3',
-          100: '#FEB180',
-          200: '#FDA167',
-          300: '#FE8240',
-          400: '#FC721A',
-          500: '#FC6200',
-          600: '#CA4E00',
-          700: '#973B00',
-          800: '#662700',
-          900: '#4C1D00',
-          950: '#321400',
+          50: '#FFFBEB',
+          100: '#FEF3C7',
+          200: '#FDE68A',
+          300: '#FCD34D',
+          400: '#FBBF24',
+          500: '#F59E0B',
+          600: '#D97706',
+          700: '#B45309',
+          800: '#92400E',
+          900: '#78350F',
         },
-        // Destructive (Red)
+        // Destructive - Soft rose
         destructive: {
-          50: '#FEEBEF',
-          100: '#FEB0C1',
-          200: '#FB9EB2',
-          300: '#FA7592',
-          400: '#FB4E73',
-          500: '#F63A63',
-          600: '#C62E4F',
-          700: '#AD2945',
-          800: '#621728',
-          900: '#4A1120',
-          950: '#2B030E',
+          50: '#FFF1F2',
+          100: '#FFE4E6',
+          200: '#FECDD3',
+          300: '#FDA4AF',
+          400: '#FB7185',
+          500: '#F43F5E',
+          600: '#E11D48',
+          700: '#BE123C',
+          800: '#9F1239',
+          900: '#881337',
         },
-        // Neutral (Grays)
+        // Information - Cool blue
+        info: {
+          50: '#EFF6FF',
+          100: '#DBEAFE',
+          200: '#BFDBFE',
+          300: '#93C5FD',
+          400: '#60A5FA',
+          500: '#3B82F6',
+          600: '#2563EB',
+          700: '#1D4ED8',
+          800: '#1E40AF',
+          900: '#1E3A8A',
+        },
+        // Neutral - Cool grays with subtle blue tint
         neutral: {
-          50: '#F9FAFB',
-          100: '#F3F4F6',
-          200: '#E5E7EB',
-          300: '#D1D5DB',
-          400: '#9CA3AF',
-          500: '#6B7280',
-          600: '#4B5563',
-          700: '#374151',
-          800: '#1F2937',
-          900: '#111827',
+          50: '#FAFAFA',
+          100: '#F5F5F5',
+          200: '#E5E5E5',
+          300: '#D4D4D4',
+          400: '#A3A3A3',
+          500: '#737373',
+          600: '#525252',
+          700: '#404040',
+          800: '#262626',
+          900: '#171717',
+          950: '#0A0A0A',
         },
-        // Verdict colors (mapped to design system)
+        // Verdict colors - Clear differentiation
         verdict: {
-          buy: '#00C489',      // Success green
-          hold: '#FC6200',     // Warning orange
-          avoid: '#F63A63',    // Destructive red
+          buy: '#10B981',
+          strongBuy: '#059669',
+          hold: '#F59E0B',
+          strongHold: '#D97706',
+          avoid: '#F43F5E',
         },
-        // Score colors (gradient from red to green)
+        // Score colors - Smooth gradient spectrum
         score: {
-          low: '#F63A63',      // 0-4 (destructive)
-          medium: '#FC6200',   // 4-6 (warning)
-          high: '#00C489',     // 6-8 (success)
-          excellent: '#03895F', // 8-10 (success dark)
+          excellent: '#059669',
+          high: '#10B981',
+          medium: '#F59E0B',
+          low: '#F43F5E',
         },
         // Segment status
         segment: {
-          positive: '#00C489',
-          neutral: '#6B7280',
-          negative: '#F63A63',
+          positive: '#10B981',
+          neutral: '#737373',
+          negative: '#F43F5E',
         },
         // Alert severity
         alert: {
-          critical: '#F63A63',
-          high: '#FC6200',
-          medium: '#FE8240',
-          low: '#00C4B8',
+          critical: '#E11D48',
+          high: '#F59E0B',
+          medium: '#FBBF24',
+          low: '#3B82F6',
         },
-        // Background colors
+        // Surface colors - Apple-like layering
         surface: {
-          DEFAULT: '#ffffff',
-          secondary: '#F9FAFB',
-          tertiary: '#F3F4F6',
+          DEFAULT: '#FFFFFF',
+          secondary: '#FAFAFA',
+          tertiary: '#F5F5F5',
+          elevated: '#FFFFFF',
         },
-        // Text colors
+        // Text colors - Proper hierarchy
         content: {
-          DEFAULT: '#111827',
-          secondary: '#4B5563',
-          tertiary: '#9CA3AF',
+          DEFAULT: '#171717',
+          secondary: '#525252',
+          tertiary: '#A3A3A3',
+          inverse: '#FFFFFF',
         },
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
-        mono: ['JetBrains Mono', 'Menlo', 'monospace'],
+        sans: [
+          'Inter',
+          '-apple-system',
+          'BlinkMacSystemFont',
+          'system-ui',
+          'Segoe UI',
+          'Roboto',
+          'sans-serif',
+        ],
+        mono: ['SF Mono', 'Menlo', 'Monaco', 'Consolas', 'monospace'],
       },
       fontSize: {
-        // From Figma design system
-        'display': ['4rem', { lineHeight: '3.5rem', fontWeight: '700', letterSpacing: '-0.02em' }], // 64px
-        'h1': ['2.5rem', { lineHeight: '3rem', fontWeight: '700' }],      // 40px
-        'h2': ['2.25rem', { lineHeight: '2.75rem', fontWeight: '600' }],  // 36px
-        'h3': ['2rem', { lineHeight: '2.5rem', fontWeight: '600' }],      // 32px
-        'h4': ['1.75rem', { lineHeight: '2.25rem', fontWeight: '600' }],  // 28px
-        'h5': ['1.5rem', { lineHeight: '2rem', fontWeight: '600' }],      // 24px
-        'h6': ['1.25rem', { lineHeight: '1.75rem', fontWeight: '600' }],  // 20px
-        'body-lg': ['1.125rem', { lineHeight: '1.75rem' }],               // 18px
-        'body': ['1rem', { lineHeight: '1.5rem' }],                       // 16px
-        'body-sm': ['0.875rem', { lineHeight: '1.25rem' }],               // 14px
-        'caption': ['0.75rem', { lineHeight: '1rem' }],                   // 12px
+        // Refined Apple-like type scale
+        'display': ['3.5rem', { lineHeight: '1.1', fontWeight: '700', letterSpacing: '-0.025em' }],
+        'h1': ['2.25rem', { lineHeight: '1.2', fontWeight: '700', letterSpacing: '-0.02em' }],
+        'h2': ['1.875rem', { lineHeight: '1.25', fontWeight: '600', letterSpacing: '-0.015em' }],
+        'h3': ['1.5rem', { lineHeight: '1.3', fontWeight: '600', letterSpacing: '-0.01em' }],
+        'h4': ['1.25rem', { lineHeight: '1.4', fontWeight: '600' }],
+        'h5': ['1.125rem', { lineHeight: '1.4', fontWeight: '600' }],
+        'h6': ['1rem', { lineHeight: '1.5', fontWeight: '600' }],
+        'body-lg': ['1.125rem', { lineHeight: '1.6' }],
+        'body': ['1rem', { lineHeight: '1.6' }],
+        'body-sm': ['0.875rem', { lineHeight: '1.5' }],
+        'caption': ['0.75rem', { lineHeight: '1.4' }],
+        'overline': ['0.6875rem', { lineHeight: '1.4', fontWeight: '600', letterSpacing: '0.05em' }],
       },
       spacing: {
-        // From Figma spacing system (4px base)
-        '0.5': '0.125rem',  // 2px
-        '1': '0.25rem',     // 4px
-        '2': '0.5rem',      // 8px
-        '3': '0.75rem',     // 12px
-        '4': '1rem',        // 16px
-        '5': '1.25rem',     // 20px
-        '6': '1.5rem',      // 24px
-        '8': '2rem',        // 32px
-        '10': '2.5rem',     // 40px
-        '12': '3rem',       // 48px
-        '16': '4rem',       // 64px
-        '20': '5rem',       // 80px
-        '24': '6rem',       // 96px
-        '32': '8rem',       // 128px
-        '40': '10rem',      // 160px
-        '48': '12rem',      // 192px
-        '56': '14rem',      // 224px
-        '64': '16rem',      // 256px
+        '0.5': '0.125rem',
+        '1': '0.25rem',
+        '1.5': '0.375rem',
+        '2': '0.5rem',
+        '2.5': '0.625rem',
+        '3': '0.75rem',
+        '3.5': '0.875rem',
+        '4': '1rem',
+        '5': '1.25rem',
+        '6': '1.5rem',
+        '7': '1.75rem',
+        '8': '2rem',
+        '9': '2.25rem',
+        '10': '2.5rem',
+        '11': '2.75rem',
+        '12': '3rem',
+        '14': '3.5rem',
+        '16': '4rem',
+        '20': '5rem',
+        '24': '6rem',
+        '28': '7rem',
+        '32': '8rem',
       },
       borderRadius: {
         'none': '0',
-        'sm': '4px',
-        'DEFAULT': '6px',
-        'md': '8px',
-        'lg': '12px',
-        'xl': '16px',
-        '2xl': '20px',
-        '3xl': '24px',
-        'card': '12px',
-        'button': '8px',
-        'input': '8px',
-        'badge': '6px',
+        'sm': '0.25rem',
+        'DEFAULT': '0.375rem',
+        'md': '0.5rem',
+        'lg': '0.75rem',
+        'xl': '1rem',
+        '2xl': '1.25rem',
+        '3xl': '1.5rem',
+        'card': '1rem',
+        'button': '0.625rem',
+        'input': '0.625rem',
+        'badge': '0.5rem',
         'full': '9999px',
       },
       boxShadow: {
-        'card': '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
-        'card-hover': '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
-        'modal': '0 25px 50px -12px rgb(0 0 0 / 0.25)',
-        'dropdown': '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
-        'purple': '0 4px 14px 0 rgba(126, 95, 247, 0.25)',
+        // Apple-like subtle shadows
+        'xs': '0 1px 2px rgba(0, 0, 0, 0.04)',
+        'sm': '0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04)',
+        'DEFAULT': '0 2px 8px rgba(0, 0, 0, 0.06), 0 1px 4px rgba(0, 0, 0, 0.04)',
+        'md': '0 4px 12px rgba(0, 0, 0, 0.08), 0 2px 6px rgba(0, 0, 0, 0.04)',
+        'lg': '0 8px 24px rgba(0, 0, 0, 0.1), 0 4px 12px rgba(0, 0, 0, 0.05)',
+        'xl': '0 16px 48px rgba(0, 0, 0, 0.12), 0 8px 24px rgba(0, 0, 0, 0.06)',
+        'card': '0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.04)',
+        'card-hover': '0 4px 16px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04)',
+        'modal': '0 24px 64px rgba(0, 0, 0, 0.16), 0 8px 32px rgba(0, 0, 0, 0.08)',
+        'dropdown': '0 8px 24px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.04)',
+        'glow-primary': '0 0 32px rgba(139, 92, 246, 0.3)',
+        'glow-success': '0 0 32px rgba(16, 185, 129, 0.3)',
+        'inner': 'inset 0 2px 4px rgba(0, 0, 0, 0.04)',
+      },
+      backgroundImage: {
+        // Subtle gradients
+        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+        'gradient-subtle': 'linear-gradient(135deg, var(--tw-gradient-stops))',
+        'glass': 'linear-gradient(135deg, rgba(255,255,255,0.9), rgba(255,255,255,0.7))',
+      },
+      backdropBlur: {
+        'xs': '2px',
+        'sm': '4px',
+        'DEFAULT': '8px',
+        'md': '12px',
+        'lg': '16px',
+        'xl': '24px',
       },
       animation: {
-        'fade-in': 'fadeIn 0.2s ease-out',
-        'slide-up': 'slideUp 0.3s ease-out',
-        'slide-down': 'slideDown 0.3s ease-out',
-        'scale-in': 'scaleIn 0.2s ease-out',
-        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'fade-in': 'fadeIn 0.3s ease-out',
+        'fade-up': 'fadeUp 0.4s ease-out',
+        'slide-up': 'slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+        'slide-down': 'slideDown 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+        'slide-left': 'slideLeft 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+        'slide-right': 'slideRight 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+        'scale-in': 'scaleIn 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+        'scale-up': 'scaleUp 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+        'pulse-soft': 'pulseSoft 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'shimmer': 'shimmer 2s linear infinite',
+        'spin-slow': 'spin 3s linear infinite',
       },
       keyframes: {
         fadeIn: {
           '0%': { opacity: '0' },
           '100%': { opacity: '1' },
         },
+        fadeUp: {
+          '0%': { opacity: '0', transform: 'translateY(8px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
         slideUp: {
-          '0%': { transform: 'translateY(10px)', opacity: '0' },
+          '0%': { transform: 'translateY(16px)', opacity: '0' },
           '100%': { transform: 'translateY(0)', opacity: '1' },
         },
         slideDown: {
-          '0%': { transform: 'translateY(-10px)', opacity: '0' },
+          '0%': { transform: 'translateY(-16px)', opacity: '0' },
           '100%': { transform: 'translateY(0)', opacity: '1' },
         },
+        slideLeft: {
+          '0%': { transform: 'translateX(16px)', opacity: '0' },
+          '100%': { transform: 'translateX(0)', opacity: '1' },
+        },
+        slideRight: {
+          '0%': { transform: 'translateX(-16px)', opacity: '0' },
+          '100%': { transform: 'translateX(0)', opacity: '1' },
+        },
         scaleIn: {
-          '0%': { transform: 'scale(0.95)', opacity: '0' },
+          '0%': { transform: 'scale(0.96)', opacity: '0' },
           '100%': { transform: 'scale(1)', opacity: '1' },
         },
+        scaleUp: {
+          '0%': { transform: 'scale(0.9)', opacity: '0' },
+          '100%': { transform: 'scale(1)', opacity: '1' },
+        },
+        pulseSoft: {
+          '0%, 100%': { opacity: '1' },
+          '50%': { opacity: '0.7' },
+        },
+        shimmer: {
+          '0%': { backgroundPosition: '-200% 0' },
+          '100%': { backgroundPosition: '200% 0' },
+        },
+      },
+      transitionTimingFunction: {
+        'apple': 'cubic-bezier(0.25, 0.1, 0.25, 1)',
+        'bounce-in': 'cubic-bezier(0.68, -0.55, 0.265, 1.55)',
+        'smooth': 'cubic-bezier(0.16, 1, 0.3, 1)',
+      },
+      transitionDuration: {
+        '250': '250ms',
+        '350': '350ms',
+        '400': '400ms',
       },
     },
   },

@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowRight, TrendingUp, Bell, BarChart3, Plus } from 'lucide-react'
+import { ArrowRight, TrendingUp, TrendingDown, Bell, BarChart3, Plus, ChevronRight } from 'lucide-react'
 import { useAppStore } from '@/store/useAppStore'
 import { cn, formatCurrency, formatPercent, getVerdictBadgeClass } from '@/lib/utils'
 import { stocks, getAlertsForProfile, getJournalStats, getVerdictForStock } from '@/data'
 import { SkeletonStockRow } from '@/components/ui'
+import { ScoreRing } from '@/components/charts'
 import type { Stock, Alert } from '@/types'
 
 // Watchlist item combining stock and verdict data
@@ -63,27 +64,29 @@ export function Dashboard() {
   const firstName = currentProfile.displayName.split(' ')[1] || currentProfile.name
 
   return (
-    <div className="space-y-6 animate-fade-in">
-      {/* Greeting */}
-      <div>
-        <h1 className="text-h2">
+    <div className="space-y-8 animate-fade-in">
+      {/* Greeting Header */}
+      <div className="pt-2">
+        <h1 className="text-h1 text-neutral-900">
           {getGreeting()}, {firstName}!
         </h1>
-        {currentProfile.patterns[0] && (
-          <p className="text-body text-content-secondary mt-1">
-            {currentProfile.patterns[0].description}
-          </p>
-        )}
+        <p className="text-body text-neutral-500 mt-2">
+          {currentProfile.patterns[0]
+            ? currentProfile.patterns[0].description
+            : `Personalized analysis based on your ${currentProfile.investmentThesis} investment style`}
+        </p>
       </div>
 
       {/* Watchlist */}
       <section className="card">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-h4 flex items-center gap-2">
-            <TrendingUp className="w-5 h-5 text-primary-600" />
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-h4 flex items-center gap-3">
+            <div className="p-2 bg-primary-100 rounded-xl">
+              <TrendingUp className="w-5 h-5 text-primary-600" />
+            </div>
             Your Watchlist
           </h2>
-          <button className="btn-ghost text-body-sm flex items-center gap-1">
+          <button className="btn-ghost text-body-sm">
             <Plus className="w-4 h-4" />
             Add Stock
           </button>
@@ -96,29 +99,47 @@ export function Dashboard() {
             <SkeletonStockRow />
           </div>
         ) : (
-          <div className="space-y-3">
+          <div className="space-y-2">
             {watchlist.map((stock, index) => (
               <Link
                 key={stock.symbol}
                 to={`/stock/${stock.symbol.toLowerCase()}`}
-                className="flex items-center justify-between p-3 -mx-3 rounded-lg hover:bg-surface-secondary transition-colors group animate-fade-in"
+                className="flex items-center gap-4 p-4 -mx-2 rounded-xl hover:bg-neutral-50 transition-all duration-250 group animate-fade-up border border-transparent hover:border-neutral-200"
                 style={{ animationDelay: `${index * 100}ms` }}
               >
-                <div className="flex-1">
-                  <div className="flex items-center gap-2">
-                    <span className="font-medium">{stock.name}</span>
+                {/* Mini Score Ring */}
+                <div className="flex-shrink-0">
+                  <ScoreRing score={stock.score} size="sm" showLabel={false} />
+                </div>
+
+                {/* Stock Info */}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-3">
+                    <span className="font-semibold text-neutral-900">{stock.name}</span>
                     <span className={cn('badge', getVerdictBadgeClass(stock.verdict))}>
-                      {stock.score}/10 {stock.verdict}
+                      {stock.verdict}
                     </span>
                   </div>
-                  <div className="flex items-center gap-3 mt-1 text-body-sm text-content-secondary">
-                    <span>{formatCurrency(stock.currentPrice)}</span>
-                    <span className={stock.changePercent >= 0 ? 'text-verdict-buy' : 'text-verdict-avoid'}>
+                  <div className="flex items-center gap-4 mt-1">
+                    <span className="text-body-sm text-neutral-500">{stock.symbol}</span>
+                    <span className="text-body-sm font-medium text-neutral-700">
+                      {formatCurrency(stock.currentPrice)}
+                    </span>
+                    <span className={cn(
+                      'text-body-sm font-medium flex items-center gap-1',
+                      stock.changePercent >= 0 ? 'text-success-600' : 'text-destructive-500'
+                    )}>
+                      {stock.changePercent >= 0 ? (
+                        <TrendingUp className="w-3 h-3" />
+                      ) : (
+                        <TrendingDown className="w-3 h-3" />
+                      )}
                       {formatPercent(stock.changePercent)}
                     </span>
                   </div>
                 </div>
-                <ArrowRight className="w-5 h-5 text-content-tertiary group-hover:text-primary-600 group-hover:translate-x-1 transition-all" />
+
+                <ChevronRight className="w-5 h-5 text-neutral-300 group-hover:text-primary-500 group-hover:translate-x-1 transition-all" />
               </Link>
             ))}
           </div>
@@ -127,93 +148,115 @@ export function Dashboard() {
 
       {/* Recent Alerts */}
       <section className="card">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-h4 flex items-center gap-2">
-            <Bell className="w-5 h-5 text-primary-600" />
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-h4 flex items-center gap-3">
+            <div className="p-2 bg-warning-100 rounded-xl">
+              <Bell className="w-5 h-5 text-warning-600" />
+            </div>
             Recent Alerts
           </h2>
-          <Link to="/alerts" className="btn-ghost text-body-sm flex items-center gap-1">
+          <Link to="/alerts" className="btn-ghost text-body-sm">
             View All
             <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
 
         {isLoading ? (
-          <div className="space-y-2">
+          <div className="space-y-3">
             {[1, 2, 3].map(i => (
-              <div key={i} className="h-12 bg-neutral-100 rounded animate-pulse" />
+              <div key={i} className="h-16 bg-neutral-100 rounded-xl animate-pulse" />
             ))}
           </div>
         ) : alerts.length > 0 ? (
-          <div className="space-y-2">
+          <div className="space-y-3">
             {alerts.map((alert, index) => (
               <div
                 key={alert.id}
-                className="flex items-start gap-3 p-3 -mx-3 rounded-lg hover:bg-surface-secondary transition-colors animate-fade-in"
+                className="flex items-start gap-4 p-4 rounded-xl bg-neutral-50 hover:bg-neutral-100 transition-colors animate-fade-up cursor-pointer"
                 style={{ animationDelay: `${index * 100}ms` }}
               >
                 <span
                   className={cn(
-                    'w-2 h-2 rounded-full mt-2 flex-shrink-0',
-                    alert.severity === 'critical' && 'bg-alert-critical',
-                    alert.severity === 'high' && 'bg-alert-high',
-                    alert.severity === 'medium' && 'bg-alert-medium',
-                    alert.severity === 'low' && 'bg-alert-low'
+                    'w-3 h-3 rounded-full mt-1.5 flex-shrink-0 ring-4',
+                    alert.severity === 'critical' && 'bg-destructive-500 ring-destructive-100',
+                    alert.severity === 'high' && 'bg-warning-500 ring-warning-100',
+                    alert.severity === 'medium' && 'bg-warning-400 ring-warning-50',
+                    alert.severity === 'low' && 'bg-info-500 ring-info-100'
                   )}
                 />
                 <div className="flex-1 min-w-0">
-                  <span className="text-body-sm font-medium block">{alert.title}</span>
-                  <span className="text-caption text-content-secondary block truncate">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="font-medium text-neutral-900">{alert.title}</span>
+                    {!alert.isRead && (
+                      <span className="w-2 h-2 rounded-full bg-primary-500 flex-shrink-0" />
+                    )}
+                  </div>
+                  <p className="text-body-sm text-neutral-500 mt-1 line-clamp-1">
                     {alert.message}
-                  </span>
+                  </p>
                 </div>
-                {!alert.isRead && (
-                  <span className="w-2 h-2 rounded-full bg-primary-500 flex-shrink-0" />
-                )}
               </div>
             ))}
           </div>
         ) : (
-          <p className="text-body-sm text-content-secondary py-4 text-center">
-            No recent alerts
-          </p>
+          <div className="text-center py-8">
+            <div className="w-12 h-12 rounded-full bg-neutral-100 flex items-center justify-center mx-auto mb-3">
+              <Bell className="w-6 h-6 text-neutral-400" />
+            </div>
+            <p className="text-body-sm text-neutral-500">No recent alerts</p>
+            <p className="text-caption text-neutral-400 mt-1">Your portfolio is in good shape</p>
+          </div>
         )}
       </section>
 
-      {/* Progress */}
+      {/* Progress Stats */}
       <section className="card">
-        <h2 className="text-h4 flex items-center gap-2 mb-4">
-          <BarChart3 className="w-5 h-5 text-primary-600" />
+        <h2 className="text-h4 flex items-center gap-3 mb-6">
+          <div className="p-2 bg-success-100 rounded-xl">
+            <BarChart3 className="w-5 h-5 text-success-600" />
+          </div>
           Your Progress
         </h2>
 
         {isLoading ? (
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[1, 2, 3, 4].map(i => (
-              <div key={i} className="h-20 bg-neutral-100 rounded-lg animate-pulse" />
+              <div key={i} className="h-24 bg-neutral-100 rounded-xl animate-pulse" />
             ))}
           </div>
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="text-center p-3 bg-surface-secondary rounded-lg animate-fade-in">
-              <div className="text-h3 text-primary-600">{journalStats.totalAnalyses}</div>
-              <div className="text-caption text-content-secondary">Stocks Analyzed</div>
+            <div className="stat-card animate-fade-up">
+              <div className="stat-value text-primary-600">{journalStats.totalAnalyses}</div>
+              <div className="stat-label">Stocks Analyzed</div>
             </div>
-            <div className="text-center p-3 bg-surface-secondary rounded-lg animate-fade-in" style={{ animationDelay: '100ms' }}>
-              <div className="text-h3 text-primary-600">{journalStats.wins}</div>
-              <div className="text-caption text-content-secondary">Winning Picks</div>
+            <div className="stat-card animate-fade-up stagger-1">
+              <div className="stat-value text-success-600">{journalStats.wins}</div>
+              <div className="stat-label">Winning Picks</div>
             </div>
-            <div className="text-center p-3 bg-surface-secondary rounded-lg animate-fade-in" style={{ animationDelay: '200ms' }}>
-              <div className="text-h3 text-primary-600">{journalStats.accuracy}%</div>
-              <div className="text-caption text-content-secondary">Accuracy</div>
+            <div className="stat-card animate-fade-up stagger-2">
+              <div className={cn('stat-value', journalStats.accuracy >= 60 ? 'text-success-600' : 'text-warning-600')}>
+                {journalStats.accuracy}%
+              </div>
+              <div className="stat-label">Accuracy Rate</div>
             </div>
-            <div className="text-center p-3 bg-surface-secondary rounded-lg animate-fade-in" style={{ animationDelay: '300ms' }}>
-              <div className="text-h3 text-primary-600">{currentProfile.skillBadge}</div>
-              <div className="text-caption text-content-secondary">Current Level</div>
+            <div className="stat-card animate-fade-up stagger-3">
+              <div className="stat-value text-primary-600">{currentProfile.skillBadge}</div>
+              <div className="stat-label">Current Level</div>
             </div>
           </div>
         )}
       </section>
+
+      {/* Quick Actions */}
+      <div className="flex gap-4">
+        <Link to="/discover" className="btn-primary flex-1 justify-center">
+          Discover Stocks
+        </Link>
+        <Link to="/chat" className="btn-secondary flex-1 justify-center">
+          Ask AI Assistant
+        </Link>
+      </div>
     </div>
   )
 }

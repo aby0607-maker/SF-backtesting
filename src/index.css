@@ -1,33 +1,49 @@
-/* Import Inter font - must be first */
+/* Import Inter font with variable weights */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Base styles */
+/* CSS Variables for theming */
+:root {
+  --radius: 1rem;
+  --transition-fast: 150ms;
+  --transition-normal: 250ms;
+  --transition-slow: 350ms;
+}
+
+/* Base styles - Apple-like refinement */
 @layer base {
   html {
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
   }
 
   body {
-    @apply bg-surface text-content;
+    @apply bg-neutral-50 text-neutral-900;
+    min-height: 100vh;
   }
 
-  /* Focus styles with primary purple */
+  /* Improved focus states */
   *:focus-visible {
-    @apply outline-none ring-2 ring-primary-500 ring-offset-2;
+    @apply outline-none ring-2 ring-primary-500/50 ring-offset-2 ring-offset-white;
+  }
+
+  /* Better selection */
+  ::selection {
+    @apply bg-primary-100 text-primary-900;
   }
 }
 
-/* Custom scrollbar */
+/* Scrollbar - Minimal and refined */
 @layer utilities {
   .scrollbar-thin {
     scrollbar-width: thin;
-    scrollbar-color: #d1d5db transparent;
+    scrollbar-color: rgba(0, 0, 0, 0.1) transparent;
   }
 
   .scrollbar-thin::-webkit-scrollbar {
@@ -40,100 +56,167 @@
   }
 
   .scrollbar-thin::-webkit-scrollbar-thumb {
-    background-color: #d1d5db;
+    background-color: rgba(0, 0, 0, 0.1);
     border-radius: 3px;
   }
 
   .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-    background-color: #9ca3af;
+    background-color: rgba(0, 0, 0, 0.2);
   }
 
-  /* Text gradient for headings */
+  /* Hide scrollbar but keep functionality */
+  .scrollbar-hidden {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hidden::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Text gradients */
   .text-gradient-primary {
-    @apply bg-gradient-to-r from-primary-500 to-primary-700 bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-primary-600 to-primary-400 bg-clip-text text-transparent;
+  }
+
+  .text-gradient-success {
+    @apply bg-gradient-to-r from-success-600 to-success-400 bg-clip-text text-transparent;
+  }
+
+  /* Glass effect */
+  .glass {
+    @apply bg-white/80 backdrop-blur-lg;
+  }
+
+  .glass-subtle {
+    @apply bg-white/60 backdrop-blur-md;
+  }
+
+  /* Shimmer loading effect */
+  .shimmer {
+    background: linear-gradient(
+      90deg,
+      #f5f5f5 0%,
+      #e5e5e5 50%,
+      #f5f5f5 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
   }
 }
 
-/* Component utilities */
+/* Component utilities - Modern and clean */
 @layer components {
-  /* Cards */
+  /* Cards - Elevated with subtle shadow */
   .card {
-    @apply bg-white rounded-card shadow-card p-4;
+    @apply bg-white rounded-card shadow-card p-5;
   }
 
-  .card-hover {
-    @apply transition-shadow duration-200 hover:shadow-card-hover;
+  .card-elevated {
+    @apply bg-white rounded-card shadow-md p-5;
   }
 
   .card-interactive {
-    @apply card card-hover cursor-pointer;
+    @apply card cursor-pointer transition-all duration-250 ease-apple;
   }
 
-  /* Primary button - Purple */
+  .card-interactive:hover {
+    @apply shadow-card-hover -translate-y-0.5;
+  }
+
+  .card-glass {
+    @apply glass rounded-card p-5 border border-white/20;
+  }
+
+  /* Buttons - Refined with better states */
   .btn-primary {
-    @apply bg-primary-500 text-white px-4 py-2 rounded-button font-medium
-           hover:bg-primary-600 active:bg-primary-700
-           shadow-purple hover:shadow-lg
-           transition-all duration-150;
+    @apply inline-flex items-center justify-center gap-2
+           bg-primary-600 text-white
+           px-5 py-2.5 rounded-button font-medium
+           transition-all duration-250 ease-apple
+           hover:bg-primary-500 active:bg-primary-700
+           shadow-sm hover:shadow-md active:shadow-sm
+           disabled:bg-neutral-200 disabled:text-neutral-400 disabled:cursor-not-allowed disabled:shadow-none;
   }
 
-  .btn-primary:disabled {
-    @apply bg-primary-300 cursor-not-allowed shadow-none;
-  }
-
-  /* Secondary button */
   .btn-secondary {
-    @apply bg-surface-tertiary text-content px-4 py-2 rounded-button font-medium
+    @apply inline-flex items-center justify-center gap-2
+           bg-neutral-100 text-neutral-700
+           px-5 py-2.5 rounded-button font-medium
+           transition-all duration-250 ease-apple
            hover:bg-neutral-200 active:bg-neutral-300
-           transition-colors duration-150;
+           disabled:bg-neutral-100 disabled:text-neutral-400 disabled:cursor-not-allowed;
   }
 
-  /* Ghost button */
   .btn-ghost {
-    @apply text-content-secondary px-4 py-2 rounded-button font-medium
-           hover:bg-surface-tertiary active:bg-neutral-200
-           transition-colors duration-150;
+    @apply inline-flex items-center justify-center gap-2
+           text-neutral-600
+           px-4 py-2 rounded-button font-medium
+           transition-all duration-250 ease-apple
+           hover:bg-neutral-100 active:bg-neutral-200;
   }
 
-  /* Outline button */
   .btn-outline {
-    @apply border-2 border-primary-500 text-primary-600 px-4 py-2 rounded-button font-medium
-           hover:bg-primary-50 active:bg-primary-100
-           transition-colors duration-150;
+    @apply inline-flex items-center justify-center gap-2
+           border-2 border-primary-500 text-primary-600
+           px-5 py-2 rounded-button font-medium
+           transition-all duration-250 ease-apple
+           hover:bg-primary-50 active:bg-primary-100;
   }
 
-  /* Input fields */
+  .btn-icon {
+    @apply inline-flex items-center justify-center
+           w-10 h-10 rounded-full
+           text-neutral-500
+           transition-all duration-250 ease-apple
+           hover:bg-neutral-100 hover:text-neutral-700
+           active:bg-neutral-200;
+  }
+
+  /* Input fields - Clean and modern */
   .input {
-    @apply w-full px-3 py-2 border border-neutral-300 rounded-input bg-white
-           focus:border-primary-500 focus:ring-1 focus:ring-primary-500
-           placeholder:text-content-tertiary
-           transition-colors duration-150;
+    @apply w-full px-4 py-3
+           bg-white border border-neutral-200 rounded-input
+           text-neutral-900 placeholder:text-neutral-400
+           transition-all duration-250 ease-apple
+           focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 focus:outline-none;
+  }
+
+  .input-sm {
+    @apply px-3 py-2 text-sm;
   }
 
   .input-error {
-    @apply border-destructive-500 focus:border-destructive-500 focus:ring-destructive-500;
+    @apply border-destructive-500 focus:border-destructive-500 focus:ring-destructive-500/20;
   }
 
-  /* Base badge */
+  /* Badges - Subtle and refined */
   .badge {
-    @apply inline-flex items-center px-2.5 py-0.5 rounded-badge text-body-sm font-medium;
+    @apply inline-flex items-center gap-1.5
+           px-2.5 py-1 rounded-badge
+           text-caption font-medium
+           transition-colors duration-250;
   }
 
   /* Verdict badges */
-  .badge-buy {
-    @apply bg-success-100 text-success-700;
+  .badge-strong-buy {
+    @apply bg-success-100 text-success-700 ring-1 ring-inset ring-success-500/20;
   }
 
-  .badge-strong-buy {
-    @apply bg-success-500 text-white;
+  .badge-buy {
+    @apply bg-success-50 text-success-600;
   }
 
   .badge-hold {
-    @apply bg-warning-100 text-warning-700;
+    @apply bg-warning-100 text-warning-700 ring-1 ring-inset ring-warning-500/20;
+  }
+
+  .badge-strong-hold {
+    @apply bg-warning-200 text-warning-800 ring-1 ring-inset ring-warning-600/20;
   }
 
   .badge-avoid {
-    @apply bg-destructive-100 text-destructive-700;
+    @apply bg-destructive-100 text-destructive-700 ring-1 ring-inset ring-destructive-500/20;
   }
 
   /* Score badges */
@@ -142,7 +225,7 @@
   }
 
   .badge-score-high {
-    @apply bg-teal-100 text-teal-700;
+    @apply bg-success-50 text-success-600;
   }
 
   .badge-score-medium {
@@ -155,7 +238,7 @@
 
   /* Alert badges */
   .badge-alert-critical {
-    @apply bg-destructive-100 text-destructive-700;
+    @apply bg-destructive-100 text-destructive-700 ring-1 ring-inset ring-destructive-500/30;
   }
 
   .badge-alert-high {
@@ -170,7 +253,11 @@
     @apply bg-info-100 text-info-700;
   }
 
-  /* Segment status indicators */
+  /* Segment status dots */
+  .segment-dot {
+    @apply w-2 h-2 rounded-full;
+  }
+
   .segment-positive {
     @apply bg-success-500;
   }
@@ -183,23 +270,117 @@
     @apply bg-destructive-500;
   }
 
-  /* Tab styles */
+  /* Tabs - Clean pill style */
+  .tabs {
+    @apply flex gap-1 p-1 bg-neutral-100 rounded-xl;
+  }
+
   .tab {
-    @apply px-4 py-2 text-body-sm font-medium text-content-secondary
-           rounded-lg transition-colors duration-150;
+    @apply px-4 py-2 text-body-sm font-medium text-neutral-600
+           rounded-lg transition-all duration-250 ease-apple
+           hover:text-neutral-900;
   }
 
   .tab-active {
-    @apply bg-primary-500 text-white;
+    @apply bg-white text-neutral-900 shadow-sm;
   }
 
-  .tab:not(.tab-active):hover {
-    @apply bg-surface-tertiary;
-  }
-
-  /* Link styles */
+  /* Links */
   .link {
-    @apply text-primary-600 hover:text-primary-700 underline-offset-2
-           hover:underline transition-colors duration-150;
+    @apply text-primary-600 font-medium
+           underline-offset-2 decoration-primary-600/30
+           transition-colors duration-250
+           hover:text-primary-700 hover:decoration-primary-600/50
+           hover:underline;
   }
+
+  /* Dividers */
+  .divider {
+    @apply h-px bg-neutral-200;
+  }
+
+  .divider-vertical {
+    @apply w-px bg-neutral-200;
+  }
+
+  /* Score display utilities */
+  .score-excellent { @apply text-success-600; }
+  .score-high { @apply text-success-500; }
+  .score-medium { @apply text-warning-600; }
+  .score-low { @apply text-destructive-500; }
+
+  /* Metric comparison indicators */
+  .metric-above {
+    @apply text-success-600;
+  }
+
+  .metric-below {
+    @apply text-destructive-500;
+  }
+
+  .metric-inline {
+    @apply text-neutral-500;
+  }
+
+  /* Progress bars */
+  .progress-bar {
+    @apply h-2 bg-neutral-100 rounded-full overflow-hidden;
+  }
+
+  .progress-fill {
+    @apply h-full rounded-full transition-all duration-500 ease-smooth;
+  }
+
+  /* Stat cards */
+  .stat-card {
+    @apply flex flex-col items-center justify-center p-4 rounded-xl bg-neutral-50;
+  }
+
+  .stat-value {
+    @apply text-2xl font-semibold text-neutral-900;
+  }
+
+  .stat-label {
+    @apply text-caption text-neutral-500 mt-1;
+  }
+
+  /* List items */
+  .list-item {
+    @apply flex items-center gap-3 p-3 -mx-3 rounded-xl
+           transition-all duration-250 ease-apple
+           hover:bg-neutral-50;
+  }
+
+  .list-item-active {
+    @apply bg-primary-50 hover:bg-primary-50;
+  }
+}
+
+/* Score ring gradient definitions */
+.score-ring-gradient-excellent {
+  --ring-color: #059669;
+}
+
+.score-ring-gradient-high {
+  --ring-color: #10B981;
+}
+
+.score-ring-gradient-medium {
+  --ring-color: #F59E0B;
+}
+
+.score-ring-gradient-low {
+  --ring-color: #F43F5E;
+}
+
+/* Animation utilities */
+@layer utilities {
+  .stagger-1 { animation-delay: 50ms; }
+  .stagger-2 { animation-delay: 100ms; }
+  .stagger-3 { animation-delay: 150ms; }
+  .stagger-4 { animation-delay: 200ms; }
+  .stagger-5 { animation-delay: 250ms; }
+  .stagger-6 { animation-delay: 300ms; }
+  .stagger-7 { animation-delay: 350ms; }
+  .stagger-8 { animation-delay: 400ms; }
 }
