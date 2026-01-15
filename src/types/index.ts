@@ -23,39 +23,45 @@ export interface UserProfile {
 }
 
 // Stock Types
-export type VerdictType = 'STRONG_BUY' | 'BUY' | 'HOLD' | 'AVOID' | 'STRONG_AVOID'
+export type VerdictType = 'STRONG BUY' | 'BUY' | 'HOLD' | 'AVOID' | 'STRONG HOLD'
 
 export interface Stock {
+  id: string
   symbol: string
   name: string
-  displayName: string
   sector: string
   subSector: string
   currentPrice: number
+  previousClose: number
+  change: number
+  changePercent: number
   marketCap: number
+  high52w: number
+  low52w: number
   beta: number
-  fiftyTwoWeekHigh: number
-  fiftyTwoWeekLow: number
-  dayChange: number
-  dayChangePercent: number
+  peerGroup: string[]
 }
 
 export interface StockVerdict {
-  stockSymbol: string
+  stockId: string
   profileId: string
   overallScore: number
   verdict: VerdictType
-  verdictLabel: string
+  verdictLabel?: string
   peerRank: number
   peerTotal: number
-  peerCategory: string
+  peerCategory?: string
+  peerGroup?: string
   topSignals: Signal[]
   topConcerns: Signal[]
   verdictRationale: string
   positionSizing: string
   entryGuidance: string
   segments: SegmentScore[]
-  redFlags: RedFlag[]
+  redFlags?: RedFlag[]
+  riskWarning?: string
+  learningPrompt?: string
+  blindSpotAlert?: string
 }
 
 export interface Signal {
@@ -64,6 +70,7 @@ export interface Signal {
   metric?: string
   value?: string
   benchmark?: string
+  isPositive?: boolean
 }
 
 // Segment Types
@@ -74,7 +81,7 @@ export interface SegmentScore {
   weight: number
   status: 'positive' | 'neutral' | 'negative'
   interpretation: string
-  metrics: Metric[]
+  metrics?: Metric[]
 }
 
 export interface Metric {
