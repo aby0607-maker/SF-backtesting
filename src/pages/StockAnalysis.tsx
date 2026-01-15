@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import { ArrowLeft, Share2, BookmarkPlus, AlertTriangle, TrendingUp, TrendingDown, Sparkles } from 'lucide-react'
+import { ArrowLeft, Share2, BookmarkPlus, AlertTriangle, TrendingUp, TrendingDown, Sparkles, Newspaper, ExternalLink, ChevronRight } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { useAppStore } from '@/store/useAppStore'
 import { cn, formatCurrency, formatPercent } from '@/lib/utils'
 import { getStockBySymbol, getVerdictForStock } from '@/data'
+import { getNewsForStock, type NewsItem } from '@/data/news'
 import { ScoreGauge, VerdictBadge } from '@/components/ui'
 import { SegmentBar } from '@/components/charts'
 import { StaggerContainer, StaggerItem } from '@/components/motion'
@@ -21,6 +22,7 @@ export function StockAnalysis() {
   const [isLoading, setIsLoading] = useState(true)
   const [stock, setStock] = useState<Stock | null>(null)
   const [verdict, setVerdict] = useState<StockVerdict | null>(null)
+  const [news, setNews] = useState<NewsItem[]>([])
 
   useEffect(() => {
     if (!ticker || !currentProfile) return
@@ -31,9 +33,11 @@ export function StockAnalysis() {
     const timer = setTimeout(() => {
       const stockData = getStockBySymbol(ticker)
       const verdictData = getVerdictForStock(ticker, currentProfile.id)
+      const newsData = getNewsForStock(ticker)
 
       setStock(stockData || null)
       setVerdict(verdictData || null)
+      setNews(newsData.slice(0, 5)) // Top 5 news items
       setIsLoading(false)
     }, 500)
 
@@ -308,6 +312,79 @@ export function StockAnalysis() {
           }}
         />
       </motion.div>
+
+      {/* News & Signals Section */}
+      {news.length > 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.55 }}
+          className="card"
+        >
+          <h2 className="text-h4 mb-4 text-white flex items-center gap-2">
+            <Newspaper className="w-5 h-5 text-primary-400" />
+            News & Signals
+          </h2>
+          <div className="space-y-3">
+            {news.map((item) => (
+              <div
+                key={item.id}
+                className={cn(
+                  'p-3 rounded-lg border-l-4 bg-dark-700/50',
+                  item.sentiment === 'positive' && 'border-l-success-500',
+                  item.sentiment === 'negative' && 'border-l-destructive-500',
+                  item.sentiment === 'neutral' && 'border-l-neutral-500'
+                )}
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      {item.sentiment === 'positive' && <TrendingUp className="w-4 h-4 text-success-500" />}
+                      {item.sentiment === 'negative' && <TrendingDown className="w-4 h-4 text-destructive-500" />}
+                      <h4 className="text-white font-medium text-sm">{item.headline}</h4>
+                    </div>
+                    <p className="text-neutral-400 text-xs mb-2">{item.summary}</p>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="text-neutral-500 text-xs">{item.source} • {item.timestamp}</span>
+                      <span className="text-neutral-600">|</span>
+                      <span className="text-xs text-neutral-500">Affects:</span>
+                      {item.impactSegments.slice(0, 3).map((segment, i) => (
+                        <Link
+                          key={i}
+                          to={`/segment/${ticker}/${segment.toLowerCase().replace(/\s+/g, '-')}`}
+                          className="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-primary-500/20 text-primary-400 rounded text-xs hover:bg-primary-500/30 transition-colors"
+                        >
+                          {segment}
+                          <ChevronRight className="w-2.5 h-2.5" />
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                  {item.url && (
+                    <a
+                      href={item.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-neutral-500 hover:text-primary-400 transition-colors p-1"
+                    >
+                      <ExternalLink className="w-4 h-4" />
+                    </a>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="mt-3 pt-3 border-t border-white/10">
+            <Link
+              to="/chat"
+              className="text-sm text-primary-400 hover:text-primary-300 transition-colors flex items-center gap-1"
+            >
+              Ask AI about news impact on {stock.symbol}
+              <ChevronRight className="w-4 h-4" />
+            </Link>
+          </div>
+        </motion.div>
+      )}
 
       {/* Position Guidance - Premium styling */}
       <motion.div
