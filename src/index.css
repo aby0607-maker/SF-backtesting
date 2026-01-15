@@ -1,0 +1,99 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Base styles */
+@layer base {
+  html {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply bg-surface text-content;
+  }
+
+  /* Focus styles */
+  *:focus-visible {
+    @apply outline-none ring-2 ring-primary-500 ring-offset-2;
+  }
+}
+
+/* Custom scrollbar */
+@layer utilities {
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: #d1d5db transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: #d1d5db;
+    border-radius: 3px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background-color: #9ca3af;
+  }
+}
+
+/* Component utilities */
+@layer components {
+  .card {
+    @apply bg-white rounded-card shadow-card p-4;
+  }
+
+  .card-hover {
+    @apply transition-shadow duration-200 hover:shadow-card-hover;
+  }
+
+  .btn-primary {
+    @apply bg-primary-600 text-white px-4 py-2 rounded-button font-medium
+           hover:bg-primary-700 active:bg-primary-800
+           transition-colors duration-150;
+  }
+
+  .btn-secondary {
+    @apply bg-surface-tertiary text-content px-4 py-2 rounded-button font-medium
+           hover:bg-gray-200 active:bg-gray-300
+           transition-colors duration-150;
+  }
+
+  .btn-ghost {
+    @apply text-content-secondary px-4 py-2 rounded-button font-medium
+           hover:bg-surface-tertiary active:bg-gray-200
+           transition-colors duration-150;
+  }
+
+  .input {
+    @apply w-full px-3 py-2 border border-gray-300 rounded-input
+           focus:border-primary-500 focus:ring-1 focus:ring-primary-500
+           placeholder:text-content-tertiary
+           transition-colors duration-150;
+  }
+
+  .badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-badge text-body-sm font-medium;
+  }
+
+  .badge-buy {
+    @apply bg-verdict-buy/10 text-verdict-buy;
+  }
+
+  .badge-hold {
+    @apply bg-verdict-hold/10 text-verdict-hold;
+  }
+
+  .badge-avoid {
+    @apply bg-verdict-avoid/10 text-verdict-avoid;
+  }
+}

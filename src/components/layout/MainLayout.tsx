@@ -1,0 +1,22 @@
+import { Outlet } from 'react-router-dom'
+import { Header } from './Header'
+import { BottomNav } from './BottomNav'
+
+export function MainLayout() {
+  return (
+    <div className="min-h-screen bg-surface-secondary flex flex-col">
+      {/* Header */}
+      <Header />
+
+      {/* Main content */}
+      <main className="flex-1 pb-20">
+        <div className="max-w-7xl mx-auto px-4 py-6">
+          <Outlet />
+        </div>
+      </main>
+
+      {/* Bottom navigation */}
+      <BottomNav />
+    </div>
+  )
+}
