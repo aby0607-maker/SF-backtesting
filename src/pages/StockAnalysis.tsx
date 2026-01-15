@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { useParams, Link, useLocation, useSearchParams } from 'react-router-dom'
-import { ArrowLeft, Share2, BookmarkPlus, AlertTriangle, TrendingUp, TrendingDown, Sparkles, Newspaper, ChevronRight, ChevronDown, ChevronUp, Check, X, AlertCircle, Calendar, LogOut, MessageCircle, GitCompare, UserCheck } from 'lucide-react'
+import { ArrowLeft, Share2, AlertTriangle, TrendingUp, TrendingDown, Sparkles, Newspaper, ChevronRight, ChevronDown, ChevronUp, Check, X, AlertCircle, Calendar, LogOut, GitCompare, UserCheck, History, ShieldCheck, PenLine, BookmarkPlus } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAppStore } from '@/store/useAppStore'
 import { cn, formatCurrency, formatPercent } from '@/lib/utils'
@@ -792,67 +792,108 @@ export function StockAnalysis() {
         )}
       </motion.div>
 
-      {/* ============== ACTIONS ============== */}
+      {/* ============== COMPARE (Primary CTA - Monetization) ============== */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3 }}
+      >
+        <Link
+          to={`/compare?add=${stock.symbol}`}
+          className="block w-full py-3.5 px-5 bg-primary-500 hover:bg-primary-400 text-white rounded-2xl font-medium text-sm transition-colors"
+        >
+          <div className="flex items-center justify-center gap-3">
+            <GitCompare className="w-5 h-5" />
+            <span>Compare with Peers</span>
+            <ChevronRight className="w-4 h-4" />
+          </div>
+          <p className="text-center text-primary-100/70 text-xs mt-1">
+            See how {stock.symbol} stacks up against competitors
+          </p>
+        </Link>
+      </motion.div>
+
+      {/* ============== VALIDATE YOUR DECISION ============== */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.35 }}
-        className="rounded-2xl bg-dark-800 border border-white/5 p-5"
+        className="rounded-2xl bg-dark-800 border border-white/5 p-4"
       >
-        {/* Primary Actions */}
-        <div className="grid grid-cols-2 gap-3 mb-4">
-          <button className="py-2.5 px-4 bg-primary-500 hover:bg-primary-400 text-white rounded-xl font-medium text-sm flex items-center justify-center gap-2 transition-colors">
-            <BookmarkPlus className="w-4 h-4" />
-            Add to Watchlist
-          </button>
-          <Link
-            to="/journal"
-            className="py-2.5 px-4 bg-dark-700 hover:bg-dark-600 text-white rounded-xl font-medium text-sm flex items-center justify-center gap-2 border border-white/10 transition-colors"
-          >
-            <MessageCircle className="w-4 h-4" />
-            Add to Journal
-          </Link>
+        <div className="flex items-center gap-2 mb-3">
+          <ShieldCheck className="w-4 h-4 text-teal-400" />
+          <span className="text-sm font-medium text-white">Validate Your Decision</span>
         </div>
 
-        {/* Secondary Actions */}
-        <div className="grid grid-cols-3 gap-2 mb-4">
+        <div className="grid grid-cols-2 gap-3">
+          {/* Back-Test */}
           <Link
-            to={`/compare?add=${stock.symbol}`}
-            className="flex flex-col items-center gap-1.5 p-3 bg-dark-700/50 rounded-xl hover:bg-dark-700 transition-colors group"
+            to={`/backtest/${stock.symbol}`}
+            className="flex flex-col items-center gap-2 p-4 bg-dark-700/50 rounded-xl border border-white/5 hover:bg-dark-700 hover:border-white/10 transition-all group"
           >
-            <GitCompare className="w-5 h-5 text-neutral-400 group-hover:text-primary-400 transition-colors" />
-            <span className="text-xs text-neutral-400 group-hover:text-white transition-colors">Compare</span>
+            <div className="w-10 h-10 rounded-full bg-teal-500/10 flex items-center justify-center group-hover:bg-teal-500/20 transition-colors">
+              <History className="w-5 h-5 text-teal-400" />
+            </div>
+            <span className="text-sm font-medium text-white">Back-Test</span>
+            <span className="text-[10px] text-neutral-500 text-center">How would this have performed?</span>
           </Link>
+
+          {/* Consult SRA Advisor */}
           <Link
             to="/advisors"
-            className="flex flex-col items-center gap-1.5 p-3 bg-dark-700/50 rounded-xl hover:bg-dark-700 transition-colors group"
+            className="flex flex-col items-center gap-2 p-4 bg-dark-700/50 rounded-xl border border-white/5 hover:bg-dark-700 hover:border-white/10 transition-all group"
           >
-            <UserCheck className="w-5 h-5 text-neutral-400 group-hover:text-primary-400 transition-colors" />
-            <span className="text-xs text-neutral-400 group-hover:text-white transition-colors">Ask Advisor</span>
+            <div className="w-10 h-10 rounded-full bg-primary-500/10 flex items-center justify-center group-hover:bg-primary-500/20 transition-colors">
+              <UserCheck className="w-5 h-5 text-primary-400" />
+            </div>
+            <span className="text-sm font-medium text-white">Consult Advisor</span>
+            <span className="text-[10px] text-neutral-500 text-center">SEBI Registered Experts</span>
           </Link>
-          <button
-            onClick={() => {
-              if (navigator.share) {
-                navigator.share({
-                  title: `${stock.name} Analysis`,
-                  text: `StockFox: ${stock.symbol} Score ${verdict.overallScore}/10 - ${verdict.verdict}`,
-                  url: window.location.href,
-                })
-              } else {
-                navigator.clipboard.writeText(window.location.href)
-              }
-            }}
-            className="flex flex-col items-center gap-1.5 p-3 bg-dark-700/50 rounded-xl hover:bg-dark-700 transition-colors group"
-          >
-            <Share2 className="w-5 h-5 text-neutral-400 group-hover:text-primary-400 transition-colors" />
-            <span className="text-xs text-neutral-400 group-hover:text-white transition-colors">Share</span>
-          </button>
         </div>
+      </motion.div>
 
-        {/* AI CTA */}
+      {/* ============== MORE OPTIONS ============== */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.4 }}
+        className="grid grid-cols-2 gap-3"
+      >
+        <Link
+          to="/journal"
+          className="flex items-center justify-center gap-2 py-3 px-4 bg-dark-800 border border-white/5 rounded-xl hover:bg-dark-700 transition-colors"
+        >
+          <PenLine className="w-4 h-4 text-neutral-400" />
+          <span className="text-sm text-neutral-300">Add to Journal</span>
+        </Link>
+        <button
+          onClick={() => {
+            if (navigator.share) {
+              navigator.share({
+                title: `${stock.name} Analysis`,
+                text: `StockFox: ${stock.symbol} Score ${verdict.overallScore}/10 - ${verdict.verdict}`,
+                url: window.location.href,
+              })
+            } else {
+              navigator.clipboard.writeText(window.location.href)
+            }
+          }}
+          className="flex items-center justify-center gap-2 py-3 px-4 bg-dark-800 border border-white/5 rounded-xl hover:bg-dark-700 transition-colors"
+        >
+          <Share2 className="w-4 h-4 text-neutral-400" />
+          <span className="text-sm text-neutral-300">Share</span>
+        </button>
+      </motion.div>
+
+      {/* ============== ASK AI ============== */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.45 }}
+      >
         <Link
           to="/chat"
-          className="flex items-center justify-center gap-2 w-full py-3 bg-primary-500/10 border border-primary-500/20 rounded-xl text-primary-400 hover:bg-primary-500/20 transition-colors text-sm font-medium"
+          className="flex items-center justify-center gap-2 w-full py-3 bg-dark-800 border border-primary-500/20 rounded-2xl text-primary-400 hover:bg-primary-500/10 transition-colors text-sm font-medium"
         >
           <Sparkles className="w-4 h-4" />
           Ask AI about {stock.symbol}
