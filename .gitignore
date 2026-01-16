@@ -37,3 +37,6 @@ lerna-debug.log*
 # Misc
 .eslintcache
 *.local
+
+# Vite cache
+.vite/
