@@ -130,6 +130,53 @@ export const alerts: Record<string, Alert[]> = {
     },
   ],
 
+  // Priya's alerts - Practical investor, wants clear verdicts
+  priya: [
+    {
+      id: 'alert-priya-1',
+      type: 'score_change',
+      severity: 'medium',
+      stock: 'TCS',
+      title: 'Verdict: Still a BUY',
+      message: 'TCS verdict unchanged after Q3 results. Score: 7.5. Your holding is up 22% - continue holding.',
+      timestamp: '2024-01-15T10:00:00Z',
+      isRead: false,
+      action: 'View quick summary',
+    },
+    {
+      id: 'alert-priya-2',
+      type: 'score_change',
+      severity: 'low',
+      stock: 'HDFCBANK',
+      title: 'HDFC Bank Update',
+      message: 'HDFC Bank maintains BUY verdict. Strong quarterly results. Your position is performing well.',
+      timestamp: '2024-01-14T09:30:00Z',
+      isRead: false,
+      action: 'See verdict',
+    },
+    {
+      id: 'alert-priya-3',
+      type: 'news',
+      severity: 'low',
+      stock: 'AXISBANK',
+      title: 'Watchlist Update',
+      message: 'Axis Bank (on your watchlist) is now rated BUY. Similar profile to your HDFC Bank holding.',
+      timestamp: '2024-01-12T11:00:00Z',
+      isRead: true,
+      action: 'Compare banks',
+    },
+    {
+      id: 'alert-priya-4',
+      type: 'concentration',
+      severity: 'medium',
+      title: 'Portfolio Check',
+      message: 'Your portfolio is 90% in 2 stocks. Consider diversifying when you have time.',
+      timestamp: '2024-01-10T08:00:00Z',
+      isRead: true,
+      action: 'View suggestions',
+    },
+  ],
+
   // Kavya's alerts - Beginner investor (simpler, educational alerts)
   kavya: [
     {
