@@ -137,14 +137,23 @@ const featureClusters = [
   },
 ]
 
-// Key Jobs To Be Done
-const keyJTBD = [
+// Jobs To Be Done - Functional (What to accomplish) & Emotional (How to feel)
+const functionalJTBD = [
   'Get a clear buy/sell verdict in 30 seconds, not hours',
-  'Trust the analysis because every claim is sourced',
-  'Learn to analyze stocks properly, not follow tips blindly',
-  'Know which of my portfolio stocks need attention today',
-  'Find new opportunities matching MY investment style',
+  'Understand every metric without a finance degree',
+  'Find new stocks matching MY investment thesis',
+  'Track portfolio health beyond just P&L',
   'Never miss a red flag or thesis-breaking event',
+  'Build a documented, repeatable investment process',
+]
+
+const emotionalJTBD = [
+  'Feel confident explaining WHY I bought a stock',
+  'Sleep peacefully knowing my portfolio is protected',
+  'Trust the analysis because every claim is sourced',
+  'Feel empowered to make my own decisions, not follow tips',
+  'Reduce anxiety about "what am I missing?"',
+  'Feel proud of becoming a better investor over time',
 ]
 
 // ===== COMPONENTS =====
@@ -403,24 +412,45 @@ function HeroSection() {
           ))}
         </div>
 
-        {/* Key Jobs To Be Done */}
+        {/* Jobs To Be Done - Functional & Emotional */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.6 }}
-          className="bg-dark-800/50 rounded-xl border border-white/5 p-4 mb-4"
+          className="grid md:grid-cols-2 gap-4 mb-4"
         >
-          <h3 className="text-sm font-semibold text-white mb-3 flex items-center gap-2">
-            <Target className="w-4 h-4 text-primary-400" />
-            Jobs We Help You Do
-          </h3>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-2">
-            {keyJTBD.map((jtbd, i) => (
-              <div key={i} className="flex items-start gap-2">
-                <CheckCircle2 className="w-3.5 h-3.5 text-success-400 mt-0.5 flex-shrink-0" />
-                <span className="text-xs text-neutral-300">{jtbd}</span>
-              </div>
-            ))}
+          {/* Functional JTBD */}
+          <div className="bg-dark-800/50 rounded-xl border border-white/5 p-4">
+            <h3 className="text-sm font-semibold text-white mb-3 flex items-center gap-2">
+              <Target className="w-4 h-4 text-primary-400" />
+              <span>What You Can Do</span>
+              <span className="text-[10px] text-neutral-500 font-normal">(Functional)</span>
+            </h3>
+            <div className="space-y-2">
+              {functionalJTBD.map((jtbd, i) => (
+                <div key={i} className="flex items-start gap-2">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-success-400 mt-0.5 flex-shrink-0" />
+                  <span className="text-xs text-neutral-300">{jtbd}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Emotional JTBD */}
+          <div className="bg-gradient-to-br from-purple-500/10 to-primary-500/10 rounded-xl border border-purple-500/20 p-4">
+            <h3 className="text-sm font-semibold text-white mb-3 flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-purple-400" />
+              <span>How You Will Feel</span>
+              <span className="text-[10px] text-neutral-500 font-normal">(Emotional)</span>
+            </h3>
+            <div className="space-y-2">
+              {emotionalJTBD.map((jtbd, i) => (
+                <div key={i} className="flex items-start gap-2">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-purple-400 mt-0.5 flex-shrink-0" />
+                  <span className="text-xs text-neutral-300">{jtbd}</span>
+                </div>
+              ))}
+            </div>
           </div>
         </motion.div>
 
