@@ -393,6 +393,92 @@ export const featureSpotlights: FeatureSpotlight[] = [
     targetElement: 'nav-alerts',
   },
 
+  // ===== PORTFOLIO PAGE - Ordered top to bottom =====
+
+  // 1. Portfolio Summary
+  {
+    id: 'portfolio-summary',
+    featureName: 'Smart Portfolio Overview',
+    jtbd: 'See my complete portfolio health at a glance - not just P&L',
+    principles: ['comprehensive', 'fast'],
+    competitiveAdvantage: 'Brokerage apps show P&L only. StockFox shows total value, returns vs benchmark (Nifty), alpha generation, and portfolio beta - giving you a complete picture in 5 seconds',
+    userOutcome: 'Instantly know if your portfolio is beating the market and how much risk you are taking',
+    location: 'portfolio',
+    targetElement: 'portfolio-summary',
+  },
+
+  // 2. Portfolio Health Score
+  {
+    id: 'health-score',
+    featureName: 'Portfolio Health Score',
+    jtbd: 'Know if my portfolio is healthy across multiple dimensions',
+    principles: ['comprehensive', 'personalization'],
+    competitiveAdvantage: 'No other platform scores your portfolio health. StockFox analyzes 4 key dimensions: Diversification, Quality Score, Risk-Adjusted Returns, and Thesis Alignment - personalized to YOUR profile',
+    userOutcome: 'See your portfolio health score (7.5/10) with specific areas to improve - not just raw numbers',
+    location: 'portfolio',
+    targetElement: 'health-score',
+  },
+
+  // 3. Sector Exposure
+  {
+    id: 'sector-exposure',
+    featureName: 'Sector Exposure Analysis',
+    jtbd: 'Understand my sector concentration and diversification',
+    principles: ['comprehensive', 'educational'],
+    competitiveAdvantage: 'Most platforms just list holdings. StockFox shows sector allocation with visual breakdown and warns when you are over-exposed to any single sector',
+    userOutcome: 'See instantly that you have 45% in Banking - decide if that matches your thesis',
+    location: 'portfolio',
+    targetElement: 'sector-exposure',
+  },
+
+  // 4. Concentration Alert
+  {
+    id: 'concentration-alert',
+    featureName: 'Smart Concentration Alerts',
+    jtbd: 'Get warned before concentration risk hurts me',
+    principles: ['personalization', 'educational'],
+    competitiveAdvantage: 'Brokerage apps never warn about position sizing. StockFox alerts when any single stock exceeds safe thresholds based on YOUR risk tolerance',
+    userOutcome: 'Know immediately when your top holding is too large and why it matters for your risk profile',
+    location: 'portfolio',
+    targetElement: 'concentration-alert',
+  },
+
+  // 5. Holdings with StockFox Scores
+  {
+    id: 'holdings-list',
+    featureName: 'Scored Holdings View',
+    jtbd: 'See StockFox analysis for every stock I own',
+    principles: ['comprehensive', 'fast'],
+    competitiveAdvantage: 'Traditional portfolio views show price only. StockFox shows the current score, verdict, and sector for each holding - so you know which positions need attention',
+    userOutcome: 'Spot that your ZOMATO holding is STRONG BUY at 8.2/10 while COALINDIA is just HOLD at 6.5/10',
+    location: 'portfolio',
+    targetElement: 'holdings-list',
+  },
+
+  // 6. Individual Holding Card
+  {
+    id: 'holding-card',
+    featureName: 'Quick Holding Analysis',
+    jtbd: 'Quickly assess any holding without leaving the portfolio view',
+    principles: ['fast', 'simplicity'],
+    competitiveAdvantage: 'Click through to see the full analysis. Each holding shows P&L, allocation, sector, StockFox score, and current verdict - everything you need to make a decision',
+    userOutcome: 'Decide in 10 seconds whether to review a position or leave it alone',
+    location: 'portfolio',
+    targetElement: 'holding-card',
+  },
+
+  // 7. AI Rebalancing Suggestions
+  {
+    id: 'rebalancing-suggestions',
+    featureName: 'AI Rebalancing Suggestions',
+    jtbd: 'Get personalized guidance on how to improve my portfolio',
+    principles: ['personalization', 'educational'],
+    competitiveAdvantage: 'No platform provides rebalancing advice. StockFox AI suggests specific actions based on your 6D profile - "Consider reducing ZOMATO from 45% to below 30%" with reasoning',
+    userOutcome: 'Know exactly what changes to make and why - tuned to your investment thesis and risk tolerance',
+    location: 'portfolio',
+    targetElement: 'rebalancing-suggestions',
+  },
+
   // ===== SEGMENT DEEP DIVE PAGE - Ordered top to bottom =====
 
   // 1. Sector Anchoring (Rank, Average, vs Sector) - TOP
