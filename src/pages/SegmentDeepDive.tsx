@@ -43,6 +43,22 @@ function SegmentEvidencePanel({
         <span className="text-sm font-medium text-white">How We Scored {segment.name}</span>
       </div>
 
+      {/* Score & Rank Justification */}
+      {(segment.scoreJustification || segment.rankJustification) && (
+        <div className="mb-3 space-y-2">
+          {segment.scoreJustification && (
+            <div className="p-2.5 rounded-lg bg-gradient-to-r from-primary-500/10 to-transparent border border-primary-500/15">
+              <p className="text-[11px] text-neutral-300 leading-relaxed">{segment.scoreJustification}</p>
+            </div>
+          )}
+          {segment.rankJustification && (
+            <div className="p-2.5 rounded-lg bg-gradient-to-r from-info-500/10 to-transparent border border-info-500/15">
+              <p className="text-[11px] text-neutral-300 leading-relaxed">{segment.rankJustification}</p>
+            </div>
+          )}
+        </div>
+      )}
+
       {/* 3-Layer Summary Grid */}
       <div className="grid grid-cols-3 gap-2 text-[10px]">
         {/* Level 1: Data Sources */}

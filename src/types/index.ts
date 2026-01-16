@@ -120,6 +120,10 @@ export interface StockVerdict {
   topSignals: Signal[]
   topConcerns: Signal[]
   verdictRationale: string
+  // Score/Rank/Verdict Justifications (2-3 line explainers)
+  scoreJustification?: string  // Why is the score X/10
+  rankJustification?: string   // Why ranked #X of Y peers
+  verdictJustification?: string // Why this verdict (Strong Buy, Buy, etc.)
   positionSizing: string | PositionSizingDetails
   entryGuidance: string
   entryTiming?: EntryTimingDetails
@@ -163,6 +167,9 @@ export interface SegmentScore {
   quickInsight?: string
   metrics?: Metric[]
   summaryByProfile?: Record<string, string>
+  // Score/Rank Justifications (2-3 line explainers)
+  scoreJustification?: string  // Why segment scored X/10
+  rankJustification?: string   // Why ranked #X in sector
 }
 
 export interface Metric {

@@ -1018,6 +1018,118 @@ export const verdicts: StockVerdict[] = [
   },
 ]
 
+// ==================== JUSTIFICATION GENERATOR ====================
+// Generates 2-3 line explainers for score, rank, and verdict based on data
+
+function generateScoreJustification(verdict: StockVerdict): string {
+  const { overallScore, sectorAvgScore, topSignals, topConcerns } = verdict
+  const diff = overallScore - (sectorAvgScore || 6)
+  const topSignal = topSignals[0]?.title || 'solid fundamentals'
+  const topConcern = topConcerns[0]?.title || 'limited concerns'
+
+  if (overallScore >= 8) {
+    return `Score of ${overallScore.toFixed(1)}/10 reflects exceptional performance across key metrics. ${topSignal} is the primary driver, contributing ${topSignals[0]?.scoreContribution || '+1.5'} points. This places it ${Math.abs(diff).toFixed(1)} points above sector average.`
+  } else if (overallScore >= 6.5) {
+    return `Score of ${overallScore.toFixed(1)}/10 indicates above-average quality. Strength in ${topSignal.toLowerCase()} balanced by ${topConcern.toLowerCase()}. Performance is ${diff > 0 ? `${diff.toFixed(1)} points above` : `${Math.abs(diff).toFixed(1)} points below`} sector average.`
+  } else if (overallScore >= 5) {
+    return `Score of ${overallScore.toFixed(1)}/10 reflects neutral positioning with mixed signals. ${topConcern} is the key factor limiting upside. Current performance is ${Math.abs(diff).toFixed(1)} points ${diff >= 0 ? 'above' : 'below'} the sector benchmark.`
+  } else {
+    return `Score of ${overallScore.toFixed(1)}/10 indicates significant concerns outweigh positives. ${topConcern} is the primary drag on score. This is ${Math.abs(diff).toFixed(1)} points below sector average, suggesting better alternatives exist.`
+  }
+}
+
+function generateRankJustification(verdict: StockVerdict): string {
+  const { peerRank, peerTotal, peerGroup, overallScore, topSignals, topConcerns } = verdict
+  const percentile = Math.round((1 - (peerRank - 1) / (peerTotal - 1)) * 100)
+
+  if (peerRank === 1) {
+    return `Ranked #1 of ${peerTotal} in ${peerGroup} (top percentile). Outperforms peers on ${topSignals[0]?.title?.toLowerCase() || 'key metrics'}, with a ${(overallScore - (verdict.sectorAvgScore || 6)).toFixed(1)} point edge over sector average. Best-in-class choice for this category.`
+  } else if (peerRank <= Math.ceil(peerTotal / 3)) {
+    return `Ranked #${peerRank} of ${peerTotal} in ${peerGroup} (top ${percentile}th percentile). Strong position driven by ${topSignals[0]?.title?.toLowerCase() || 'solid fundamentals'}. Minor gap to leader on ${topConcerns[0]?.title?.toLowerCase() || 'select metrics'}.`
+  } else if (peerRank <= Math.ceil(peerTotal * 2 / 3)) {
+    return `Ranked #${peerRank} of ${peerTotal} in ${peerGroup} (middle tier). Competitive on ${topSignals[0]?.title?.toLowerCase() || 'some metrics'}, but trails leaders on ${topConcerns[0]?.title?.toLowerCase() || 'key areas'}. Room for improvement exists.`
+  } else {
+    return `Ranked #${peerRank} of ${peerTotal} in ${peerGroup} (bottom tier). Underperforms peers primarily due to ${topConcerns[0]?.title?.toLowerCase() || 'weak fundamentals'}. Consider stronger alternatives in this space.`
+  }
+}
+
+function generateVerdictJustification(verdict: StockVerdict): string {
+  const { verdict: v, overallScore, peerRank, peerTotal, topSignals, topConcerns, verdictRationale } = verdict
+  const topSignal = topSignals[0]?.title || 'solid fundamentals'
+  const topConcern = topConcerns[0]?.title || 'limited concerns'
+
+  switch (v) {
+    case 'STRONG BUY':
+      return `STRONG BUY: Score of ${overallScore.toFixed(1)}/10 combined with #${peerRank}/${peerTotal} peer ranking makes this a high-conviction pick. ${topSignal} and favorable risk/reward support aggressive allocation within position limits.`
+    case 'BUY':
+      return `BUY: Score of ${overallScore.toFixed(1)}/10 with solid peer positioning (#${peerRank}/${peerTotal}) warrants inclusion in portfolio. ${topSignal} provides upside potential, while ${topConcern.toLowerCase()} requires monitoring.`
+    case 'HOLD':
+      return `HOLD: Score of ${overallScore.toFixed(1)}/10 suggests neutral stance. ${topSignal.toLowerCase()} is encouraging, but ${topConcern.toLowerCase()} limits near-term catalysts. Maintain existing positions; await better entry for new positions.`
+    case 'AVOID':
+      return `AVOID: Score of ${overallScore.toFixed(1)}/10 and #${peerRank}/${peerTotal} peer ranking signal unfavorable risk/reward. ${topConcern} is the primary concern. Better opportunities exist in this space.`
+    case 'STRONG HOLD':
+      return `STRONG HOLD: Score of ${overallScore.toFixed(1)}/10 indicates patience required. Current ${topConcern.toLowerCase()} may resolve, but ${topSignal.toLowerCase()} keeps this on watchlist. No action recommended until clarity emerges.`
+    default:
+      return verdictRationale
+  }
+}
+
+// Segment-level justification generators
+function generateSegmentScoreJustification(segment: StockVerdict['segments'][0]): string {
+  const { name, score, sectorAvg, metrics } = segment
+  const diff = score - (sectorAvg || 6)
+  const topMetric = metrics?.[0]?.name || 'key metrics'
+  const metricCount = metrics?.length || 0
+
+  if (score >= 8) {
+    return `${name} scores ${score.toFixed(1)}/10, driven by strong performance in ${topMetric.toLowerCase()}. This is ${Math.abs(diff).toFixed(1)} points above sector average across ${metricCount} evaluated metrics.`
+  } else if (score >= 6) {
+    return `${name} scores ${score.toFixed(1)}/10, indicating competent performance. ${topMetric} leads, but improvement opportunity exists vs ${Math.abs(diff).toFixed(1)} point sector ${diff >= 0 ? 'lag' : 'lead'}.`
+  } else {
+    return `${name} scores ${score.toFixed(1)}/10, highlighting a weakness area. Performance on ${topMetric.toLowerCase()} trails sector by ${Math.abs(diff).toFixed(1)} points. This segment needs attention.`
+  }
+}
+
+function generateSegmentRankJustification(segment: StockVerdict['segments'][0]): string {
+  const { name, sectorRank, sectorTotal, score, sectorAvg } = segment
+  const rank = sectorRank || 3
+  const total = sectorTotal || 6
+
+  if (rank === 1) {
+    return `Ranked #1 of ${total} peers in ${name}. Best-in-class performance with ${(score - (sectorAvg || 6)).toFixed(1)} point advantage over sector average. Key competitive differentiator.`
+  } else if (rank <= Math.ceil(total / 3)) {
+    return `Ranked #${rank} of ${total} in ${name}. Top-tier positioning with score of ${score.toFixed(1)}/10. Small gap to sector leader on this dimension.`
+  } else if (rank <= Math.ceil(total * 2 / 3)) {
+    return `Ranked #${rank} of ${total} in ${name}. Middle-of-pack positioning at ${score.toFixed(1)}/10. Neither a strength nor a critical weakness.`
+  } else {
+    return `Ranked #${rank} of ${total} in ${name}. Below-average positioning at ${score.toFixed(1)}/10. This segment drags overall score and needs monitoring.`
+  }
+}
+
+// Apply justifications to all verdicts and their segments
+verdicts.forEach(v => {
+  // Overall verdict justifications
+  if (!v.scoreJustification) {
+    v.scoreJustification = generateScoreJustification(v)
+  }
+  if (!v.rankJustification) {
+    v.rankJustification = generateRankJustification(v)
+  }
+  if (!v.verdictJustification) {
+    v.verdictJustification = generateVerdictJustification(v)
+  }
+
+  // Segment-level justifications
+  v.segments.forEach(seg => {
+    if (!seg.scoreJustification) {
+      seg.scoreJustification = generateSegmentScoreJustification(seg)
+    }
+    if (!seg.rankJustification) {
+      seg.rankJustification = generateSegmentRankJustification(seg)
+    }
+  })
+})
+
 // Helper functions
 export const getVerdict = (stockId: string, profileId: string): StockVerdict | undefined => {
   return verdicts.find(v => v.stockId === stockId && v.profileId === profileId)
