@@ -331,6 +331,68 @@ export const featureSpotlights: FeatureSpotlight[] = [
     targetElement: 'free-tier-banner',
   },
 
+  // ===== CORE MODULES (Navigation & FAB) =====
+
+  // AI Assistant FAB
+  {
+    id: 'chat-fab',
+    featureName: 'StockFox AI Assistant',
+    jtbd: 'Get instant answers to any stock question without leaving the current page',
+    principles: ['fast', 'educational'],
+    competitiveAdvantage: 'Unlike traditional SRAs where you call customer support or search forums, StockFox AI is always one tap away - powered by RAG technology grounded in real company filings, not hallucinations',
+    userOutcome: 'Ask "Why is Zomato unprofitable?" while viewing any page and get a sourced answer in 3 seconds',
+    location: 'dashboard',
+    targetElement: 'chat-fab',
+  },
+
+  // Discover Module (Navigation)
+  {
+    id: 'nav-discover',
+    featureName: 'Discovery Hub',
+    jtbd: 'Find new investment opportunities that match my style',
+    principles: ['personalization', 'fast'],
+    competitiveAdvantage: 'Generic screeners show the same results to everyone. StockFox Discovery surfaces stocks based on YOUR profile - trending now, sector leaders, and AI-recommended picks tailored to your thesis',
+    userOutcome: 'Discover your next multi-bagger in minutes instead of hours of manual research',
+    location: 'dashboard',
+    targetElement: 'nav-discover',
+  },
+
+  // Portfolio Module (Navigation)
+  {
+    id: 'nav-portfolio',
+    featureName: 'Smart Portfolio Tracker',
+    jtbd: 'Track my holdings with actionable insights, not just prices',
+    principles: ['personalization', 'comprehensive'],
+    competitiveAdvantage: 'Brokerage apps show P&L only. StockFox shows portfolio health scores, concentration warnings, sector exposure, and alerts when any holding needs attention based on your 6D profile',
+    userOutcome: 'Know instantly if your portfolio is well-balanced and which positions need review',
+    location: 'dashboard',
+    targetElement: 'nav-portfolio',
+  },
+
+  // Journal Module (Navigation)
+  {
+    id: 'nav-journal',
+    featureName: 'Investment Learning Journal',
+    jtbd: 'Track my research decisions and learn from outcomes',
+    principles: ['educational', 'personalization'],
+    competitiveAdvantage: 'No other platform builds your research playbook. StockFox Journal logs every analysis, tracks win/loss rates, identifies blind spots, and helps you develop a repeatable investment process',
+    userOutcome: 'Graduate from random stock picks to a documented, improving investment methodology',
+    location: 'dashboard',
+    targetElement: 'nav-journal',
+  },
+
+  // Alerts Module (Navigation)
+  {
+    id: 'nav-alerts',
+    featureName: 'Smart Alerts Center',
+    jtbd: 'Stay informed about material events without information overload',
+    principles: ['fast', 'personalization'],
+    competitiveAdvantage: 'Generic price alerts are noisy. StockFox alerts are thesis-aware - score drops, red flags, earnings surprises, promoter changes - filtered by what matters to YOUR investment style',
+    userOutcome: 'Never miss a material event that affects your portfolio or watchlist',
+    location: 'dashboard',
+    targetElement: 'nav-alerts',
+  },
+
   // ===== SEGMENT DEEP DIVE PAGE - Ordered top to bottom =====
 
   // 1. Sector Anchoring (Rank, Average, vs Sector) - TOP
