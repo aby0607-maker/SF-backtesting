@@ -276,6 +276,7 @@ export function SegmentDeepDive() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: 0.05 }}
           className="grid grid-cols-3 gap-3"
+          data-spotlight="metric-benchmark"
         >
           {/* Sector Rank */}
           <div className="bg-dark-800/60 backdrop-blur-sm rounded-xl border border-white/5 p-4 text-center">
@@ -427,10 +428,12 @@ export function SegmentDeepDive() {
 
       {/* ============== EVIDENCE PANEL - How We Scored This Segment ============== */}
       {!isDIY && (
-        <SegmentEvidencePanel
-          segment={segment}
-          profileName={currentProfile.investmentThesis}
-        />
+        <div data-spotlight="score-justification">
+          <SegmentEvidencePanel
+            segment={segment}
+            profileName={currentProfile.investmentThesis}
+          />
+        </div>
       )}
 
       {/* ============== KEY METRICS ============== */}
@@ -468,6 +471,7 @@ export function SegmentDeepDive() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: 0.2 }}
           className="bg-gradient-to-br from-primary-500/10 to-dark-800/60 backdrop-blur-sm rounded-2xl border border-primary-500/20 p-5"
+          data-spotlight="metric-explainer"
         >
           <h3 className="text-base font-semibold text-white mb-2 flex items-center gap-2">
             <div className="p-1 rounded-lg bg-primary-500/20">

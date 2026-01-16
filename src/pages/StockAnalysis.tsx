@@ -856,6 +856,7 @@ export function StockAnalysis() {
         <Link
           to="/advisors"
           className="flex-1 flex items-center gap-3 p-3 rounded-xl bg-dark-800 border border-white/5 hover:border-warning-500/30 transition-all group"
+          data-spotlight="consult-expert"
         >
           <div className="w-10 h-10 rounded-full bg-warning-500/10 flex items-center justify-center group-hover:bg-warning-500/20 transition-colors">
             <UserCheck className="w-5 h-5 text-warning-400" />
@@ -1046,7 +1047,9 @@ export function StockAnalysis() {
 
       {/* ============== NEWS SECTION - 2 Column Grid with Dropdown ============== */}
       {news.length > 0 && (
-        <NewsSection news={news} />
+        <div data-spotlight="news-section">
+          <NewsSection news={news} />
+        </div>
       )}
 
       {/* ============== UPCOMING EVENTS (if any) ============== */}
@@ -1056,6 +1059,7 @@ export function StockAnalysis() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
           className="rounded-2xl bg-dark-800 border border-white/5 p-4"
+          data-spotlight="upcoming-events"
         >
           <div className="flex items-center gap-2 mb-3">
             <Calendar className="w-4 h-4 text-primary-400" />
@@ -1170,6 +1174,7 @@ export function StockAnalysis() {
           <Link
             to={`/compare?add=${stock.symbol}`}
             className="flex flex-col items-center gap-2 p-4 rounded-xl bg-dark-700/50 border border-primary-500/20 hover:border-primary-500/40 hover:bg-dark-700 transition-all group"
+            data-spotlight="compare-peers"
           >
             <div className="w-10 h-10 rounded-full bg-primary-500/10 flex items-center justify-center group-hover:bg-primary-500/20 transition-colors">
               <GitCompare className="w-5 h-5 text-primary-400" />
@@ -1182,6 +1187,7 @@ export function StockAnalysis() {
           <Link
             to={`/backtest/${stock.symbol}`}
             className="flex flex-col items-center gap-2 p-4 rounded-xl bg-dark-700/50 border border-white/5 hover:border-teal-500/30 hover:bg-dark-700 transition-all group"
+            data-spotlight="back-test"
           >
             <div className="w-10 h-10 rounded-full bg-teal-500/10 flex items-center justify-center group-hover:bg-teal-500/20 transition-colors">
               <History className="w-5 h-5 text-teal-400" />

@@ -125,6 +125,18 @@ export const featureSpotlights: FeatureSpotlight[] = [
     targetElement: 'ask-ai-cta',
   },
 
+  // 5b. Consult Expert CTA
+  {
+    id: 'consult-expert',
+    featureName: 'SEBI-Registered Expert Access',
+    jtbd: 'Get human validation for high-stakes decisions',
+    principle: 'comprehensive',
+    competitiveAdvantage: 'Unlike YouTube gurus or Telegram tipsters, StockFox connects you with verified SEBI-registered advisors for fiduciary advice',
+    userOutcome: 'Validate your thesis with a real expert before investing lakhs',
+    location: 'stock-analysis',
+    targetElement: 'consult-expert',
+  },
+
   // 6. Pros & Cons (Strengths/Weaknesses)
   {
     id: 'pros-cons',
@@ -171,6 +183,54 @@ export const featureSpotlights: FeatureSpotlight[] = [
     userOutcome: 'Avoid the common mistake of putting too much in one stock',
     location: 'stock-analysis',
     targetElement: 'entry-assessment',
+  },
+
+  // 10. Compare Peers
+  {
+    id: 'compare-peers-cta',
+    featureName: 'Side-by-Side Peer Comparison',
+    jtbd: 'Quickly see how this stock stacks up against competitors',
+    principle: 'comprehensive',
+    competitiveAdvantage: 'Tickertape comparison is manual. Screener shows raw numbers. StockFox auto-identifies relevant peers and compares all 11 segments with visual indicators',
+    userOutcome: 'Decide between Zomato and Swiggy in 2 minutes instead of 2 hours',
+    location: 'stock-analysis',
+    targetElement: 'compare-peers',
+  },
+
+  // 11. Back-Test / Historical Validation
+  {
+    id: 'back-test',
+    featureName: 'Back-Test Historical Returns',
+    jtbd: 'Validate if this scoring model would have worked historically',
+    principle: 'transparent',
+    competitiveAdvantage: 'Most platforms show forward-looking predictions. StockFox shows what returns you would have earned if you followed our system historically',
+    userOutcome: 'Trust the model because you can verify it worked in the past',
+    location: 'stock-analysis',
+    targetElement: 'back-test',
+  },
+
+  // 12. News Section
+  {
+    id: 'news-section',
+    featureName: 'Sentiment-Tagged News Feed',
+    jtbd: 'Stay updated on material news without information overload',
+    principle: 'fast',
+    competitiveAdvantage: 'Economic Times has 50 articles a day. StockFox curates 5-7 material updates with sentiment tags (positive/negative/neutral) so you know what matters',
+    userOutcome: 'Never miss a red flag news event that could tank your stock',
+    location: 'stock-analysis',
+    targetElement: 'news-section',
+  },
+
+  // 13. Upcoming Events
+  {
+    id: 'upcoming-events',
+    featureName: 'Earnings Calendar & Events',
+    jtbd: 'Know when key catalysts are coming so I can time my decisions',
+    principle: 'fast',
+    competitiveAdvantage: 'No need to manually track earnings dates. StockFox shows upcoming results, AGMs, dividends, and bonus announcements in one place',
+    userOutcome: 'Never be surprised by a quarterly result again',
+    location: 'stock-analysis',
+    targetElement: 'upcoming-events',
   },
 
   // ===== SEGMENT DEEP DIVE PAGE =====
