@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
-import { ChevronRight } from 'lucide-react'
+import { ChevronRight, Info } from 'lucide-react'
+import type { Metric } from '@/types'
 
 interface Segment {
   id: string
@@ -12,11 +13,13 @@ interface Segment {
   sectorAvg?: number
   quickInsight?: string
   weight?: number
+  metrics?: Metric[]
 }
 
 interface SegmentBarProps {
   segments: Segment[]
   onSegmentClick?: (segmentId: string) => void
+  onEvidenceClick?: (segment: Segment) => void
   className?: string
 }
 
@@ -55,6 +58,7 @@ function getScoreColorClass(score: number): string {
 export function SegmentBar({
   segments,
   onSegmentClick,
+  onEvidenceClick,
   className,
 }: SegmentBarProps) {
   return (
@@ -75,9 +79,8 @@ export function SegmentBar({
             <div className="border-t border-white/5" />
 
             <div
-              onClick={() => onSegmentClick?.(segment.id)}
               className={cn(
-                'group py-3 cursor-pointer transition-all duration-150',
+                'group py-3 transition-all duration-150',
                 'hover:bg-white/[0.02]'
               )}
             >
@@ -97,10 +100,29 @@ export function SegmentBar({
                 {/* Vertical separator */}
                 <div className="w-px h-8 bg-white/10 flex-shrink-0" />
 
-                {/* Segment name */}
-                <span className="flex-1 text-sm font-medium text-white group-hover:text-white/90 transition-colors">
+                {/* Segment name - clickable */}
+                <span
+                  onClick={() => onSegmentClick?.(segment.id)}
+                  className="flex-1 text-sm font-medium text-white group-hover:text-white/90 transition-colors cursor-pointer"
+                >
                   {segment.name}
                 </span>
+
+                {/* Evidence info icon */}
+                {onEvidenceClick && (
+                  <motion.button
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      onEvidenceClick(segment)
+                    }}
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="p-1.5 rounded-full bg-white/5 hover:bg-primary-500/20 text-neutral-500 hover:text-primary-400 transition-all"
+                    title="View evidence sources"
+                  >
+                    <Info className="w-3.5 h-3.5" />
+                  </motion.button>
+                )}
 
                 {/* Verdict badge */}
                 <span className={cn(
@@ -118,9 +140,10 @@ export function SegmentBar({
                   {segment.score.toFixed(1)}
                 </span>
 
-                {/* Arrow */}
+                {/* Arrow - clickable for segment deep dive */}
                 <ChevronRight
-                  className="w-4 h-4 text-neutral-600 group-hover:text-neutral-400 group-hover:translate-x-0.5 transition-all flex-shrink-0"
+                  onClick={() => onSegmentClick?.(segment.id)}
+                  className="w-4 h-4 text-neutral-600 group-hover:text-neutral-400 group-hover:translate-x-0.5 transition-all flex-shrink-0 cursor-pointer"
                 />
               </div>
 
