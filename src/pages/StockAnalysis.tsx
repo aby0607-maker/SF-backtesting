@@ -9,7 +9,7 @@ import { getNewsForStock, getUpcomingEvents, formatEventDate, getEventIcon, type
 import { ScoreGauge, VerdictBadge } from '@/components/ui'
 import { SegmentBar, DIYSegmentList } from '@/components/charts'
 import { EvidenceChainPanel, KeyMetricsCard } from '@/components/analysis'
-import { GuidedAnalysisModal } from '@/components/learning'
+import { GuidedAnalysisModal, ReflectionPromptModal } from '@/components/learning'
 import type { Stock, StockVerdict, SegmentScore } from '@/types'
 
 // Skeleton components for loading state
@@ -456,6 +456,9 @@ export function StockAnalysis() {
   // Guided analysis modal state
   const [guidedModalOpen, setGuidedModalOpen] = useState(false)
 
+  // Reflection modal state
+  const [reflectionModalOpen, setReflectionModalOpen] = useState(false)
+
   useEffect(() => {
     if (!ticker || !currentProfile) return
 
@@ -793,6 +796,28 @@ export function StockAnalysis() {
                   </div>
                 </div>
                 <ChevronRight className="w-5 h-5 text-neutral-500 group-hover:text-teal-400 transition-colors" />
+              </div>
+            </motion.button>
+
+            {/* Reflection Prompt CTA */}
+            <motion.button
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              onClick={() => setReflectionModalOpen(true)}
+              className="w-full p-4 rounded-2xl bg-gradient-to-r from-primary-500/10 to-purple-500/10 border border-primary-500/20 hover:border-primary-500/40 transition-all group"
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-primary-500/20 flex items-center justify-center group-hover:bg-primary-500/30 transition-colors">
+                    <PenLine className="w-5 h-5 text-primary-400" />
+                  </div>
+                  <div className="text-left">
+                    <span className="text-sm font-medium text-white block">Log Your Reflection</span>
+                    <span className="text-xs text-neutral-400">Capture insights to build your Research DNA</span>
+                  </div>
+                </div>
+                <ChevronRight className="w-5 h-5 text-neutral-500 group-hover:text-primary-400 transition-colors" />
               </div>
             </motion.button>
 
@@ -1148,6 +1173,15 @@ export function StockAnalysis() {
         onClose={() => setGuidedModalOpen(false)}
         verdict={verdict}
         stockName={stock.name}
+      />
+
+      {/* ============== REFLECTION MODAL ============== */}
+      <ReflectionPromptModal
+        isOpen={reflectionModalOpen}
+        onClose={() => setReflectionModalOpen(false)}
+        stockName={stock.name}
+        verdict={verdict.verdict}
+        score={verdict.overallScore}
       />
     </div>
   )
