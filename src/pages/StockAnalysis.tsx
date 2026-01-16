@@ -744,29 +744,50 @@ export function StockAnalysis() {
                 </div>
               </div>
 
-              {/* Citation Badge - Trust Signal */}
-              <motion.button
+              {/* Evidence Summary - How We Arrived at This Score */}
+              <motion.div
                 initial={{ opacity: 0, y: 5 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
-                onClick={() => {
-                  // Open evidence for the first segment with metrics
-                  const firstSegmentWithMetrics = verdict.segments.find(s => s.metrics && s.metrics.length > 0)
-                  if (firstSegmentWithMetrics) {
-                    setSelectedSegmentForEvidence(firstSegmentWithMetrics)
-                    setEvidenceModalOpen(true)
-                  }
-                }}
-                className="mt-3 flex items-center gap-2 px-3 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition-all group"
+                className="mt-4 p-3 rounded-xl bg-white/5 border border-white/10"
               >
-                <FileText className="w-4 h-4 text-primary-400" />
-                <span className="text-xs text-neutral-300 group-hover:text-white transition-colors">
-                  {verdict.segments.reduce((count, s) => count + (s.metrics?.filter(m => m.citation)?.length || 0), 0)} sources verified
-                </span>
-                <span className="text-[10px] px-1.5 py-0.5 rounded bg-success-500/20 text-success-400 font-medium">
-                  94%
-                </span>
-              </motion.button>
+                <div className="flex items-center gap-2 mb-2">
+                  <FileText className="w-4 h-4 text-primary-400" />
+                  <span className="text-xs font-medium text-white">How We Arrived at This Score</span>
+                </div>
+                <div className="grid grid-cols-3 gap-2 text-[10px]">
+                  <div className="p-2 rounded-lg bg-dark-700/50">
+                    <span className="text-neutral-500 block mb-0.5">Data Sources</span>
+                    <span className="text-white font-medium">
+                      {verdict.segments.reduce((count, s) => count + (s.metrics?.length || 0), 0)} metrics
+                    </span>
+                    <span className="text-neutral-400 block">from Q3 FY25 filings</span>
+                  </div>
+                  <div className="p-2 rounded-lg bg-dark-700/50">
+                    <span className="text-neutral-500 block mb-0.5">Methodology</span>
+                    <span className="text-white font-medium">11 Segments</span>
+                    <span className="text-neutral-400 block">{currentProfile.investmentThesis} weights</span>
+                  </div>
+                  <div className="p-2 rounded-lg bg-dark-700/50">
+                    <span className="text-neutral-500 block mb-0.5">Peer Ranking</span>
+                    <span className="text-white font-medium">#{verdict.peerRank} of {verdict.peerTotal}</span>
+                    <span className="text-neutral-400 block">{verdict.peerGroup}</span>
+                  </div>
+                </div>
+                <button
+                  onClick={() => {
+                    const firstSegmentWithMetrics = verdict.segments.find(s => s.metrics && s.metrics.length > 0)
+                    if (firstSegmentWithMetrics) {
+                      setSelectedSegmentForEvidence(firstSegmentWithMetrics)
+                      setEvidenceModalOpen(true)
+                    }
+                  }}
+                  className="mt-2 w-full py-1.5 text-[10px] text-primary-400 hover:text-primary-300 transition-colors flex items-center justify-center gap-1"
+                >
+                  View Full Evidence Chain
+                  <ChevronRight className="w-3 h-3" />
+                </button>
+              </motion.div>
             </div>
           </div>
         )}

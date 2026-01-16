@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { ArrowLeft, Info, TrendingUp, TrendingDown, Minus, Trophy, Target, BarChart3, Eye } from 'lucide-react'
+import { ArrowLeft, Info, TrendingUp, TrendingDown, Minus, Trophy, Target, BarChart3, Eye, FileText, ChevronDown } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { useAppStore } from '@/store/useAppStore'
 import { cn } from '@/lib/utils'
@@ -16,6 +16,129 @@ function getScoreColorClass(score: number): string {
   if (score >= 6) return 'text-teal-400'
   if (score >= 4) return 'text-warning-400'
   return 'text-destructive-400'
+}
+
+// ============== SEGMENT EVIDENCE PANEL ==============
+function SegmentEvidencePanel({
+  segment,
+  profileName,
+}: {
+  segment: SegmentScore
+  profileName: string
+}) {
+  const [isExpanded, setIsExpanded] = useState(false)
+
+  const metricsWithCitations = segment.metrics?.filter(m => m.citation) || []
+  const latestFiling = metricsWithCitations[0]?.citation
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3, delay: 0.12 }}
+      className="bg-dark-800/60 backdrop-blur-sm rounded-2xl border border-white/5 p-4"
+    >
+      <div className="flex items-center gap-2 mb-3">
+        <FileText className="w-4 h-4 text-primary-400" />
+        <span className="text-sm font-medium text-white">How We Scored {segment.name}</span>
+      </div>
+
+      {/* 3-Layer Summary Grid */}
+      <div className="grid grid-cols-3 gap-2 text-[10px]">
+        {/* Level 1: Data Sources */}
+        <div className="p-2.5 rounded-lg bg-dark-700/50 border border-white/5">
+          <span className="text-neutral-500 block mb-1">L1: Data Sources</span>
+          <span className="text-white font-medium block">
+            {segment.metrics?.length || 0} metrics
+          </span>
+          <span className="text-neutral-400">
+            {latestFiling?.source || 'Company Filings'}
+          </span>
+        </div>
+
+        {/* Level 2: Methodology */}
+        <div className="p-2.5 rounded-lg bg-dark-700/50 border border-white/5">
+          <span className="text-neutral-500 block mb-1">L2: Methodology</span>
+          <span className="text-white font-medium block">Weighted Avg</span>
+          <span className="text-neutral-400">
+            {segment.metrics?.slice(0, 2).map(m => m.name.split(' ')[0]).join(', ')}...
+          </span>
+        </div>
+
+        {/* Level 3: Score Contribution */}
+        <div className="p-2.5 rounded-lg bg-dark-700/50 border border-white/5">
+          <span className="text-neutral-500 block mb-1">L3: Contribution</span>
+          <span className="text-white font-medium block">
+            {((segment.weight || 0.1) * 100).toFixed(0)}% weight
+          </span>
+          <span className="text-neutral-400">{profileName} profile</span>
+        </div>
+      </div>
+
+      {/* Expandable Details */}
+      <button
+        onClick={() => setIsExpanded(!isExpanded)}
+        className="mt-3 w-full flex items-center justify-center gap-1 py-1.5 text-[10px] text-primary-400 hover:text-primary-300 transition-colors"
+      >
+        <span>{isExpanded ? 'Hide Details' : 'View Evidence Chain'}</span>
+        <ChevronDown className={cn('w-3 h-3 transition-transform', isExpanded && 'rotate-180')} />
+      </button>
+
+      {isExpanded && (
+        <motion.div
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: 'auto' }}
+          exit={{ opacity: 0, height: 0 }}
+          className="mt-3 pt-3 border-t border-white/5 space-y-3"
+        >
+          {/* Level 1 Detail */}
+          <div className="p-3 rounded-lg bg-primary-500/5 border border-primary-500/10">
+            <div className="flex items-center gap-2 mb-2">
+              <div className="w-5 h-5 rounded bg-primary-500/20 flex items-center justify-center">
+                <span className="text-[10px] text-primary-400 font-bold">1</span>
+              </div>
+              <span className="text-xs font-medium text-white">Raw Data Source</span>
+            </div>
+            <div className="text-[11px] text-neutral-300 space-y-1">
+              <p><span className="text-neutral-500">Source:</span> {latestFiling?.source || 'BSE/NSE Filings'}</p>
+              <p><span className="text-neutral-500">Document:</span> {latestFiling?.document || 'Quarterly Results'}</p>
+              <p><span className="text-neutral-500">Date:</span> {latestFiling?.date || 'Q3 FY25'}</p>
+            </div>
+          </div>
+
+          {/* Level 2 Detail */}
+          <div className="p-3 rounded-lg bg-info-500/5 border border-info-500/10">
+            <div className="flex items-center gap-2 mb-2">
+              <div className="w-5 h-5 rounded bg-info-500/20 flex items-center justify-center">
+                <span className="text-[10px] text-info-400 font-bold">2</span>
+              </div>
+              <span className="text-xs font-medium text-white">Calculation Method</span>
+            </div>
+            <div className="text-[11px] text-neutral-300 space-y-1">
+              <p><span className="text-neutral-500">Metrics:</span> {segment.metrics?.map(m => m.name).join(', ')}</p>
+              <p><span className="text-neutral-500">Benchmark:</span> Compared against sector averages</p>
+              <p><span className="text-neutral-500">Status Logic:</span> Score ≥8 = Positive, ≥5 = Neutral, &lt;5 = Negative</p>
+            </div>
+          </div>
+
+          {/* Level 3 Detail */}
+          <div className="p-3 rounded-lg bg-success-500/5 border border-success-500/10">
+            <div className="flex items-center gap-2 mb-2">
+              <div className="w-5 h-5 rounded bg-success-500/20 flex items-center justify-center">
+                <span className="text-[10px] text-success-400 font-bold">3</span>
+              </div>
+              <span className="text-xs font-medium text-white">Score Contribution</span>
+            </div>
+            <div className="text-[11px] text-neutral-300 space-y-1">
+              <p><span className="text-neutral-500">Weight:</span> {((segment.weight || 0.1) * 100).toFixed(0)}% of overall score</p>
+              <p><span className="text-neutral-500">Sector Rank:</span> #{segment.sectorRank} of {segment.sectorTotal} peers</p>
+              <p><span className="text-neutral-500">Impact:</span> Contributes {((segment.score * (segment.weight || 0.1)) / 10 * 100).toFixed(1)}% to your {profileName} score</p>
+            </div>
+          </div>
+        </motion.div>
+      )}
+    </motion.div>
+  )
 }
 
 // Get status colors for dark mode badges
@@ -285,6 +408,14 @@ export function SegmentDeepDive() {
           </div>
         </div>
       </motion.div>
+
+      {/* ============== EVIDENCE PANEL - How We Scored This Segment ============== */}
+      {!isDIY && (
+        <SegmentEvidencePanel
+          segment={segment}
+          profileName={currentProfile.investmentThesis}
+        />
+      )}
 
       {/* ============== KEY METRICS ============== */}
       {segment.metrics && segment.metrics.length > 0 && (
