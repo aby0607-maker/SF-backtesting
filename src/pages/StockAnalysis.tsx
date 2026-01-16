@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { useParams, Link, useLocation, useSearchParams } from 'react-router-dom'
-import { ArrowLeft, Share2, AlertTriangle, TrendingUp, TrendingDown, Sparkles, Newspaper, ChevronRight, ChevronDown, ChevronUp, Check, X, AlertCircle, Calendar, LogOut, GitCompare, UserCheck, History, ShieldCheck, PenLine, BookmarkPlus, FileText, Compass, Wand2 } from 'lucide-react'
+import { ArrowLeft, Share2, AlertTriangle, TrendingUp, TrendingDown, Sparkles, Newspaper, ChevronRight, ChevronDown, ChevronUp, Check, X, AlertCircle, Calendar, LogOut, GitCompare, UserCheck, History, ShieldCheck, PenLine, BookmarkPlus, FileText, Compass, Wand2, Target } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAppStore } from '@/store/useAppStore'
 import { cn, formatCurrency, formatPercent } from '@/lib/utils'
@@ -9,6 +9,7 @@ import { getNewsForStock, getUpcomingEvents, formatEventDate, getEventIcon, type
 import { ScoreGauge, VerdictBadge } from '@/components/ui'
 import { SegmentBar, DIYSegmentList } from '@/components/charts'
 import { EvidenceChainPanel, KeyMetricsCard } from '@/components/analysis'
+import { GuidedAnalysisModal } from '@/components/learning'
 import type { Stock, StockVerdict, SegmentScore } from '@/types'
 
 // Skeleton components for loading state
@@ -452,6 +453,9 @@ export function StockAnalysis() {
   const [evidenceModalOpen, setEvidenceModalOpen] = useState(false)
   const [selectedSegmentForEvidence, setSelectedSegmentForEvidence] = useState<SegmentScore | null>(null)
 
+  // Guided analysis modal state
+  const [guidedModalOpen, setGuidedModalOpen] = useState(false)
+
   useEffect(() => {
     if (!ticker || !currentProfile) return
 
@@ -770,6 +774,27 @@ export function StockAnalysis() {
                 )}
               </div>
             </div>
+
+            {/* Guided Analysis CTA */}
+            <motion.button
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              onClick={() => setGuidedModalOpen(true)}
+              className="w-full p-4 rounded-2xl bg-gradient-to-r from-teal-500/10 to-primary-500/10 border border-teal-500/20 hover:border-teal-500/40 transition-all group"
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-teal-500/20 flex items-center justify-center group-hover:bg-teal-500/30 transition-colors">
+                    <Target className="w-5 h-5 text-teal-400" />
+                  </div>
+                  <div className="text-left">
+                    <span className="text-sm font-medium text-white block">Take Guided Analysis Tour</span>
+                    <span className="text-xs text-neutral-400">Rate each segment yourself, then see how you did</span>
+                  </div>
+                </div>
+                <ChevronRight className="w-5 h-5 text-neutral-500 group-hover:text-teal-400 transition-colors" />
+              </div>
+            </motion.button>
 
             {/* News Section in Full View */}
             {news.length > 0 && (
@@ -1116,6 +1141,14 @@ export function StockAnalysis() {
           </>
         )}
       </AnimatePresence>
+
+      {/* ============== GUIDED ANALYSIS MODAL ============== */}
+      <GuidedAnalysisModal
+        isOpen={guidedModalOpen}
+        onClose={() => setGuidedModalOpen(false)}
+        verdict={verdict}
+        stockName={stock.name}
+      />
     </div>
   )
 }
