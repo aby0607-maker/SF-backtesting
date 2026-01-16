@@ -41,7 +41,7 @@ export function SpotlightTour({ spotlights, isActive, onEnd }: SpotlightTourProp
   const currentSpotlight = spotlights[currentIndex]
 
   // Find and measure target element
-  const updateTargetRect = useCallback(() => {
+  const updateTargetRect = useCallback((skipScroll = false) => {
     if (!currentSpotlight?.targetElement) {
       setTargetRect(null)
       return
@@ -57,7 +57,22 @@ export function SpotlightTour({ spotlights, isActive, onEnd }: SpotlightTourProp
       const rect = element.getBoundingClientRect()
       const scrollTop = window.scrollY || document.documentElement.scrollTop
       const scrollLeft = window.scrollX || document.documentElement.scrollLeft
+      const viewportHeight = window.innerHeight
 
+      // Check if element needs scrolling into view
+      const elementTop = rect.top
+      const elementBottom = rect.bottom
+      const needsScroll = !skipScroll && (elementTop < 100 || elementBottom > viewportHeight - 280)
+
+      if (needsScroll) {
+        // Scroll element into view, then recalculate after scroll completes
+        element.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        // Recalculate position after scroll animation (300ms)
+        setTimeout(() => updateTargetRect(true), 350)
+        return
+      }
+
+      // Update rect with current scroll position
       setTargetRect({
         top: rect.top + scrollTop,
         left: rect.left + scrollLeft,
@@ -67,32 +82,24 @@ export function SpotlightTour({ spotlights, isActive, onEnd }: SpotlightTourProp
         right: rect.right + scrollLeft,
       })
 
-      // Scroll element into view with offset for the panel
-      const viewportHeight = window.innerHeight
-      const elementTop = rect.top
-      const elementBottom = rect.bottom
-
-      // Check if element is not fully visible
-      if (elementTop < 100 || elementBottom > viewportHeight - 200) {
-        element.scrollIntoView({ behavior: 'smooth', block: 'center' })
-      }
-
       // Determine best panel position based on available space
       const spaceBelow = viewportHeight - rect.bottom
       const spaceAbove = rect.top
       const spaceRight = window.innerWidth - rect.right
       const spaceLeft = rect.left
 
-      if (spaceBelow >= 280) {
+      // For elements near bottom, prefer top or side positioning
+      if (spaceBelow >= 300) {
         setPanelPosition('bottom')
-      } else if (spaceAbove >= 280) {
+      } else if (spaceAbove >= 300) {
         setPanelPosition('top')
       } else if (spaceRight >= 340) {
         setPanelPosition('right')
       } else if (spaceLeft >= 340) {
         setPanelPosition('left')
       } else {
-        setPanelPosition('bottom')
+        // Fallback: position above if more space there, otherwise below
+        setPanelPosition(spaceAbove > spaceBelow ? 'top' : 'bottom')
       }
     } else {
       setTargetRect(null)
@@ -103,16 +110,16 @@ export function SpotlightTour({ spotlights, isActive, onEnd }: SpotlightTourProp
   useEffect(() => {
     if (isActive) {
       // Small delay to allow DOM to settle
-      const timer = setTimeout(updateTargetRect, 100)
+      const timer = setTimeout(() => updateTargetRect(false), 100)
       return () => clearTimeout(timer)
     }
   }, [isActive, currentIndex, updateTargetRect])
 
-  // Update on scroll/resize
+  // Update on scroll/resize (skip auto-scroll to prevent loops)
   useEffect(() => {
     if (!isActive) return
 
-    const handleUpdate = () => updateTargetRect()
+    const handleUpdate = () => updateTargetRect(true)
     window.addEventListener('scroll', handleUpdate, true)
     window.addEventListener('resize', handleUpdate)
 
