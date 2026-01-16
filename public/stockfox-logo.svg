@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+  <!-- Fox Head - Main teal/mint shape -->
+  <path d="M100 20 L160 80 L150 95 L100 180 L50 95 L40 80 Z" fill="#5EEAD4"/>
+
+  <!-- Left ear -->
+  <path d="M40 80 L60 30 L80 70 L50 95 Z" fill="#5EEAD4"/>
+
+  <!-- Right ear -->
+  <path d="M160 80 L140 30 L120 70 L150 95 Z" fill="#5EEAD4"/>
+
+  <!-- Left purple cheek accent -->
+  <path d="M50 95 L80 100 L100 180 L40 120 Z" fill="#8B5CF6"/>
+
+  <!-- Right purple cheek accent -->
+  <path d="M150 95 L120 100 L100 180 L160 120 Z" fill="#8B5CF6"/>
+
+  <!-- Left eye (dark) -->
+  <path d="M65 85 L80 70 L90 95 L75 105 Z" fill="#0F172A"/>
+
+  <!-- Right eye (dark) -->
+  <path d="M135 85 L120 70 L110 95 L125 105 Z" fill="#0F172A"/>
+
+  <!-- Nose/snout line (dark) -->
+  <path d="M100 95 L90 100 L100 140 L110 100 Z" fill="#0F172A"/>
+</svg>
