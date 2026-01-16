@@ -547,12 +547,10 @@ export function ProfileSelection() {
         className="text-center pt-10 pb-4 px-4 relative z-10"
       >
         <div className="flex items-center justify-center gap-3 mb-2">
-          <motion.img
+          <img
             src="/stockfox-logo.svg"
             alt="StockFox"
             className="w-12 h-12"
-            animate={{ y: [0, -8, 0] }}
-            transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
           />
           <h1 className="text-3xl font-bold text-gradient-primary">StockFox</h1>
         </div>
