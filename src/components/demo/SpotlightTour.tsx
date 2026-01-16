@@ -21,14 +21,19 @@ interface ElementRect {
   right: number
 }
 
-// Principle badge component
+// Principle badge component - Prominent version
 function PrincipleBadge({ principle }: { principle: ProductPrinciple }) {
   const info = principleInfo[principle]
   return (
-    <span className={cn('inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-semibold', info.bgColor, info.color)}>
-      <span className="font-bold">{info.emoji}</span>
-      <span>{info.label}</span>
-    </span>
+    <div className={cn('inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold border', info.bgColor, info.color, 'border-current/30')}>
+      <span className="w-6 h-6 rounded-md bg-current/20 flex items-center justify-center text-[10px] font-black">
+        {info.emoji}
+      </span>
+      <div className="flex flex-col">
+        <span className="text-[9px] uppercase tracking-wider opacity-70">Core Principle</span>
+        <span className="font-semibold">{info.label}</span>
+      </div>
+    </div>
   )
 }
 
@@ -289,11 +294,11 @@ export function SpotlightTour({ spotlights, isActive, onEnd }: SpotlightTourProp
                 </div>
 
                 {/* Feature Name */}
-                <h4 className="font-semibold text-white text-sm leading-tight mb-2">
+                <h4 className="font-semibold text-white text-sm leading-tight mb-3">
                   {currentSpotlight.featureName}
                 </h4>
 
-                {/* Principle Badge */}
+                {/* Prominent Principle Badge */}
                 <PrincipleBadge principle={currentSpotlight.principle} />
               </div>
 
@@ -309,12 +314,6 @@ export function SpotlightTour({ spotlights, isActive, onEnd }: SpotlightTourProp
                 <div className="p-2.5 rounded-lg bg-success-500/10 border border-success-500/20">
                   <span className="text-[9px] font-semibold text-success-400 uppercase tracking-wider block mb-1">You Get</span>
                   <p className="text-xs text-success-300 font-medium leading-relaxed">{currentSpotlight.userOutcome}</p>
-                </div>
-
-                {/* Competitive Advantage */}
-                <div className="p-2.5 rounded-lg bg-warning-500/10 border border-warning-500/20">
-                  <span className="text-[9px] font-semibold text-warning-400 uppercase tracking-wider block mb-1">vs Competition</span>
-                  <p className="text-[11px] text-neutral-400 leading-relaxed">{currentSpotlight.competitiveAdvantage}</p>
                 </div>
               </div>
 

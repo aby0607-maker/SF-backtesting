@@ -161,7 +161,19 @@ export const featureSpotlights: FeatureSpotlight[] = [
     targetElement: 'red-flag-scanner',
   },
 
-  // 8. Metric-by-Metric Learning
+  // 8. Full 11-Segment Analysis
+  {
+    id: 'full-segment-analysis',
+    featureName: '11-Segment Deep Analysis',
+    jtbd: 'Understand the complete picture across all dimensions that matter',
+    principle: 'comprehensive',
+    competitiveAdvantage: 'Most platforms show 4-5 metrics. StockFox analyzes 11 comprehensive segments: Financials, Valuations, Momentum, Management Quality, Shareholding, Technicals, and more',
+    userOutcome: 'Never miss a critical factor - see the full 360° view before investing',
+    location: 'stock-analysis',
+    targetElement: 'segments-section',
+  },
+
+  // 9. Metric-by-Metric Learning
   {
     id: 'guided-tour',
     featureName: 'Metric-by-Metric Guided Tour',
