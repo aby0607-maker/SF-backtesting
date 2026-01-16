@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { ArrowLeft, Info, TrendingUp, TrendingDown, Minus, Trophy, Target, BarChart3 } from 'lucide-react'
+import { ArrowLeft, Info, TrendingUp, TrendingDown, Minus, Trophy, Target, BarChart3, Eye } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { useAppStore } from '@/store/useAppStore'
 import { cn } from '@/lib/utils'
@@ -33,10 +33,12 @@ function getStatusBadgeColors(status: string) {
 export function SegmentDeepDive() {
   const { ticker, segmentId } = useParams<{ ticker: string; segmentId: string }>()
   const navigate = useNavigate()
-  const { currentProfile } = useAppStore()
+  const { currentProfile, analysisMode } = useAppStore()
   const [isLoading, setIsLoading] = useState(true)
   const [segment, setSegment] = useState<SegmentScore | null>(null)
   const [stockName, setStockName] = useState('')
+
+  const isDIY = analysisMode === 'diy'
 
   useEffect(() => {
     if (!ticker || !segmentId || !currentProfile) return
@@ -128,80 +130,104 @@ export function SegmentDeepDive() {
         </button>
       </motion.div>
 
-      {/* ============== SECTOR ANCHORING - PROMINENT ============== */}
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3, delay: 0.05 }}
-        className="grid grid-cols-3 gap-3"
-      >
-        {/* Sector Rank */}
-        <div className="bg-dark-800/60 backdrop-blur-sm rounded-xl border border-white/5 p-4 text-center">
-          <div className="flex items-center justify-center gap-1.5 mb-2">
-            <Trophy className={cn(
-              'w-4 h-4',
-              segment.sectorRank === 1 ? 'text-warning-400' : 'text-neutral-500'
-            )} />
-            <span className="text-xs text-neutral-500 uppercase tracking-wider">Sector Rank</span>
-          </div>
-          <div className="text-2xl font-bold text-white">
-            #{segment.sectorRank || '-'}
-            <span className="text-sm text-neutral-500 font-normal">/{segment.sectorTotal || '-'}</span>
-          </div>
-          {percentile && (
-            <div className={cn(
-              'text-xs mt-1',
-              percentile >= 70 ? 'text-success-400' : percentile >= 40 ? 'text-neutral-400' : 'text-destructive-400'
-            )}>
-              Top {100 - percentile + 1}%
+      {/* ============== SECTOR ANCHORING - DFY ONLY ============== */}
+      {!isDIY && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.05 }}
+          className="grid grid-cols-3 gap-3"
+        >
+          {/* Sector Rank */}
+          <div className="bg-dark-800/60 backdrop-blur-sm rounded-xl border border-white/5 p-4 text-center">
+            <div className="flex items-center justify-center gap-1.5 mb-2">
+              <Trophy className={cn(
+                'w-4 h-4',
+                segment.sectorRank === 1 ? 'text-warning-400' : 'text-neutral-500'
+              )} />
+              <span className="text-xs text-neutral-500 uppercase tracking-wider">Sector Rank</span>
             </div>
-          )}
-        </div>
-
-        {/* Sector Average */}
-        <div className="bg-dark-800/60 backdrop-blur-sm rounded-xl border border-white/5 p-4 text-center">
-          <div className="flex items-center justify-center gap-1.5 mb-2">
-            <Target className="w-4 h-4 text-neutral-500" />
-            <span className="text-xs text-neutral-500 uppercase tracking-wider">Sector Avg</span>
-          </div>
-          <div className={cn('text-2xl font-bold', getScoreColorClass(segment.sectorAvg || 0))}>
-            {segment.sectorAvg?.toFixed(1) || '-'}
-            <span className="text-sm text-neutral-500 font-normal">/10</span>
-          </div>
-        </div>
-
-        {/* vs Sector */}
-        <div className="bg-dark-800/60 backdrop-blur-sm rounded-xl border border-white/5 p-4 text-center">
-          <div className="flex items-center justify-center gap-1.5 mb-2">
-            <BarChart3 className="w-4 h-4 text-neutral-500" />
-            <span className="text-xs text-neutral-500 uppercase tracking-wider">vs Sector</span>
-          </div>
-          <div className={cn(
-            'text-2xl font-bold flex items-center justify-center gap-1',
-            scoreDiff > 0 ? 'text-success-400' : scoreDiff < 0 ? 'text-destructive-400' : 'text-neutral-400'
-          )}>
-            {scoreDiff > 0 ? (
-              <>
-                <TrendingUp className="w-5 h-5" />
-                +{scoreDiff.toFixed(1)}
-              </>
-            ) : scoreDiff < 0 ? (
-              <>
-                <TrendingDown className="w-5 h-5" />
-                {scoreDiff.toFixed(1)}
-              </>
-            ) : (
-              <>
-                <Minus className="w-5 h-5" />
-                0
-              </>
+            <div className="text-2xl font-bold text-white">
+              #{segment.sectorRank || '-'}
+              <span className="text-sm text-neutral-500 font-normal">/{segment.sectorTotal || '-'}</span>
+            </div>
+            {percentile && (
+              <div className={cn(
+                'text-xs mt-1',
+                percentile >= 70 ? 'text-success-400' : percentile >= 40 ? 'text-neutral-400' : 'text-destructive-400'
+              )}>
+                Top {100 - percentile + 1}%
+              </div>
             )}
           </div>
-          <div className="text-xs text-neutral-500 mt-1">
-            {scoreDiff > 0.5 ? 'Outperforming' : scoreDiff < -0.5 ? 'Underperforming' : 'At par'}
+
+          {/* Sector Average */}
+          <div className="bg-dark-800/60 backdrop-blur-sm rounded-xl border border-white/5 p-4 text-center">
+            <div className="flex items-center justify-center gap-1.5 mb-2">
+              <Target className="w-4 h-4 text-neutral-500" />
+              <span className="text-xs text-neutral-500 uppercase tracking-wider">Sector Avg</span>
+            </div>
+            <div className={cn('text-2xl font-bold', getScoreColorClass(segment.sectorAvg || 0))}>
+              {segment.sectorAvg?.toFixed(1) || '-'}
+              <span className="text-sm text-neutral-500 font-normal">/10</span>
+            </div>
           </div>
-        </div>
-      </motion.div>
+
+          {/* vs Sector */}
+          <div className="bg-dark-800/60 backdrop-blur-sm rounded-xl border border-white/5 p-4 text-center">
+            <div className="flex items-center justify-center gap-1.5 mb-2">
+              <BarChart3 className="w-4 h-4 text-neutral-500" />
+              <span className="text-xs text-neutral-500 uppercase tracking-wider">vs Sector</span>
+            </div>
+            <div className={cn(
+              'text-2xl font-bold flex items-center justify-center gap-1',
+              scoreDiff > 0 ? 'text-success-400' : scoreDiff < 0 ? 'text-destructive-400' : 'text-neutral-400'
+            )}>
+              {scoreDiff > 0 ? (
+                <>
+                  <TrendingUp className="w-5 h-5" />
+                  +{scoreDiff.toFixed(1)}
+                </>
+              ) : scoreDiff < 0 ? (
+                <>
+                  <TrendingDown className="w-5 h-5" />
+                  {scoreDiff.toFixed(1)}
+                </>
+              ) : (
+                <>
+                  <Minus className="w-5 h-5" />
+                  0
+                </>
+              )}
+            </div>
+            <div className="text-xs text-neutral-500 mt-1">
+              {scoreDiff > 0.5 ? 'Outperforming' : scoreDiff < -0.5 ? 'Underperforming' : 'At par'}
+            </div>
+          </div>
+        </motion.div>
+      )}
+
+      {/* ============== DIY MODE HEADER ============== */}
+      {isDIY && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.05 }}
+          className="bg-dark-800/60 backdrop-blur-sm rounded-xl border border-white/5 p-4"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-teal-500/20 flex items-center justify-center">
+              <Eye className="w-5 h-5 text-teal-400" />
+            </div>
+            <div>
+              <span className="text-xs text-teal-400 uppercase tracking-wider">DIY Analysis Mode</span>
+              <p className="text-sm text-neutral-400 mt-0.5">
+                Review raw metrics below and form your own assessment
+              </p>
+            </div>
+          </div>
+        </motion.div>
+      )}
 
       {/* ============== SEGMENT HEADER ============== */}
       <motion.div
@@ -211,33 +237,47 @@ export function SegmentDeepDive() {
         className="bg-dark-800/60 backdrop-blur-sm rounded-2xl border border-white/5 p-5"
       >
         <div className="flex items-start gap-5">
-          {/* Score Ring - Compact */}
-          <div className="flex-shrink-0">
-            <ScoreRing
-              score={segment.score}
-              size={100}
-              showLabel
-              label={segment.name}
-            />
-          </div>
+          {/* Score Ring - DFY Only */}
+          {!isDIY && (
+            <div className="flex-shrink-0">
+              <ScoreRing
+                score={segment.score}
+                size={100}
+                showLabel
+                label={segment.name}
+              />
+            </div>
+          )}
 
           {/* Segment Info */}
           <div className="flex-1 min-w-0">
             <div className="flex flex-wrap items-center gap-2 mb-2">
               <h1 className="text-xl font-bold text-white">{segment.name}</h1>
-              <span className={cn(
-                'px-2 py-0.5 rounded-full text-xs font-medium border',
-                getStatusBadgeColors(segment.status)
-              )}>
-                {segment.status.charAt(0).toUpperCase() + segment.status.slice(1)}
-              </span>
+              {/* Status Badge - DFY Only */}
+              {!isDIY && (
+                <span className={cn(
+                  'px-2 py-0.5 rounded-full text-xs font-medium border',
+                  getStatusBadgeColors(segment.status)
+                )}>
+                  {segment.status.charAt(0).toUpperCase() + segment.status.slice(1)}
+                </span>
+              )}
             </div>
 
-            {/* Interpretation */}
-            <p className="text-sm text-neutral-300 leading-relaxed">{segment.interpretation}</p>
+            {/* Interpretation - DFY Only */}
+            {!isDIY && (
+              <p className="text-sm text-neutral-300 leading-relaxed">{segment.interpretation}</p>
+            )}
 
-            {/* Quick Insight */}
-            {segment.quickInsight && (
+            {/* DIY Mode Description */}
+            {isDIY && (
+              <p className="text-sm text-neutral-400">
+                Review the raw metrics and sector benchmarks below to form your own assessment of this segment.
+              </p>
+            )}
+
+            {/* Quick Insight - DFY Only */}
+            {!isDIY && segment.quickInsight && (
               <div className="mt-3 p-2.5 bg-primary-500/10 rounded-lg border border-primary-500/20">
                 <span className="text-xs text-primary-300">{segment.quickInsight}</span>
               </div>
@@ -273,23 +313,25 @@ export function SegmentDeepDive() {
         </motion.div>
       )}
 
-      {/* ============== WHAT THIS MEANS ============== */}
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3, delay: 0.2 }}
-        className="bg-gradient-to-br from-primary-500/10 to-dark-800/60 backdrop-blur-sm rounded-2xl border border-primary-500/20 p-5"
-      >
-        <h3 className="text-base font-semibold text-white mb-2 flex items-center gap-2">
-          <div className="p-1 rounded-lg bg-primary-500/20">
-            <Info className="w-3.5 h-3.5 text-primary-400" />
-          </div>
-          What This Means for You
-        </h3>
-        <p className="text-sm text-neutral-300 leading-relaxed">
-          {getExplanationForSegment(segment, currentProfile.experienceLevel, stockName)}
-        </p>
-      </motion.div>
+      {/* ============== WHAT THIS MEANS - DFY ONLY ============== */}
+      {!isDIY && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.2 }}
+          className="bg-gradient-to-br from-primary-500/10 to-dark-800/60 backdrop-blur-sm rounded-2xl border border-primary-500/20 p-5"
+        >
+          <h3 className="text-base font-semibold text-white mb-2 flex items-center gap-2">
+            <div className="p-1 rounded-lg bg-primary-500/20">
+              <Info className="w-3.5 h-3.5 text-primary-400" />
+            </div>
+            What This Means for You
+          </h3>
+          <p className="text-sm text-neutral-300 leading-relaxed">
+            {getExplanationForSegment(segment, currentProfile.experienceLevel, stockName)}
+          </p>
+        </motion.div>
+      )}
 
       {/* ============== NAVIGATION ============== */}
       <motion.div

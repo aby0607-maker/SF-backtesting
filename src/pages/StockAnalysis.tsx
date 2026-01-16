@@ -792,50 +792,51 @@ export function StockAnalysis() {
               </div>
             </div>
 
-            {/* Guided Analysis CTA */}
-            <motion.button
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              onClick={() => setGuidedModalOpen(true)}
-              className="w-full p-4 rounded-2xl bg-gradient-to-r from-teal-500/10 to-primary-500/10 border border-teal-500/20 hover:border-teal-500/40 transition-all group"
-            >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-teal-500/20 flex items-center justify-center group-hover:bg-teal-500/30 transition-colors">
-                    <Target className="w-5 h-5 text-teal-400" />
-                  </div>
-                  <div className="text-left">
-                    <span className="text-sm font-medium text-white block">Take Guided Analysis Tour</span>
-                    <span className="text-xs text-neutral-400">Rate each segment yourself, then see how you did</span>
-                  </div>
+            {/* ============== METRIC-BY-METRIC LEARNING ============== */}
+            <div className="rounded-2xl bg-dark-800 border border-white/5 p-5">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <Compass className="w-4 h-4 text-teal-400" />
+                  <h3 className="font-semibold text-white">Metric-by-Metric Analysis</h3>
                 </div>
-                <ChevronRight className="w-5 h-5 text-neutral-500 group-hover:text-teal-400 transition-colors" />
+                <span className="px-2 py-0.5 rounded-lg bg-teal-500/10 text-teal-400 text-[10px] font-medium">
+                  LEARNING
+                </span>
               </div>
-            </motion.button>
+              <p className="text-sm text-neutral-400 mb-4">
+                Go through each segment step-by-step. Rate the metrics yourself before seeing the system's assessment.
+              </p>
+              <button
+                onClick={() => setGuidedModalOpen(true)}
+                className="w-full p-3 rounded-xl bg-gradient-to-r from-teal-500/10 to-primary-500/10 border border-teal-500/20 hover:border-teal-500/40 transition-all group flex items-center justify-center gap-2"
+              >
+                <Target className="w-4 h-4 text-teal-400" />
+                <span className="text-sm font-medium text-white">Start Guided Tour</span>
+                <ChevronRight className="w-4 h-4 text-neutral-500 group-hover:text-teal-400 transition-colors" />
+              </button>
+            </div>
 
-            {/* Reflection Prompt CTA */}
-            <motion.button
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-              onClick={() => setReflectionModalOpen(true)}
-              className="w-full p-4 rounded-2xl bg-gradient-to-r from-primary-500/10 to-purple-500/10 border border-primary-500/20 hover:border-primary-500/40 transition-all group"
-            >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-primary-500/20 flex items-center justify-center group-hover:bg-primary-500/30 transition-colors">
-                    <PenLine className="w-5 h-5 text-primary-400" />
-                  </div>
-                  <div className="text-left">
-                    <span className="text-sm font-medium text-white block">Log Your Reflection</span>
-                    <span className="text-xs text-neutral-400">Capture insights to build your Research DNA</span>
-                  </div>
-                </div>
-                <ChevronRight className="w-5 h-5 text-neutral-500 group-hover:text-primary-400 transition-colors" />
-              </div>
-            </motion.button>
+            {/* ============== LEARNING ACTIONS ============== */}
+            <div className="flex gap-3">
+              {/* Reflection CTA */}
+              <button
+                onClick={() => setReflectionModalOpen(true)}
+                className="flex-1 p-3 rounded-xl bg-dark-800 border border-white/5 hover:border-primary-500/30 transition-all group flex items-center justify-center gap-2"
+              >
+                <PenLine className="w-4 h-4 text-primary-400" />
+                <span className="text-sm text-neutral-300 group-hover:text-white transition-colors">Log Reflection</span>
+              </button>
+              {/* Journal Link */}
+              <Link
+                to="/journal"
+                className="flex-1 p-3 rounded-xl bg-dark-800 border border-white/5 hover:border-primary-500/30 transition-all group flex items-center justify-center gap-2"
+              >
+                <BookmarkPlus className="w-4 h-4 text-primary-400" />
+                <span className="text-sm text-neutral-300 group-hover:text-white transition-colors">Add to Journal</span>
+              </Link>
+            </div>
 
-            {/* News Section in Full View */}
+            {/* ============== NEWS SECTION ============== */}
             {news.length > 0 && (
               <div className="rounded-2xl bg-dark-800 border border-white/5 p-5">
                 <div className="flex items-center gap-2 mb-4">
