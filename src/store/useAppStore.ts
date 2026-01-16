@@ -20,6 +20,9 @@ interface AppState {
   // Analysis mode (DFY = Done For You, DIY = Do It Yourself)
   analysisMode: AnalysisMode
 
+  // Demo mode for investor presentations (Ankit profile only)
+  demoMode: boolean
+
   // Alerts
   alerts: Alert[]
   unreadAlertCount: number
@@ -30,6 +33,8 @@ interface AppState {
   toggleSearch: () => void
   setAnalysisMode: (mode: AnalysisMode) => void
   toggleAnalysisMode: () => void
+  setDemoMode: (enabled: boolean) => void
+  toggleDemoMode: () => void
   markAlertAsRead: (alertId: string) => void
   markAllAlertsAsRead: () => void
 }
@@ -46,6 +51,9 @@ export const useAppStore = create<AppState>()(
 
       // Default to DFY (Done For You) mode
       analysisMode: 'dfy',
+
+      // Demo mode disabled by default
+      demoMode: false,
 
       alerts: [],
       unreadAlertCount: 0,
@@ -77,6 +85,14 @@ export const useAppStore = create<AppState>()(
         }))
       },
 
+      setDemoMode: (enabled: boolean) => {
+        set({ demoMode: enabled })
+      },
+
+      toggleDemoMode: () => {
+        set(state => ({ demoMode: !state.demoMode }))
+      },
+
       markAlertAsRead: (alertId: string) => {
         set(state => ({
           alerts: state.alerts.map(alert =>
@@ -98,6 +114,7 @@ export const useAppStore = create<AppState>()(
       partialize: state => ({
         currentProfileId: state.currentProfileId,
         analysisMode: state.analysisMode,
+        demoMode: state.demoMode,
       }),
     }
   )
