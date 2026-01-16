@@ -182,7 +182,7 @@ export function SegmentDeepDive() {
   const isDIY = analysisMode === 'diy'
 
   // Demo Mode - Only for Ankit profile
-  const isAnkitProfile = currentProfile?.name === 'Ankit'
+  const isAnkitProfile = currentProfile?.id === 'ankit'
   const spotlights = useMemo(() => getSpotlightsForLocation('segment-deep-dive'), [])
 
   useEffect(() => {
