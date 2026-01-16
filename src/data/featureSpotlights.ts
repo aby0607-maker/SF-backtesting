@@ -432,6 +432,80 @@ export const featureSpotlights: FeatureSpotlight[] = [
     location: 'compare',
     targetElement: 'compare-table',
   },
+
+  // ===== JOURNAL PAGE - Ordered top to bottom =====
+
+  // 1. Skill Level Badge
+  {
+    id: 'skill-level-badge',
+    featureName: 'Investor Skill Progression',
+    jtbd: 'See my growth as an investor over time',
+    principles: ['educational', 'personalization'],
+    competitiveAdvantage: 'Other platforms treat all users the same. StockFox tracks your analysis count and awards skill levels (Novice → Apprentice → Journeyman → Expert → Master) as you learn',
+    userOutcome: 'Feel rewarded for doing proper research and see concrete progress in your investment education',
+    location: 'journal',
+    targetElement: 'skill-level-badge',
+  },
+
+  // 2. Performance Stats
+  {
+    id: 'journal-stats',
+    featureName: 'Performance Dashboard',
+    jtbd: 'Track if my analysis skills are actually improving',
+    principles: ['transparent', 'educational'],
+    competitiveAdvantage: 'Brokers show P&L but not WHY. StockFox tracks wins, losses, and time spent - connecting outcomes to your research quality',
+    userOutcome: 'See your win rate improve from 40% to 65% as you develop better analysis habits',
+    location: 'journal',
+    targetElement: 'journal-stats',
+  },
+
+  // 3. Research DNA Card
+  {
+    id: 'research-dna',
+    featureName: 'Research DNA Profile',
+    jtbd: 'Understand my natural investing tendencies and biases',
+    principles: ['personalization', 'educational'],
+    competitiveAdvantage: 'Most platforms ignore investor psychology. StockFox identifies YOUR patterns - are you a momentum chaser? Value seeker? Sector specialist?',
+    userOutcome: 'Discover that you consistently win on IT stocks but lose on banking - then adjust your strategy',
+    location: 'journal',
+    targetElement: 'research-dna',
+  },
+
+  // 4. Blind Spots Chart
+  {
+    id: 'blind-spots',
+    featureName: 'Segment Blind Spot Analysis',
+    jtbd: 'Find gaps in my analysis process',
+    principles: ['educational', 'comprehensive'],
+    competitiveAdvantage: 'No platform tells you WHAT you are missing. StockFox shows which of the 11 segments you consistently skip or underweight',
+    userOutcome: 'Realize you never check Red Flags properly - fix it before the next Satyam catches you',
+    location: 'journal',
+    targetElement: 'blind-spots',
+  },
+
+  // 5. Journal Entries
+  {
+    id: 'journal-entries',
+    featureName: 'Analysis History with Outcomes',
+    jtbd: 'Review my past decisions and learn from them',
+    principles: ['educational', 'transparent'],
+    competitiveAdvantage: 'Brokerage statements show what you bought. StockFox shows WHY you bought, what the score was then, and how it played out',
+    userOutcome: 'Review your Adani entry at score 5.8 and learn why HOLD signals should be respected',
+    location: 'journal',
+    targetElement: 'journal-entries',
+  },
+
+  // 6. Individual Entry Card
+  {
+    id: 'entry-card',
+    featureName: 'Decision Audit Trail',
+    jtbd: 'Compare my verdict vs the system for each stock',
+    principles: ['educational', 'transparent'],
+    competitiveAdvantage: 'Traditional journals just record actions. StockFox shows your call vs system call, time invested, and outcome - building a feedback loop',
+    userOutcome: 'See that when you disagreed with STRONG BUY signals, you missed 3 winners - trust the data more',
+    location: 'journal',
+    targetElement: 'entry-card',
+  },
 ]
 
 // Get spotlights for a specific page/location

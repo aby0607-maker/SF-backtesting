@@ -1,9 +1,12 @@
+import { useMemo } from 'react'
 import { BookOpen, TrendingUp, TrendingDown, Eye, Clock, CheckCircle2, XCircle, MinusCircle } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { useAppStore } from '@/store/useAppStore'
 import { cn, formatDate, formatPercent } from '@/lib/utils'
 import { VerdictBadge } from '@/components/ui'
 import { SkillLevelBadge, BlindSpotChart, ResearchDNACard } from '@/components/learning'
+import { DemoModeToggle, SpotlightTour } from '@/components/demo'
+import { getSpotlightsForLocation } from '@/data/featureSpotlights'
 import type { ExtendedProfile } from '@/data/profiles'
 
 // Placeholder data - will be replaced with full mock data
@@ -125,7 +128,11 @@ function getOutcomeLabel(status: 'win' | 'loss' | 'pending' | 'neutral') {
 }
 
 export function Journal() {
-  const { currentProfile } = useAppStore()
+  const { currentProfile, demoMode, toggleDemoMode } = useAppStore()
+
+  // Demo Mode - Only for Ankit profile
+  const isAnkitProfile = currentProfile?.id === 'ankit'
+  const spotlights = useMemo(() => getSpotlightsForLocation('journal'), [])
 
   if (!currentProfile) return null
 
@@ -151,6 +158,9 @@ export function Journal() {
             Track your research journey and learn from outcomes
           </p>
         </div>
+
+        {/* Demo Mode Toggle - Ankit only */}
+        <DemoModeToggle isEnabled={demoMode} onToggle={toggleDemoMode} isAnkitProfile={isAnkitProfile} />
       </motion.div>
 
       {/* Skill Level Card */}
@@ -159,6 +169,7 @@ export function Journal() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.05 }}
         className="rounded-xl bg-dark-800 border border-white/5 p-5"
+        data-spotlight="skill-level-badge"
       >
         <SkillLevelBadge
           level={currentProfile.skillLevel}
@@ -172,6 +183,7 @@ export function Journal() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
         className="grid grid-cols-4 gap-3"
+        data-spotlight="journal-stats"
       >
         <div className="rounded-xl bg-dark-800 border border-white/5 p-4 text-center">
           <div className="text-2xl font-bold text-white">{totalAnalyses}</div>
@@ -198,6 +210,7 @@ export function Journal() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.15 }}
+          data-spotlight="research-dna"
         >
           <ResearchDNACard
             patterns={currentProfile.patterns}
@@ -212,6 +225,7 @@ export function Journal() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
           className="rounded-xl bg-dark-800 border border-white/5 p-5"
+          data-spotlight="blind-spots"
         >
           <h2 className="text-lg font-semibold text-white mb-4">
             Segment Coverage
@@ -226,6 +240,7 @@ export function Journal() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.25 }}
         className="rounded-xl bg-dark-800 border border-white/5 p-5"
+        data-spotlight="journal-entries"
       >
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-semibold text-white">Recent Entries</h2>
@@ -255,6 +270,7 @@ export function Journal() {
                 entry.outcomeStatus === 'pending' && 'bg-warning-500/5 border-warning-500/20',
                 entry.outcomeStatus === 'neutral' && 'bg-dark-700/50 border-white/5'
               )}
+              {...(index === 0 && { 'data-spotlight': 'entry-card' })}
             >
               <div className="flex items-start justify-between mb-2">
                 <div className="flex items-start gap-3">
@@ -306,6 +322,13 @@ export function Journal() {
           ))}
         </div>
       </motion.div>
+
+      {/* Spotlight Tour for Demo Mode */}
+      <SpotlightTour
+        spotlights={spotlights}
+        isActive={demoMode}
+        onEnd={toggleDemoMode}
+      />
     </div>
   )
 }
