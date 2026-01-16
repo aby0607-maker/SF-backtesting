@@ -557,8 +557,8 @@ export function ProfileSelection() {
           <h1 className="text-3xl font-bold text-gradient-primary">StockFox</h1>
         </div>
         <p className="text-sm text-neutral-400 max-w-md mx-auto">
-          AI-powered stock research.{' '}
-          <span className="text-neutral-300">Personalized for YOUR investment style.</span>
+          Every tool you need to invest with{' '}
+          <span className="text-neutral-300 font-medium">conviction, not hope.</span>
         </p>
       </motion.div>
 
