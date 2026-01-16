@@ -2,7 +2,16 @@
 
 > This document provides context and guidelines for AI assistants working on the StockFox codebase.
 
-## Project Overview
+## Quick Reference
+
+| Item | Status |
+|------|--------|
+| **Project** | stockfox - Stock market/financial data application |
+| **Repository** | `aby0607-maker/stockfox` |
+| **Stage** | Greenfield / Initialization |
+| **Package Manager** | Not yet configured |
+| **Test Framework** | Not yet configured |
+| **CI/CD** | Not yet configured |
 
 **StockFox** is India's investment confidence platform - an AI-powered stock research and analysis tool that makes institutional-grade stock analysis accessible to retail investors. The platform analyzes 200+ metrics across 11 segments, provides transparent evidence-backed insights with 94% citation target, and integrates contextual learning to help retail investors make confident, independent investment decisions.
 
@@ -262,7 +271,11 @@ stockfox/
 12. Profile/Settings - Profile switcher, preferences
 13. Alerts Center - Notification types, settings
 
----
+1. **Package Management** - Set up package.json or requirements.txt (depending on chosen stack)
+2. **Project Structure** - Create src/, tests/, docs/ directories
+3. **Configuration** - Add linter, formatter, and build configs
+4. **Environment Setup** - Create .gitignore, .env.example
+5. **Core Features** - Implement stock data functionality
 
 ## Development Guidelines
 
@@ -285,20 +298,67 @@ stockfox/
 - Use descriptive variable and function names
 - Add comments for complex logic, not obvious code
 - Handle errors appropriately - don't silently fail
+- Prefer explicit over implicit behavior
 
 #### File Organization
 - Group related functionality in modules/directories
 - Keep configuration separate from business logic
 - Place tests adjacent to or mirroring source structure
+- Use index files for clean exports where appropriate
 
 ### Security Considerations
 
 For a financial data application:
 - Never commit API keys or secrets to the repository
 - Use environment variables for sensitive configuration
+- Create `.env.example` with placeholder values (not real secrets)
 - Validate and sanitize all external data inputs
 - Be cautious with financial data accuracy
+- Log errors without exposing sensitive information
 
+## Commands Reference
+
+> Commands will be added as the project develops
+
+```bash
+# Build & Run
+# (to be defined)
+
+# Testing
+# (to be defined)
+
+# Linting & Formatting
+# (to be defined)
+```
+
+## Architecture Notes
+
+> Architecture decisions will be documented here as the project evolves
+
+### Planned Components
+
+- **Data Layer** - Stock market data fetching and caching
+- **Business Logic** - Analysis and processing of financial data
+- **API/Interface** - User-facing interface (CLI, web, or API)
+
+### Technology Stack
+
+> To be determined. Likely candidates:
+> - **Backend:** Node.js/TypeScript or Python
+> - **Data Sources:** Financial APIs (Alpha Vantage, Yahoo Finance, etc.)
+> - **Database:** TBD based on requirements
+
+## Dependencies
+
+> Dependencies will be listed here once package management is configured
+
+Currently: No dependencies declared
+
+## Environment Setup
+
+### Prerequisites
+
+> Prerequisites will be documented as the stack is chosen
 ### Writing Guidelines
 - Use ₹ symbol for Indian Rupee currency
 - Follow "plain English" principle - avoid unnecessary jargon
@@ -340,12 +400,27 @@ For a financial data application:
 | Liquide | Advisory | Transparent reasoning, not black-box recommendations |
 | Traditional advisors | Human advisory | 500x cheaper (₹99 vs ₹50K/year) |
 
----
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/aby0607-maker/stockfox.git
+   cd stockfox
+   ```
+2. (Additional steps to be added once project structure is established)
 
 ## AI Assistant Instructions
 
+### Before Starting Work
+
+1. **Read this document** - Understand current project state
+2. **Check file structure** - Verify what exists before making assumptions
+3. **Review recent commits** - Understand recent changes and patterns
+
 ### When Working on This Project
 
+1. **Follow Established Patterns** - Once conventions are set, maintain consistency
+2. **Update This Document** - Keep CLAUDE.md current as the project develops
+3. **Prioritize Security** - Financial data requires careful handling
+4. **Keep It Simple** - Avoid over-engineering; build what's needed
 1. **Check Current State First** - The project is evolving; verify what exists before making assumptions
 2. **Follow Established Patterns** - Once conventions are set, maintain consistency
 3. **Update This Document** - Keep CLAUDE.md current as the project develops
@@ -354,10 +429,26 @@ For a financial data application:
 
 ### Things to Avoid
 
-- Don't commit sensitive data (API keys, credentials)
+- Don't commit sensitive data (API keys, credentials, .env files)
 - Don't break existing functionality without discussion
-- Don't add unnecessary complexity to a simple solution
+- Don't add unnecessary complexity to simple solutions
 - Don't create files unless necessary
+- Don't add dependencies without clear justification
+
+### When Adding New Features
+
+1. Check if similar functionality exists
+2. Follow existing code patterns and conventions
+3. Add appropriate error handling
+4. Update documentation if needed
+5. Consider security implications for financial data
+
+### Helpful Context
+
+- Project name "stockfox" suggests focus on stock market/financial data
+- The project is in early stages - be prepared to help with initial setup
+- Consider financial data accuracy and reliability in all implementations
+- This is a single-developer project currently
 - Don't use financial jargon without explanation
 
 ---
