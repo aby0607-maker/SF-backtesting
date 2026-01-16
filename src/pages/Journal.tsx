@@ -1,8 +1,10 @@
-import { BookOpen, TrendingUp, TrendingDown, Eye, AlertCircle, Clock, Award } from 'lucide-react'
+import { BookOpen, TrendingUp, TrendingDown, Eye, Clock, CheckCircle2, XCircle, MinusCircle } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { useAppStore } from '@/store/useAppStore'
 import { cn, formatDate, formatPercent } from '@/lib/utils'
 import { VerdictBadge } from '@/components/ui'
+import { SkillLevelBadge, BlindSpotChart, ResearchDNACard } from '@/components/learning'
+import type { ExtendedProfile } from '@/data/profiles'
 
 // Placeholder data - will be replaced with full mock data
 const journalEntries = [
@@ -11,12 +13,12 @@ const journalEntries = [
     date: '2025-01-10',
     stock: { symbol: 'ZOMATO', name: 'Eternal (Zomato)', sector: 'Food Tech' },
     scoreAtAnalysis: 8.2,
-    verdictAtAnalysis: 'STRONG BUY',
+    verdictAtAnalysis: 'STRONG BUY' as const,
     userVerdict: 'BUY',
     priceAtAnalysis: 252,
     currentPrice: 268,
     pnlPercent: 6.35,
-    outcomeStatus: 'win',
+    outcomeStatus: 'win' as const,
     timeSpent: 12,
   },
   {
@@ -24,12 +26,12 @@ const journalEntries = [
     date: '2025-01-05',
     stock: { symbol: 'AXISBANK', name: 'Axis Bank', sector: 'Banking' },
     scoreAtAnalysis: 7.8,
-    verdictAtAnalysis: 'BUY',
+    verdictAtAnalysis: 'BUY' as const,
     userVerdict: 'WATCHLIST',
     priceAtAnalysis: 1120,
     currentPrice: 1145,
     pnlPercent: 2.23,
-    outcomeStatus: 'pending',
+    outcomeStatus: 'pending' as const,
     timeSpent: 8,
   },
   {
@@ -37,15 +39,61 @@ const journalEntries = [
     date: '2024-12-20',
     stock: { symbol: 'PAYTM', name: 'One 97 Communications', sector: 'Fintech' },
     scoreAtAnalysis: 4.5,
-    verdictAtAnalysis: 'AVOID',
+    verdictAtAnalysis: 'AVOID' as const,
     userVerdict: 'SKIP',
     priceAtAnalysis: 850,
     currentPrice: 780,
     pnlPercent: -8.24,
-    outcomeStatus: 'neutral',
+    outcomeStatus: 'neutral' as const,
     timeSpent: 15,
   },
+  {
+    id: '4',
+    date: '2024-12-15',
+    stock: { symbol: 'TCS', name: 'Tata Consultancy Services', sector: 'IT Services' },
+    scoreAtAnalysis: 7.5,
+    verdictAtAnalysis: 'BUY' as const,
+    userVerdict: 'BUY',
+    priceAtAnalysis: 3800,
+    currentPrice: 4150,
+    pnlPercent: 9.21,
+    outcomeStatus: 'win' as const,
+    timeSpent: 18,
+  },
+  {
+    id: '5',
+    date: '2024-12-08',
+    stock: { symbol: 'RELIANCE', name: 'Reliance Industries', sector: 'Conglomerate' },
+    scoreAtAnalysis: 6.8,
+    verdictAtAnalysis: 'HOLD' as const,
+    userVerdict: 'SKIP',
+    priceAtAnalysis: 2450,
+    currentPrice: 2380,
+    pnlPercent: -2.86,
+    outcomeStatus: 'neutral' as const,
+    timeSpent: 14,
+  },
+  {
+    id: '6',
+    date: '2024-11-28',
+    stock: { symbol: 'ADANIENT', name: 'Adani Enterprises', sector: 'Infrastructure' },
+    scoreAtAnalysis: 5.8,
+    verdictAtAnalysis: 'HOLD' as const,
+    userVerdict: 'BUY',
+    priceAtAnalysis: 2850,
+    currentPrice: 2420,
+    pnlPercent: -15.09,
+    outcomeStatus: 'loss' as const,
+    timeSpent: 22,
+  },
 ]
+
+// Calculate stats
+const totalAnalyses = journalEntries.length
+const wins = journalEntries.filter(e => e.outcomeStatus === 'win').length
+const losses = journalEntries.filter(e => e.outcomeStatus === 'loss').length
+const winRate = Math.round((wins / totalAnalyses) * 100)
+const avgTime = Math.round(journalEntries.reduce((sum, e) => sum + e.timeSpent, 0) / totalAnalyses)
 
 function getScoreColor(score: number): string {
   if (score >= 8) return 'text-success-400'
@@ -54,111 +102,121 @@ function getScoreColor(score: number): string {
   return 'text-destructive-400'
 }
 
+function getOutcomeIcon(status: 'win' | 'loss' | 'pending' | 'neutral') {
+  switch (status) {
+    case 'win':
+      return <CheckCircle2 className="w-4 h-4 text-success-400" />
+    case 'loss':
+      return <XCircle className="w-4 h-4 text-destructive-400" />
+    case 'pending':
+      return <Clock className="w-4 h-4 text-warning-400" />
+    default:
+      return <MinusCircle className="w-4 h-4 text-neutral-500" />
+  }
+}
+
+function getOutcomeLabel(status: 'win' | 'loss' | 'pending' | 'neutral') {
+  switch (status) {
+    case 'win': return 'Win'
+    case 'loss': return 'Loss'
+    case 'pending': return 'Pending'
+    default: return 'Neutral'
+  }
+}
+
 export function Journal() {
   const { currentProfile } = useAppStore()
 
   if (!currentProfile) return null
 
+  // Cast to ExtendedProfile for additional fields
+  const profile = currentProfile as ExtendedProfile
+
   return (
-    <div className="space-y-5">
-      {/* Header */}
+    <div className="space-y-5 max-w-4xl mx-auto">
+      {/* Header with Skill Badge */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
+        className="flex items-start justify-between"
       >
-        <h1 className="text-2xl font-bold text-white flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-primary-500/20 flex items-center justify-center">
-            <BookOpen className="w-5 h-5 text-primary-400" />
-          </div>
-          Analysis Journal
-        </h1>
-        <p className="text-sm text-neutral-400 mt-1 ml-[52px]">
-          Track your research journey and learn from outcomes
-        </p>
+        <div>
+          <h1 className="text-2xl font-bold text-white flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-primary-500/20 flex items-center justify-center">
+              <BookOpen className="w-5 h-5 text-primary-400" />
+            </div>
+            Analysis Journal
+          </h1>
+          <p className="text-sm text-neutral-400 mt-1 ml-[52px]">
+            Track your research journey and learn from outcomes
+          </p>
+        </div>
       </motion.div>
 
-      {/* Stats */}
+      {/* Skill Level Card */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.05 }}
+        className="rounded-xl bg-dark-800 border border-white/5 p-5"
+      >
+        <SkillLevelBadge
+          level={currentProfile.skillLevel}
+          analysisCount={totalAnalyses}
+        />
+      </motion.div>
+
+      {/* Stats Grid */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
-        className="grid grid-cols-2 md:grid-cols-4 gap-3"
+        className="grid grid-cols-4 gap-3"
       >
         <div className="rounded-xl bg-dark-800 border border-white/5 p-4 text-center">
-          <div className="text-2xl font-bold text-white">12</div>
-          <div className="text-xs text-neutral-500 uppercase tracking-wide mt-1">Total Analyses</div>
+          <div className="text-2xl font-bold text-white">{totalAnalyses}</div>
+          <div className="text-[10px] text-neutral-500 uppercase tracking-wide mt-1">Analyses</div>
         </div>
         <div className="rounded-xl bg-dark-800 border border-white/5 p-4 text-center">
-          <div className="text-2xl font-bold text-success-400">67%</div>
-          <div className="text-xs text-neutral-500 uppercase tracking-wide mt-1">Win Rate</div>
+          <div className="text-2xl font-bold text-success-400">{wins}</div>
+          <div className="text-[10px] text-neutral-500 uppercase tracking-wide mt-1">Wins</div>
         </div>
         <div className="rounded-xl bg-dark-800 border border-white/5 p-4 text-center">
-          <div className="text-2xl font-bold text-white flex items-center justify-center gap-1">
-            <Clock className="w-5 h-5 text-neutral-500" />
-            11m
-          </div>
-          <div className="text-xs text-neutral-500 uppercase tracking-wide mt-1">Avg. Time</div>
+          <div className="text-2xl font-bold text-destructive-400">{losses}</div>
+          <div className="text-[10px] text-neutral-500 uppercase tracking-wide mt-1">Losses</div>
         </div>
         <div className="rounded-xl bg-dark-800 border border-white/5 p-4 text-center">
-          <div className="text-2xl font-bold text-primary-400 flex items-center justify-center gap-1">
-            <Award className="w-5 h-5" />
-            {currentProfile.skillBadge}
-          </div>
-          <div className="text-xs text-neutral-500 uppercase tracking-wide mt-1">Level</div>
+          <div className="text-2xl font-bold text-white">{avgTime}m</div>
+          <div className="text-[10px] text-neutral-500 uppercase tracking-wide mt-1">Avg Time</div>
         </div>
       </motion.div>
 
-      {/* Patterns & Blind Spots */}
+      {/* Research DNA & Blind Spots */}
       <div className="grid md:grid-cols-2 gap-4">
-        {/* Patterns */}
+        {/* Research DNA */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.15 }}
-          className="rounded-xl bg-dark-800 border border-white/5 p-5"
         >
-          <h2 className="text-lg font-semibold text-white flex items-center gap-2 mb-4">
-            <TrendingUp className="w-5 h-5 text-success-400" />
-            Your Patterns
-          </h2>
-          <div className="space-y-2">
-            {currentProfile.patterns.map(pattern => (
-              <div
-                key={pattern.id}
-                className="p-3 bg-success-500/10 rounded-xl border border-success-500/20"
-              >
-                <div className="font-medium text-success-400 text-sm">{pattern.title}</div>
-                <div className="text-xs text-neutral-400 mt-1">{pattern.description}</div>
-              </div>
-            ))}
-          </div>
+          <ResearchDNACard
+            patterns={currentProfile.patterns}
+            investmentThesis={profile.investmentThesis}
+            winRate={winRate}
+          />
         </motion.div>
 
-        {/* Blind Spots */}
+        {/* Blind Spots Chart */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
           className="rounded-xl bg-dark-800 border border-white/5 p-5"
         >
-          <h2 className="text-lg font-semibold text-white flex items-center gap-2 mb-4">
-            <AlertCircle className="w-5 h-5 text-warning-400" />
-            Blind Spots
+          <h2 className="text-lg font-semibold text-white mb-4">
+            Segment Coverage
           </h2>
-          <div className="space-y-2">
-            {currentProfile.blindSpots.map(spot => (
-              <div
-                key={spot.id}
-                className="p-3 bg-warning-500/10 rounded-xl border border-warning-500/20"
-              >
-                <div className="flex items-center justify-between mb-1">
-                  <span className="font-medium text-warning-400 text-sm">{spot.segment}</span>
-                  <span className="text-xs text-neutral-500">Checked {spot.checkRate}%</span>
-                </div>
-                <div className="text-xs text-neutral-400">{spot.suggestion}</div>
-              </div>
-            ))}
-          </div>
+          <BlindSpotChart />
         </motion.div>
       </div>
 
@@ -169,7 +227,20 @@ export function Journal() {
         transition={{ delay: 0.25 }}
         className="rounded-xl bg-dark-800 border border-white/5 p-5"
       >
-        <h2 className="text-lg font-semibold text-white mb-4">Recent Entries</h2>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-semibold text-white">Recent Entries</h2>
+          <div className="flex items-center gap-2 text-xs text-neutral-500">
+            <span className="flex items-center gap-1">
+              <CheckCircle2 className="w-3 h-3 text-success-400" /> Win
+            </span>
+            <span className="flex items-center gap-1">
+              <XCircle className="w-3 h-3 text-destructive-400" /> Loss
+            </span>
+            <span className="flex items-center gap-1">
+              <Clock className="w-3 h-3 text-warning-400" /> Pending
+            </span>
+          </div>
+        </div>
         <div className="space-y-3">
           {journalEntries.map((entry, index) => (
             <motion.div
@@ -177,24 +248,41 @@ export function Journal() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 + index * 0.05 }}
-              className="p-4 bg-dark-700/50 rounded-xl border border-white/5 hover:border-white/10 transition-all"
+              className={cn(
+                'p-4 rounded-xl border transition-all cursor-pointer hover:border-white/20',
+                entry.outcomeStatus === 'win' && 'bg-success-500/5 border-success-500/20',
+                entry.outcomeStatus === 'loss' && 'bg-destructive-500/5 border-destructive-500/20',
+                entry.outcomeStatus === 'pending' && 'bg-warning-500/5 border-warning-500/20',
+                entry.outcomeStatus === 'neutral' && 'bg-dark-700/50 border-white/5'
+              )}
             >
               <div className="flex items-start justify-between mb-2">
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="font-medium text-white">{entry.stock.name}</span>
-                    <VerdictBadge verdict={entry.verdictAtAnalysis} size="sm" />
+                <div className="flex items-start gap-3">
+                  {/* Outcome icon */}
+                  <div className="mt-0.5">
+                    {getOutcomeIcon(entry.outcomeStatus)}
                   </div>
-                  <div className="text-xs text-neutral-500 mt-0.5">
-                    {entry.stock.sector} • {formatDate(entry.date)}
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="font-medium text-white">{entry.stock.name}</span>
+                      <VerdictBadge verdict={entry.verdictAtAnalysis} size="sm" />
+                    </div>
+                    <div className="text-xs text-neutral-500 mt-0.5">
+                      {entry.stock.sector} • {formatDate(entry.date)}
+                    </div>
                   </div>
                 </div>
-                <span className={cn('text-lg font-bold', getScoreColor(entry.scoreAtAnalysis))}>
-                  {entry.scoreAtAnalysis.toFixed(1)}
-                </span>
+                <div className="text-right">
+                  <span className={cn('text-lg font-bold', getScoreColor(entry.scoreAtAnalysis))}>
+                    {entry.scoreAtAnalysis.toFixed(1)}
+                  </span>
+                  <div className="text-[10px] text-neutral-500 uppercase">
+                    {getOutcomeLabel(entry.outcomeStatus)}
+                  </div>
+                </div>
               </div>
 
-              <div className="flex items-center gap-4 text-sm">
+              <div className="flex items-center gap-4 text-sm ml-7">
                 <div className="flex items-center gap-1.5 text-neutral-400">
                   <Eye className="w-4 h-4 text-neutral-500" />
                   <span>Your call: <span className="text-white">{entry.userVerdict}</span></span>
