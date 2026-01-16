@@ -21,17 +21,43 @@ interface ElementRect {
   right: number
 }
 
-// Principle badge component - Prominent version
-function PrincipleBadge({ principle }: { principle: ProductPrinciple }) {
-  const info = principleInfo[principle]
+// Principle badges component - supports multiple principles
+function PrincipleBadges({ principles }: { principles: ProductPrinciple[] }) {
+  if (principles.length === 1) {
+    // Single principle - prominent display
+    const info = principleInfo[principles[0]]
+    return (
+      <div className={cn('inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold border', info.bgColor, info.color, 'border-current/30')}>
+        <span className="w-6 h-6 rounded-md bg-current/20 flex items-center justify-center text-[10px] font-black">
+          {info.emoji}
+        </span>
+        <div className="flex flex-col">
+          <span className="text-[9px] uppercase tracking-wider opacity-70">Core Principle</span>
+          <span className="font-semibold">{info.label}</span>
+        </div>
+      </div>
+    )
+  }
+
+  // Multiple principles - show label and compact badges
   return (
-    <div className={cn('inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold border', info.bgColor, info.color, 'border-current/30')}>
-      <span className="w-6 h-6 rounded-md bg-current/20 flex items-center justify-center text-[10px] font-black">
-        {info.emoji}
-      </span>
-      <div className="flex flex-col">
-        <span className="text-[9px] uppercase tracking-wider opacity-70">Core Principle</span>
-        <span className="font-semibold">{info.label}</span>
+    <div className="space-y-1.5">
+      <span className="text-[9px] uppercase tracking-wider opacity-70 text-neutral-400">Core Principles</span>
+      <div className="flex flex-wrap gap-1.5">
+        {principles.map((principle) => {
+          const info = principleInfo[principle]
+          return (
+            <div
+              key={principle}
+              className={cn('inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-[10px] font-bold border', info.bgColor, info.color, 'border-current/30')}
+            >
+              <span className="w-4 h-4 rounded bg-current/20 flex items-center justify-center text-[8px] font-black">
+                {info.emoji}
+              </span>
+              <span className="font-semibold">{info.label}</span>
+            </div>
+          )
+        })}
       </div>
     </div>
   )
@@ -298,8 +324,8 @@ export function SpotlightTour({ spotlights, isActive, onEnd }: SpotlightTourProp
                   {currentSpotlight.featureName}
                 </h4>
 
-                {/* Prominent Principle Badge */}
-                <PrincipleBadge principle={currentSpotlight.principle} />
+                {/* Principle Badges */}
+                <PrincipleBadges principles={currentSpotlight.principles} />
               </div>
 
               {/* Content */}

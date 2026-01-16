@@ -15,13 +15,22 @@ interface FeatureSpotlightProps {
   position?: 'top' | 'bottom' | 'left' | 'right'
 }
 
-// Principle badge component
-function PrincipleBadge({ principle }: { principle: ProductPrinciple }) {
-  const info = principleInfo[principle]
+// Principle badges component - supports multiple
+function PrincipleBadges({ principles }: { principles: ProductPrinciple[] }) {
   return (
-    <div className={cn('inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold', info.bgColor, info.color)}>
-      <span className="font-bold">{info.emoji}</span>
-      <span>{info.label}</span>
+    <div className="flex flex-wrap gap-1.5">
+      {principles.map((principle) => {
+        const info = principleInfo[principle]
+        return (
+          <div
+            key={principle}
+            className={cn('inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold', info.bgColor, info.color)}
+          >
+            <span className="font-bold">{info.emoji}</span>
+            <span>{info.label}</span>
+          </div>
+        )
+      })}
     </div>
   )
 }
@@ -76,9 +85,9 @@ export function FeatureSpotlight({
             </button>
           </div>
 
-          {/* Principle Badge */}
+          {/* Principle Badges */}
           <div className="mt-3">
-            <PrincipleBadge principle={spotlight.principle} />
+            <PrincipleBadges principles={spotlight.principles} />
           </div>
         </div>
 

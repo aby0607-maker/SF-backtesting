@@ -1039,6 +1039,7 @@ export function StockAnalysis() {
         <Link
           to="/journal"
           className="flex-1 p-3 rounded-xl bg-dark-800 border border-white/5 hover:border-primary-500/30 transition-all group flex items-center justify-center gap-2"
+          data-spotlight="add-to-journal"
         >
           <BookmarkPlus className="w-4 h-4 text-primary-400" />
           <span className="text-sm text-neutral-300 group-hover:text-white transition-colors">Add to Journal</span>
