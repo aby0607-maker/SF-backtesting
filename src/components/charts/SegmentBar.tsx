@@ -55,6 +55,63 @@ function getScoreColorClass(score: number): string {
   return 'text-destructive-400'
 }
 
+// Get rank styling based on position
+function getRankStyle(rank: number, total: number): {
+  colorClass: string
+  bgClass: string
+  medal: string | null
+  label: string
+} {
+  const position = rank / total
+
+  if (rank === 1) {
+    return {
+      colorClass: 'text-amber-400',
+      bgClass: 'bg-amber-500/15 border border-amber-500/30',
+      medal: '🥇',
+      label: 'Top'
+    }
+  }
+  if (rank === 2) {
+    return {
+      colorClass: 'text-slate-300',
+      bgClass: 'bg-slate-400/15 border border-slate-400/30',
+      medal: '🥈',
+      label: 'Top'
+    }
+  }
+  if (rank === 3) {
+    return {
+      colorClass: 'text-amber-600',
+      bgClass: 'bg-amber-700/15 border border-amber-600/30',
+      medal: '🥉',
+      label: ''
+    }
+  }
+  if (position <= 0.5) {
+    return {
+      colorClass: 'text-teal-400',
+      bgClass: 'bg-teal-500/10 border border-teal-500/20',
+      medal: null,
+      label: ''
+    }
+  }
+  if (position <= 0.75) {
+    return {
+      colorClass: 'text-warning-400',
+      bgClass: 'bg-warning-500/10 border border-warning-500/20',
+      medal: null,
+      label: ''
+    }
+  }
+  return {
+    colorClass: 'text-destructive-400',
+    bgClass: 'bg-destructive-500/10 border border-destructive-500/20',
+    medal: null,
+    label: 'Bottom'
+  }
+}
+
 export function SegmentBar({
   segments,
   onSegmentClick,
@@ -67,6 +124,7 @@ export function SegmentBar({
         const { label, colorClass } = getVerdictLabel(segment.score)
         const insight = getContextualInsight(segment)
         const hasRank = segment.sectorRank && segment.sectorTotal
+        const rankStyle = hasRank ? getRankStyle(segment.sectorRank!, segment.sectorTotal!) : null
 
         return (
           <motion.div
@@ -86,14 +144,19 @@ export function SegmentBar({
             >
               {/* Main row */}
               <div className="flex items-center gap-3">
-                {/* Rank */}
-                <div className="w-12 flex-shrink-0 text-center">
-                  {hasRank ? (
-                    <span className="text-xs font-medium text-neutral-500">
-                      #{segment.sectorRank}/{segment.sectorTotal}
-                    </span>
+                {/* Rank Badge */}
+                <div className="w-16 flex-shrink-0">
+                  {hasRank && rankStyle ? (
+                    <div className={cn(
+                      'inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-xs font-semibold',
+                      rankStyle.bgClass,
+                      rankStyle.colorClass
+                    )}>
+                      {rankStyle.medal && <span className="text-sm">{rankStyle.medal}</span>}
+                      <span className="tabular-nums">{segment.sectorRank}/{segment.sectorTotal}</span>
+                    </div>
                   ) : (
-                    <span className="text-xs text-neutral-600">—</span>
+                    <span className="text-xs text-neutral-600 pl-2">—</span>
                   )}
                 </div>
 
@@ -149,7 +212,7 @@ export function SegmentBar({
 
               {/* Explainer row */}
               {insight && (
-                <div className="mt-1 ml-[60px] pl-3">
+                <div className="mt-1 ml-[76px] pl-3">
                   <span className="text-xs text-neutral-500">{insight}</span>
                 </div>
               )}
