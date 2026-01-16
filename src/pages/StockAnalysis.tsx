@@ -792,85 +792,101 @@ export function StockAnalysis() {
               </div>
             </div>
 
-            {/* ============== METRIC-BY-METRIC LEARNING ============== */}
-            <div className="rounded-2xl bg-dark-800 border border-white/5 p-5">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-2">
-                  <Compass className="w-4 h-4 text-teal-400" />
-                  <h3 className="font-semibold text-white">Metric-by-Metric Analysis</h3>
-                </div>
-                <span className="px-2 py-0.5 rounded-lg bg-teal-500/10 text-teal-400 text-[10px] font-medium">
-                  LEARNING
-                </span>
-              </div>
-              <p className="text-sm text-neutral-400 mb-4">
-                Go through each segment step-by-step. Rate the metrics yourself before seeing the system's assessment.
-              </p>
-              <button
-                onClick={() => setGuidedModalOpen(true)}
-                className="w-full p-3 rounded-xl bg-gradient-to-r from-teal-500/10 to-primary-500/10 border border-teal-500/20 hover:border-teal-500/40 transition-all group flex items-center justify-center gap-2"
-              >
-                <Target className="w-4 h-4 text-teal-400" />
-                <span className="text-sm font-medium text-white">Start Guided Tour</span>
-                <ChevronRight className="w-4 h-4 text-neutral-500 group-hover:text-teal-400 transition-colors" />
-              </button>
-            </div>
-
-            {/* ============== LEARNING ACTIONS ============== */}
-            <div className="flex gap-3">
-              {/* Reflection CTA */}
-              <button
-                onClick={() => setReflectionModalOpen(true)}
-                className="flex-1 p-3 rounded-xl bg-dark-800 border border-white/5 hover:border-primary-500/30 transition-all group flex items-center justify-center gap-2"
-              >
-                <PenLine className="w-4 h-4 text-primary-400" />
-                <span className="text-sm text-neutral-300 group-hover:text-white transition-colors">Log Reflection</span>
-              </button>
-              {/* Journal Link */}
-              <Link
-                to="/journal"
-                className="flex-1 p-3 rounded-xl bg-dark-800 border border-white/5 hover:border-primary-500/30 transition-all group flex items-center justify-center gap-2"
-              >
-                <BookmarkPlus className="w-4 h-4 text-primary-400" />
-                <span className="text-sm text-neutral-300 group-hover:text-white transition-colors">Add to Journal</span>
-              </Link>
-            </div>
-
-            {/* ============== NEWS SECTION ============== */}
-            {news.length > 0 && (
-              <div className="rounded-2xl bg-dark-800 border border-white/5 p-5">
-                <div className="flex items-center gap-2 mb-4">
-                  <Newspaper className="w-4 h-4 text-primary-400" />
-                  <h3 className="font-semibold text-white">Recent News</h3>
-                </div>
-                <div className="space-y-3">
-                  {news.slice(0, 3).map((item) => (
-                    <div
-                      key={item.id}
-                      className={cn(
-                        'p-3 rounded-xl bg-dark-700/50 border-l-2',
-                        item.sentiment === 'positive' && 'border-l-success-500',
-                        item.sentiment === 'negative' && 'border-l-destructive-500',
-                        item.sentiment === 'neutral' && 'border-l-neutral-500'
-                      )}
-                    >
-                      <div className="flex items-start gap-2">
-                        {item.sentiment === 'positive' && <TrendingUp className="w-4 h-4 text-success-400 mt-0.5 flex-shrink-0" />}
-                        {item.sentiment === 'negative' && <TrendingDown className="w-4 h-4 text-destructive-400 mt-0.5 flex-shrink-0" />}
-                        <div>
-                          <p className="text-sm font-medium text-white">{item.headline}</p>
-                          <p className="text-xs text-neutral-400 mt-1">{item.summary}</p>
-                          <p className="text-xs text-neutral-500 mt-1">{item.source}</p>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* ============== METRIC-BY-METRIC LEARNING ============== */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.15 }}
+        className="rounded-2xl bg-dark-800 border border-white/5 p-5"
+      >
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <Compass className="w-4 h-4 text-teal-400" />
+            <h3 className="font-semibold text-white">Metric-by-Metric Analysis</h3>
+          </div>
+          <span className="px-2 py-0.5 rounded-lg bg-teal-500/10 text-teal-400 text-[10px] font-medium">
+            LEARNING
+          </span>
+        </div>
+        <p className="text-sm text-neutral-400 mb-4">
+          Go through each segment step-by-step. Rate the metrics yourself before seeing the system's assessment.
+        </p>
+        <button
+          onClick={() => setGuidedModalOpen(true)}
+          className="w-full p-3 rounded-xl bg-gradient-to-r from-teal-500/10 to-primary-500/10 border border-teal-500/20 hover:border-teal-500/40 transition-all group flex items-center justify-center gap-2"
+        >
+          <Target className="w-4 h-4 text-teal-400" />
+          <span className="text-sm font-medium text-white">Start Guided Tour</span>
+          <ChevronRight className="w-4 h-4 text-neutral-500 group-hover:text-teal-400 transition-colors" />
+        </button>
+      </motion.div>
+
+      {/* ============== LEARNING ACTIONS ============== */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+        className="flex gap-3"
+      >
+        {/* Reflection CTA */}
+        <button
+          onClick={() => setReflectionModalOpen(true)}
+          className="flex-1 p-3 rounded-xl bg-dark-800 border border-white/5 hover:border-primary-500/30 transition-all group flex items-center justify-center gap-2"
+        >
+          <PenLine className="w-4 h-4 text-primary-400" />
+          <span className="text-sm text-neutral-300 group-hover:text-white transition-colors">Log Reflection</span>
+        </button>
+        {/* Journal Link */}
+        <Link
+          to="/journal"
+          className="flex-1 p-3 rounded-xl bg-dark-800 border border-white/5 hover:border-primary-500/30 transition-all group flex items-center justify-center gap-2"
+        >
+          <BookmarkPlus className="w-4 h-4 text-primary-400" />
+          <span className="text-sm text-neutral-300 group-hover:text-white transition-colors">Add to Journal</span>
+        </Link>
+      </motion.div>
+
+      {/* ============== NEWS SECTION ============== */}
+      {news.length > 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.25 }}
+          className="rounded-2xl bg-dark-800 border border-white/5 p-5"
+        >
+          <div className="flex items-center gap-2 mb-4">
+            <Newspaper className="w-4 h-4 text-primary-400" />
+            <h3 className="font-semibold text-white">Recent News</h3>
+          </div>
+          <div className="space-y-3">
+            {news.slice(0, 3).map((item) => (
+              <div
+                key={item.id}
+                className={cn(
+                  'p-3 rounded-xl bg-dark-700/50 border-l-2',
+                  item.sentiment === 'positive' && 'border-l-success-500',
+                  item.sentiment === 'negative' && 'border-l-destructive-500',
+                  item.sentiment === 'neutral' && 'border-l-neutral-500'
+                )}
+              >
+                <div className="flex items-start gap-2">
+                  {item.sentiment === 'positive' && <TrendingUp className="w-4 h-4 text-success-400 mt-0.5 flex-shrink-0" />}
+                  {item.sentiment === 'negative' && <TrendingDown className="w-4 h-4 text-destructive-400 mt-0.5 flex-shrink-0" />}
+                  <div>
+                    <p className="text-sm font-medium text-white">{item.headline}</p>
+                    <p className="text-xs text-neutral-400 mt-1">{item.summary}</p>
+                    <p className="text-xs text-neutral-500 mt-1">{item.source}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </motion.div>
+      )}
 
       {/* ============== RED FLAG SCANNER (DFY) / KEY METRICS (DIY) ============== */}
       {analysisMode === 'dfy' ? (

@@ -306,6 +306,7 @@ export function SegmentDeepDive() {
                 <EnhancedMetricCard
                   metric={metric}
                   stockName={stockName}
+                  hideStatus={isDIY}
                 />
               </motion.div>
             ))}
