@@ -1,10 +1,153 @@
 import { useNavigate } from 'react-router-dom'
-import { ArrowRight, Sparkles, BarChart2, Shield, TrendingUp, Layers } from 'lucide-react'
-import { motion } from 'framer-motion'
+import {
+  ArrowRight,
+  Sparkles,
+  BarChart2,
+  Layers,
+  Brain,
+  Eye,
+  Zap,
+  GraduationCap,
+  Gem,
+  Target,
+  Users,
+  BookOpen,
+  Compass,
+  Bell,
+  CheckCircle2,
+  ChevronDown,
+  ChevronUp,
+} from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { useState } from 'react'
 import { useAppStore } from '@/store/useAppStore'
 import { getProfilesByCategory, getCategoryInfo, getFocusTypeInfo, type ExtendedProfile } from '@/data/profiles'
 import { cn, formatCurrency } from '@/lib/utils'
 import { StaggerContainer, StaggerItem } from '@/components/motion'
+
+// ===== CORE DATA =====
+
+// 6 Core Principles
+const corePrinciples = [
+  {
+    id: 'comprehensive',
+    label: '360° Coverage',
+    icon: Layers,
+    color: 'text-primary-400',
+    bgColor: 'bg-primary-500/20',
+    borderColor: 'border-primary-500/30',
+    description: '11 segments, 200+ metrics - nothing missed',
+  },
+  {
+    id: 'personalization',
+    label: '6D Personalization',
+    icon: Target,
+    color: 'text-purple-400',
+    bgColor: 'bg-purple-500/20',
+    borderColor: 'border-purple-500/30',
+    description: 'Same stock, different verdict based on YOU',
+  },
+  {
+    id: 'transparent',
+    label: 'Transparent',
+    icon: Eye,
+    color: 'text-teal-400',
+    bgColor: 'bg-teal-500/20',
+    borderColor: 'border-teal-500/30',
+    description: 'Every score traced to primary sources',
+  },
+  {
+    id: 'fast',
+    label: 'Fast & Automatic',
+    icon: Zap,
+    color: 'text-warning-400',
+    bgColor: 'bg-warning-500/20',
+    borderColor: 'border-warning-500/30',
+    description: 'Decisions in 30 seconds, not 30 minutes',
+  },
+  {
+    id: 'educational',
+    label: 'Educational',
+    icon: GraduationCap,
+    color: 'text-info-400',
+    bgColor: 'bg-info-500/20',
+    borderColor: 'border-info-500/30',
+    description: 'Learn while you research - build real skills',
+  },
+  {
+    id: 'simplicity',
+    label: 'Simple Output',
+    icon: Gem,
+    color: 'text-success-400',
+    bgColor: 'bg-success-500/20',
+    borderColor: 'border-success-500/30',
+    description: 'Complex analysis, plain English verdicts',
+  },
+]
+
+// 6 Feature Clusters from PRD
+const featureClusters = [
+  {
+    id: 'cvp',
+    name: 'Core Analysis',
+    count: 14,
+    icon: BarChart2,
+    color: 'text-primary-400',
+    highlights: ['11-Segment Deep Dive', 'Red Flag Scanner', 'Evidence Citations', 'Peer Comparison'],
+  },
+  {
+    id: 'pers',
+    name: 'Personalization',
+    count: 11,
+    icon: Users,
+    color: 'text-purple-400',
+    highlights: ['6D Profiling', 'Adaptive Weights', 'Position Sizing', 'Entry/Exit Guidance'],
+  },
+  {
+    id: 'learn',
+    name: 'Learning',
+    count: 14,
+    icon: BookOpen,
+    color: 'text-info-400',
+    highlights: ['Investment Journal', 'Blind Spot Detection', 'Skill Badges', 'RAG AI Assistant'],
+  },
+  {
+    id: 'ux',
+    name: 'Experience',
+    count: 12,
+    icon: Compass,
+    color: 'text-teal-400',
+    highlights: ['DFY/DIY Toggle', 'Discovery Hub', 'Watchlist', 'Profile Switcher'],
+  },
+  {
+    id: 'eng',
+    name: 'Engagement',
+    count: 9,
+    icon: Bell,
+    color: 'text-warning-400',
+    highlights: ['Smart Alerts', 'Thesis-Breaking Alerts', 'Trending Stocks', 'News Feed'],
+  },
+  {
+    id: 'val',
+    name: 'Validation',
+    count: 8,
+    icon: CheckCircle2,
+    color: 'text-success-400',
+    highlights: ['Backtesting', 'Advisor Marketplace', 'Track Records', 'What-If Scenarios'],
+  },
+]
+
+// Key Jobs To Be Done
+const keyJTBD = [
+  'Get a clear buy/sell verdict in 30 seconds, not hours',
+  'Trust the analysis because every claim is sourced',
+  'Learn to analyze stocks properly, not follow tips blindly',
+  'Know which of my portfolio stocks need attention today',
+  'Find new opportunities matching MY investment style',
+  'Never miss a red flag or thesis-breaking event',
+]
+
+// ===== COMPONENTS =====
 
 // Risk indicator bar
 function RiskIndicator({ level }: { level: number }) {
@@ -85,7 +228,7 @@ function PortfolioPreview({ portfolio }: { portfolio: ExtendedProfile['portfolio
   )
 }
 
-// Profile card component - Option D: JTBD-focused with priorities
+// Profile card component
 function ProfileCard({ profile, onSelect }: { profile: ExtendedProfile; onSelect: () => void }) {
   const focusInfo = getFocusTypeInfo(profile.focusType)
 
@@ -209,6 +352,144 @@ function CategorySection({
   )
 }
 
+// Hero Section - Core Principles, Features, JTBD
+function HeroSection() {
+  const [isExpanded, setIsExpanded] = useState(false)
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.2 }}
+      className="px-4 mb-8 relative z-10"
+    >
+      <div className="max-w-5xl mx-auto">
+        {/* Section Header */}
+        <div className="text-center mb-6">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.3 }}
+            className="inline-flex items-center gap-2 px-3 py-1.5 bg-primary-500/10 border border-primary-500/20 rounded-full mb-3"
+          >
+            <Brain className="w-4 h-4 text-primary-400" />
+            <span className="text-xs font-medium text-primary-400">68 Features Across 6 Clusters</span>
+          </motion.div>
+          <h2 className="text-xl font-bold text-white mb-2">What Makes StockFox Different</h2>
+          <p className="text-sm text-neutral-400 max-w-lg mx-auto">
+            Institutional-grade research, personalized for retail investors.
+            <span className="text-neutral-300"> Same stock, different verdict based on who YOU are.</span>
+          </p>
+        </div>
+
+        {/* 6 Core Principles - Always Visible */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-6">
+          {corePrinciples.map((principle, i) => (
+            <motion.div
+              key={principle.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 + i * 0.05 }}
+              className={cn(
+                'p-3 rounded-xl border text-center',
+                principle.bgColor,
+                principle.borderColor
+              )}
+            >
+              <principle.icon className={cn('w-5 h-5 mx-auto mb-2', principle.color)} />
+              <p className={cn('text-xs font-semibold mb-1', principle.color)}>{principle.label}</p>
+              <p className="text-[10px] text-neutral-400 leading-tight">{principle.description}</p>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Key Jobs To Be Done */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.6 }}
+          className="bg-dark-800/50 rounded-xl border border-white/5 p-4 mb-4"
+        >
+          <h3 className="text-sm font-semibold text-white mb-3 flex items-center gap-2">
+            <Target className="w-4 h-4 text-primary-400" />
+            Jobs We Help You Do
+          </h3>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-2">
+            {keyJTBD.map((jtbd, i) => (
+              <div key={i} className="flex items-start gap-2">
+                <CheckCircle2 className="w-3.5 h-3.5 text-success-400 mt-0.5 flex-shrink-0" />
+                <span className="text-xs text-neutral-300">{jtbd}</span>
+              </div>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* Expandable Feature Clusters */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.7 }}
+        >
+          <button
+            onClick={() => setIsExpanded(!isExpanded)}
+            className="w-full flex items-center justify-center gap-2 py-2 text-sm text-neutral-400 hover:text-white transition-colors"
+          >
+            <span>{isExpanded ? 'Hide' : 'Show'} Feature Clusters</span>
+            {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+          </button>
+
+          <AnimatePresence>
+            {isExpanded && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.3 }}
+                className="overflow-hidden"
+              >
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3 pt-4">
+                  {featureClusters.map((cluster, i) => (
+                    <motion.div
+                      key={cluster.id}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: i * 0.05 }}
+                      className="p-4 bg-dark-800/50 rounded-xl border border-white/5"
+                    >
+                      <div className="flex items-center gap-2 mb-2">
+                        <cluster.icon className={cn('w-4 h-4', cluster.color)} />
+                        <span className="text-sm font-medium text-white">{cluster.name}</span>
+                        <span className="ml-auto text-xs text-neutral-500">{cluster.count} features</span>
+                      </div>
+                      <div className="flex flex-wrap gap-1">
+                        {cluster.highlights.map((h, j) => (
+                          <span
+                            key={j}
+                            className="px-1.5 py-0.5 bg-dark-600/50 rounded text-[10px] text-neutral-400"
+                          >
+                            {h}
+                          </span>
+                        ))}
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+
+                {/* Total features summary */}
+                <div className="mt-4 text-center">
+                  <span className="text-xs text-neutral-500">
+                    Total: <span className="text-white font-medium">68 features</span> delivering institutional-grade research to retail investors
+                  </span>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.div>
+      </div>
+    </motion.div>
+  )
+}
+
 export function ProfileSelection() {
   const navigate = useNavigate()
   const { setCurrentProfile } = useAppStore()
@@ -233,9 +514,9 @@ export function ProfileSelection() {
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="text-center pt-12 pb-6 px-4 relative z-10"
+        className="text-center pt-10 pb-4 px-4 relative z-10"
       >
-        <div className="flex items-center justify-center gap-3 mb-3">
+        <div className="flex items-center justify-center gap-3 mb-2">
           <motion.span
             className="text-4xl"
             animate={{ y: [0, -8, 0] }}
@@ -247,42 +528,20 @@ export function ProfileSelection() {
         </div>
         <p className="text-sm text-neutral-400 max-w-md mx-auto">
           AI-powered stock research.{' '}
-          <span className="text-neutral-300">Institutional-grade analysis in plain English.</span>
+          <span className="text-neutral-300">Personalized for YOUR investment style.</span>
         </p>
       </motion.div>
 
-      {/* What makes StockFox different - value props */}
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2 }}
-        className="px-4 mb-6 relative z-10"
-      >
-        <div className="max-w-4xl mx-auto">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            {[
-              { icon: Layers, label: '11-Segment Analysis', desc: 'Complete coverage' },
-              { icon: BarChart2, label: 'Sector Anchoring', desc: 'Contextual scores' },
-              { icon: Shield, label: 'Red Flag Scanner', desc: 'Risk alerts' },
-              { icon: TrendingUp, label: 'Personalized', desc: 'Your style matters' },
-            ].map(({ icon: Icon, label, desc }) => (
-              <div key={label} className="p-3 bg-dark-800/50 rounded-xl border border-white/5 text-center">
-                <Icon className="w-5 h-5 text-primary-400 mx-auto mb-1.5" />
-                <p className="text-xs font-medium text-white">{label}</p>
-                <p className="text-[10px] text-neutral-500">{desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </motion.div>
+      {/* Hero Section - Core Principles, Features, JTBD */}
+      <HeroSection />
 
       {/* Profile Selection */}
       <div className="flex-1 px-4 pb-12 relative z-10">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-5xl mx-auto">
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.25 }}
+            transition={{ delay: 0.8 }}
             className="mb-6"
           >
             <h2 className="text-xl font-semibold text-center mb-1 text-white">Choose Your Demo Profile</h2>
@@ -309,7 +568,7 @@ export function ProfileSelection() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.9 }}
+            transition={{ delay: 1.1 }}
             className="mt-6 p-4 rounded-xl bg-primary-500/10 border border-primary-500/20 text-center"
           >
             <p className="text-xs text-primary-300 flex items-center justify-center gap-2">
@@ -326,7 +585,7 @@ export function ProfileSelection() {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 1 }}
+        transition={{ delay: 1.2 }}
         className="text-center pb-6 text-[11px] text-neutral-600 relative z-10"
       >
         StockFox Demo • Investor Pitch Prototype
