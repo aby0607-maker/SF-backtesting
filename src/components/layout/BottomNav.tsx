@@ -5,11 +5,11 @@ import { cn } from '@/lib/utils'
 
 // Chat removed - now accessible via floating FAB
 const navItems = [
-  { to: '/dashboard', icon: Home, label: 'Home' },
-  { to: '/discover', icon: Search, label: 'Discover' },
-  { to: '/portfolio', icon: Briefcase, label: 'Portfolio' },
-  { to: '/journal', icon: BookOpen, label: 'Journal' },
-  { to: '/alerts', icon: Bell, label: 'Alerts' },
+  { to: '/dashboard', icon: Home, label: 'Home', spotlightId: 'nav-home' },
+  { to: '/discover', icon: Search, label: 'Discover', spotlightId: 'nav-discover' },
+  { to: '/portfolio', icon: Briefcase, label: 'Portfolio', spotlightId: 'nav-portfolio' },
+  { to: '/journal', icon: BookOpen, label: 'Journal', spotlightId: 'nav-journal' },
+  { to: '/alerts', icon: Bell, label: 'Alerts', spotlightId: 'nav-alerts' },
 ]
 
 export function BottomNav() {
@@ -21,6 +21,7 @@ export function BottomNav() {
             <NavLink
               key={item.to}
               to={item.to}
+              data-spotlight={item.spotlightId}
               className={({ isActive }) =>
                 cn(
                   'relative flex flex-col items-center gap-1 px-3 py-2 rounded-lg transition-all',

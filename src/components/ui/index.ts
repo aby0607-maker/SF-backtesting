@@ -5,3 +5,4 @@ export { AnimatedNumber, AnimatedCurrency, AnimatedPercent } from './AnimatedNum
 export { Skeleton, SkeletonCard, SkeletonStockRow, SkeletonScoreRing } from './Skeleton'
 export { LoadingSpinner } from './LoadingSpinner'
 export { AnimatedContainer } from './AnimatedContainer'
+export { FreeTierBanner } from './FreeTierBanner'

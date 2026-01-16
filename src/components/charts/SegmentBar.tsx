@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
-import { ChevronRight } from 'lucide-react'
+import { ChevronRight, Info } from 'lucide-react'
+import type { Metric } from '@/types'
 
 interface Segment {
   id: string
@@ -12,11 +13,13 @@ interface Segment {
   sectorAvg?: number
   quickInsight?: string
   weight?: number
+  metrics?: Metric[]
 }
 
 interface SegmentBarProps {
   segments: Segment[]
   onSegmentClick?: (segmentId: string) => void
+  onEvidenceClick?: (segment: Segment) => void
   className?: string
 }
 
@@ -52,9 +55,67 @@ function getScoreColorClass(score: number): string {
   return 'text-destructive-400'
 }
 
+// Get rank styling based on position
+function getRankStyle(rank: number, total: number): {
+  colorClass: string
+  bgClass: string
+  medal: string | null
+  label: string
+} {
+  const position = rank / total
+
+  if (rank === 1) {
+    return {
+      colorClass: 'text-amber-400',
+      bgClass: 'bg-amber-500/15 border border-amber-500/30',
+      medal: '🥇',
+      label: 'Top'
+    }
+  }
+  if (rank === 2) {
+    return {
+      colorClass: 'text-slate-300',
+      bgClass: 'bg-slate-400/15 border border-slate-400/30',
+      medal: '🥈',
+      label: 'Top'
+    }
+  }
+  if (rank === 3) {
+    return {
+      colorClass: 'text-amber-600',
+      bgClass: 'bg-amber-700/15 border border-amber-600/30',
+      medal: '🥉',
+      label: ''
+    }
+  }
+  if (position <= 0.5) {
+    return {
+      colorClass: 'text-teal-400',
+      bgClass: 'bg-teal-500/10 border border-teal-500/20',
+      medal: null,
+      label: ''
+    }
+  }
+  if (position <= 0.75) {
+    return {
+      colorClass: 'text-warning-400',
+      bgClass: 'bg-warning-500/10 border border-warning-500/20',
+      medal: null,
+      label: ''
+    }
+  }
+  return {
+    colorClass: 'text-destructive-400',
+    bgClass: 'bg-destructive-500/10 border border-destructive-500/20',
+    medal: null,
+    label: 'Bottom'
+  }
+}
+
 export function SegmentBar({
   segments,
   onSegmentClick,
+  onEvidenceClick,
   className,
 }: SegmentBarProps) {
   return (
@@ -63,6 +124,7 @@ export function SegmentBar({
         const { label, colorClass } = getVerdictLabel(segment.score)
         const insight = getContextualInsight(segment)
         const hasRank = segment.sectorRank && segment.sectorTotal
+        const rankStyle = hasRank ? getRankStyle(segment.sectorRank!, segment.sectorTotal!) : null
 
         return (
           <motion.div
@@ -75,32 +137,55 @@ export function SegmentBar({
             <div className="border-t border-white/5" />
 
             <div
-              onClick={() => onSegmentClick?.(segment.id)}
               className={cn(
-                'group py-3 cursor-pointer transition-all duration-150',
+                'group py-3 transition-all duration-150',
                 'hover:bg-white/[0.02]'
               )}
             >
               {/* Main row */}
               <div className="flex items-center gap-3">
-                {/* Rank */}
-                <div className="w-12 flex-shrink-0 text-center">
-                  {hasRank ? (
-                    <span className="text-xs font-medium text-neutral-500">
-                      #{segment.sectorRank}/{segment.sectorTotal}
-                    </span>
+                {/* Rank Badge */}
+                <div className="w-16 flex-shrink-0">
+                  {hasRank && rankStyle ? (
+                    <div className={cn(
+                      'inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-xs font-semibold',
+                      rankStyle.bgClass,
+                      rankStyle.colorClass
+                    )}>
+                      {rankStyle.medal && <span className="text-sm">{rankStyle.medal}</span>}
+                      <span className="tabular-nums">{segment.sectorRank}/{segment.sectorTotal}</span>
+                    </div>
                   ) : (
-                    <span className="text-xs text-neutral-600">—</span>
+                    <span className="text-xs text-neutral-600 pl-2">—</span>
                   )}
                 </div>
 
                 {/* Vertical separator */}
                 <div className="w-px h-8 bg-white/10 flex-shrink-0" />
 
-                {/* Segment name */}
-                <span className="flex-1 text-sm font-medium text-white group-hover:text-white/90 transition-colors">
+                {/* Segment name - clickable */}
+                <span
+                  onClick={() => onSegmentClick?.(segment.id)}
+                  className="flex-1 text-sm font-medium text-white group-hover:text-white/90 transition-colors cursor-pointer"
+                >
                   {segment.name}
                 </span>
+
+                {/* Evidence info icon */}
+                {onEvidenceClick && (
+                  <motion.button
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      onEvidenceClick(segment)
+                    }}
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="p-1.5 rounded-full bg-white/5 hover:bg-primary-500/20 text-neutral-500 hover:text-primary-400 transition-all"
+                    title="View evidence sources"
+                  >
+                    <Info className="w-3.5 h-3.5" />
+                  </motion.button>
+                )}
 
                 {/* Verdict badge */}
                 <span className={cn(
@@ -118,15 +203,16 @@ export function SegmentBar({
                   {segment.score.toFixed(1)}
                 </span>
 
-                {/* Arrow */}
+                {/* Arrow - clickable for segment deep dive */}
                 <ChevronRight
-                  className="w-4 h-4 text-neutral-600 group-hover:text-neutral-400 group-hover:translate-x-0.5 transition-all flex-shrink-0"
+                  onClick={() => onSegmentClick?.(segment.id)}
+                  className="w-4 h-4 text-neutral-600 group-hover:text-neutral-400 group-hover:translate-x-0.5 transition-all flex-shrink-0 cursor-pointer"
                 />
               </div>
 
               {/* Explainer row */}
               {insight && (
-                <div className="mt-1 ml-[60px] pl-3">
+                <div className="mt-1 ml-[76px] pl-3">
                   <span className="text-xs text-neutral-500">{insight}</span>
                 </div>
               )}

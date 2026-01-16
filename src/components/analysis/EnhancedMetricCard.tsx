@@ -9,9 +9,10 @@ import type { Metric, EnhancedMetric, TrendIntelligence, GroundingSource } from 
 interface EnhancedMetricCardProps {
   metric: Metric | EnhancedMetric
   stockName?: string
+  hideStatus?: boolean // Hide status badges for DIY mode
 }
 
-export function EnhancedMetricCard({ metric, stockName = 'Stock' }: EnhancedMetricCardProps) {
+export function EnhancedMetricCard({ metric, stockName = 'Stock', hideStatus = false }: EnhancedMetricCardProps) {
   const [isExpanded, setIsExpanded] = useState(false)
   const [showTrendModal, setShowTrendModal] = useState(false)
 
@@ -97,12 +98,14 @@ export function EnhancedMetricCard({ metric, stockName = 'Stock' }: EnhancedMetr
             {/* Right: Value and status */}
             <div className="flex items-center gap-4">
               <span className="text-2xl font-bold text-white">{metric.displayValue}</span>
-              <span className={cn(
-                'px-2.5 py-1 rounded text-xs font-semibold uppercase border',
-                getStatusBadgeClass(metric.status)
-              )}>
-                {metric.status}
-              </span>
+              {!hideStatus && (
+                <span className={cn(
+                  'px-2.5 py-1 rounded text-xs font-semibold uppercase border',
+                  getStatusBadgeClass(metric.status)
+                )}>
+                  {metric.status}
+                </span>
+              )}
               {isExpanded ? (
                 <ChevronUp className="w-5 h-5 text-neutral-500" />
               ) : (

@@ -1,9 +1,12 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useMemo } from 'react'
 import { Send, Newspaper, TrendingUp, Link as LinkIcon } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { cn } from '@/lib/utils'
 import { getNewsForStock, type NewsItem } from '@/data/news'
+import { useAppStore } from '@/store/useAppStore'
+import { DemoModeToggle, SpotlightTour } from '@/components/demo'
+import { getSpotlightsForLocation } from '@/data/featureSpotlights'
 
 interface Message {
   id: string
@@ -20,15 +23,29 @@ const suggestedQuestions = [
   "What are the red flags for TCS?",
 ]
 
+const personalizationQuestions = [
+  "Why different verdicts for different profiles?",
+  "How does risk tolerance affect my score?",
+  "How does personalization work?",
+]
+
+const actionQuestions = [
+  "Should I buy Zomato now?",
+  "When should I sell?",
+  "What's the biggest risk for Axis Bank?",
+]
+
 const newsQuestions = [
   "What's the latest news on Zomato?",
   "Any news affecting Axis Bank's score?",
   "Show me TCS news and impacts",
 ]
 
-// Pre-scripted responses for news queries
-const getNewsResponse = (query: string): { content: string; newsItems?: NewsItem[]; linkedSegments?: { stock: string; segmentId: string; name: string }[] } => {
+// Pre-scripted responses for chat queries - profile-aware
+const getNewsResponse = (query: string, profileName?: string): { content: string; newsItems?: NewsItem[]; linkedSegments?: { stock: string; segmentId: string; name: string }[] } => {
   const lowerQuery = query.toLowerCase()
+
+  // ============ NEWS QUERIES (Original 3) ============
 
   if (lowerQuery.includes('zomato') && (lowerQuery.includes('news') || lowerQuery.includes('latest'))) {
     const news = getNewsForStock('zomato')
@@ -72,7 +89,8 @@ const getNewsResponse = (query: string): { content: string; newsItems?: NewsItem
     }
   }
 
-  // Generic responses for common questions
+  // ============ ANALYSIS QUERIES (Original 4) ============
+
   if (lowerQuery.includes('zomato') && lowerQuery.includes('profitability')) {
     return {
       content: `**Zomato's Profitability Score Analysis**\n\nZomato scores **4.2/10** on profitability, which is below sector average (5.8). Here's why:\n\n**Key Issues:**\n1. **Operating Margin: -2.3%** - Still burning cash on customer acquisition\n2. **ROCE: 1.8%** - Low return on invested capital\n3. **Net Profit Margin: -1.5%** - Just turned profitable in Q4\n\n**Context:** This is typical for growth-stage tech companies prioritizing market share over profits. For growth investors, this may be acceptable if revenue growth (45% YoY) continues.\n\n**What to watch:** Operating leverage improving as Blinkit scales.\n\n*Source: Q3 FY24 Investor Presentation, Page 12*`,
@@ -108,6 +126,172 @@ const getNewsResponse = (query: string): { content: string; newsItems?: NewsItem
     }
   }
 
+  // ============ NEW: PERSONALIZATION QUERIES (3) ============
+
+  if ((lowerQuery.includes('why') || lowerQuery.includes('how')) &&
+      (lowerQuery.includes('different') || lowerQuery.includes('sneha') || lowerQuery.includes('ankit')) &&
+      (lowerQuery.includes('verdict') || lowerQuery.includes('rating') || lowerQuery.includes('score'))) {
+    return {
+      content: `**Why Different Verdicts for Different Profiles?**\n\nGreat question! StockFox uses a **6-Dimension Personalization Engine** that weighs the 11 analysis segments differently based on YOUR investing style.\n\n**Example: Zomato Analysis**\n\n| Profile | Verdict | Key Reason |\n|---------|---------|------------|\n| **Ankit** (Growth) | 7.2/10 BUY | Weights Growth (45% YoY revenue) heavily |\n| **Sneha** (Value) | 4.1/10 AVOID | Weights Profitability & Valuation - both weak |\n| **Kavya** (Beginner) | 5.5/10 HOLD | Balanced view, flags complexity |\n\n**How it works:**\n1. **Same data** - All 200+ metrics are identical\n2. **Different weights** - Growth investors care less about current P/E\n3. **Context-aware** - Your risk tolerance adjusts position sizing suggestions\n\n**The insight:** There's no "objectively best" stock. What's best *for you* depends on your goals, timeline, and risk capacity.\n\n*This is why StockFox shows YOU the verdict, not THE verdict.*`,
+      linkedSegments: [
+        { stock: 'zomato', segmentId: 'growth', name: 'Zomato Growth' },
+        { stock: 'zomato', segmentId: 'valuation', name: 'Zomato Valuation' },
+      ],
+    }
+  }
+
+  if (lowerQuery.includes('risk tolerance') && (lowerQuery.includes('affect') || lowerQuery.includes('impact') || lowerQuery.includes('change'))) {
+    return {
+      content: `**How Risk Tolerance Affects Your Analysis**\n\nYour risk tolerance (${profileName ? `currently set to match your profile` : 'Conservative/Moderate/Aggressive'}) changes three things:\n\n**1. Segment Weights**\n| Risk Level | Values More | Values Less |\n|------------|-------------|-------------|\n| Conservative | Balance Sheet, Governance | Growth, Technical |\n| Moderate | Balanced across all | - |\n| Aggressive | Growth, Momentum | Valuation |\n\n**2. Position Sizing**\n- Conservative: "Start with 2-3% of portfolio"\n- Aggressive: "Can allocate up to 8-10%"\n\n**3. Red Flag Sensitivity**\n- Conservative: Yellow flags shown as warnings\n- Aggressive: Only critical red flags highlighted\n\n**Example:** A stock with high growth but weak balance sheet:\n- Conservative investor: 5.2/10 (HOLD)\n- Aggressive investor: 7.8/10 (BUY)\n\n*Your settings can be adjusted in Profile Settings.*`,
+    }
+  }
+
+  if (lowerQuery.includes('personali') && (lowerQuery.includes('how') || lowerQuery.includes('what') || lowerQuery.includes('work'))) {
+    return {
+      content: `**StockFox 6D Personalization Engine**\n\nEvery verdict is customized across 6 dimensions:\n\n**1. Investment Thesis** 📊\nGrowth vs Value vs Income vs Momentum\n→ Changes which metrics matter most\n\n**2. Risk Tolerance** 🛡️\nConservative to Aggressive\n→ Adjusts position sizing & red flag sensitivity\n\n**3. Time Horizon** ⏱️\nShort (1yr) to Very Long (10yr+)\n→ Weights technical vs fundamental differently\n\n**4. Experience Level** 🎓\nBeginner to Advanced\n→ Adjusts explanation complexity & jargon\n\n**5. Sector Preferences** 🏢\nBanking, IT, Consumer, etc.\n→ Applies sector-specific frameworks\n\n**6. Portfolio Context** 💼\nYour existing holdings\n→ Flags concentration risks\n\n**Result:** The same Zomato gets a different score for a growth-seeking techie vs a dividend-seeking retiree. Both are valid - they're just different interpretations of the same data.\n\n*This is what makes StockFox your "personal analyst."*`,
+    }
+  }
+
+  // ============ NEW: RISK QUERIES (2) ============
+
+  if ((lowerQuery.includes('biggest risk') || lowerQuery.includes('main risk') || lowerQuery.includes('top risk')) &&
+      (lowerQuery.includes('axis') || lowerQuery.includes('bank'))) {
+    return {
+      content: `**Axis Bank: Top Risks to Monitor**\n\n**🔴 Primary Risk: Asset Quality Pressure**\nNPA ratio at 1.8% is manageable but higher than HDFC (1.2%). Watch for:\n- Retail loan slippages in unsecured segment\n- Corporate stress in SME portfolio\n\n**🟡 Secondary Risks:**\n\n1. **Competition Intensity**\n   - HDFC Bank merger creates a giant competitor\n   - Fintech eating into payments/cards revenue\n\n2. **Interest Rate Sensitivity**\n   - Net Interest Margin may compress if RBI cuts rates\n   - Currently benefits from high rate environment\n\n3. **Management Transition**\n   - New CEO appointed mid-2023\n   - Strategy continuity needs monitoring\n\n**Mitigating Factors:**\n- Strong capital adequacy (16.5%)\n- Improving RoA trajectory\n- Reasonable valuation vs peers\n\n**Verdict:** Risks are manageable for the reward. Suitable for moderate risk tolerance.\n\n*Source: Q3 FY24 Investor Presentation, RBI Data*`,
+      linkedSegments: [
+        { stock: 'axisbank', segmentId: 'balancesheet', name: 'Balance Sheet Health' },
+        { stock: 'axisbank', segmentId: 'governance', name: 'Management & Governance' },
+      ],
+    }
+  }
+
+  if ((lowerQuery.includes('safe') || lowerQuery.includes('risky')) && lowerQuery.includes('zomato')) {
+    return {
+      content: `**Is Zomato Safe to Invest?**\n\nIt depends on your definition of "safe" and your profile:\n\n**For ${profileName || 'a typical investor'}:**\n\n**✅ What's Safe:**\n- Zero debt (cash-rich balance sheet)\n- Market leadership (55% food delivery share)\n- Profitable as of Q4 FY24\n- Strong promoter backing (Deepinder Goyal)\n\n**⚠️ What's Risky:**\n- Valuation still expensive (P/E 150x+)\n- Blinkit burning cash for growth\n- Regulatory risks in quick commerce\n- Competition from Swiggy IPO\n\n**Profile-Based View:**\n| Profile | Is it Safe? |\n|---------|-------------|\n| Growth Investor | ✅ Yes - growth justifies risk |\n| Value Investor | ❌ No - too expensive |\n| Beginner | ⚠️ Maybe - high volatility |\n| Income Seeker | ❌ No - no dividends |\n\n**My Suggestion:** If you can handle 30-40% drawdowns and have 5+ year horizon, Zomato can be a 5-8% portfolio allocation.\n\n*Source: Company filings, market data*`,
+      linkedSegments: [
+        { stock: 'zomato', segmentId: 'valuation', name: 'Valuation Analysis' },
+        { stock: 'zomato', segmentId: 'balancesheet', name: 'Balance Sheet' },
+      ],
+    }
+  }
+
+  // ============ NEW: SCORING QUERIES (2) ============
+
+  if ((lowerQuery.includes('how') || lowerQuery.includes('what')) &&
+      (lowerQuery.includes('profitability') || lowerQuery.includes('score')) &&
+      lowerQuery.includes('calculated')) {
+    return {
+      content: `**How Profitability Score is Calculated**\n\nProfitability is one of 11 segments, scored 0-10. Here's the methodology:\n\n**Metrics Included (18 total):**\n| Metric | Weight | What it Measures |\n|--------|--------|------------------|\n| ROE | 15% | Return on shareholder equity |\n| ROCE | 15% | Return on total capital employed |\n| Operating Margin | 12% | Core business profitability |\n| Net Profit Margin | 12% | Bottom-line efficiency |\n| ROA | 10% | Asset utilization |\n| Gross Margin | 8% | Pricing power |\n| 5-Year Trend | 10% | Consistency over time |\n| Sector Comparison | 18% | vs industry peers |\n\n**Scoring Logic:**\n1. Each metric normalized to 0-10 scale\n2. Compared against sector benchmarks\n3. Weighted average = Segment Score\n4. Trend adjustment (+/- 0.5 for improving/declining)\n\n**Example: Zomato = 4.2/10**\n- ROE: 2% → 2.0/10\n- Operating Margin: -2.3% → 3.0/10\n- vs Sector Average: Below → -0.5 penalty\n\n*Source: StockFox Methodology Document*`,
+      linkedSegments: [
+        { stock: 'zomato', segmentId: 'profitability', name: 'See Profitability Details' },
+      ],
+    }
+  }
+
+  if ((lowerQuery.includes('what') || lowerQuery.includes('mean')) &&
+      (lowerQuery.includes('7.2') || lowerQuery.includes('score') || lowerQuery.includes('/10') || lowerQuery.includes('out of 10'))) {
+    return {
+      content: `**Understanding StockFox Scores**\n\nScores range from **0-10** and translate to clear verdicts:\n\n**Score Tiers:**\n| Score | Tier | Verdict | Meaning |\n|-------|------|---------|----------|\n| 8.0-10 | 🟢 Strong | STRONG BUY | Exceptional opportunity |\n| 6.5-7.9 | 🟢 Good | BUY | Favorable risk-reward |\n| 5.0-6.4 | 🟡 Moderate | HOLD | Wait for better entry |\n| 3.5-4.9 | 🟠 Weak | AVOID | Concerns outweigh potential |\n| 0-3.4 | 🔴 Poor | SELL | Significant red flags |\n\n**What 7.2/10 Means (Zomato for Ankit):**\n- Falls in "Good" tier → BUY verdict\n- Above average but not exceptional\n- Suitable for 5-8% portfolio allocation\n- Key segments pulling it up: Growth (8.5), Technical (7.8)\n- Key segments pulling it down: Profitability (4.2), Valuation (5.1)\n\n**Important:** The score is personalized. Sneha (value investor) sees 4.1/10 for the same Zomato because her weights prioritize profitability over growth.\n\n*Scores update daily based on market data and quarterly earnings.*`,
+    }
+  }
+
+  // ============ NEW: ACTION QUERIES (2) ============
+
+  if ((lowerQuery.includes('should') && lowerQuery.includes('buy')) ||
+      (lowerQuery.includes('good time') && lowerQuery.includes('buy'))) {
+    const stockMentioned = lowerQuery.includes('tcs') ? 'TCS' :
+                          lowerQuery.includes('zomato') ? 'Zomato' :
+                          lowerQuery.includes('axis') ? 'Axis Bank' : 'this stock'
+    return {
+      content: `**Should You Buy ${stockMentioned} Now?**\n\nLet me break this down for ${profileName || 'your profile'}:\n\n**Entry Assessment:**\n${stockMentioned === 'TCS' ? `
+| Factor | Status | Signal |
+|--------|--------|--------|
+| Valuation vs History | P/E 28x vs 5Y avg 26x | 🟡 Slightly expensive |
+| Technical Setup | Above 200 DMA, consolidating | 🟢 Favorable |
+| Earnings Momentum | Steady, no surprises | 🟢 Stable |
+| Sector Outlook | IT spending recovering | 🟢 Positive |
+
+**Verdict:** Decent entry point. Consider SIP approach rather than lump sum.
+
+**Position Sizing:** Start with 3-5% of portfolio. Add on 5-7% dips.` : stockMentioned === 'Zomato' ? `
+| Factor | Status | Signal |
+|--------|--------|--------|
+| Valuation | P/E 150x+ (expensive) | 🔴 Stretched |
+| Technical Setup | Near all-time highs | 🟡 Extended |
+| Growth Trajectory | 45% YoY revenue growth | 🟢 Strong |
+| Profitability | Just turned profitable | 🟢 Improving |
+
+**Verdict:** Wait for 10-15% correction for better entry. Currently priced for perfection.
+
+**If you must buy now:** Start with 2-3% only, keep cash ready to average down.` : `
+Consider checking the specific stock analysis page for detailed entry guidance.`}
+
+**Remember:** No one can perfectly time the market. Focus on whether the business quality matches your investment thesis.\n\n*This is analysis, not advice. Always do your own research.*`,
+      linkedSegments: [
+        { stock: stockMentioned.toLowerCase().replace(' ', ''), segmentId: 'valuation', name: 'Valuation Check' },
+        { stock: stockMentioned.toLowerCase().replace(' ', ''), segmentId: 'technical', name: 'Technical Setup' },
+      ],
+    }
+  }
+
+  if ((lowerQuery.includes('when') || lowerQuery.includes('should')) && lowerQuery.includes('sell')) {
+    return {
+      content: `**When to Sell: Exit Framework**\n\nStockFox tracks these exit triggers for your holdings:\n\n**🔴 Sell Signals (Strong):**\n1. **Thesis Break** - Core investment reason no longer valid\n   - Example: Bought for growth, but growth slowing to <10%\n2. **Red Flag Alert** - New critical governance/financial issue\n3. **Score Drop >2 points** - Significant deterioration\n4. **Valuation Extreme** - P/E 2x+ historical average\n\n**🟡 Review Signals (Consider):**\n1. **Position too large** - >15% of portfolio\n2. **Better opportunity** - Found higher conviction idea\n3. **Life event** - Need funds for other goals\n\n**🟢 Hold Signals (Don't panic sell):**\n1. **Temporary dip** - No fundamental change\n2. **Sector rotation** - Cyclical underperformance\n3. **Market correction** - Rising tide lifts all boats (and falling)\n\n**For Zomato specifically:**\nWatch for: Growth deceleration, Blinkit losses widening, competitive intensity\nDon't panic on: Short-term price swings, quarterly misses by small %\n\n*Set price alerts in the Alerts page to stay informed.*`,
+      linkedSegments: [
+        { stock: 'zomato', segmentId: 'growth', name: 'Track Growth' },
+      ],
+    }
+  }
+
+  // ============ NEW: EDUCATION QUERIES (2) ============
+
+  if (lowerQuery.includes('portfolio concentration') ||
+      (lowerQuery.includes('concentration') && lowerQuery.includes('mean'))) {
+    return {
+      content: `**Portfolio Concentration Explained**\n\nConcentration means how much of your portfolio is in one stock or sector.\n\n**Why it matters:**\nIf 50% of your portfolio is in banking stocks and banks crash, you lose big. Diversification protects you.\n\n**StockFox Thresholds:**\n| Concentration | Level | Action |\n|---------------|-------|--------|\n| <5% per stock | 🟢 Safe | No concerns |\n| 5-10% per stock | 🟡 Moderate | Monitor closely |\n| >10% per stock | 🟠 High | Consider trimming |\n| >25% in one sector | 🔴 Risky | Diversify! |\n\n**Your Portfolio Check:**\n${profileName === 'ankit' || profileName === 'Ankit' ?
+      '- Zomato: 35% allocation ⚠️ HIGH\n- Consider trimming to 15-20%' :
+      '- Check your Portfolio page for current allocations'}\n\n**Rule of Thumb:**\n- No single stock >10% (unless very high conviction)\n- No single sector >30%\n- Aim for 15-25 quality stocks across 6-8 sectors\n\n*Go to Portfolio → See your concentration chart*`,
+      linkedSegments: [
+        { stock: 'portfolio', segmentId: 'overview', name: 'View Portfolio' },
+      ],
+    }
+  }
+
+  if ((lowerQuery.includes('debt') && lowerQuery.includes('equity')) ||
+      (lowerQuery.includes('d/e') || lowerQuery.includes('de ratio'))) {
+    return {
+      content: `**Debt-to-Equity Ratio Explained**\n\n**Simple Definition:**\nHow much the company owes (debt) compared to what shareholders own (equity).\n\n**Formula:** Total Debt / Shareholder Equity\n\n**Example:**\nIf a company has Rs.100 crore debt and Rs.200 crore equity:\nD/E = 100/200 = **0.5**\n\n**What's Good?**\n| D/E Ratio | Interpretation |\n|-----------|----------------|\n| < 0.3 | 🟢 Very conservative (maybe too safe) |\n| 0.3 - 0.7 | 🟢 Healthy balance |\n| 0.7 - 1.5 | 🟡 Moderate - depends on industry |\n| > 1.5 | 🟠 High leverage - risky |\n| > 2.0 | 🔴 Very high - investigate |\n\n**Sector Matters:**\n- IT/Tech: Expect < 0.3 (asset-light)\n- Banking: 8-12x is normal (different metric used)\n- Real Estate: 1-2x is common (capital intensive)\n\n**From Your Watchlist:**\n- TCS: 0.02 (minimal debt - typical for IT)\n- Zomato: 0.01 (cash-rich, no debt)\n- Axis Bank: Uses Capital Adequacy instead\n\n*Low D/E = less risk, but also potentially lower returns.*`,
+    }
+  }
+
+  // ============ NEW: COMPARISON QUERIES (1) ============
+
+  if (lowerQuery.includes('compare') && lowerQuery.includes('all') &&
+      (lowerQuery.includes('stock') || lowerQuery.includes('3'))) {
+    return {
+      content: `**Comparing Your Watchlist: Zomato vs Axis Bank vs TCS**\n\n| Metric | Zomato | Axis Bank | TCS |\n|--------|--------|-----------|-----|\n| **Overall Score** | 7.2 | 6.8 | 7.5 |\n| **Verdict** | BUY | BUY | BUY |\n| **P/E Ratio** | 150x | 12.5x | 28x |\n| **ROE** | 2% | 16% | 47% |\n| **Revenue Growth** | 45% | 22% | 8% |\n| **Dividend Yield** | 0% | 0.8% | 1.2% |\n| **Red Flags** | 0 | 1 (NPA) | 0 |\n\n**Best For:**\n- 📈 **Growth Investors:** Zomato (highest growth)\n- 💰 **Value Investors:** Axis Bank (cheapest P/E)\n- 🛡️ **Safety Seekers:** TCS (strongest balance sheet)\n- 💵 **Income Seekers:** TCS (best dividends)\n\n**Portfolio Suggestion:**\nA balanced approach could be: 40% TCS (stability), 35% Axis Bank (value), 25% Zomato (growth kicker)\n\n*Go to Compare page for detailed side-by-side analysis →*`,
+      linkedSegments: [
+        { stock: 'compare', segmentId: 'all', name: 'Full Comparison' },
+      ],
+    }
+  }
+
+  // ============ NEW: META QUERIES (2) ============
+
+  if (lowerQuery.includes('accurate') || lowerQuery.includes('reliable') || lowerQuery.includes('trust')) {
+    return {
+      content: `**How Accurate is StockFox?**\n\nTransparency is our core value. Here's what you should know:\n\n**What We're Good At:**\n✅ **Data Accuracy:** 94% of our analysis is backed by cited sources (annual reports, exchange filings, earnings calls)\n✅ **Methodology Transparency:** Every score shows the calculation - you can verify it\n✅ **Personalization:** The 6D engine is mathematically sound\n\n**What We're Honest About:**\n⚠️ **Not Predictions:** We analyze current state, we don't predict future prices\n⚠️ **No Guarantees:** Even great analysis can't predict black swan events\n⚠️ **Backward-Looking:** Financial data is historical; future may differ\n\n**Our Philosophy:**\n*"We'd rather show you transparent analysis you can verify than give you confident predictions we can't back up."*\n\n**Verification:**\n- Click any metric → See the source citation\n- Every segment → View methodology\n- Every verdict → Understand the weights\n\n**Trust but Verify:** Use StockFox as research tool, not investment oracle.\n\n*We're building the most transparent stock analysis platform in India.*`,
+    }
+  }
+
+  if (lowerQuery.includes('where') && (lowerQuery.includes('data') || lowerQuery.includes('source') || lowerQuery.includes('get'))) {
+    return {
+      content: `**StockFox Data Sources**\n\nWe use multiple verified sources to ensure accuracy:\n\n**📊 Financial Data:**\n- BSE/NSE official filings\n- Annual Reports (downloaded from company websites)\n- Quarterly earnings presentations\n- Exchange announcements\n\n**📈 Market Data:**\n- Real-time: NSE/BSE price feeds\n- Historical: Exchange databases\n- Technical indicators: Calculated in-house\n\n**📰 News & Sentiment:**\n- Major financial news sources\n- Company press releases\n- Regulatory announcements (SEBI, RBI)\n\n**🏛️ Ownership Data:**\n- Shareholding patterns from exchange filings\n- Mutual fund/FII holdings from AMFI/SEBI\n- Promoter pledge data from depositories\n\n**Refresh Frequency:**\n| Data Type | Update Frequency |\n|-----------|------------------|\n| Prices | 5-minute delay |\n| Fundamentals | Quarterly |\n| News | Real-time |\n| Ownership | Monthly |\n\n**Citation Policy:** Every metric shows its source. Click the info icon on any metric to see exactly where the data comes from.\n\n*We never use "estimated" or "projected" data without clearly labeling it.*`,
+    }
+  }
+
+  // ============ FALLBACK (New) ============
+
   return { content: '' }
 }
 
@@ -131,6 +315,11 @@ export function Chat() {
   const [input, setInput] = useState('')
   const [isTyping, setIsTyping] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
+  const { currentProfile, demoMode, toggleDemoMode } = useAppStore()
+
+  // Demo Mode - Only for Ankit profile
+  const isAnkitProfile = currentProfile?.id === 'ankit'
+  const spotlights = useMemo(() => getSpotlightsForLocation('chat'), [])
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -155,7 +344,7 @@ export function Chat() {
 
     // Simulate typing delay
     setTimeout(() => {
-      const newsResponse = getNewsResponse(input)
+      const newsResponse = getNewsResponse(input, currentProfile?.displayName)
 
       let assistantMessage: Message
 
@@ -168,10 +357,11 @@ export function Chat() {
           linkedSegments: newsResponse.linkedSegments,
         }
       } else {
+        // Improved fallback with helpful suggestions
         assistantMessage = {
           id: (Date.now() + 1).toString(),
           role: 'assistant',
-          content: `I understand you're asking about "${input}". Let me look into that...\n\n**Analysis:** This is a demo response. In the full product, I'll provide detailed, stock-specific answers with citations to source documents.\n\nTry asking me about:\n- Zomato's profitability\n- ROE explained simply\n- Compare Axis Bank vs HDFC Bank\n- Red flags for TCS\n\n*Source: Demo placeholder*`,
+          content: `I'm still learning about that topic! 🦊\n\nHere are some things I can help you with:\n\n**📊 Analysis Questions:**\n- "Why is Zomato's profitability score low?"\n- "What does 7.2/10 mean?"\n- "How is the score calculated?"\n\n**🎯 Personalization:**\n- "Why different verdicts for Sneha vs Ankit?"\n- "How does risk tolerance affect my score?"\n\n**💡 Stock Decisions:**\n- "Should I buy TCS now?"\n- "What's the biggest risk for Axis Bank?"\n- "When should I sell?"\n\n**📰 News & Data:**\n- "What's the latest news on Zomato?"\n- "Where do you get your data?"\n\n**📚 Learn:**\n- "Explain ROE in simple terms"\n- "What is portfolio concentration?"\n\nTry one of these, or rephrase your question!`,
         }
       }
 
@@ -187,15 +377,19 @@ export function Chat() {
   return (
     <div className="flex flex-col h-[calc(100vh-12rem)] animate-fade-in">
       {/* Chat Header */}
-      <div className="bg-dark-800/80 backdrop-blur-xl rounded-2xl border border-white/5 p-4 mb-4">
-        <div className="flex items-center gap-3">
-          <div className="w-12 h-12 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl flex items-center justify-center shadow-lg shadow-primary-500/20">
-            <span className="text-2xl">🦊</span>
+      <div className="bg-dark-800/80 backdrop-blur-xl rounded-2xl border border-white/5 p-4 mb-4" data-spotlight="chat-header">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl flex items-center justify-center shadow-lg shadow-primary-500/20">
+              <span className="text-2xl">🦊</span>
+            </div>
+            <div>
+              <h1 className="text-lg font-semibold text-white">StockFox AI</h1>
+              <p className="text-sm text-neutral-400">Ask anything about stocks & analysis</p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-lg font-semibold text-white">StockFox AI</h1>
-            <p className="text-sm text-neutral-400">Ask anything about stocks & analysis</p>
-          </div>
+          {/* Demo Mode Toggle - Ankit only */}
+          <DemoModeToggle isEnabled={demoMode} onToggle={toggleDemoMode} isAnkitProfile={isAnkitProfile} />
         </div>
       </div>
 
@@ -254,6 +448,7 @@ export function Chat() {
                     ? 'bg-dark-800 border border-white/5'
                     : 'bg-primary-600'
                 )}
+                {...(message.role === 'assistant' && index === messages.findIndex(m => m.role === 'assistant') && { 'data-spotlight': 'chat-response' })}
               >
                 <p className={cn(
                   'text-sm leading-relaxed whitespace-pre-wrap',
@@ -264,7 +459,10 @@ export function Chat() {
 
                 {/* Linked Segments */}
                 {message.linkedSegments && message.linkedSegments.length > 0 && (
-                  <div className="mt-4 pt-3 border-t border-white/5">
+                  <div
+                    className="mt-4 pt-3 border-t border-white/5"
+                    {...(index === messages.findIndex(m => m.role === 'assistant' && m.linkedSegments && m.linkedSegments.length > 0) && { 'data-spotlight': 'linked-segments' })}
+                  >
                     <p className="text-xs text-neutral-500 mb-2 flex items-center gap-1">
                       <LinkIcon className="w-3 h-3" />
                       Related Segments:
@@ -318,8 +516,8 @@ export function Chat() {
           animate={{ opacity: 1, y: 0 }}
           className="mb-4 space-y-3"
         >
-          <div>
-            <p className="text-xs text-neutral-500 mb-2">Analysis questions:</p>
+          <div data-spotlight="analysis-questions">
+            <p className="text-xs text-neutral-500 mb-2">📊 Analysis:</p>
             <div className="flex flex-wrap gap-2">
               {suggestedQuestions.map((question, i) => (
                 <button
@@ -332,7 +530,35 @@ export function Chat() {
               ))}
             </div>
           </div>
-          <div>
+          <div data-spotlight="personalization-questions">
+            <p className="text-xs text-neutral-500 mb-2">🎯 Personalization:</p>
+            <div className="flex flex-wrap gap-2">
+              {personalizationQuestions.map((question, i) => (
+                <button
+                  key={i}
+                  onClick={() => handleSuggestedQuestion(question)}
+                  className="px-3 py-1.5 bg-success-500/10 hover:bg-success-500/20 border border-success-500/20 text-success-400 rounded-full text-xs transition-colors"
+                >
+                  {question}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div data-spotlight="decision-questions">
+            <p className="text-xs text-neutral-500 mb-2">💡 Decisions:</p>
+            <div className="flex flex-wrap gap-2">
+              {actionQuestions.map((question, i) => (
+                <button
+                  key={i}
+                  onClick={() => handleSuggestedQuestion(question)}
+                  className="px-3 py-1.5 bg-warning-500/10 hover:bg-warning-500/20 border border-warning-500/20 text-warning-400 rounded-full text-xs transition-colors"
+                >
+                  {question}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div data-spotlight="news-questions">
             <p className="text-xs text-neutral-500 mb-2 flex items-center gap-1">
               <Newspaper className="w-3 h-3" />
               News & signals:
@@ -353,7 +579,7 @@ export function Chat() {
       )}
 
       {/* Input Area */}
-      <div className="bg-dark-800/80 backdrop-blur-xl rounded-2xl border border-white/5 p-3">
+      <div className="bg-dark-800/80 backdrop-blur-xl rounded-2xl border border-white/5 p-3" data-spotlight="chat-input">
         <div className="flex items-center gap-3">
           <input
             type="text"
@@ -377,6 +603,13 @@ export function Chat() {
           </button>
         </div>
       </div>
+
+      {/* Spotlight Tour for Demo Mode */}
+      <SpotlightTour
+        spotlights={spotlights}
+        isActive={demoMode}
+        onEnd={toggleDemoMode}
+      />
     </div>
   )
 }

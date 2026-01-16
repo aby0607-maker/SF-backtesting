@@ -1,5 +1,6 @@
 export { Sparkline, generateMockPriceData } from './Sparkline'
 export { SegmentBar, MiniSegmentBar } from './SegmentBar'
+export { DIYSegmentList } from './DIYSegmentList'
 export { ScoreRing } from './ScoreRing'
 export { RankingBadge, InlineRank, SectorComparison } from './RankingBadge'
 export { SparklineChart, TrendIndicator } from './SparklineChart'

@@ -5,6 +5,9 @@ import type { UserProfile, Alert } from '@/types'
 // Import mock data (will be populated later)
 import { profiles } from '@/data/profiles'
 
+// Analysis mode types
+type AnalysisMode = 'dfy' | 'diy'
+
 interface AppState {
   // Current profile
   currentProfileId: string
@@ -14,6 +17,12 @@ interface AppState {
   isSidebarOpen: boolean
   isSearchOpen: boolean
 
+  // Analysis mode (DFY = Done For You, DIY = Do It Yourself)
+  analysisMode: AnalysisMode
+
+  // Demo mode for investor presentations (Ankit profile only)
+  demoMode: boolean
+
   // Alerts
   alerts: Alert[]
   unreadAlertCount: number
@@ -22,6 +31,10 @@ interface AppState {
   setCurrentProfile: (profileId: string) => void
   toggleSidebar: () => void
   toggleSearch: () => void
+  setAnalysisMode: (mode: AnalysisMode) => void
+  toggleAnalysisMode: () => void
+  setDemoMode: (enabled: boolean) => void
+  toggleDemoMode: () => void
   markAlertAsRead: (alertId: string) => void
   markAllAlertsAsRead: () => void
 }
@@ -35,6 +48,12 @@ export const useAppStore = create<AppState>()(
 
       isSidebarOpen: false,
       isSearchOpen: false,
+
+      // Default to DFY (Done For You) mode
+      analysisMode: 'dfy',
+
+      // Demo mode disabled by default
+      demoMode: false,
 
       alerts: [],
       unreadAlertCount: 0,
@@ -54,6 +73,24 @@ export const useAppStore = create<AppState>()(
 
       toggleSearch: () => {
         set(state => ({ isSearchOpen: !state.isSearchOpen }))
+      },
+
+      setAnalysisMode: (mode: AnalysisMode) => {
+        set({ analysisMode: mode })
+      },
+
+      toggleAnalysisMode: () => {
+        set(state => ({
+          analysisMode: state.analysisMode === 'dfy' ? 'diy' : 'dfy'
+        }))
+      },
+
+      setDemoMode: (enabled: boolean) => {
+        set({ demoMode: enabled })
+      },
+
+      toggleDemoMode: () => {
+        set(state => ({ demoMode: !state.demoMode }))
       },
 
       markAlertAsRead: (alertId: string) => {
@@ -76,6 +113,8 @@ export const useAppStore = create<AppState>()(
       name: 'stockfox-storage',
       partialize: state => ({
         currentProfileId: state.currentProfileId,
+        analysisMode: state.analysisMode,
+        demoMode: state.demoMode,
       }),
     }
   )

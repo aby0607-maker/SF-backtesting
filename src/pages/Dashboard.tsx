@@ -5,8 +5,10 @@ import { motion } from 'framer-motion'
 import { useAppStore } from '@/store/useAppStore'
 import { cn, formatCurrency, formatPercent } from '@/lib/utils'
 import { stocks, getAlertsForProfile, getVerdictForStock } from '@/data'
-import { VerdictBadge } from '@/components/ui'
+import { VerdictBadge, FreeTierBanner } from '@/components/ui'
 import { StaggerContainer, StaggerItem } from '@/components/motion'
+import { DemoModeToggle, SpotlightTour } from '@/components/demo'
+import { getSpotlightsForLocation } from '@/data/featureSpotlights'
 import type { Stock, Alert, StockVerdict } from '@/types'
 
 // Watchlist item combining stock and verdict data
@@ -74,12 +76,17 @@ function SkeletonStockCard() {
 }
 
 export function Dashboard() {
-  const { currentProfile } = useAppStore()
+  const { currentProfile, demoMode, toggleDemoMode } = useAppStore()
   const [isLoading, setIsLoading] = useState(true)
   const [watchlist, setWatchlist] = useState<WatchlistItem[]>([])
   const [alerts, setAlerts] = useState<Alert[]>([])
   const [trendingStocks, setTrendingStocks] = useState<DiscoveryStock[]>([])
   const [similarStocks, setSimilarStocks] = useState<DiscoveryStock[]>([])
+
+  // Demo mode spotlight state
+  const spotlights = getSpotlightsForLocation('dashboard')
+  const isAnkitProfile = currentProfile?.id === 'ankit'
+  const showDemoSpotlights = demoMode && isAnkitProfile
 
   useEffect(() => {
     if (!currentProfile) return
@@ -139,20 +146,30 @@ export function Dashboard() {
 
   return (
     <div className="space-y-5">
-      {/* Greeting */}
+      {/* Greeting + Demo Toggle */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
+        className="flex items-start justify-between"
       >
-        <h1 className="text-2xl font-bold text-white">
-          {getGreeting()}, {firstName}! 👋
-        </h1>
-        {currentProfile.patterns[0] && (
-          <p className="text-sm text-neutral-400 mt-1">
-            {currentProfile.patterns[0].description}
-          </p>
-        )}
+        <div data-spotlight="personalized-greeting">
+          <h1 className="text-2xl font-bold text-white">
+            {getGreeting()}, {firstName}! 👋
+          </h1>
+          {currentProfile.patterns[0] && (
+            <p className="text-sm text-neutral-400 mt-1">
+              {currentProfile.patterns[0].description}
+            </p>
+          )}
+        </div>
+
+        {/* Demo Mode Toggle - Only for Ankit */}
+        <DemoModeToggle
+          isEnabled={demoMode}
+          onToggle={toggleDemoMode}
+          isAnkitProfile={isAnkitProfile}
+        />
       </motion.div>
 
       {/* ============== WATCHLIST ============== */}
@@ -161,6 +178,7 @@ export function Dashboard() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
         className="rounded-2xl bg-dark-800 border border-white/5 p-4"
+        data-spotlight="watchlist"
       >
         <div className="flex items-center justify-between mb-4">
           <h2 className="flex items-center gap-2 text-base font-semibold text-white">
@@ -297,7 +315,7 @@ export function Dashboard() {
         </div>
 
         {/* Trending This Week */}
-        <div className="mb-5">
+        <div className="mb-5" data-spotlight="trending-stocks">
           <div className="flex items-center gap-2 mb-3">
             <div className="w-7 h-7 rounded-lg bg-warning-500/20 flex items-center justify-center">
               <Flame className="w-4 h-4 text-warning-400" />
@@ -362,7 +380,7 @@ export function Dashboard() {
         </div>
 
         {/* Similar to Your Picks */}
-        <div>
+        <div data-spotlight="similar-picks">
           <div className="flex items-center gap-2 mb-3">
             <div className="w-7 h-7 rounded-lg bg-primary-500/20 flex items-center justify-center">
               <Sparkles className="w-4 h-4 text-primary-400" />
@@ -427,13 +445,32 @@ export function Dashboard() {
         </div>
       </motion.section>
 
+      {/* ============== FREE TIER BANNER ============== */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.35 }}
+        data-spotlight="free-tier-banner"
+      >
+        <FreeTierBanner
+          analysesUsed={3}
+          analysesLimit={5}
+          variant="banner"
+          onUpgradeClick={() => {
+            // Demo: would navigate to pricing/upgrade page
+            alert('This would open the upgrade flow')
+          }}
+        />
+      </motion.div>
+
       {/* ============== ALERTS (Compact) ============== */}
       {alerts.length > 0 && (
         <motion.section
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
+          transition={{ delay: 0.4 }}
           className="rounded-2xl bg-dark-800 border border-white/5 p-4"
+          data-spotlight="alerts-section"
         >
           <div className="flex items-center justify-between mb-3">
             <h2 className="flex items-center gap-2 text-sm font-semibold text-white">
@@ -476,6 +513,13 @@ export function Dashboard() {
           </div>
         </motion.section>
       )}
+
+      {/* ============== DEMO MODE SPOTLIGHT TOUR ============== */}
+      <SpotlightTour
+        spotlights={spotlights}
+        isActive={showDemoSpotlights}
+        onEnd={toggleDemoMode}
+      />
     </div>
   )
 }

@@ -1,14 +1,18 @@
 import { useState, useEffect, useRef } from 'react'
 import { useParams, Link, useLocation, useSearchParams } from 'react-router-dom'
-import { ArrowLeft, Share2, AlertTriangle, TrendingUp, TrendingDown, Sparkles, Newspaper, ChevronRight, ChevronDown, ChevronUp, Check, X, AlertCircle, Calendar, LogOut, GitCompare, UserCheck, History, ShieldCheck, PenLine, BookmarkPlus } from 'lucide-react'
+import { ArrowLeft, Share2, AlertTriangle, TrendingUp, TrendingDown, Sparkles, Newspaper, ChevronRight, ChevronDown, ChevronUp, Check, X, AlertCircle, Calendar, LogOut, GitCompare, UserCheck, History, ShieldCheck, PenLine, BookmarkPlus, FileText, Compass, Wand2, Target } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAppStore } from '@/store/useAppStore'
 import { cn, formatCurrency, formatPercent } from '@/lib/utils'
 import { getStockBySymbol, getVerdictForStock } from '@/data'
 import { getNewsForStock, getUpcomingEvents, formatEventDate, getEventIcon, type NewsItem, type UpcomingEvent } from '@/data/news'
 import { ScoreGauge, VerdictBadge } from '@/components/ui'
-import { SegmentBar } from '@/components/charts'
-import type { Stock, StockVerdict } from '@/types'
+import { SegmentBar, DIYSegmentList } from '@/components/charts'
+import { EvidenceChainPanel, KeyMetricsCard } from '@/components/analysis'
+import { GuidedAnalysisModal, ReflectionPromptModal } from '@/components/learning'
+import { DemoModeToggle, SpotlightTour } from '@/components/demo'
+import { getSpotlightsForLocation } from '@/data/featureSpotlights'
+import type { Stock, StockVerdict, SegmentScore } from '@/types'
 
 // Skeleton components for loading state
 function SkeletonBlock({ className }: { className?: string }) {
@@ -390,10 +394,150 @@ function ProsCons({ verdict }: { verdict: StockVerdict }) {
   )
 }
 
+// ============== NEWS SECTION COMPONENT ==============
+function NewsSection({ news }: { news: NewsItem[] }) {
+  const [isExpanded, setIsExpanded] = useState(false)
+
+  // Show first 2 items in grid, rest in dropdown
+  const visibleNews = news.slice(0, 2)
+  const hiddenNews = news.slice(2)
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.25 }}
+      className="rounded-2xl bg-dark-800 border border-white/5 p-5"
+    >
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-2">
+          <Newspaper className="w-4 h-4 text-primary-400" />
+          <h3 className="font-semibold text-white">Recent News</h3>
+        </div>
+        <span className="text-xs text-neutral-500">{news.length} articles</span>
+      </div>
+
+      {/* 2-Column Grid */}
+      <div className="grid grid-cols-2 gap-3">
+        {visibleNews.map((item) => (
+          <div
+            key={item.id}
+            className={cn(
+              'p-3 rounded-xl bg-dark-700/50 border-l-2',
+              item.sentiment === 'positive' && 'border-l-success-500',
+              item.sentiment === 'negative' && 'border-l-destructive-500',
+              item.sentiment === 'neutral' && 'border-l-neutral-500'
+            )}
+          >
+            <div className="flex items-start gap-2">
+              {item.sentiment === 'positive' && <TrendingUp className="w-3.5 h-3.5 text-success-400 mt-0.5 flex-shrink-0" />}
+              {item.sentiment === 'negative' && <TrendingDown className="w-3.5 h-3.5 text-destructive-400 mt-0.5 flex-shrink-0" />}
+              {item.sentiment === 'neutral' && <Newspaper className="w-3.5 h-3.5 text-neutral-400 mt-0.5 flex-shrink-0" />}
+              <div className="min-w-0">
+                <p className="text-sm font-medium text-white line-clamp-2">{item.headline}</p>
+                <p className="text-[10px] text-neutral-500 mt-1.5">{item.source}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Dropdown for More News */}
+      {hiddenNews.length > 0 && (
+        <>
+          <AnimatePresence>
+            {isExpanded && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: 'auto', opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                className="overflow-hidden"
+              >
+                <div className="grid grid-cols-2 gap-3 mt-3">
+                  {hiddenNews.map((item) => (
+                    <div
+                      key={item.id}
+                      className={cn(
+                        'p-3 rounded-xl bg-dark-700/50 border-l-2',
+                        item.sentiment === 'positive' && 'border-l-success-500',
+                        item.sentiment === 'negative' && 'border-l-destructive-500',
+                        item.sentiment === 'neutral' && 'border-l-neutral-500'
+                      )}
+                    >
+                      <div className="flex items-start gap-2">
+                        {item.sentiment === 'positive' && <TrendingUp className="w-3.5 h-3.5 text-success-400 mt-0.5 flex-shrink-0" />}
+                        {item.sentiment === 'negative' && <TrendingDown className="w-3.5 h-3.5 text-destructive-400 mt-0.5 flex-shrink-0" />}
+                        {item.sentiment === 'neutral' && <Newspaper className="w-3.5 h-3.5 text-neutral-400 mt-0.5 flex-shrink-0" />}
+                        <div className="min-w-0">
+                          <p className="text-sm font-medium text-white line-clamp-2">{item.headline}</p>
+                          <p className="text-[10px] text-neutral-500 mt-1.5">{item.source}</p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          <button
+            onClick={() => setIsExpanded(!isExpanded)}
+            className="w-full mt-3 py-2 rounded-xl bg-dark-700/30 hover:bg-dark-700/50 border border-white/5 text-xs text-neutral-400 hover:text-white transition-all flex items-center justify-center gap-1.5"
+          >
+            <span>{isExpanded ? 'Show Less' : `View ${hiddenNews.length} More`}</span>
+            <ChevronDown className={cn('w-3.5 h-3.5 transition-transform', isExpanded && 'rotate-180')} />
+          </button>
+        </>
+      )}
+    </motion.div>
+  )
+}
+
+// ============== MODE TOGGLE COMPONENT ==============
+function AnalysisModeToggle() {
+  const { analysisMode, toggleAnalysisMode } = useAppStore()
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: -10 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="flex items-center justify-center gap-1 p-1 rounded-xl bg-dark-700/50 border border-white/10"
+    >
+      <button
+        onClick={() => analysisMode === 'diy' && toggleAnalysisMode()}
+        className={cn(
+          'flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all',
+          analysisMode === 'dfy'
+            ? 'bg-primary-500 text-white shadow-lg'
+            : 'text-neutral-400 hover:text-white hover:bg-white/5'
+        )}
+      >
+        <Wand2 className="w-4 h-4" />
+        <span>DFY</span>
+        <span className="text-[10px] opacity-70">Interpreted</span>
+      </button>
+      <button
+        onClick={() => analysisMode === 'dfy' && toggleAnalysisMode()}
+        className={cn(
+          'flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all',
+          analysisMode === 'diy'
+            ? 'bg-teal-500 text-white shadow-lg'
+            : 'text-neutral-400 hover:text-white hover:bg-white/5'
+        )}
+      >
+        <Compass className="w-4 h-4" />
+        <span>DIY</span>
+        <span className="text-[10px] opacity-70">Raw Data</span>
+      </button>
+    </motion.div>
+  )
+}
+
 // ============== MAIN COMPONENT ==============
 export function StockAnalysis() {
   const { ticker } = useParams<{ ticker: string }>()
-  const { currentProfile } = useAppStore()
+  const { currentProfile, analysisMode, demoMode, toggleDemoMode } = useAppStore()
   const location = useLocation()
   const [searchParams] = useSearchParams()
   const segmentsRef = useRef<HTMLDivElement>(null)
@@ -406,6 +550,22 @@ export function StockAnalysis() {
 
   // Progressive disclosure state - check URL for initial state
   const [isFullView, setIsFullView] = useState(() => searchParams.get('view') === 'full')
+
+  // Evidence modal state
+  const [evidenceModalOpen, setEvidenceModalOpen] = useState(false)
+  const [selectedSegmentForEvidence, setSelectedSegmentForEvidence] = useState<SegmentScore | null>(null)
+  const [overallEvidenceModalOpen, setOverallEvidenceModalOpen] = useState(false)
+
+  // Guided analysis modal state
+  const [guidedModalOpen, setGuidedModalOpen] = useState(false)
+
+  // Reflection modal state
+  const [reflectionModalOpen, setReflectionModalOpen] = useState(false)
+
+  // Demo mode spotlight state
+  const spotlights = getSpotlightsForLocation('stock-analysis')
+  const isAnkitProfile = currentProfile?.id === 'ankit'
+  const showDemoSpotlights = demoMode && isAnkitProfile
 
   useEffect(() => {
     if (!ticker || !currentProfile) return
@@ -484,18 +644,30 @@ export function StockAnalysis() {
 
   return (
     <div className="space-y-4 max-w-2xl mx-auto">
-      {/* Back button */}
+      {/* Back button + Mode Toggle + Demo Toggle */}
       <motion.div
         initial={{ opacity: 0, x: -10 }}
         animate={{ opacity: 1, x: 0 }}
+        className="flex items-center justify-between"
       >
         <Link
           to="/dashboard"
           className="inline-flex items-center gap-2 text-sm text-neutral-400 hover:text-white transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
-          Back to Dashboard
+          Back
         </Link>
+        <div className="flex items-center gap-3">
+          {/* Demo Mode Toggle - Only for Ankit */}
+          <DemoModeToggle
+            isEnabled={demoMode}
+            onToggle={toggleDemoMode}
+            isAnkitProfile={isAnkitProfile}
+          />
+          <div data-spotlight="mode-toggle">
+            <AnalysisModeToggle />
+          </div>
+        </div>
       </motion.div>
 
       {/* ============== HERO CARD ============== */}
@@ -514,7 +686,21 @@ export function StockAnalysis() {
               </p>
             </div>
             <div className="flex items-center gap-1">
-              <button className="p-2 rounded-full hover:bg-white/5 text-neutral-400 hover:text-white transition-colors" aria-label="Share">
+              <button
+                onClick={() => {
+                  if (navigator.share) {
+                    navigator.share({
+                      title: `${stock.name} Analysis`,
+                      text: `StockFox: ${stock.symbol} Score ${verdict.overallScore}/10 - ${verdict.verdict}`,
+                      url: window.location.href,
+                    })
+                  } else {
+                    navigator.clipboard.writeText(window.location.href)
+                  }
+                }}
+                className="p-2 rounded-full hover:bg-white/5 text-neutral-400 hover:text-white transition-colors"
+                aria-label="Share"
+              >
                 <Share2 className="w-5 h-5" />
               </button>
               <button className="p-2 rounded-full hover:bg-white/5 text-neutral-400 hover:text-white transition-colors" aria-label="Save">
@@ -552,34 +738,155 @@ export function StockAnalysis() {
           </div>
         </div>
 
-        {/* HERO: Score + Verdict */}
-        <div className="p-5 pt-0">
-          <div className="rounded-2xl bg-dark-700/50 p-5">
-            <div className="flex items-center gap-5">
-              {/* Score Gauge */}
-              <ScoreGauge score={verdict.overallScore} size="lg" />
+        {/* HERO: Score + Verdict - DFY ONLY */}
+        {analysisMode === 'dfy' && (
+          <div className="p-5 pt-0">
+            <div className="rounded-2xl bg-dark-700/50 p-5" data-spotlight="hero-card">
+              <div className="flex items-center gap-5">
+                {/* Score Gauge */}
+                <div data-spotlight="overall-score">
+                  <ScoreGauge score={verdict.overallScore} size="lg" />
+                </div>
 
-              {/* Verdict Info */}
-              <div className="flex-1">
-                <VerdictBadge verdict={verdict.verdict} size="lg" />
-                <p className="text-sm text-neutral-400 mt-3 leading-relaxed">
-                  {verdict.verdictRationale}
-                </p>
-                <div className="flex items-center gap-2 mt-2 text-xs text-neutral-500">
-                  <span className="px-2 py-0.5 rounded-full bg-primary-500/10 text-primary-400 font-medium">
-                    {currentProfile.investmentThesis.toUpperCase()} Profile
-                  </span>
-                  <span>•</span>
-                  <span>#{verdict.peerRank} of {verdict.peerTotal} in {verdict.peerGroup || 'Peers'}</span>
+                {/* Verdict Info */}
+                <div className="flex-1">
+                  <div data-spotlight="verdict-badge">
+                    <VerdictBadge verdict={verdict.verdict} size="lg" />
+                  </div>
+                  <p className="text-sm text-neutral-400 mt-3 leading-relaxed">
+                    {verdict.verdictRationale}
+                  </p>
+                  <div className="flex items-center gap-2 mt-2 text-xs text-neutral-500">
+                    <span className="px-2 py-0.5 rounded-full bg-primary-500/10 text-primary-400 font-medium">
+                      {currentProfile.investmentThesis.toUpperCase()} Profile
+                    </span>
+                    <span>•</span>
+                    <span>#{verdict.peerRank} of {verdict.peerTotal} in {verdict.peerGroup || 'Peers'}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Evidence Summary - How We Arrived at This Score */}
+              <motion.div
+                initial={{ opacity: 0, y: 5 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="mt-4 p-3 rounded-xl bg-white/5 border border-white/10"
+                data-spotlight="evidence-chain"
+              >
+                <div className="flex items-center gap-2 mb-2">
+                  <FileText className="w-4 h-4 text-primary-400" />
+                  <span className="text-xs font-medium text-white">How We Arrived at This Score</span>
+                </div>
+                <div className="grid grid-cols-3 gap-2 text-[10px]">
+                  <div className="p-2 rounded-lg bg-dark-700/50">
+                    <span className="text-neutral-500 block mb-0.5">Data Sources</span>
+                    <span className="text-white font-medium">
+                      {verdict.segments.reduce((count, s) => count + (s.metrics?.length || 0), 0)} metrics
+                    </span>
+                    <span className="text-neutral-400 block">from Q3 FY25 filings</span>
+                  </div>
+                  <div className="p-2 rounded-lg bg-dark-700/50">
+                    <span className="text-neutral-500 block mb-0.5">Methodology</span>
+                    <span className="text-white font-medium">11 Segments</span>
+                    <span className="text-neutral-400 block">{currentProfile.investmentThesis} weights</span>
+                  </div>
+                  <div className="p-2 rounded-lg bg-dark-700/50">
+                    <span className="text-neutral-500 block mb-0.5">Peer Ranking</span>
+                    <span className="text-white font-medium">#{verdict.peerRank} of {verdict.peerTotal}</span>
+                    <span className="text-neutral-400 block">{verdict.peerGroup}</span>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setOverallEvidenceModalOpen(true)}
+                  className="mt-2 w-full py-1.5 text-[10px] text-primary-400 hover:text-primary-300 transition-colors flex items-center justify-center gap-1"
+                >
+                  View Full Evidence Chain
+                  <ChevronRight className="w-3 h-3" />
+                </button>
+              </motion.div>
+            </div>
+          </div>
+        )}
+
+        {/* DIY Mode: No score/verdict - just a hint */}
+        {analysisMode === 'diy' && (
+          <div className="p-5 pt-0">
+            <div className="rounded-2xl bg-teal-500/5 border border-teal-500/20 p-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-teal-500/20 flex items-center justify-center">
+                  <Compass className="w-5 h-5 text-teal-400" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-white">DIY Analysis Mode</p>
+                  <p className="text-xs text-neutral-400 mt-0.5">
+                    Raw data with sector benchmarks • Form your own conclusions
+                  </p>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        )}
       </motion.div>
 
-      {/* ============== PROS/CONS (Quick View) ============== */}
-      <ProsCons verdict={verdict} />
+      {/* ============== QUICK VALIDATION CTA - Below Score Card ============== */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1 }}
+        className="flex gap-3"
+      >
+        {/* Ask AI - Primary CTA */}
+        <Link
+          to="/chat"
+          className="flex-1 flex items-center gap-3 p-3 rounded-xl bg-gradient-to-r from-purple-500/10 to-primary-500/10 border border-purple-500/20 hover:border-purple-500/40 transition-all group"
+          data-spotlight="ask-ai-cta"
+        >
+          <div className="w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center group-hover:bg-purple-500/30 transition-colors">
+            <Sparkles className="w-5 h-5 text-purple-400" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <span className="text-sm font-medium text-white block">Ask AI</span>
+            <span className="text-[10px] text-neutral-400">Get instant answers about {stock.symbol}</span>
+          </div>
+          <ChevronRight className="w-4 h-4 text-neutral-500 group-hover:text-purple-400 transition-colors" />
+        </Link>
+
+        {/* Consult Advisor */}
+        <Link
+          to="/advisors"
+          className="flex-1 flex items-center gap-3 p-3 rounded-xl bg-dark-800 border border-white/5 hover:border-warning-500/30 transition-all group"
+          data-spotlight="consult-expert"
+        >
+          <div className="w-10 h-10 rounded-full bg-warning-500/10 flex items-center justify-center group-hover:bg-warning-500/20 transition-colors">
+            <UserCheck className="w-5 h-5 text-warning-400" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <span className="text-sm font-medium text-white block">Consult Expert</span>
+            <span className="text-[10px] text-neutral-400">SEBI Registered Advisors</span>
+          </div>
+          <ChevronRight className="w-4 h-4 text-neutral-500 group-hover:text-warning-400 transition-colors" />
+        </Link>
+      </motion.div>
+
+      {/* ============== PROS/CONS (Quick View) - DFY ONLY ============== */}
+      {analysisMode === 'dfy' && (
+        <div data-spotlight="pros-cons">
+          <ProsCons verdict={verdict} />
+        </div>
+      )}
+
+      {/* ============== RED FLAG SCANNER (DFY) / KEY METRICS (DIY) - After Strengths & Weaknesses ============== */}
+      {analysisMode === 'dfy' ? (
+        <div data-spotlight="red-flag-scanner">
+          <RedFlagScanner
+            verdict={verdict}
+            news={news}
+          />
+        </div>
+      ) : (
+        <KeyMetricsCard verdict={verdict} />
+      )}
 
       {/* ============== FULL ANALYSIS TOGGLE (below Pros/Cons) ============== */}
       <motion.button
@@ -590,19 +897,21 @@ export function StockAnalysis() {
         className={cn(
           'w-full py-3 rounded-2xl border text-sm font-medium flex items-center justify-center gap-2 transition-all',
           isFullView
-            ? 'bg-primary-500/10 border-primary-500/30 text-primary-400'
+            ? analysisMode === 'dfy'
+              ? 'bg-primary-500/10 border-primary-500/30 text-primary-400'
+              : 'bg-teal-500/10 border-teal-500/30 text-teal-400'
             : 'bg-dark-800 border-white/10 text-white hover:border-white/20'
         )}
       >
         {isFullView ? (
           <>
             <ChevronUp className="w-4 h-4" />
-            Hide Full Analysis
+            {analysisMode === 'dfy' ? 'Hide Full Analysis' : 'Hide Segments'}
           </>
         ) : (
           <>
             <ChevronDown className="w-4 h-4" />
-            View Full Analysis (11 Segments)
+            {analysisMode === 'dfy' ? 'View Full Analysis (11 Segments)' : 'Explore 11 Segments'}
           </>
         )}
       </motion.button>
@@ -618,79 +927,131 @@ export function StockAnalysis() {
             className="space-y-4 overflow-hidden"
           >
             {/* 11-Segment Analysis */}
-            <div ref={segmentsRef} id="segments" className="rounded-2xl bg-dark-800 border border-white/5 p-5">
+            <div ref={segmentsRef} id="segments" className="rounded-2xl bg-dark-800 border border-white/5 p-5" data-spotlight="segments-section">
               <div className="flex items-center justify-between mb-3">
-                <h3 className="font-semibold text-white">11-Segment Analysis</h3>
-                {/* Legend - compact */}
-                <div className="flex gap-3 text-[10px] text-neutral-500">
-                  <span className="flex items-center gap-1">
-                    <span className="w-1.5 h-1.5 rounded-full bg-success-500" /> 8+
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <span className="w-1.5 h-1.5 rounded-full bg-teal-400" /> 6-8
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <span className="w-1.5 h-1.5 rounded-full bg-warning-400" /> 4-6
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <span className="w-1.5 h-1.5 rounded-full bg-destructive-500" /> &lt;4
-                  </span>
-                </div>
+                <h3 className="font-semibold text-white">
+                  {analysisMode === 'dfy' ? '11-Segment Analysis' : '11 Analysis Segments'}
+                </h3>
+                {/* Legend - compact - DFY only */}
+                {analysisMode === 'dfy' && (
+                  <div className="flex gap-3 text-[10px] text-neutral-500">
+                    <span className="flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-success-500" /> 8+
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-teal-400" /> 6-8
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-warning-400" /> 4-6
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-destructive-500" /> &lt;4
+                    </span>
+                  </div>
+                )}
               </div>
 
-              <SegmentBar
-                segments={verdict.segments}
-                onSegmentClick={(segmentId) => {
-                  window.location.href = `/segment/${ticker}/${segmentId}`
-                }}
-              />
+              {/* DFY: SegmentBar with scores and ranks */}
+              {analysisMode === 'dfy' && (
+                <SegmentBar
+                  segments={verdict.segments}
+                  onSegmentClick={(segmentId) => {
+                    window.location.href = `/segment/${ticker}/${segmentId}`
+                  }}
+                  onEvidenceClick={(segment) => {
+                    setSelectedSegmentForEvidence(segment as SegmentScore)
+                    setEvidenceModalOpen(true)
+                  }}
+                />
+              )}
+
+              {/* DIY: Simple segment list - no scores */}
+              {analysisMode === 'diy' && (
+                <DIYSegmentList
+                  segments={verdict.segments}
+                  onSegmentClick={(segmentId) => {
+                    window.location.href = `/segment/${ticker}/${segmentId}`
+                  }}
+                />
+              )}
 
               <div className="mt-3 pt-2 border-t border-white/5 text-xs text-neutral-500">
-                <span className="text-primary-400">{currentProfile.displayName}</span> weights • Tap for details
+                {analysisMode === 'dfy' ? (
+                  <>
+                    <span className="text-primary-400">{currentProfile.displayName}</span> weights • Tap for details
+                  </>
+                ) : (
+                  <>Tap any segment to view raw metrics and sector benchmarks</>
+                )}
               </div>
             </div>
 
-            {/* News Section in Full View */}
-            {news.length > 0 && (
-              <div className="rounded-2xl bg-dark-800 border border-white/5 p-5">
-                <div className="flex items-center gap-2 mb-4">
-                  <Newspaper className="w-4 h-4 text-primary-400" />
-                  <h3 className="font-semibold text-white">Recent News</h3>
-                </div>
-                <div className="space-y-3">
-                  {news.slice(0, 3).map((item) => (
-                    <div
-                      key={item.id}
-                      className={cn(
-                        'p-3 rounded-xl bg-dark-700/50 border-l-2',
-                        item.sentiment === 'positive' && 'border-l-success-500',
-                        item.sentiment === 'negative' && 'border-l-destructive-500',
-                        item.sentiment === 'neutral' && 'border-l-neutral-500'
-                      )}
-                    >
-                      <div className="flex items-start gap-2">
-                        {item.sentiment === 'positive' && <TrendingUp className="w-4 h-4 text-success-400 mt-0.5 flex-shrink-0" />}
-                        {item.sentiment === 'negative' && <TrendingDown className="w-4 h-4 text-destructive-400 mt-0.5 flex-shrink-0" />}
-                        <div>
-                          <p className="text-sm font-medium text-white">{item.headline}</p>
-                          <p className="text-xs text-neutral-400 mt-1">{item.summary}</p>
-                          <p className="text-xs text-neutral-500 mt-1">{item.source}</p>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* ============== RED FLAG SCANNER ============== */}
-      <RedFlagScanner
-        verdict={verdict}
-        news={news}
-      />
+      {/* ============== METRIC-BY-METRIC LEARNING ============== */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.15 }}
+        className="rounded-2xl bg-dark-800 border border-white/5 p-5"
+        data-spotlight="guided-tour"
+      >
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <Compass className="w-4 h-4 text-teal-400" />
+            <h3 className="font-semibold text-white">Metric-by-Metric Analysis</h3>
+          </div>
+          <span className="px-2 py-0.5 rounded-lg bg-teal-500/10 text-teal-400 text-[10px] font-medium">
+            LEARNING
+          </span>
+        </div>
+        <p className="text-sm text-neutral-400 mb-4">
+          Go through each segment step-by-step. Rate the metrics yourself before seeing the system's assessment.
+        </p>
+        <button
+          onClick={() => setGuidedModalOpen(true)}
+          className="w-full p-3 rounded-xl bg-gradient-to-r from-teal-500/10 to-primary-500/10 border border-teal-500/20 hover:border-teal-500/40 transition-all group flex items-center justify-center gap-2"
+        >
+          <Target className="w-4 h-4 text-teal-400" />
+          <span className="text-sm font-medium text-white">Start Guided Tour</span>
+          <ChevronRight className="w-4 h-4 text-neutral-500 group-hover:text-teal-400 transition-colors" />
+        </button>
+      </motion.div>
+
+      {/* ============== LEARNING ACTIONS ============== */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+        className="flex gap-3"
+      >
+        {/* Reflection CTA */}
+        <button
+          onClick={() => setReflectionModalOpen(true)}
+          className="flex-1 p-3 rounded-xl bg-dark-800 border border-white/5 hover:border-primary-500/30 transition-all group flex items-center justify-center gap-2"
+        >
+          <PenLine className="w-4 h-4 text-primary-400" />
+          <span className="text-sm text-neutral-300 group-hover:text-white transition-colors">Log Reflection</span>
+        </button>
+        {/* Journal Link */}
+        <Link
+          to="/journal"
+          className="flex-1 p-3 rounded-xl bg-dark-800 border border-white/5 hover:border-primary-500/30 transition-all group flex items-center justify-center gap-2"
+          data-spotlight="add-to-journal"
+        >
+          <BookmarkPlus className="w-4 h-4 text-primary-400" />
+          <span className="text-sm text-neutral-300 group-hover:text-white transition-colors">Add to Journal</span>
+        </Link>
+      </motion.div>
+
+      {/* ============== NEWS SECTION - 2 Column Grid with Dropdown ============== */}
+      {news.length > 0 && (
+        <div data-spotlight="news-section">
+          <NewsSection news={news} />
+        </div>
+      )}
 
       {/* ============== UPCOMING EVENTS (if any) ============== */}
       {upcomingEvents.length > 0 && (
@@ -699,6 +1060,7 @@ export function StockAnalysis() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
           className="rounded-2xl bg-dark-800 border border-white/5 p-4"
+          data-spotlight="upcoming-events"
         >
           <div className="flex items-center gap-2 mb-3">
             <Calendar className="w-4 h-4 text-primary-400" />
@@ -723,183 +1085,480 @@ export function StockAnalysis() {
         </motion.div>
       )}
 
-      {/* ============== ENTRY ASSESSMENT ============== */}
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.25 }}
-        className="rounded-2xl bg-dark-800 border border-white/5 p-5"
-      >
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-primary-400" />
-            <h3 className="font-semibold text-white">Entry Assessment</h3>
-          </div>
-          <span className={cn(
-            'px-2.5 py-1 rounded-lg text-xs font-medium',
-            verdict.verdict === 'STRONG BUY' || verdict.verdict === 'BUY'
-              ? 'bg-success-500/20 text-success-400'
-              : verdict.verdict === 'HOLD' || verdict.verdict === 'STRONG HOLD'
-                ? 'bg-warning-500/20 text-warning-400'
-                : 'bg-destructive-500/20 text-destructive-400'
-          )}>
-            {verdict.verdict === 'STRONG BUY' || verdict.verdict === 'BUY' ? 'FAVORABLE' :
-             verdict.verdict === 'HOLD' || verdict.verdict === 'STRONG HOLD' ? 'NEUTRAL' : 'WAIT'}
-          </span>
-        </div>
-
-        {/* Position Sizing */}
-        <div className="grid grid-cols-2 gap-3 mb-4">
-          <div className="p-3 bg-dark-700/50 rounded-xl">
-            <span className="text-xs text-neutral-500 block mb-1">Suggested Allocation</span>
-            <span className="text-white font-medium text-sm">
-              {typeof verdict.positionSizing === 'string'
-                ? verdict.positionSizing
-                : verdict.positionSizing.recommendedAllocation}
+      {/* ============== ENTRY ASSESSMENT - DFY ONLY ============== */}
+      {analysisMode === 'dfy' && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.25 }}
+          className="rounded-2xl bg-dark-800 border border-white/5 p-5"
+          data-spotlight="entry-assessment"
+        >
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-primary-400" />
+              <h3 className="font-semibold text-white">Entry Assessment</h3>
+            </div>
+            <span className={cn(
+              'px-2.5 py-1 rounded-lg text-xs font-medium',
+              verdict.verdict === 'STRONG BUY' || verdict.verdict === 'BUY'
+                ? 'bg-success-500/20 text-success-400'
+                : verdict.verdict === 'HOLD' || verdict.verdict === 'STRONG HOLD'
+                  ? 'bg-warning-500/20 text-warning-400'
+                  : 'bg-destructive-500/20 text-destructive-400'
+            )}>
+              {verdict.verdict === 'STRONG BUY' || verdict.verdict === 'BUY' ? 'FAVORABLE' :
+               verdict.verdict === 'HOLD' || verdict.verdict === 'STRONG HOLD' ? 'NEUTRAL' : 'WAIT'}
             </span>
           </div>
-          {verdict.entryTiming?.fairValueRange && (
+
+          {/* Position Sizing */}
+          <div className="grid grid-cols-2 gap-3 mb-4">
             <div className="p-3 bg-dark-700/50 rounded-xl">
-              <span className="text-xs text-neutral-500 block mb-1">Fair Value Range</span>
-              <span className="text-white font-medium text-sm">{verdict.entryTiming.fairValueRange}</span>
+              <span className="text-xs text-neutral-500 block mb-1">Suggested Allocation</span>
+              <span className="text-white font-medium text-sm">
+                {typeof verdict.positionSizing === 'string'
+                  ? verdict.positionSizing
+                  : verdict.positionSizing.recommendedAllocation}
+              </span>
+            </div>
+            {verdict.entryTiming?.fairValueRange && (
+              <div className="p-3 bg-dark-700/50 rounded-xl">
+                <span className="text-xs text-neutral-500 block mb-1">Fair Value Range</span>
+                <span className="text-white font-medium text-sm">{verdict.entryTiming.fairValueRange}</span>
+              </div>
+            )}
+          </div>
+
+          {/* Exit Triggers */}
+          {verdict.exitTriggers && verdict.exitTriggers.length > 0 && (
+            <div className="pt-3 border-t border-white/5">
+              <div className="flex items-center gap-2 mb-2">
+                <LogOut className="w-3.5 h-3.5 text-neutral-400" />
+                <span className="text-xs font-medium text-neutral-400">Exit Triggers</span>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {verdict.exitTriggers.slice(0, 3).map((trigger) => (
+                  <span
+                    key={trigger.id}
+                    className={cn(
+                      'px-2 py-1 rounded text-xs',
+                      trigger.status === 'safe' ? 'bg-dark-700 text-neutral-400' :
+                      trigger.status === 'warning' ? 'bg-warning-500/10 text-warning-400' :
+                      'bg-destructive-500/10 text-destructive-400'
+                    )}
+                  >
+                    {trigger.metric} {trigger.condition} {trigger.threshold}
+                  </span>
+                ))}
+              </div>
             </div>
           )}
-        </div>
+        </motion.div>
+      )}
 
-        {/* Exit Triggers */}
-        {verdict.exitTriggers && verdict.exitTriggers.length > 0 && (
-          <div className="pt-3 border-t border-white/5">
-            <div className="flex items-center gap-2 mb-2">
-              <LogOut className="w-3.5 h-3.5 text-neutral-400" />
-              <span className="text-xs font-medium text-neutral-400">Exit Triggers</span>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {verdict.exitTriggers.slice(0, 3).map((trigger) => (
-                <span
-                  key={trigger.id}
-                  className={cn(
-                    'px-2 py-1 rounded text-xs',
-                    trigger.status === 'safe' ? 'bg-dark-700 text-neutral-400' :
-                    trigger.status === 'warning' ? 'bg-warning-500/10 text-warning-400' :
-                    'bg-destructive-500/10 text-destructive-400'
-                  )}
-                >
-                  {trigger.metric} {trigger.condition} {trigger.threshold}
-                </span>
-              ))}
-            </div>
-          </div>
-        )}
-      </motion.div>
-
-      {/* ============== COMPARE (Primary CTA - Monetization) ============== */}
+      {/* ============== MORE ACTIONS - Bottom Section ============== */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
-      >
-        <Link
-          to={`/compare?add=${stock.symbol}`}
-          className="block w-full py-3.5 px-5 bg-primary-500 hover:bg-primary-400 text-white rounded-2xl font-medium text-sm transition-colors"
-        >
-          <div className="flex items-center justify-center gap-3">
-            <GitCompare className="w-5 h-5" />
-            <span>Compare with Peers</span>
-            <ChevronRight className="w-4 h-4" />
-          </div>
-          <p className="text-center text-primary-100/70 text-xs mt-1">
-            See how {stock.symbol} stacks up against competitors
-          </p>
-        </Link>
-      </motion.div>
-
-      {/* ============== VALIDATE YOUR DECISION ============== */}
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.35 }}
         className="rounded-2xl bg-dark-800 border border-white/5 p-4"
       >
         <div className="flex items-center gap-2 mb-3">
-          <ShieldCheck className="w-4 h-4 text-teal-400" />
-          <span className="text-sm font-medium text-white">Validate Your Decision</span>
+          <ShieldCheck className="w-4 h-4 text-primary-400" />
+          <span className="text-sm font-medium text-white">More Actions</span>
         </div>
 
-        <div className="grid grid-cols-2 gap-3">
+        {/* Primary Actions - 2 Column Grid */}
+        <div className="grid grid-cols-2 gap-3 mb-3">
+          {/* Compare with Peers */}
+          <Link
+            to={`/compare?add=${stock.symbol}`}
+            className="flex flex-col items-center gap-2 p-4 rounded-xl bg-dark-700/50 border border-primary-500/20 hover:border-primary-500/40 hover:bg-dark-700 transition-all group"
+            data-spotlight="compare-peers"
+          >
+            <div className="w-10 h-10 rounded-full bg-primary-500/10 flex items-center justify-center group-hover:bg-primary-500/20 transition-colors">
+              <GitCompare className="w-5 h-5 text-primary-400" />
+            </div>
+            <span className="text-sm font-medium text-white">Compare Peers</span>
+            <span className="text-[10px] text-neutral-500 text-center">vs competitors</span>
+          </Link>
+
           {/* Back-Test */}
           <Link
             to={`/backtest/${stock.symbol}`}
-            className="flex flex-col items-center gap-2 p-4 bg-dark-700/50 rounded-xl border border-white/5 hover:bg-dark-700 hover:border-white/10 transition-all group"
+            className="flex flex-col items-center gap-2 p-4 rounded-xl bg-dark-700/50 border border-white/5 hover:border-teal-500/30 hover:bg-dark-700 transition-all group"
+            data-spotlight="back-test"
           >
             <div className="w-10 h-10 rounded-full bg-teal-500/10 flex items-center justify-center group-hover:bg-teal-500/20 transition-colors">
               <History className="w-5 h-5 text-teal-400" />
             </div>
             <span className="text-sm font-medium text-white">Back-Test</span>
-            <span className="text-[10px] text-neutral-500 text-center">How would this have performed?</span>
+            <span className="text-[10px] text-neutral-500 text-center">Historical returns</span>
           </Link>
+        </div>
 
-          {/* Consult SRA Advisor */}
+        {/* Secondary Actions - Compact Row */}
+        <div className="flex gap-2 pt-3 border-t border-white/5">
           <Link
-            to="/advisors"
-            className="flex flex-col items-center gap-2 p-4 bg-dark-700/50 rounded-xl border border-white/5 hover:bg-dark-700 hover:border-white/10 transition-all group"
+            to="/journal"
+            className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-dark-700/30 border border-white/5 hover:bg-dark-700/50 transition-colors"
           >
-            <div className="w-10 h-10 rounded-full bg-primary-500/10 flex items-center justify-center group-hover:bg-primary-500/20 transition-colors">
-              <UserCheck className="w-5 h-5 text-primary-400" />
-            </div>
-            <span className="text-sm font-medium text-white">Consult Advisor</span>
-            <span className="text-[10px] text-neutral-500 text-center">SEBI Registered Experts</span>
+            <PenLine className="w-3.5 h-3.5 text-neutral-400" />
+            <span className="text-xs text-neutral-300">Journal</span>
           </Link>
+          <button
+            onClick={() => {
+              if (navigator.share) {
+                navigator.share({
+                  title: `${stock.name} Analysis`,
+                  text: `StockFox: ${stock.symbol} Score ${verdict.overallScore}/10 - ${verdict.verdict}`,
+                  url: window.location.href,
+                })
+              } else {
+                navigator.clipboard.writeText(window.location.href)
+              }
+            }}
+            className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-dark-700/30 border border-white/5 hover:bg-dark-700/50 transition-colors"
+          >
+            <Share2 className="w-3.5 h-3.5 text-neutral-400" />
+            <span className="text-xs text-neutral-300">Share</span>
+          </button>
+          <button
+            onClick={() => {
+              const exportText = `
+STOCKFOX ANALYSIS REPORT
+========================
+Stock: ${stock.name} (${stock.symbol})
+Sector: ${stock.sector}
+Date: ${new Date().toLocaleDateString()}
+
+SCORE: ${verdict.overallScore.toFixed(1)}/10
+VERDICT: ${verdict.verdict}
+
+KEY SIGNALS:
+${verdict.topSignals.map(s => `✓ ${s.title}: ${s.description}`).join('\n')}
+
+CONCERNS:
+${verdict.topConcerns.map(c => `⚠ ${c.title}: ${c.description}`).join('\n')}
+
+SEGMENT SCORES:
+${verdict.segments.map(s => `${s.name}: ${s.score.toFixed(1)}/10`).join('\n')}
+
+---
+Generated by StockFox
+              `.trim()
+              navigator.clipboard.writeText(exportText).then(() => {
+                alert('Analysis report copied to clipboard!')
+              })
+            }}
+            className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-dark-700/30 border border-white/5 hover:bg-dark-700/50 transition-colors"
+          >
+            <FileText className="w-3.5 h-3.5 text-neutral-400" />
+            <span className="text-xs text-neutral-300">Export</span>
+          </button>
         </div>
       </motion.div>
 
-      {/* ============== MORE OPTIONS ============== */}
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4 }}
-        className="grid grid-cols-2 gap-3"
-      >
-        <Link
-          to="/journal"
-          className="flex items-center justify-center gap-2 py-3 px-4 bg-dark-800 border border-white/5 rounded-xl hover:bg-dark-700 transition-colors"
-        >
-          <PenLine className="w-4 h-4 text-neutral-400" />
-          <span className="text-sm text-neutral-300">Add to Journal</span>
-        </Link>
-        <button
-          onClick={() => {
-            if (navigator.share) {
-              navigator.share({
-                title: `${stock.name} Analysis`,
-                text: `StockFox: ${stock.symbol} Score ${verdict.overallScore}/10 - ${verdict.verdict}`,
-                url: window.location.href,
-              })
-            } else {
-              navigator.clipboard.writeText(window.location.href)
-            }
-          }}
-          className="flex items-center justify-center gap-2 py-3 px-4 bg-dark-800 border border-white/5 rounded-xl hover:bg-dark-700 transition-colors"
-        >
-          <Share2 className="w-4 h-4 text-neutral-400" />
-          <span className="text-sm text-neutral-300">Share</span>
-        </button>
-      </motion.div>
+      {/* ============== EVIDENCE MODAL ============== */}
+      <AnimatePresence>
+        {evidenceModalOpen && selectedSegmentForEvidence && (
+          <>
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setEvidenceModalOpen(false)}
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50"
+            />
 
-      {/* ============== ASK AI ============== */}
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.45 }}
-      >
-        <Link
-          to="/chat"
-          className="flex items-center justify-center gap-2 w-full py-3 bg-dark-800 border border-primary-500/20 rounded-2xl text-primary-400 hover:bg-primary-500/10 transition-colors text-sm font-medium"
-        >
-          <Sparkles className="w-4 h-4" />
-          Ask AI about {stock.symbol}
-          <ChevronRight className="w-4 h-4" />
-        </Link>
-      </motion.div>
+            {/* Modal */}
+            <motion.div
+              initial={{ opacity: 0, y: 50, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 50, scale: 0.95 }}
+              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+              className="fixed inset-x-4 top-[10%] bottom-[10%] z-50 mx-auto max-w-lg bg-dark-800 rounded-2xl border border-white/10 shadow-2xl overflow-hidden flex flex-col"
+            >
+              {/* Modal Header */}
+              <div className="flex items-center justify-between p-4 border-b border-white/10">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-primary-500/20 flex items-center justify-center">
+                    <FileText className="w-5 h-5 text-primary-400" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-white">{selectedSegmentForEvidence.name}</h3>
+                    <p className="text-xs text-neutral-500">Score: {selectedSegmentForEvidence.score.toFixed(1)}/10</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setEvidenceModalOpen(false)}
+                  className="p-2 rounded-lg hover:bg-white/5 text-neutral-400 hover:text-white transition-colors"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* Modal Content */}
+              <div className="flex-1 overflow-y-auto p-4">
+                <EvidenceChainPanel
+                  metricName={selectedSegmentForEvidence.name}
+                  citation={selectedSegmentForEvidence.metrics?.[0]?.citation}
+                />
+
+                {/* Source Summary */}
+                <div className="mt-4 p-3 rounded-xl bg-dark-700/50 border border-white/5">
+                  <div className="flex items-center gap-2 mb-2">
+                    <FileText className="w-4 h-4 text-neutral-500" />
+                    <span className="text-xs font-medium text-neutral-400">Sources Used</span>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedSegmentForEvidence.metrics?.slice(0, 4).map((m, i) => (
+                      <span
+                        key={i}
+                        className="px-2 py-1 text-xs bg-dark-600 text-neutral-300 rounded"
+                      >
+                        {m.citation?.source || 'Company Data'}
+                      </span>
+                    ))}
+                    {(selectedSegmentForEvidence.metrics?.length || 0) > 4 && (
+                      <span className="px-2 py-1 text-xs bg-dark-600 text-neutral-500 rounded">
+                        +{(selectedSegmentForEvidence.metrics?.length || 0) - 4} more
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Modal Footer */}
+              <div className="p-4 border-t border-white/10">
+                <button
+                  onClick={() => {
+                    setEvidenceModalOpen(false)
+                    window.location.href = `/segment/${ticker}/${selectedSegmentForEvidence.id}`
+                  }}
+                  className="w-full py-3 bg-primary-500 hover:bg-primary-400 text-white rounded-xl font-medium text-sm transition-colors flex items-center justify-center gap-2"
+                >
+                  View Full Segment Analysis
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
+      {/* ============== OVERALL EVIDENCE MODAL ============== */}
+      <AnimatePresence>
+        {overallEvidenceModalOpen && (
+          <>
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setOverallEvidenceModalOpen(false)}
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50"
+            />
+
+            {/* Modal */}
+            <motion.div
+              initial={{ opacity: 0, y: 50, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 50, scale: 0.95 }}
+              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+              className="fixed inset-x-4 top-[10%] bottom-[10%] z-50 mx-auto max-w-lg bg-dark-800 rounded-2xl border border-white/10 shadow-2xl overflow-hidden flex flex-col"
+            >
+              {/* Modal Header */}
+              <div className="flex items-center justify-between p-4 border-b border-white/10">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500/30 to-primary-600/20 flex items-center justify-center">
+                    <Target className="w-5 h-5 text-primary-400" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-white">Overall Score Evidence</h3>
+                    <p className="text-xs text-neutral-500">How we arrived at {verdict.overallScore.toFixed(1)}/10</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setOverallEvidenceModalOpen(false)}
+                  className="p-2 rounded-lg hover:bg-white/5 text-neutral-400 hover:text-white transition-colors"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* Modal Content */}
+              <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                {/* Justification Summary - Score, Rank, Verdict */}
+                <div className="space-y-3">
+                  {verdict.scoreJustification && (
+                    <div className="p-3 rounded-xl bg-gradient-to-r from-primary-500/10 to-transparent border border-primary-500/20">
+                      <p className="text-xs text-neutral-300 leading-relaxed">{verdict.scoreJustification}</p>
+                    </div>
+                  )}
+                  {verdict.rankJustification && (
+                    <div className="p-3 rounded-xl bg-gradient-to-r from-info-500/10 to-transparent border border-info-500/20">
+                      <p className="text-xs text-neutral-300 leading-relaxed">{verdict.rankJustification}</p>
+                    </div>
+                  )}
+                  {verdict.verdictJustification && (
+                    <div className="p-3 rounded-xl bg-gradient-to-r from-success-500/10 to-transparent border border-success-500/20">
+                      <p className="text-xs text-neutral-300 leading-relaxed">{verdict.verdictJustification}</p>
+                    </div>
+                  )}
+                </div>
+
+                {/* Level 1: Data Sources */}
+                <div className="p-4 rounded-xl bg-dark-700/50 border border-white/5">
+                  <div className="flex items-center gap-2 mb-3">
+                    <div className="w-6 h-6 rounded-lg bg-primary-500/20 flex items-center justify-center">
+                      <FileText className="w-3.5 h-3.5 text-primary-400" />
+                    </div>
+                    <span className="text-sm font-medium text-white">Level 1: Data Sources</span>
+                  </div>
+                  <div className="space-y-2 text-xs">
+                    <div className="flex justify-between">
+                      <span className="text-neutral-500">Total Metrics Analyzed</span>
+                      <span className="text-white font-medium">
+                        {verdict.segments.reduce((count, s) => count + (s.metrics?.length || 0), 0)} metrics
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-neutral-500">Primary Source</span>
+                      <span className="text-white">Q3 FY25 Company Filings</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-neutral-500">Verification</span>
+                      <span className="text-success-400">Audited & Cross-Referenced</span>
+                    </div>
+                    <div className="mt-3 pt-3 border-t border-white/5">
+                      <span className="text-neutral-500 block mb-2">Source Documents</span>
+                      <div className="flex flex-wrap gap-1.5">
+                        <span className="px-2 py-0.5 bg-dark-600 text-neutral-300 rounded text-[10px]">Annual Report</span>
+                        <span className="px-2 py-0.5 bg-dark-600 text-neutral-300 rounded text-[10px]">Quarterly Results</span>
+                        <span className="px-2 py-0.5 bg-dark-600 text-neutral-300 rounded text-[10px]">Investor Presentation</span>
+                        <span className="px-2 py-0.5 bg-dark-600 text-neutral-300 rounded text-[10px]">BSE/NSE Filings</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Level 2: Methodology */}
+                <div className="p-4 rounded-xl bg-dark-700/50 border border-white/5">
+                  <div className="flex items-center gap-2 mb-3">
+                    <div className="w-6 h-6 rounded-lg bg-info-500/20 flex items-center justify-center">
+                      <Sparkles className="w-3.5 h-3.5 text-info-400" />
+                    </div>
+                    <span className="text-sm font-medium text-white">Level 2: Scoring Methodology</span>
+                  </div>
+                  <div className="space-y-2 text-xs">
+                    <div className="flex justify-between">
+                      <span className="text-neutral-500">Framework</span>
+                      <span className="text-white">11-Segment Analysis Model</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-neutral-500">Profile Weighting</span>
+                      <span className="text-primary-400 font-medium">{currentProfile.investmentThesis} Investor</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-neutral-500">Red Flag Adjustment</span>
+                      <span className="text-white">{verdict.redFlags?.length || 0} flags processed</span>
+                    </div>
+                    <div className="mt-3 pt-3 border-t border-white/5">
+                      <span className="text-neutral-500 block mb-2">Segment Weights Applied</span>
+                      <p className="text-neutral-400 text-[10px] leading-relaxed">
+                        Each segment is weighted based on your {currentProfile.investmentThesis} investment profile.
+                        {currentProfile.investmentThesis === 'growth' && ' Growth metrics like Revenue Growth and Market Position carry higher weights.'}
+                        {currentProfile.investmentThesis === 'value' && ' Value metrics like Valuation and Financial Health carry higher weights.'}
+                        {(currentProfile.investmentThesis === 'income' || currentProfile.investmentThesis === 'dividend') && ' Income metrics like Dividend Yield and Cash Flow carry higher weights.'}
+                        {!['growth', 'value', 'income', 'dividend'].includes(currentProfile.investmentThesis) && ' Segments are balanced across profitability, stability, and growth.'}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Level 3: Score Contribution */}
+                <div className="p-4 rounded-xl bg-dark-700/50 border border-white/5">
+                  <div className="flex items-center gap-2 mb-3">
+                    <div className="w-6 h-6 rounded-lg bg-success-500/20 flex items-center justify-center">
+                      <Target className="w-3.5 h-3.5 text-success-400" />
+                    </div>
+                    <span className="text-sm font-medium text-white">Level 3: Score Breakdown</span>
+                  </div>
+                  <div className="space-y-2">
+                    {verdict.segments.slice(0, 6).map((segment, idx) => (
+                      <div key={idx} className="flex items-center gap-2">
+                        <span className="text-xs text-neutral-400 w-24 truncate">{segment.name}</span>
+                        <div className="flex-1 h-1.5 bg-dark-600 rounded-full overflow-hidden">
+                          <div
+                            className="h-full bg-gradient-to-r from-primary-500 to-primary-400 rounded-full"
+                            style={{ width: `${segment.score * 10}%` }}
+                          />
+                        </div>
+                        <span className="text-xs text-white font-medium w-8">{segment.score.toFixed(1)}</span>
+                      </div>
+                    ))}
+                    {verdict.segments.length > 6 && (
+                      <p className="text-[10px] text-neutral-500 text-center pt-1">
+                        +{verdict.segments.length - 6} more segments
+                      </p>
+                    )}
+                  </div>
+                  <div className="mt-3 pt-3 border-t border-white/5 flex justify-between items-center">
+                    <span className="text-xs text-neutral-500">Peer Comparison</span>
+                    <span className="text-xs text-white">
+                      Ranked <span className="text-primary-400 font-semibold">#{verdict.peerRank}</span> of {verdict.peerTotal} in {verdict.peerGroup}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Modal Footer */}
+              <div className="p-4 border-t border-white/10">
+                <button
+                  onClick={() => {
+                    setOverallEvidenceModalOpen(false)
+                    setIsFullView(true)
+                    setTimeout(() => {
+                      segmentsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                    }, 100)
+                  }}
+                  className="w-full py-3 bg-primary-500 hover:bg-primary-400 text-white rounded-xl font-medium text-sm transition-colors flex items-center justify-center gap-2"
+                >
+                  Explore All 11 Segments
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
+      {/* ============== GUIDED ANALYSIS MODAL ============== */}
+      <GuidedAnalysisModal
+        isOpen={guidedModalOpen}
+        onClose={() => setGuidedModalOpen(false)}
+        verdict={verdict}
+        stockName={stock.name}
+      />
+
+      {/* ============== REFLECTION MODAL ============== */}
+      <ReflectionPromptModal
+        isOpen={reflectionModalOpen}
+        onClose={() => setReflectionModalOpen(false)}
+        stockName={stock.name}
+        verdict={verdict.verdict}
+        score={verdict.overallScore}
+      />
+
+      {/* ============== DEMO MODE SPOTLIGHT TOUR ============== */}
+      <SpotlightTour
+        spotlights={spotlights}
+        isActive={showDemoSpotlights}
+        onEnd={toggleDemoMode}
+      />
     </div>
   )
 }
