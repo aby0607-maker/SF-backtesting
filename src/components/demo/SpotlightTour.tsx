@@ -164,7 +164,7 @@ export function SpotlightTour({ spotlights, isActive, onEnd }: SpotlightTourProp
 
   if (!isActive || !currentSpotlight) return null
 
-  // Calculate panel position
+  // Calculate panel position using FIXED positioning (viewport-relative)
   const getPanelStyle = (): React.CSSProperties => {
     if (!targetRect) {
       // Center in viewport if no target
@@ -178,32 +178,43 @@ export function SpotlightTour({ spotlights, isActive, onEnd }: SpotlightTourProp
 
     const padding = 16
     const panelWidth = 320
+    const panelHeight = 320 // Approximate panel height
     const scrollTop = window.scrollY || document.documentElement.scrollTop
+    const viewportHeight = window.innerHeight
+
+    // Get viewport-relative coordinates (subtract scroll position)
+    const viewportTop = targetRect.top - scrollTop
+    const viewportBottom = targetRect.bottom - scrollTop
+    const viewportLeft = targetRect.left - (window.scrollX || 0)
+    const viewportRight = targetRect.right - (window.scrollX || 0)
+
+    // Calculate safe left position (ensure panel stays in viewport)
+    const safeLeft = Math.max(padding, Math.min(viewportLeft, window.innerWidth - panelWidth - padding))
 
     switch (panelPosition) {
       case 'bottom':
         return {
-          position: 'absolute',
-          top: targetRect.bottom + padding,
-          left: Math.max(padding, Math.min(targetRect.left, window.innerWidth - panelWidth - padding)),
+          position: 'fixed',
+          top: Math.min(viewportBottom + padding, viewportHeight - panelHeight - padding),
+          left: safeLeft,
         }
       case 'top':
         return {
-          position: 'absolute',
-          bottom: window.innerHeight - targetRect.top + padding + scrollTop,
-          left: Math.max(padding, Math.min(targetRect.left, window.innerWidth - panelWidth - padding)),
+          position: 'fixed',
+          bottom: Math.min(viewportHeight - viewportTop + padding, viewportHeight - padding),
+          left: safeLeft,
         }
       case 'right':
         return {
-          position: 'absolute',
-          top: targetRect.top,
-          left: targetRect.right + padding,
+          position: 'fixed',
+          top: Math.max(padding, Math.min(viewportTop, viewportHeight - panelHeight - padding)),
+          left: Math.min(viewportRight + padding, window.innerWidth - panelWidth - padding),
         }
       case 'left':
         return {
-          position: 'absolute',
-          top: targetRect.top,
-          right: window.innerWidth - targetRect.left + padding,
+          position: 'fixed',
+          top: Math.max(padding, Math.min(viewportTop, viewportHeight - panelHeight - padding)),
+          right: Math.min(window.innerWidth - viewportLeft + padding, window.innerWidth - padding),
         }
     }
   }
