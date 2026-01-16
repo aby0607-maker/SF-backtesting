@@ -319,40 +319,64 @@ export const featureSpotlights: FeatureSpotlight[] = [
     targetElement: 'free-tier-banner',
   },
 
-  // ===== SEGMENT DEEP DIVE PAGE =====
+  // ===== SEGMENT DEEP DIVE PAGE - Ordered top to bottom =====
 
-  // Segment Score Justification
-  {
-    id: 'segment-justification',
-    featureName: 'Score Justification Explainers',
-    jtbd: 'Understand WHY a segment scored what it did',
-    principle: 'transparent',
-    competitiveAdvantage: 'Competitors show scores without explanation. StockFox provides 2-3 line justifications for every score, rank, and verdict',
-    userOutcome: 'Never wonder "but why?" - every number has a plain English explanation',
-    location: 'segment-deep-dive',
-    targetElement: 'score-justification',
-  },
-
-  // Metric Benchmarks
+  // 1. Sector Anchoring (Rank, Average, vs Sector) - TOP
   {
     id: 'metric-benchmarks',
-    featureName: 'Sector Benchmarks',
+    featureName: 'Sector Benchmarks & Ranking',
     jtbd: 'Know if a metric is good or bad relative to peers',
     principle: 'comprehensive',
-    competitiveAdvantage: 'Raw PE ratio means nothing without context. StockFox shows every metric against sector average, sector best, and historical trends',
-    userOutcome: 'Instantly know if 25% ROE is great (for banks) or average (for IT)',
+    competitiveAdvantage: 'Raw PE ratio means nothing without context. StockFox shows sector rank, sector average, and outperformance metrics at a glance',
+    userOutcome: 'Instantly see you are #2 of 6 in Profitability, outperforming sector by +2.3',
     location: 'segment-deep-dive',
     targetElement: 'metric-benchmark',
   },
 
-  // Simple Explainers
+  // 2. Segment Header (Score, Name, Status, Interpretation)
+  {
+    id: 'segment-header',
+    featureName: 'Segment Score Summary',
+    jtbd: 'Get a quick verdict on this specific dimension',
+    principle: 'simplicity',
+    competitiveAdvantage: 'Other platforms show raw numbers. StockFox gives you a score out of 10, a clear status (Positive/Neutral/Negative), and a one-line interpretation',
+    userOutcome: 'Understand if this segment is a strength or weakness in 3 seconds',
+    location: 'segment-deep-dive',
+    targetElement: 'segment-header',
+  },
+
+  // 3. Evidence Panel (How We Scored This Segment)
+  {
+    id: 'segment-justification',
+    featureName: 'Score Justification & Evidence',
+    jtbd: 'Understand WHY a segment scored what it did',
+    principle: 'transparent',
+    competitiveAdvantage: 'Competitors show scores without explanation. StockFox traces every score through 3 layers: Data Sources → Methodology → Contribution to final score',
+    userOutcome: 'Never wonder "but why?" - verify every claim with audited evidence',
+    location: 'segment-deep-dive',
+    targetElement: 'score-justification',
+  },
+
+  // 4. Key Metrics (Expandable metric cards with grounding)
+  {
+    id: 'key-metrics',
+    featureName: 'Grounded Key Metrics',
+    jtbd: 'See the actual numbers behind the score',
+    principle: 'transparent',
+    competitiveAdvantage: 'Other platforms show metrics in isolation. StockFox shows each metric with: value, status, benchmark comparison, trend intelligence, and source citations',
+    userOutcome: 'Drill into ROE of 3.2% and see it is GOOD for food delivery, with links to the source filing',
+    location: 'segment-deep-dive',
+    targetElement: 'key-metrics',
+  },
+
+  // 5. What This Means For You (Personalized explanation)
   {
     id: 'simple-explainers',
-    featureName: 'Beginner-Friendly Explainers',
-    jtbd: 'Understand financial jargon without a finance degree',
-    principle: 'simplicity',
-    competitiveAdvantage: 'Screener assumes you know what ROCE means. StockFox has one-tap explainers for every metric in plain English',
-    userOutcome: 'Learn financial literacy naturally while researching stocks',
+    featureName: 'Personalized Explainer',
+    jtbd: 'Understand what this means for MY investment decision',
+    principle: 'educational',
+    competitiveAdvantage: 'Screener assumes you know what ROCE means. StockFox explains in plain English tailored to your experience level and investment thesis',
+    userOutcome: 'A beginner sees "the company is good at making money" while an expert sees "strong operational efficiency with competitive advantage"',
     location: 'segment-deep-dive',
     targetElement: 'metric-explainer',
   },

@@ -385,6 +385,7 @@ export function SegmentDeepDive() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, delay: 0.1 }}
         className="bg-dark-800/60 backdrop-blur-sm rounded-2xl border border-white/5 p-5"
+        data-spotlight="segment-header"
       >
         <div className="flex items-start gap-5">
           {/* Score Ring - DFY Only */}
@@ -453,6 +454,7 @@ export function SegmentDeepDive() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: 0.15 }}
           className="bg-dark-800/60 backdrop-blur-sm rounded-2xl border border-white/5 p-5"
+          data-spotlight="key-metrics"
         >
           <h2 className="text-base font-semibold text-white mb-4">Key Metrics</h2>
           <div className="space-y-3">
