@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { ArrowLeft, Info, TrendingUp, TrendingDown, Minus, Trophy, Target, BarChart3, Eye, FileText, ChevronDown } from 'lucide-react'
 import { motion } from 'framer-motion'
@@ -8,6 +8,8 @@ import { getStockBySymbol, getVerdictForStock } from '@/data'
 import { ScoreRing } from '@/components/charts'
 import { EnhancedMetricCard } from '@/components/analysis'
 import { Skeleton } from '@/components/ui'
+import { DemoModeToggle, SpotlightTour } from '@/components/demo'
+import { getSpotlightsForLocation } from '@/data/featureSpotlights'
 import type { SegmentScore, Metric } from '@/types'
 
 // Get score color for dark mode
@@ -172,12 +174,16 @@ function getStatusBadgeColors(status: string) {
 export function SegmentDeepDive() {
   const { ticker, segmentId } = useParams<{ ticker: string; segmentId: string }>()
   const navigate = useNavigate()
-  const { currentProfile, analysisMode } = useAppStore()
+  const { currentProfile, analysisMode, demoMode, toggleDemoMode } = useAppStore()
   const [isLoading, setIsLoading] = useState(true)
   const [segment, setSegment] = useState<SegmentScore | null>(null)
   const [stockName, setStockName] = useState('')
 
   const isDIY = analysisMode === 'diy'
+
+  // Demo Mode - Only for Ankit profile
+  const isAnkitProfile = currentProfile?.name === 'Ankit'
+  const spotlights = useMemo(() => getSpotlightsForLocation('segment-deep-dive'), [])
 
   useEffect(() => {
     if (!ticker || !segmentId || !currentProfile) return
@@ -254,11 +260,12 @@ export function SegmentDeepDive() {
 
   return (
     <div className="space-y-4 animate-fade-in">
-      {/* Back button */}
+      {/* Back button + Demo Mode Toggle */}
       <motion.div
         initial={{ opacity: 0, x: -10 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.2 }}
+        className="flex items-center justify-between"
       >
         <button
           onClick={handleBack}
@@ -267,6 +274,9 @@ export function SegmentDeepDive() {
           <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
           Back to Segments
         </button>
+
+        {/* Demo Mode Toggle - Ankit only */}
+        <DemoModeToggle isEnabled={demoMode} onToggle={toggleDemoMode} isAnkitProfile={isAnkitProfile} />
       </motion.div>
 
       {/* ============== SECTOR ANCHORING - DFY ONLY ============== */}
@@ -505,6 +515,13 @@ export function SegmentDeepDive() {
           Ask AI About {segment.name}
         </button>
       </motion.div>
+
+      {/* Spotlight Tour for Demo Mode */}
+      <SpotlightTour
+        spotlights={spotlights}
+        isActive={demoMode}
+        onEnd={toggleDemoMode}
+      />
     </div>
   )
 }
