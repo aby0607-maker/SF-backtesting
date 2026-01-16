@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { useParams, Link, useLocation, useSearchParams } from 'react-router-dom'
-import { ArrowLeft, Share2, AlertTriangle, TrendingUp, TrendingDown, Sparkles, Newspaper, ChevronRight, ChevronDown, ChevronUp, Check, X, AlertCircle, Calendar, LogOut, GitCompare, UserCheck, History, ShieldCheck, PenLine, BookmarkPlus, FileText, Compass, Wand2, Target, Lightbulb } from 'lucide-react'
+import { ArrowLeft, Share2, AlertTriangle, TrendingUp, TrendingDown, Sparkles, Newspaper, ChevronRight, ChevronDown, ChevronUp, Check, X, AlertCircle, Calendar, LogOut, GitCompare, UserCheck, History, ShieldCheck, PenLine, BookmarkPlus, FileText, Compass, Wand2, Target } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAppStore } from '@/store/useAppStore'
 import { cn, formatCurrency, formatPercent } from '@/lib/utils'
@@ -10,7 +10,7 @@ import { ScoreGauge, VerdictBadge } from '@/components/ui'
 import { SegmentBar, DIYSegmentList } from '@/components/charts'
 import { EvidenceChainPanel, KeyMetricsCard } from '@/components/analysis'
 import { GuidedAnalysisModal, ReflectionPromptModal } from '@/components/learning'
-import { DemoModeToggle } from '@/components/demo'
+import { DemoModeToggle, SpotlightTour } from '@/components/demo'
 import { getSpotlightsForLocation } from '@/data/featureSpotlights'
 import type { Stock, StockVerdict, SegmentScore } from '@/types'
 
@@ -563,7 +563,6 @@ export function StockAnalysis() {
   const [reflectionModalOpen, setReflectionModalOpen] = useState(false)
 
   // Demo mode spotlight state
-  const [activeSpotlightIndex, setActiveSpotlightIndex] = useState(0)
   const spotlights = getSpotlightsForLocation('stock-analysis')
   const isAnkitProfile = currentProfile?.id === 'ankit'
   const showDemoSpotlights = demoMode && isAnkitProfile
@@ -665,7 +664,9 @@ export function StockAnalysis() {
             onToggle={toggleDemoMode}
             isAnkitProfile={isAnkitProfile}
           />
-          <AnalysisModeToggle />
+          <div data-spotlight="mode-toggle">
+            <AnalysisModeToggle />
+          </div>
         </div>
       </motion.div>
 
@@ -740,14 +741,18 @@ export function StockAnalysis() {
         {/* HERO: Score + Verdict - DFY ONLY */}
         {analysisMode === 'dfy' && (
           <div className="p-5 pt-0">
-            <div className="rounded-2xl bg-dark-700/50 p-5">
+            <div className="rounded-2xl bg-dark-700/50 p-5" data-spotlight="hero-card">
               <div className="flex items-center gap-5">
                 {/* Score Gauge */}
-                <ScoreGauge score={verdict.overallScore} size="lg" />
+                <div data-spotlight="overall-score">
+                  <ScoreGauge score={verdict.overallScore} size="lg" />
+                </div>
 
                 {/* Verdict Info */}
                 <div className="flex-1">
-                  <VerdictBadge verdict={verdict.verdict} size="lg" />
+                  <div data-spotlight="verdict-badge">
+                    <VerdictBadge verdict={verdict.verdict} size="lg" />
+                  </div>
                   <p className="text-sm text-neutral-400 mt-3 leading-relaxed">
                     {verdict.verdictRationale}
                   </p>
@@ -767,6 +772,7 @@ export function StockAnalysis() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
                 className="mt-4 p-3 rounded-xl bg-white/5 border border-white/10"
+                data-spotlight="evidence-chain"
               >
                 <div className="flex items-center gap-2 mb-2">
                   <FileText className="w-4 h-4 text-primary-400" />
@@ -834,6 +840,7 @@ export function StockAnalysis() {
         <Link
           to="/chat"
           className="flex-1 flex items-center gap-3 p-3 rounded-xl bg-gradient-to-r from-purple-500/10 to-primary-500/10 border border-purple-500/20 hover:border-purple-500/40 transition-all group"
+          data-spotlight="ask-ai-cta"
         >
           <div className="w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center group-hover:bg-purple-500/30 transition-colors">
             <Sparkles className="w-5 h-5 text-purple-400" />
@@ -862,14 +869,20 @@ export function StockAnalysis() {
       </motion.div>
 
       {/* ============== PROS/CONS (Quick View) - DFY ONLY ============== */}
-      {analysisMode === 'dfy' && <ProsCons verdict={verdict} />}
+      {analysisMode === 'dfy' && (
+        <div data-spotlight="pros-cons">
+          <ProsCons verdict={verdict} />
+        </div>
+      )}
 
       {/* ============== RED FLAG SCANNER (DFY) / KEY METRICS (DIY) - After Strengths & Weaknesses ============== */}
       {analysisMode === 'dfy' ? (
-        <RedFlagScanner
-          verdict={verdict}
-          news={news}
-        />
+        <div data-spotlight="red-flag-scanner">
+          <RedFlagScanner
+            verdict={verdict}
+            news={news}
+          />
+        </div>
       ) : (
         <KeyMetricsCard verdict={verdict} />
       )}
@@ -913,7 +926,7 @@ export function StockAnalysis() {
             className="space-y-4 overflow-hidden"
           >
             {/* 11-Segment Analysis */}
-            <div ref={segmentsRef} id="segments" className="rounded-2xl bg-dark-800 border border-white/5 p-5">
+            <div ref={segmentsRef} id="segments" className="rounded-2xl bg-dark-800 border border-white/5 p-5" data-spotlight="segments-section">
               <div className="flex items-center justify-between mb-3">
                 <h3 className="font-semibold text-white">
                   {analysisMode === 'dfy' ? '11-Segment Analysis' : '11 Analysis Segments'}
@@ -982,6 +995,7 @@ export function StockAnalysis() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.15 }}
         className="rounded-2xl bg-dark-800 border border-white/5 p-5"
+        data-spotlight="guided-tour"
       >
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
@@ -1073,6 +1087,7 @@ export function StockAnalysis() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.25 }}
           className="rounded-2xl bg-dark-800 border border-white/5 p-5"
+          data-spotlight="entry-assessment"
         >
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
@@ -1531,136 +1546,12 @@ Generated by StockFox
         score={verdict.overallScore}
       />
 
-      {/* ============== DEMO MODE SPOTLIGHT PANEL ============== */}
-      <AnimatePresence>
-        {showDemoSpotlights && spotlights.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-            className="fixed right-4 top-20 bottom-4 z-50 w-[320px] flex flex-col pointer-events-auto"
-          >
-            <div className="bg-dark-800/95 backdrop-blur-md rounded-2xl border border-primary-500/30 shadow-2xl shadow-primary-500/10 flex flex-col max-h-full overflow-hidden">
-              {/* Header - Always visible */}
-              <div className="p-3 bg-gradient-to-r from-primary-500/15 to-purple-500/15 border-b border-white/5 flex-shrink-0">
-                <div className="flex items-center justify-between gap-2 mb-2">
-                  <div className="flex items-center gap-2">
-                    <Lightbulb className="w-4 h-4 text-primary-400" />
-                    <span className="text-xs font-semibold text-primary-400 uppercase tracking-wider">Demo Mode</span>
-                  </div>
-                  <button
-                    onClick={toggleDemoMode}
-                    className="px-2.5 py-1 rounded-lg bg-destructive-500/20 hover:bg-destructive-500/30 text-destructive-400 text-[10px] font-medium transition-colors flex items-center gap-1"
-                  >
-                    <X className="w-3 h-3" />
-                    End Demo
-                  </button>
-                </div>
-
-                {/* Navigation - In header */}
-                <div className="flex items-center justify-between bg-dark-700/50 rounded-lg p-1.5">
-                  <button
-                    onClick={() => setActiveSpotlightIndex(Math.max(0, activeSpotlightIndex - 1))}
-                    disabled={activeSpotlightIndex === 0}
-                    className={cn(
-                      'p-1.5 rounded transition-colors',
-                      activeSpotlightIndex === 0 ? 'text-neutral-600 cursor-not-allowed' : 'text-neutral-400 hover:text-white hover:bg-white/10'
-                    )}
-                  >
-                    <ChevronUp className="w-4 h-4" />
-                  </button>
-
-                  <span className="text-xs text-neutral-400">
-                    <span className="text-white font-medium">{activeSpotlightIndex + 1}</span>
-                    <span className="mx-1">/</span>
-                    <span>{spotlights.length}</span>
-                  </span>
-
-                  <button
-                    onClick={() => setActiveSpotlightIndex(Math.min(spotlights.length - 1, activeSpotlightIndex + 1))}
-                    disabled={activeSpotlightIndex === spotlights.length - 1}
-                    className={cn(
-                      'p-1.5 rounded transition-colors',
-                      activeSpotlightIndex === spotlights.length - 1 ? 'text-neutral-600 cursor-not-allowed' : 'text-neutral-400 hover:text-white hover:bg-white/10'
-                    )}
-                  >
-                    <ChevronDown className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
-
-              {/* Scrollable Content */}
-              <div className="flex-1 overflow-y-auto p-3 space-y-3">
-                {/* Feature Name + Principle */}
-                <div>
-                  <h4 className="font-semibold text-white text-sm leading-tight mb-2">
-                    {spotlights[activeSpotlightIndex].featureName}
-                  </h4>
-                  {(() => {
-                    const principle = spotlights[activeSpotlightIndex].principle
-                    const badges: Record<string, { label: string; emoji: string; color: string; bgColor: string }> = {
-                      comprehensive: { label: 'Comprehensive', emoji: '360', color: 'text-primary-400', bgColor: 'bg-primary-500/20' },
-                      personalization: { label: '6D Personalization', emoji: '6D', color: 'text-purple-400', bgColor: 'bg-purple-500/20' },
-                      transparent: { label: 'Transparent', emoji: 'T', color: 'text-teal-400', bgColor: 'bg-teal-500/20' },
-                      fast: { label: 'Fast & Automatic', emoji: 'F', color: 'text-warning-400', bgColor: 'bg-warning-500/20' },
-                      educational: { label: 'Educational', emoji: 'E', color: 'text-info-400', bgColor: 'bg-info-500/20' },
-                      simplicity: { label: 'Simplicity', emoji: 'S', color: 'text-success-400', bgColor: 'bg-success-500/20' },
-                    }
-                    const info = badges[principle]
-                    return (
-                      <span className={cn('inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-semibold', info.bgColor, info.color)}>
-                        <span className="font-bold">{info.emoji}</span>
-                        <span>{info.label}</span>
-                      </span>
-                    )
-                  })()}
-                </div>
-
-                {/* JTBD */}
-                <div className="p-2.5 rounded-lg bg-info-500/5 border border-info-500/15">
-                  <span className="text-[9px] font-semibold text-info-400 uppercase tracking-wider block mb-1">Job To Be Done</span>
-                  <p className="text-xs text-neutral-200 leading-relaxed">{spotlights[activeSpotlightIndex].jtbd}</p>
-                </div>
-
-                {/* User Outcome */}
-                <div className="p-2.5 rounded-lg bg-success-500/5 border border-success-500/15">
-                  <span className="text-[9px] font-semibold text-success-400 uppercase tracking-wider block mb-1">You Get</span>
-                  <p className="text-xs text-success-300 font-medium leading-relaxed">{spotlights[activeSpotlightIndex].userOutcome}</p>
-                </div>
-
-                {/* Competitive Advantage */}
-                <div className="p-2.5 rounded-lg bg-warning-500/5 border border-warning-500/15">
-                  <span className="text-[9px] font-semibold text-warning-400 uppercase tracking-wider block mb-1">vs Competition</span>
-                  <p className="text-[11px] text-neutral-400 leading-relaxed">{spotlights[activeSpotlightIndex].competitiveAdvantage}</p>
-                </div>
-              </div>
-
-              {/* Quick Jump Footer */}
-              <div className="p-2 border-t border-white/5 flex-shrink-0">
-                <div className="flex flex-wrap gap-1">
-                  {spotlights.slice(0, 6).map((_, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => setActiveSpotlightIndex(idx)}
-                      className={cn(
-                        'w-6 h-6 rounded text-[10px] font-medium transition-colors',
-                        idx === activeSpotlightIndex
-                          ? 'bg-primary-500 text-white'
-                          : 'bg-dark-700 text-neutral-400 hover:bg-dark-600 hover:text-white'
-                      )}
-                    >
-                      {idx + 1}
-                    </button>
-                  ))}
-                  {spotlights.length > 6 && (
-                    <span className="px-2 py-1 text-[10px] text-neutral-500">+{spotlights.length - 6}</span>
-                  )}
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* ============== DEMO MODE SPOTLIGHT TOUR ============== */}
+      <SpotlightTour
+        spotlights={spotlights}
+        isActive={showDemoSpotlights}
+        onEnd={toggleDemoMode}
+      />
     </div>
   )
 }
