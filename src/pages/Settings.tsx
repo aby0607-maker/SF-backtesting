@@ -1,121 +1,166 @@
-import { Settings as SettingsIcon, User, Bell, Shield, HelpCircle, LogOut } from 'lucide-react'
+import { useState } from 'react'
+import { Settings as SettingsIcon, User, Bell, Shield, HelpCircle, LogOut, ChevronRight, CheckCircle, X, Edit3 } from 'lucide-react'
 import { useAppStore } from '@/store/useAppStore'
+import { useNavigate } from 'react-router-dom'
+import { motion, AnimatePresence } from 'framer-motion'
 
 export function Settings() {
   const { currentProfile } = useAppStore()
+  const navigate = useNavigate()
+  const [toast, setToast] = useState<string | null>(null)
+
+  const showToast = (message: string) => {
+    setToast(message)
+    setTimeout(() => setToast(null), 3000)
+  }
 
   if (!currentProfile) return null
 
+  const quickSettings = [
+    { icon: Bell, label: 'Notification Preferences', action: () => navigate('/alerts') },
+    { icon: Shield, label: 'Privacy & Security', action: () => showToast('Privacy settings coming soon') },
+    { icon: HelpCircle, label: 'Help & Support', action: () => showToast('Help center coming soon') },
+  ]
+
   return (
-    <div className="space-y-6 animate-fade-in">
+    <motion.div
+      className="space-y-6"
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
+    >
+      {/* Toast */}
+      <AnimatePresence>
+        {toast && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-primary-500/20 border border-primary-500/30 rounded-xl px-5 py-3 flex items-center gap-3"
+          >
+            <CheckCircle className="w-5 h-5 text-primary-400" />
+            <span className="text-white font-medium">{toast}</span>
+            <button onClick={() => setToast(null)} className="text-neutral-400 hover:text-white">
+              <X className="w-4 h-4" />
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Header */}
       <div>
-        <h1 className="text-h2 flex items-center gap-2">
-          <SettingsIcon className="w-7 h-7 text-primary-600" />
+        <h1 className="text-2xl font-bold text-white flex items-center gap-2">
+          <SettingsIcon className="w-7 h-7 text-primary-500" />
           Settings
         </h1>
-        <p className="text-body text-content-secondary mt-1">
+        <p className="text-neutral-400 mt-1">
           Manage your profile and preferences
         </p>
       </div>
 
       {/* Profile Summary */}
-      <div className="card">
+      <div className="bg-dark-800 rounded-2xl border border-white/5 p-5">
         <div className="flex items-center gap-4">
           <div className="text-5xl">{currentProfile.avatar}</div>
-          <div className="flex-1">
-            <h2 className="text-h4">{currentProfile.displayName}</h2>
-            <p className="text-body-sm text-content-secondary capitalize">
+          <div className="flex-1 min-w-0">
+            <h2 className="text-lg font-semibold text-white">{currentProfile.displayName}</h2>
+            <p className="text-sm text-neutral-400 capitalize">
               {currentProfile.investmentThesis} Investor • {currentProfile.experienceLevel}
             </p>
           </div>
-          <button className="btn-secondary">Edit Profile</button>
+          <button
+            onClick={() => showToast('Profile editing coming soon')}
+            className="flex items-center gap-2 px-4 py-2 bg-dark-700 border border-white/10 rounded-xl text-neutral-300 hover:bg-dark-600 transition-colors"
+          >
+            <Edit3 className="w-4 h-4" />
+            Edit Profile
+          </button>
         </div>
       </div>
 
       {/* Investment Profile */}
-      <div className="card">
-        <h3 className="text-h4 flex items-center gap-2 mb-4">
-          <User className="w-5 h-5 text-primary-600" />
+      <div className="bg-dark-800 rounded-2xl border border-white/5 p-5">
+        <h3 className="text-lg font-semibold text-white flex items-center gap-2 mb-4">
+          <User className="w-5 h-5 text-primary-500" />
           Investment Profile
         </h3>
 
-        <div className="space-y-4">
-          <div className="flex items-center justify-between p-3 bg-surface-secondary rounded-lg">
+        <div className="space-y-3">
+          <div className="flex items-center justify-between p-3 bg-dark-700/50 rounded-xl border border-white/5">
             <div>
-              <div className="font-medium">Investment Style</div>
-              <div className="text-body-sm text-content-secondary">Your primary investment approach</div>
+              <div className="font-medium text-white">Investment Style</div>
+              <div className="text-sm text-neutral-500">Your primary investment approach</div>
             </div>
             <div className="text-right">
-              <span className="badge bg-primary-100 text-primary-700 capitalize">
+              <span className="px-3 py-1 bg-primary-500/20 text-primary-400 rounded-lg text-sm font-medium capitalize">
                 {currentProfile.investmentThesis}
               </span>
             </div>
           </div>
 
-          <div className="flex items-center justify-between p-3 bg-surface-secondary rounded-lg">
+          <div className="flex items-center justify-between p-3 bg-dark-700/50 rounded-xl border border-white/5">
             <div>
-              <div className="font-medium">Risk Tolerance</div>
-              <div className="text-body-sm text-content-secondary">How much volatility you can handle</div>
+              <div className="font-medium text-white">Risk Tolerance</div>
+              <div className="text-sm text-neutral-500">How much volatility you can handle</div>
             </div>
-            <div className="text-right capitalize">{currentProfile.riskTolerance}</div>
+            <div className="text-right capitalize text-neutral-300">{currentProfile.riskTolerance}</div>
           </div>
 
-          <div className="flex items-center justify-between p-3 bg-surface-secondary rounded-lg">
+          <div className="flex items-center justify-between p-3 bg-dark-700/50 rounded-xl border border-white/5">
             <div>
-              <div className="font-medium">Time Horizon</div>
-              <div className="text-body-sm text-content-secondary">Typical holding period</div>
+              <div className="font-medium text-white">Time Horizon</div>
+              <div className="text-sm text-neutral-500">Typical holding period</div>
             </div>
-            <div className="text-right">
+            <div className="text-right text-neutral-300">
               {currentProfile.timeHorizon === 'very-long' ? '5+ years' : '3-5 years'}
             </div>
           </div>
 
-          <div className="flex items-center justify-between p-3 bg-surface-secondary rounded-lg">
+          <div className="flex items-center justify-between p-3 bg-dark-700/50 rounded-xl border border-white/5">
             <div>
-              <div className="font-medium">Experience Level</div>
-              <div className="text-body-sm text-content-secondary">Your investing experience</div>
+              <div className="font-medium text-white">Experience Level</div>
+              <div className="text-sm text-neutral-500">Your investing experience</div>
             </div>
-            <div className="text-right capitalize">{currentProfile.experienceLevel}</div>
+            <div className="text-right capitalize text-neutral-300">{currentProfile.experienceLevel}</div>
           </div>
         </div>
       </div>
 
       {/* Quick Settings */}
-      <div className="card">
-        <h3 className="text-h4 mb-4">Quick Settings</h3>
+      <div className="bg-dark-800 rounded-2xl border border-white/5 p-5">
+        <h3 className="text-lg font-semibold text-white mb-4">Quick Settings</h3>
         <div className="space-y-2">
-          {[
-            { icon: Bell, label: 'Notification Preferences', link: '/alerts' },
-            { icon: Shield, label: 'Privacy & Security', link: '#' },
-            { icon: HelpCircle, label: 'Help & Support', link: '#' },
-          ].map((item, i) => (
+          {quickSettings.map((item, i) => (
             <button
               key={i}
-              className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-surface-secondary transition-colors text-left"
+              onClick={item.action}
+              className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-dark-700/50 transition-colors text-left border border-transparent hover:border-white/5"
             >
-              <item.icon className="w-5 h-5 text-content-secondary" />
-              <span className="flex-1">{item.label}</span>
-              <span className="text-content-tertiary">→</span>
+              <item.icon className="w-5 h-5 text-neutral-400" />
+              <span className="flex-1 text-white">{item.label}</span>
+              <ChevronRight className="w-5 h-5 text-neutral-600" />
             </button>
           ))}
         </div>
       </div>
 
       {/* Demo Note */}
-      <div className="card bg-surface-tertiary">
-        <div className="text-center py-4">
-          <p className="text-body-sm text-content-secondary">
-            🦊 <strong>Demo Mode</strong> - Settings changes won't persist across sessions
+      <div className="bg-dark-700/30 rounded-2xl border border-white/5 p-4">
+        <div className="text-center">
+          <p className="text-sm text-neutral-400">
+            <strong className="text-neutral-300">Demo Mode</strong> - Settings changes won't persist across sessions
           </p>
         </div>
       </div>
 
       {/* Sign Out */}
-      <button className="w-full btn-ghost text-verdict-avoid flex items-center justify-center gap-2">
+      <button
+        onClick={() => showToast('Sign out is disabled in demo mode')}
+        className="w-full flex items-center justify-center gap-2 p-3 rounded-xl text-destructive-400 hover:bg-destructive-500/10 transition-colors border border-transparent hover:border-destructive-500/20"
+      >
         <LogOut className="w-5 h-5" />
         Sign Out (Demo)
       </button>
-    </div>
+    </motion.div>
   )
 }

@@ -1,8 +1,10 @@
-import { Bell, Settings, Check, Trash2 } from 'lucide-react'
+import { useState } from 'react'
+import { Bell, Check } from 'lucide-react'
+import { motion } from 'framer-motion'
 import { cn, formatRelativeTime } from '@/lib/utils'
 
 // Placeholder data
-const alerts = [
+const alertsData = [
   {
     id: '1',
     type: 'score_change',
@@ -55,14 +57,7 @@ const alerts = [
   },
 ]
 
-const severityColors = {
-  critical: 'bg-alert-critical',
-  high: 'bg-alert-high',
-  medium: 'bg-alert-medium',
-  low: 'bg-alert-low',
-}
-
-const typeIcons = {
+const typeIcons: Record<string, string> = {
   score_change: '📉',
   thesis_breaking: '⚡',
   news: '📰',
@@ -71,93 +66,157 @@ const typeIcons = {
   earnings: '📊',
 }
 
+const severityConfig: Record<string, { dot: string; unreadBg: string; unreadBorder: string }> = {
+  critical: {
+    dot: 'bg-destructive-500',
+    unreadBg: 'bg-destructive-500/10',
+    unreadBorder: 'border-destructive-500/30'
+  },
+  high: {
+    dot: 'bg-warning-500',
+    unreadBg: 'bg-warning-500/10',
+    unreadBorder: 'border-warning-500/30'
+  },
+  medium: {
+    dot: 'bg-warning-400',
+    unreadBg: 'bg-dark-700/50',
+    unreadBorder: 'border-white/10'
+  },
+  low: {
+    dot: 'bg-neutral-500',
+    unreadBg: 'bg-dark-700/50',
+    unreadBorder: 'border-white/10'
+  },
+}
+
 export function Alerts() {
+  const [alerts, setAlerts] = useState(alertsData)
   const unreadCount = alerts.filter(a => !a.isRead).length
 
+  const markAllRead = () => {
+    setAlerts(alerts.map(a => ({ ...a, isRead: true })))
+  }
+
+  const dismissAlert = (id: string) => {
+    setAlerts(alerts.filter(a => a.id !== id))
+  }
+
   return (
-    <div className="space-y-6 animate-fade-in">
+    <div className="space-y-5">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="flex items-center justify-between"
+      >
         <div>
-          <h1 className="text-h2 flex items-center gap-2">
-            <Bell className="w-7 h-7 text-primary-600" />
+          <h1 className="text-2xl font-bold text-white flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-primary-500/20 flex items-center justify-center">
+              <Bell className="w-5 h-5 text-primary-400" />
+            </div>
             Alerts
           </h1>
-          <p className="text-body text-content-secondary mt-1">
+          <p className="text-sm text-neutral-400 mt-1 ml-[52px]">
             {unreadCount > 0 ? `${unreadCount} unread alerts` : 'All caught up!'}
           </p>
         </div>
-        <button className="btn-ghost flex items-center gap-2">
-          <Settings className="w-5 h-5" />
-          Settings
-        </button>
-      </div>
+      </motion.div>
 
       {/* Quick Actions */}
       {unreadCount > 0 && (
-        <div className="flex gap-3">
-          <button className="btn-secondary flex items-center gap-2">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.1 }}
+        >
+          <button
+            onClick={markAllRead}
+            className="flex items-center gap-2 px-4 py-2 bg-dark-700 hover:bg-dark-600 border border-white/10 rounded-xl text-sm text-neutral-300 transition-colors"
+          >
             <Check className="w-4 h-4" />
             Mark All Read
           </button>
-        </div>
+        </motion.div>
       )}
 
       {/* Alert List */}
-      <div className="space-y-3">
-        {alerts.map(alert => (
-          <div
-            key={alert.id}
-            className={cn(
-              'card transition-colors',
-              !alert.isRead && 'bg-primary-50 border-primary-100'
-            )}
-          >
-            <div className="flex items-start gap-3">
-              <div className="flex-shrink-0">
-                <div
-                  className={cn(
-                    'w-2 h-2 rounded-full mt-2',
-                    severityColors[alert.severity as keyof typeof severityColors]
-                  )}
-                />
-              </div>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.15 }}
+        className="space-y-3"
+      >
+        {alerts.map((alert, index) => {
+          const config = severityConfig[alert.severity] || severityConfig.low
+          const isUnread = !alert.isRead
 
-              <div className="flex-1 min-w-0">
-                <div className="flex items-start justify-between gap-2 mb-1">
-                  <div className="flex items-center gap-2">
-                    <span>{typeIcons[alert.type as keyof typeof typeIcons]}</span>
-                    <span className="font-medium">{alert.title}</span>
-                    {!alert.isRead && (
-                      <span className="w-2 h-2 bg-primary-600 rounded-full" />
-                    )}
+          return (
+            <motion.div
+              key={alert.id}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 + index * 0.05 }}
+              className={cn(
+                'rounded-xl border p-4 transition-all',
+                isUnread
+                  ? `${config.unreadBg} ${config.unreadBorder}`
+                  : 'bg-dark-800 border-white/5 hover:border-white/10'
+              )}
+            >
+              <div className="flex items-start gap-3">
+                {/* Severity dot */}
+                <div className="flex-shrink-0 pt-1.5">
+                  <div className={cn('w-2 h-2 rounded-full', config.dot)} />
+                </div>
+
+                {/* Content */}
+                <div className="flex-1 min-w-0">
+                  {/* Header row */}
+                  <div className="flex items-start justify-between gap-2 mb-1">
+                    <div className="flex items-center gap-2">
+                      <span className="text-base">{typeIcons[alert.type] || '📋'}</span>
+                      <span className="font-medium text-white">{alert.title}</span>
+                      {isUnread && (
+                        <span className="w-2 h-2 bg-primary-500 rounded-full flex-shrink-0" />
+                      )}
+                    </div>
+                    <span className="text-xs text-neutral-500 flex-shrink-0">
+                      {formatRelativeTime(alert.timestamp)}
+                    </span>
                   </div>
-                  <span className="text-caption text-content-tertiary flex-shrink-0">
-                    {formatRelativeTime(alert.timestamp)}
-                  </span>
-                </div>
 
-                <p className="text-body-sm text-content-secondary mb-3">
-                  {alert.message}
-                </p>
+                  {/* Message */}
+                  <p className="text-sm text-neutral-400 mb-3 leading-relaxed">
+                    {alert.message}
+                  </p>
 
-                <div className="flex items-center gap-3">
-                  <button className="text-body-sm text-primary-600 font-medium hover:text-primary-700">
-                    {alert.action}
-                  </button>
-                  <button className="text-body-sm text-content-tertiary hover:text-content-secondary">
-                    Dismiss
-                  </button>
+                  {/* Actions */}
+                  <div className="flex items-center gap-4">
+                    <button className="text-sm text-primary-400 font-medium hover:text-primary-300 transition-colors">
+                      {alert.action}
+                    </button>
+                    <button
+                      onClick={() => dismissAlert(alert.id)}
+                      className="text-sm text-neutral-500 hover:text-neutral-300 transition-colors"
+                    >
+                      Dismiss
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
-        ))}
-      </div>
+            </motion.div>
+          )
+        })}
+      </motion.div>
 
-      {/* Alert Settings Preview */}
-      <div className="card">
-        <h3 className="text-h4 mb-4">Alert Preferences</h3>
+      {/* Alert Preferences */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3 }}
+        className="rounded-xl bg-dark-800 border border-white/5 p-5"
+      >
+        <h3 className="text-lg font-semibold text-white mb-4">Alert Preferences</h3>
         <div className="space-y-3">
           {[
             { label: 'Score changes', description: 'When a watchlist stock score changes by 0.5+', enabled: true },
@@ -165,20 +224,23 @@ export function Alerts() {
             { label: 'Earnings announcements', description: '24h before quarterly results', enabled: true },
             { label: 'Peer rank changes', description: 'When stocks move in sector rankings', enabled: false },
           ].map((pref, i) => (
-            <div key={i} className="flex items-center justify-between p-3 bg-surface-secondary rounded-lg">
+            <div
+              key={i}
+              className="flex items-center justify-between p-3 bg-dark-700/50 rounded-xl border border-white/5"
+            >
               <div>
-                <div className="font-medium">{pref.label}</div>
-                <div className="text-body-sm text-content-secondary">{pref.description}</div>
+                <div className="font-medium text-white text-sm">{pref.label}</div>
+                <div className="text-xs text-neutral-500 mt-0.5">{pref.description}</div>
               </div>
               <button
                 className={cn(
-                  'w-12 h-7 rounded-full transition-colors relative',
-                  pref.enabled ? 'bg-primary-600' : 'bg-gray-300'
+                  'w-11 h-6 rounded-full transition-colors relative flex-shrink-0',
+                  pref.enabled ? 'bg-primary-500' : 'bg-dark-600'
                 )}
               >
                 <span
                   className={cn(
-                    'absolute top-1 w-5 h-5 bg-white rounded-full shadow transition-transform',
+                    'absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-all',
                     pref.enabled ? 'right-1' : 'left-1'
                   )}
                 />
@@ -186,7 +248,22 @@ export function Alerts() {
             </div>
           ))}
         </div>
-      </div>
+      </motion.div>
+
+      {/* Empty state hint */}
+      {alerts.length === 0 && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="text-center py-12"
+        >
+          <div className="w-16 h-16 rounded-full bg-success-500/10 flex items-center justify-center mx-auto mb-4">
+            <Check className="w-8 h-8 text-success-400" />
+          </div>
+          <h3 className="text-lg font-medium text-white mb-2">All caught up!</h3>
+          <p className="text-sm text-neutral-400">No new alerts. We'll notify you when something important happens.</p>
+        </motion.div>
+      )}
     </div>
   )
 }

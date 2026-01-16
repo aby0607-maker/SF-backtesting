@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+  <!-- Main fox head - teal/cyan geometric shape -->
+  <polygon points="50,5 85,45 75,55 50,95 25,55 15,45" fill="#2DD4BF"/>
+
+  <!-- Left ear -->
+  <polygon points="15,45 30,10 42,40 25,55" fill="#2DD4BF"/>
+
+  <!-- Right ear -->
+  <polygon points="85,45 70,10 58,40 75,55" fill="#2DD4BF"/>
+
+  <!-- Left purple accent -->
+  <polygon points="25,55 42,58 50,95 18,65" fill="#A78BFA"/>
+
+  <!-- Right purple accent -->
+  <polygon points="75,55 58,58 50,95 82,65" fill="#A78BFA"/>
+
+  <!-- Left eye -->
+  <polygon points="32,48 42,38 48,52 38,58" fill="#1E293B"/>
+
+  <!-- Right eye -->
+  <polygon points="68,48 58,38 52,52 62,58" fill="#1E293B"/>
+
+  <!-- Nose -->
+  <polygon points="50,55 44,60 50,75 56,60" fill="#1E293B"/>
+</svg>
