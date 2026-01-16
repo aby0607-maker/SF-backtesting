@@ -392,6 +392,106 @@ function ProsCons({ verdict }: { verdict: StockVerdict }) {
   )
 }
 
+// ============== NEWS SECTION COMPONENT ==============
+function NewsSection({ news }: { news: NewsItem[] }) {
+  const [isExpanded, setIsExpanded] = useState(false)
+
+  // Show first 2 items in grid, rest in dropdown
+  const visibleNews = news.slice(0, 2)
+  const hiddenNews = news.slice(2)
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.25 }}
+      className="rounded-2xl bg-dark-800 border border-white/5 p-5"
+    >
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-2">
+          <Newspaper className="w-4 h-4 text-primary-400" />
+          <h3 className="font-semibold text-white">Recent News</h3>
+        </div>
+        <span className="text-xs text-neutral-500">{news.length} articles</span>
+      </div>
+
+      {/* 2-Column Grid */}
+      <div className="grid grid-cols-2 gap-3">
+        {visibleNews.map((item) => (
+          <div
+            key={item.id}
+            className={cn(
+              'p-3 rounded-xl bg-dark-700/50 border-l-2',
+              item.sentiment === 'positive' && 'border-l-success-500',
+              item.sentiment === 'negative' && 'border-l-destructive-500',
+              item.sentiment === 'neutral' && 'border-l-neutral-500'
+            )}
+          >
+            <div className="flex items-start gap-2">
+              {item.sentiment === 'positive' && <TrendingUp className="w-3.5 h-3.5 text-success-400 mt-0.5 flex-shrink-0" />}
+              {item.sentiment === 'negative' && <TrendingDown className="w-3.5 h-3.5 text-destructive-400 mt-0.5 flex-shrink-0" />}
+              {item.sentiment === 'neutral' && <Newspaper className="w-3.5 h-3.5 text-neutral-400 mt-0.5 flex-shrink-0" />}
+              <div className="min-w-0">
+                <p className="text-sm font-medium text-white line-clamp-2">{item.headline}</p>
+                <p className="text-[10px] text-neutral-500 mt-1.5">{item.source}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Dropdown for More News */}
+      {hiddenNews.length > 0 && (
+        <>
+          <AnimatePresence>
+            {isExpanded && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: 'auto', opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                className="overflow-hidden"
+              >
+                <div className="grid grid-cols-2 gap-3 mt-3">
+                  {hiddenNews.map((item) => (
+                    <div
+                      key={item.id}
+                      className={cn(
+                        'p-3 rounded-xl bg-dark-700/50 border-l-2',
+                        item.sentiment === 'positive' && 'border-l-success-500',
+                        item.sentiment === 'negative' && 'border-l-destructive-500',
+                        item.sentiment === 'neutral' && 'border-l-neutral-500'
+                      )}
+                    >
+                      <div className="flex items-start gap-2">
+                        {item.sentiment === 'positive' && <TrendingUp className="w-3.5 h-3.5 text-success-400 mt-0.5 flex-shrink-0" />}
+                        {item.sentiment === 'negative' && <TrendingDown className="w-3.5 h-3.5 text-destructive-400 mt-0.5 flex-shrink-0" />}
+                        {item.sentiment === 'neutral' && <Newspaper className="w-3.5 h-3.5 text-neutral-400 mt-0.5 flex-shrink-0" />}
+                        <div className="min-w-0">
+                          <p className="text-sm font-medium text-white line-clamp-2">{item.headline}</p>
+                          <p className="text-[10px] text-neutral-500 mt-1.5">{item.source}</p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          <button
+            onClick={() => setIsExpanded(!isExpanded)}
+            className="w-full mt-3 py-2 rounded-xl bg-dark-700/30 hover:bg-dark-700/50 border border-white/5 text-xs text-neutral-400 hover:text-white transition-all flex items-center justify-center gap-1.5"
+          >
+            <span>{isExpanded ? 'Show Less' : `View ${hiddenNews.length} More`}</span>
+            <ChevronDown className={cn('w-3.5 h-3.5 transition-transform', isExpanded && 'rotate-180')} />
+          </button>
+        </>
+      )}
+    </motion.div>
+  )
+}
+
 // ============== MODE TOGGLE COMPONENT ==============
 function AnalysisModeToggle() {
   const { analysisMode, toggleAnalysisMode } = useAppStore()
@@ -694,6 +794,16 @@ export function StockAnalysis() {
       {/* ============== PROS/CONS (Quick View) - DFY ONLY ============== */}
       {analysisMode === 'dfy' && <ProsCons verdict={verdict} />}
 
+      {/* ============== RED FLAG SCANNER (DFY) / KEY METRICS (DIY) - After Strengths & Weaknesses ============== */}
+      {analysisMode === 'dfy' ? (
+        <RedFlagScanner
+          verdict={verdict}
+          news={news}
+        />
+      ) : (
+        <KeyMetricsCard verdict={verdict} />
+      )}
+
       {/* ============== FULL ANALYSIS TOGGLE (below Pros/Cons) ============== */}
       <motion.button
         initial={{ opacity: 0 }}
@@ -850,52 +960,9 @@ export function StockAnalysis() {
         </Link>
       </motion.div>
 
-      {/* ============== NEWS SECTION ============== */}
+      {/* ============== NEWS SECTION - 2 Column Grid with Dropdown ============== */}
       {news.length > 0 && (
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.25 }}
-          className="rounded-2xl bg-dark-800 border border-white/5 p-5"
-        >
-          <div className="flex items-center gap-2 mb-4">
-            <Newspaper className="w-4 h-4 text-primary-400" />
-            <h3 className="font-semibold text-white">Recent News</h3>
-          </div>
-          <div className="space-y-3">
-            {news.slice(0, 3).map((item) => (
-              <div
-                key={item.id}
-                className={cn(
-                  'p-3 rounded-xl bg-dark-700/50 border-l-2',
-                  item.sentiment === 'positive' && 'border-l-success-500',
-                  item.sentiment === 'negative' && 'border-l-destructive-500',
-                  item.sentiment === 'neutral' && 'border-l-neutral-500'
-                )}
-              >
-                <div className="flex items-start gap-2">
-                  {item.sentiment === 'positive' && <TrendingUp className="w-4 h-4 text-success-400 mt-0.5 flex-shrink-0" />}
-                  {item.sentiment === 'negative' && <TrendingDown className="w-4 h-4 text-destructive-400 mt-0.5 flex-shrink-0" />}
-                  <div>
-                    <p className="text-sm font-medium text-white">{item.headline}</p>
-                    <p className="text-xs text-neutral-400 mt-1">{item.summary}</p>
-                    <p className="text-xs text-neutral-500 mt-1">{item.source}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </motion.div>
-      )}
-
-      {/* ============== RED FLAG SCANNER (DFY) / KEY METRICS (DIY) ============== */}
-      {analysisMode === 'dfy' ? (
-        <RedFlagScanner
-          verdict={verdict}
-          news={news}
-        />
-      ) : (
-        <KeyMetricsCard verdict={verdict} />
+        <NewsSection news={news} />
       )}
 
       {/* ============== UPCOMING EVENTS (if any) ============== */}
@@ -1000,101 +1067,98 @@ export function StockAnalysis() {
         </motion.div>
       )}
 
-      {/* ============== COMPARE (Primary CTA - Monetization) ============== */}
+      {/* ============== QUICK ACTIONS - Unified Bottom Section ============== */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
-      >
-        <Link
-          to={`/compare?add=${stock.symbol}`}
-          className="block w-full py-3.5 px-5 bg-primary-500 hover:bg-primary-400 text-white rounded-2xl font-medium text-sm transition-colors"
-        >
-          <div className="flex items-center justify-center gap-3">
-            <GitCompare className="w-5 h-5" />
-            <span>Compare with Peers</span>
-            <ChevronRight className="w-4 h-4" />
-          </div>
-          <p className="text-center text-primary-100/70 text-xs mt-1">
-            See how {stock.symbol} stacks up against competitors
-          </p>
-        </Link>
-      </motion.div>
-
-      {/* ============== VALIDATE YOUR DECISION ============== */}
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.35 }}
         className="rounded-2xl bg-dark-800 border border-white/5 p-4"
       >
-        <div className="flex items-center gap-2 mb-3">
-          <ShieldCheck className="w-4 h-4 text-teal-400" />
-          <span className="text-sm font-medium text-white">Validate Your Decision</span>
+        <div className="flex items-center gap-2 mb-4">
+          <ShieldCheck className="w-4 h-4 text-primary-400" />
+          <span className="text-sm font-medium text-white">Quick Actions</span>
         </div>
 
-        <div className="grid grid-cols-2 gap-3">
+        {/* Primary Actions - 2x2 Grid */}
+        <div className="grid grid-cols-2 gap-3 mb-3">
+          {/* Compare with Peers */}
+          <Link
+            to={`/compare?add=${stock.symbol}`}
+            className="flex flex-col items-center gap-2 p-4 rounded-xl bg-dark-700/50 border border-primary-500/20 hover:border-primary-500/40 hover:bg-dark-700 transition-all group"
+          >
+            <div className="w-10 h-10 rounded-full bg-primary-500/10 flex items-center justify-center group-hover:bg-primary-500/20 transition-colors">
+              <GitCompare className="w-5 h-5 text-primary-400" />
+            </div>
+            <span className="text-sm font-medium text-white">Compare Peers</span>
+            <span className="text-[10px] text-neutral-500 text-center">vs competitors</span>
+          </Link>
+
           {/* Back-Test */}
           <Link
             to={`/backtest/${stock.symbol}`}
-            className="flex flex-col items-center gap-2 p-4 bg-dark-700/50 rounded-xl border border-white/5 hover:bg-dark-700 hover:border-white/10 transition-all group"
+            className="flex flex-col items-center gap-2 p-4 rounded-xl bg-dark-700/50 border border-white/5 hover:border-teal-500/30 hover:bg-dark-700 transition-all group"
           >
             <div className="w-10 h-10 rounded-full bg-teal-500/10 flex items-center justify-center group-hover:bg-teal-500/20 transition-colors">
               <History className="w-5 h-5 text-teal-400" />
             </div>
             <span className="text-sm font-medium text-white">Back-Test</span>
-            <span className="text-[10px] text-neutral-500 text-center">How would this have performed?</span>
+            <span className="text-[10px] text-neutral-500 text-center">Historical returns</span>
           </Link>
 
-          {/* Consult SRA Advisor */}
+          {/* Consult Advisor */}
           <Link
             to="/advisors"
-            className="flex flex-col items-center gap-2 p-4 bg-dark-700/50 rounded-xl border border-white/5 hover:bg-dark-700 hover:border-white/10 transition-all group"
+            className="flex flex-col items-center gap-2 p-4 rounded-xl bg-dark-700/50 border border-white/5 hover:border-white/10 hover:bg-dark-700 transition-all group"
           >
-            <div className="w-10 h-10 rounded-full bg-primary-500/10 flex items-center justify-center group-hover:bg-primary-500/20 transition-colors">
-              <UserCheck className="w-5 h-5 text-primary-400" />
+            <div className="w-10 h-10 rounded-full bg-warning-500/10 flex items-center justify-center group-hover:bg-warning-500/20 transition-colors">
+              <UserCheck className="w-5 h-5 text-warning-400" />
             </div>
             <span className="text-sm font-medium text-white">Consult Advisor</span>
-            <span className="text-[10px] text-neutral-500 text-center">SEBI Registered Experts</span>
+            <span className="text-[10px] text-neutral-500 text-center">SEBI Registered</span>
+          </Link>
+
+          {/* Ask AI */}
+          <Link
+            to="/chat"
+            className="flex flex-col items-center gap-2 p-4 rounded-xl bg-dark-700/50 border border-white/5 hover:border-white/10 hover:bg-dark-700 transition-all group"
+          >
+            <div className="w-10 h-10 rounded-full bg-purple-500/10 flex items-center justify-center group-hover:bg-purple-500/20 transition-colors">
+              <Sparkles className="w-5 h-5 text-purple-400" />
+            </div>
+            <span className="text-sm font-medium text-white">Ask AI</span>
+            <span className="text-[10px] text-neutral-500 text-center">About {stock.symbol}</span>
           </Link>
         </div>
-      </motion.div>
 
-      {/* ============== MORE OPTIONS ============== */}
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4 }}
-        className="grid grid-cols-2 gap-3"
-      >
-        <Link
-          to="/journal"
-          className="flex items-center justify-center gap-2 py-3 px-4 bg-dark-800 border border-white/5 rounded-xl hover:bg-dark-700 transition-colors"
-        >
-          <PenLine className="w-4 h-4 text-neutral-400" />
-          <span className="text-sm text-neutral-300">Add to Journal</span>
-        </Link>
-        <button
-          onClick={() => {
-            if (navigator.share) {
-              navigator.share({
-                title: `${stock.name} Analysis`,
-                text: `StockFox: ${stock.symbol} Score ${verdict.overallScore}/10 - ${verdict.verdict}`,
-                url: window.location.href,
-              })
-            } else {
-              navigator.clipboard.writeText(window.location.href)
-            }
-          }}
-          className="flex items-center justify-center gap-2 py-3 px-4 bg-dark-800 border border-white/5 rounded-xl hover:bg-dark-700 transition-colors"
-        >
-          <Share2 className="w-4 h-4 text-neutral-400" />
-          <span className="text-sm text-neutral-300">Share</span>
-        </button>
-        <button
-          onClick={() => {
-            // Generate export text
-            const exportText = `
+        {/* Secondary Actions - Compact Row */}
+        <div className="flex gap-2 pt-3 border-t border-white/5">
+          <Link
+            to="/journal"
+            className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-dark-700/30 border border-white/5 hover:bg-dark-700/50 transition-colors"
+          >
+            <PenLine className="w-3.5 h-3.5 text-neutral-400" />
+            <span className="text-xs text-neutral-300">Journal</span>
+          </Link>
+          <button
+            onClick={() => {
+              if (navigator.share) {
+                navigator.share({
+                  title: `${stock.name} Analysis`,
+                  text: `StockFox: ${stock.symbol} Score ${verdict.overallScore}/10 - ${verdict.verdict}`,
+                  url: window.location.href,
+                })
+              } else {
+                navigator.clipboard.writeText(window.location.href)
+              }
+            }}
+            className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-dark-700/30 border border-white/5 hover:bg-dark-700/50 transition-colors"
+          >
+            <Share2 className="w-3.5 h-3.5 text-neutral-400" />
+            <span className="text-xs text-neutral-300">Share</span>
+          </button>
+          <button
+            onClick={() => {
+              const exportText = `
 STOCKFOX ANALYSIS REPORT
 ========================
 Stock: ${stock.name} (${stock.symbol})
@@ -1115,34 +1179,17 @@ ${verdict.segments.map(s => `${s.name}: ${s.score.toFixed(1)}/10`).join('\n')}
 
 ---
 Generated by StockFox
-            `.trim()
-
-            // Copy to clipboard and show feedback
-            navigator.clipboard.writeText(exportText).then(() => {
-              alert('Analysis report copied to clipboard!')
-            })
-          }}
-          className="flex items-center justify-center gap-2 py-3 px-4 bg-dark-800 border border-white/5 rounded-xl hover:bg-dark-700 transition-colors"
-        >
-          <FileText className="w-4 h-4 text-neutral-400" />
-          <span className="text-sm text-neutral-300">Export</span>
-        </button>
-      </motion.div>
-
-      {/* ============== ASK AI ============== */}
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.45 }}
-      >
-        <Link
-          to="/chat"
-          className="flex items-center justify-center gap-2 w-full py-3 bg-dark-800 border border-primary-500/20 rounded-2xl text-primary-400 hover:bg-primary-500/10 transition-colors text-sm font-medium"
-        >
-          <Sparkles className="w-4 h-4" />
-          Ask AI about {stock.symbol}
-          <ChevronRight className="w-4 h-4" />
-        </Link>
+              `.trim()
+              navigator.clipboard.writeText(exportText).then(() => {
+                alert('Analysis report copied to clipboard!')
+              })
+            }}
+            className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-dark-700/30 border border-white/5 hover:bg-dark-700/50 transition-colors"
+          >
+            <FileText className="w-3.5 h-3.5 text-neutral-400" />
+            <span className="text-xs text-neutral-300">Export</span>
+          </button>
+        </div>
       </motion.div>
 
       {/* ============== EVIDENCE MODAL ============== */}
