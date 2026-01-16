@@ -506,6 +506,104 @@ export const featureSpotlights: FeatureSpotlight[] = [
     location: 'journal',
     targetElement: 'entry-card',
   },
+
+  // ===== CHAT PAGE - AI Assistant Features =====
+
+  // 1. Chat Header / AI Identity
+  {
+    id: 'chat-header',
+    featureName: 'StockFox AI Assistant',
+    jtbd: 'Get instant answers to any stock question without searching',
+    principles: ['fast', 'educational'],
+    competitiveAdvantage: 'Unlike ChatGPT which hallucinates financial data, StockFox AI is grounded in real company filings and verified metrics - every answer is sourced',
+    userOutcome: 'Ask "Why is Zomato unprofitable?" and get a sourced, accurate answer in seconds',
+    location: 'chat',
+    targetElement: 'chat-header',
+  },
+
+  // 2. Suggested Questions - Analysis Category
+  {
+    id: 'analysis-questions',
+    featureName: 'Pre-Built Analysis Queries',
+    jtbd: 'Quickly explore common analysis questions without typing',
+    principles: ['fast', 'simplicity'],
+    competitiveAdvantage: 'Other chatbots require you to know what to ask. StockFox suggests the right questions based on what matters for stock analysis',
+    userOutcome: 'Discover insights you did not know you needed - like "What are the red flags for TCS?"',
+    location: 'chat',
+    targetElement: 'analysis-questions',
+  },
+
+  // 3. Personalization Questions
+  {
+    id: 'personalization-questions',
+    featureName: 'Profile-Aware Q&A',
+    jtbd: 'Understand why MY verdict differs from others',
+    principles: ['personalization', 'educational'],
+    competitiveAdvantage: 'Generic AI gives one answer to everyone. StockFox AI explains WHY Ankit sees BUY while Sneha sees AVOID for the same stock',
+    userOutcome: 'Learn how your investment thesis shapes the analysis - "How does risk tolerance affect my score?"',
+    location: 'chat',
+    targetElement: 'personalization-questions',
+  },
+
+  // 4. Decision Questions
+  {
+    id: 'decision-questions',
+    featureName: 'Actionable Decision Support',
+    jtbd: 'Get help making actual buy/sell decisions',
+    principles: ['educational', 'personalization'],
+    competitiveAdvantage: 'Most AI avoids giving opinions. StockFox provides decision frameworks with clear reasoning - "Should I buy Zomato now?" gets a real answer',
+    userOutcome: 'Move from analysis paralysis to confident action with AI-guided entry/exit suggestions',
+    location: 'chat',
+    targetElement: 'decision-questions',
+  },
+
+  // 5. News Questions
+  {
+    id: 'news-questions',
+    featureName: 'RAG-Powered News Intelligence',
+    jtbd: 'Understand how recent news affects my stocks',
+    principles: ['fast', 'comprehensive'],
+    competitiveAdvantage: 'Unlike news feeds that dump headlines, StockFox AI connects news to specific segments - "This earnings miss affects the Growth segment score"',
+    userOutcome: 'Ask "Any news affecting Axis Bank?" and get sentiment-tagged, segment-linked insights instantly',
+    location: 'chat',
+    targetElement: 'news-questions',
+  },
+
+  // 6. AI Response with Citations
+  {
+    id: 'chat-response',
+    featureName: 'Sourced AI Responses',
+    jtbd: 'Trust the AI answer because I can verify it',
+    principles: ['transparent', 'educational'],
+    competitiveAdvantage: '94% of StockFox responses cite primary sources - annual reports, exchange filings, earnings calls. No hallucinations, just facts',
+    userOutcome: 'Every claim links to evidence - click through to verify ROE calculation in the actual filing',
+    location: 'chat',
+    targetElement: 'chat-response',
+  },
+
+  // 7. Linked Segments in Response
+  {
+    id: 'linked-segments',
+    featureName: 'Deep-Dive Links',
+    jtbd: 'Go from chat answer to detailed analysis seamlessly',
+    principles: ['comprehensive', 'simplicity'],
+    competitiveAdvantage: 'Chat answers include direct links to relevant segments - ask about profitability and jump straight to the Profitability segment deep dive',
+    userOutcome: 'Never lose context - the AI response becomes your navigation guide into deeper analysis',
+    location: 'chat',
+    targetElement: 'linked-segments',
+  },
+
+  // 8. Chat Input
+  {
+    id: 'chat-input',
+    featureName: 'Natural Language Interface',
+    jtbd: 'Ask questions in plain English without learning a query language',
+    principles: ['simplicity', 'fast'],
+    competitiveAdvantage: 'No boolean operators or filters needed. Ask "Is Zomato safe?" or "Compare Axis vs HDFC" in natural language',
+    userOutcome: 'Research stocks like you are texting a friend who happens to be a financial analyst',
+    location: 'chat',
+    targetElement: 'chat-input',
+  },
 ]
 
 // Get spotlights for a specific page/location

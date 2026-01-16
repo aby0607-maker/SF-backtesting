@@ -1,10 +1,12 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useMemo } from 'react'
 import { Send, Newspaper, TrendingUp, Link as LinkIcon } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { cn } from '@/lib/utils'
 import { getNewsForStock, type NewsItem } from '@/data/news'
 import { useAppStore } from '@/store/useAppStore'
+import { DemoModeToggle, SpotlightTour } from '@/components/demo'
+import { getSpotlightsForLocation } from '@/data/featureSpotlights'
 
 interface Message {
   id: string
@@ -313,7 +315,11 @@ export function Chat() {
   const [input, setInput] = useState('')
   const [isTyping, setIsTyping] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
-  const currentProfile = useAppStore(state => state.currentProfile)
+  const { currentProfile, demoMode, toggleDemoMode } = useAppStore()
+
+  // Demo Mode - Only for Ankit profile
+  const isAnkitProfile = currentProfile?.id === 'ankit'
+  const spotlights = useMemo(() => getSpotlightsForLocation('chat'), [])
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -371,15 +377,19 @@ export function Chat() {
   return (
     <div className="flex flex-col h-[calc(100vh-12rem)] animate-fade-in">
       {/* Chat Header */}
-      <div className="bg-dark-800/80 backdrop-blur-xl rounded-2xl border border-white/5 p-4 mb-4">
-        <div className="flex items-center gap-3">
-          <div className="w-12 h-12 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl flex items-center justify-center shadow-lg shadow-primary-500/20">
-            <span className="text-2xl">🦊</span>
+      <div className="bg-dark-800/80 backdrop-blur-xl rounded-2xl border border-white/5 p-4 mb-4" data-spotlight="chat-header">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl flex items-center justify-center shadow-lg shadow-primary-500/20">
+              <span className="text-2xl">🦊</span>
+            </div>
+            <div>
+              <h1 className="text-lg font-semibold text-white">StockFox AI</h1>
+              <p className="text-sm text-neutral-400">Ask anything about stocks & analysis</p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-lg font-semibold text-white">StockFox AI</h1>
-            <p className="text-sm text-neutral-400">Ask anything about stocks & analysis</p>
-          </div>
+          {/* Demo Mode Toggle - Ankit only */}
+          <DemoModeToggle isEnabled={demoMode} onToggle={toggleDemoMode} isAnkitProfile={isAnkitProfile} />
         </div>
       </div>
 
@@ -438,6 +448,7 @@ export function Chat() {
                     ? 'bg-dark-800 border border-white/5'
                     : 'bg-primary-600'
                 )}
+                {...(message.role === 'assistant' && index === messages.findIndex(m => m.role === 'assistant') && { 'data-spotlight': 'chat-response' })}
               >
                 <p className={cn(
                   'text-sm leading-relaxed whitespace-pre-wrap',
@@ -448,7 +459,10 @@ export function Chat() {
 
                 {/* Linked Segments */}
                 {message.linkedSegments && message.linkedSegments.length > 0 && (
-                  <div className="mt-4 pt-3 border-t border-white/5">
+                  <div
+                    className="mt-4 pt-3 border-t border-white/5"
+                    {...(index === messages.findIndex(m => m.role === 'assistant' && m.linkedSegments && m.linkedSegments.length > 0) && { 'data-spotlight': 'linked-segments' })}
+                  >
                     <p className="text-xs text-neutral-500 mb-2 flex items-center gap-1">
                       <LinkIcon className="w-3 h-3" />
                       Related Segments:
@@ -502,7 +516,7 @@ export function Chat() {
           animate={{ opacity: 1, y: 0 }}
           className="mb-4 space-y-3"
         >
-          <div>
+          <div data-spotlight="analysis-questions">
             <p className="text-xs text-neutral-500 mb-2">📊 Analysis:</p>
             <div className="flex flex-wrap gap-2">
               {suggestedQuestions.map((question, i) => (
@@ -516,7 +530,7 @@ export function Chat() {
               ))}
             </div>
           </div>
-          <div>
+          <div data-spotlight="personalization-questions">
             <p className="text-xs text-neutral-500 mb-2">🎯 Personalization:</p>
             <div className="flex flex-wrap gap-2">
               {personalizationQuestions.map((question, i) => (
@@ -530,7 +544,7 @@ export function Chat() {
               ))}
             </div>
           </div>
-          <div>
+          <div data-spotlight="decision-questions">
             <p className="text-xs text-neutral-500 mb-2">💡 Decisions:</p>
             <div className="flex flex-wrap gap-2">
               {actionQuestions.map((question, i) => (
@@ -544,7 +558,7 @@ export function Chat() {
               ))}
             </div>
           </div>
-          <div>
+          <div data-spotlight="news-questions">
             <p className="text-xs text-neutral-500 mb-2 flex items-center gap-1">
               <Newspaper className="w-3 h-3" />
               News & signals:
@@ -565,7 +579,7 @@ export function Chat() {
       )}
 
       {/* Input Area */}
-      <div className="bg-dark-800/80 backdrop-blur-xl rounded-2xl border border-white/5 p-3">
+      <div className="bg-dark-800/80 backdrop-blur-xl rounded-2xl border border-white/5 p-3" data-spotlight="chat-input">
         <div className="flex items-center gap-3">
           <input
             type="text"
@@ -589,6 +603,13 @@ export function Chat() {
           </button>
         </div>
       </div>
+
+      {/* Spotlight Tour for Demo Mode */}
+      <SpotlightTour
+        spotlights={spotlights}
+        isActive={demoMode}
+        onEnd={toggleDemoMode}
+      />
     </div>
   )
 }
