@@ -61,82 +61,11 @@ export const principleInfo: Record<ProductPrinciple, { label: string; emoji: str
 }
 
 // All feature spotlights organized by page/section
+// IMPORTANT: Order follows natural user flow (top to bottom on page)
 export const featureSpotlights: FeatureSpotlight[] = [
-  // ===== STOCK ANALYSIS PAGE =====
+  // ===== STOCK ANALYSIS PAGE - Ordered by page flow =====
 
-  // Overall Score & Verdict
-  {
-    id: 'overall-score',
-    featureName: 'AI-Powered Overall Score',
-    jtbd: 'Get a single, actionable number to make quick investment decisions',
-    principle: 'simplicity',
-    competitiveAdvantage: 'Unlike Screener/Tickertape which show raw data without interpretation, StockFox synthesizes 100+ metrics into one score personalized to YOUR investment style',
-    userOutcome: 'Make confident decisions in 30 seconds instead of hours of research',
-    location: 'stock-analysis',
-    targetElement: 'score-gauge',
-  },
-
-  // Verdict Badge
-  {
-    id: 'verdict-badge',
-    featureName: 'Personalized Verdict',
-    jtbd: 'Know if this stock is right for MY specific goals and risk tolerance',
-    principle: 'personalization',
-    competitiveAdvantage: 'Traditional SRAs give one-size-fits-all recommendations. StockFox tailors the verdict to your 6D profile: Risk Tolerance, Time Horizon, Experience, Investment Thesis, Sector Preference, and Portfolio Context',
-    userOutcome: 'See "STRONG BUY for Growth Investors" vs generic "BUY" - because a stock great for Meera may not suit Dinesh',
-    location: 'stock-analysis',
-    targetElement: 'verdict-badge',
-  },
-
-  // 11-Segment Analysis
-  {
-    id: 'eleven-segments',
-    featureName: '11-Segment Deep Analysis',
-    jtbd: 'Understand every angle of a stock before committing capital',
-    principle: 'comprehensive',
-    competitiveAdvantage: 'Screener shows 5-6 metrics. Tickertape shows 20. StockFox analyzes ALL 11 segments: Profitability, Growth, Valuation, Financial Health, Technical, Price Action, Broker Ratings, Ownership, F&O, Income Statement, Balance Sheet',
-    userOutcome: 'Never miss a critical angle - catch red flags that others miss',
-    location: 'stock-analysis',
-    targetElement: 'segments-section',
-  },
-
-  // Evidence Chain
-  {
-    id: 'evidence-chain',
-    featureName: '3-Layer Evidence Chain',
-    jtbd: 'Trust the score by understanding exactly how it was calculated',
-    principle: 'transparent',
-    competitiveAdvantage: 'Other platforms show scores as black boxes. StockFox traces every score to: L1 (Raw Data Source) -> L2 (Calculation Method) -> L3 (Score Contribution)',
-    userOutcome: 'Never blindly trust a number - verify every claim with audited sources',
-    location: 'stock-analysis',
-    targetElement: 'evidence-chain',
-  },
-
-  // Red Flag Scanner
-  {
-    id: 'red-flag-scanner',
-    featureName: '35-Parameter Red Flag Scanner',
-    jtbd: 'Protect myself from frauds, defaults, and manipulation',
-    principle: 'comprehensive',
-    competitiveAdvantage: 'Screener has no red flag alerts. Tickertape shows 3-4. StockFox scans ALL 35 parameters: ASM/GSM lists, promoter pledging, auditor qualifications, SEBI orders, forensic flags, and more',
-    userOutcome: 'Sleep peacefully knowing your money is protected from the next Satyam/DHFL',
-    location: 'stock-analysis',
-    targetElement: 'red-flag-scanner',
-  },
-
-  // Pros & Cons
-  {
-    id: 'pros-cons',
-    featureName: 'Strengths & Weaknesses Summary',
-    jtbd: 'Quickly understand the bull and bear case',
-    principle: 'simplicity',
-    competitiveAdvantage: 'Raw data requires mental processing. StockFox distills key signals into plain English pros/cons with explanations',
-    userOutcome: 'Explain to anyone why you bought a stock in 30 seconds',
-    location: 'stock-analysis',
-    targetElement: 'pros-cons',
-  },
-
-  // DFY/DIY Mode Toggle
+  // 1. Mode Toggle (top right header)
   {
     id: 'dfy-diy-toggle',
     featureName: 'DFY / DIY Analysis Modes',
@@ -148,19 +77,43 @@ export const featureSpotlights: FeatureSpotlight[] = [
     targetElement: 'mode-toggle',
   },
 
-  // Metric-by-Metric Learning
+  // 2. Overall Score (hero card)
   {
-    id: 'guided-tour',
-    featureName: 'Metric-by-Metric Guided Tour',
-    jtbd: 'Learn how to analyze stocks properly, step by step',
-    principle: 'educational',
-    competitiveAdvantage: 'No other platform teaches while you research. StockFox lets you rate metrics yourself BEFORE seeing the system score - building real analysis skills',
-    userOutcome: 'Graduate from blindly following tips to making your own informed decisions',
+    id: 'overall-score',
+    featureName: 'AI-Powered Overall Score',
+    jtbd: 'Get a single, actionable number to make quick investment decisions',
+    principle: 'simplicity',
+    competitiveAdvantage: 'Unlike Screener/Tickertape which show raw data without interpretation, StockFox synthesizes 100+ metrics into one score personalized to YOUR investment style',
+    userOutcome: 'Make confident decisions in 30 seconds instead of hours of research',
     location: 'stock-analysis',
-    targetElement: 'guided-tour',
+    targetElement: 'overall-score',
   },
 
-  // Ask AI
+  // 3. Verdict Badge
+  {
+    id: 'verdict-badge',
+    featureName: 'Personalized Verdict',
+    jtbd: 'Know if this stock is right for MY specific goals and risk tolerance',
+    principle: 'personalization',
+    competitiveAdvantage: 'Traditional SRAs give one-size-fits-all recommendations. StockFox tailors the verdict to your 6D profile: Risk Tolerance, Time Horizon, Experience, Investment Thesis, Sector Preference, and Portfolio Context',
+    userOutcome: 'See "STRONG BUY for Growth Investors" vs generic "BUY" - because a stock great for Meera may not suit Dinesh',
+    location: 'stock-analysis',
+    targetElement: 'verdict-badge',
+  },
+
+  // 4. Evidence Chain (how we arrived at score)
+  {
+    id: 'evidence-chain',
+    featureName: '3-Layer Evidence Chain',
+    jtbd: 'Trust the score by understanding exactly how it was calculated',
+    principle: 'transparent',
+    competitiveAdvantage: 'Other platforms show scores as black boxes. StockFox traces every score to: L1 (Raw Data Source) -> L2 (Calculation Method) -> L3 (Score Contribution)',
+    userOutcome: 'Never blindly trust a number - verify every claim with audited sources',
+    location: 'stock-analysis',
+    targetElement: 'evidence-chain',
+  },
+
+  // 5. Ask AI CTA
   {
     id: 'ask-ai',
     featureName: 'Ask AI (Instant Q&A)',
@@ -172,7 +125,43 @@ export const featureSpotlights: FeatureSpotlight[] = [
     targetElement: 'ask-ai-cta',
   },
 
-  // Position Sizing
+  // 6. Pros & Cons (Strengths/Weaknesses)
+  {
+    id: 'pros-cons',
+    featureName: 'Strengths & Weaknesses Summary',
+    jtbd: 'Quickly understand the bull and bear case',
+    principle: 'simplicity',
+    competitiveAdvantage: 'Raw data requires mental processing. StockFox distills key signals into plain English pros/cons with explanations',
+    userOutcome: 'Explain to anyone why you bought a stock in 30 seconds',
+    location: 'stock-analysis',
+    targetElement: 'pros-cons',
+  },
+
+  // 7. Red Flag Scanner
+  {
+    id: 'red-flag-scanner',
+    featureName: '35-Parameter Red Flag Scanner',
+    jtbd: 'Protect myself from frauds, defaults, and manipulation',
+    principle: 'comprehensive',
+    competitiveAdvantage: 'Screener has no red flag alerts. Tickertape shows 3-4. StockFox scans ALL 35 parameters: ASM/GSM lists, promoter pledging, auditor qualifications, SEBI orders, forensic flags, and more',
+    userOutcome: 'Sleep peacefully knowing your money is protected from the next Satyam/DHFL',
+    location: 'stock-analysis',
+    targetElement: 'red-flag-scanner',
+  },
+
+  // 8. Metric-by-Metric Learning
+  {
+    id: 'guided-tour',
+    featureName: 'Metric-by-Metric Guided Tour',
+    jtbd: 'Learn how to analyze stocks properly, step by step',
+    principle: 'educational',
+    competitiveAdvantage: 'No other platform teaches while you research. StockFox lets you rate metrics yourself BEFORE seeing the system score - building real analysis skills',
+    userOutcome: 'Graduate from blindly following tips to making your own informed decisions',
+    location: 'stock-analysis',
+    targetElement: 'guided-tour',
+  },
+
+  // 9. Entry Assessment / Position Sizing
   {
     id: 'position-sizing',
     featureName: 'Smart Position Sizing',
@@ -260,32 +249,6 @@ export const featureSpotlights: FeatureSpotlight[] = [
     userOutcome: 'See exactly where Zomato beats Swiggy and where it lags',
     location: 'compare',
     targetElement: 'compare-table',
-  },
-
-  // ===== SPEED =====
-
-  // Instant Analysis
-  {
-    id: 'instant-analysis',
-    featureName: 'Real-Time Analysis',
-    jtbd: 'Get comprehensive analysis without waiting',
-    principle: 'fast',
-    competitiveAdvantage: 'Traditional SRA reports take 3-5 days. StockFox generates comprehensive 11-segment analysis in under 2 seconds',
-    userOutcome: 'Research 10 stocks in the time it takes to read one SRA report',
-    location: 'stock-analysis',
-    targetElement: 'hero-card',
-  },
-
-  // Auto Updates
-  {
-    id: 'auto-updates',
-    featureName: 'Automatic Data Updates',
-    jtbd: 'Always have current data without manual refresh',
-    principle: 'fast',
-    competitiveAdvantage: 'Screener data can be 1-2 quarters old. StockFox syncs with latest filings automatically',
-    userOutcome: 'Make decisions on Q3 data, not Q1 data',
-    location: 'stock-analysis',
-    targetElement: 'data-source',
   },
 ]
 
