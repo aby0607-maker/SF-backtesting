@@ -233,6 +233,80 @@ export const featureSpotlights: FeatureSpotlight[] = [
     targetElement: 'upcoming-events',
   },
 
+  // ===== DASHBOARD PAGE =====
+
+  // Personalized Greeting
+  {
+    id: 'personalized-greeting',
+    featureName: 'Personalized Dashboard',
+    jtbd: 'Feel like the app knows ME and my investment journey',
+    principle: 'personalization',
+    competitiveAdvantage: 'Screener shows the same page to everyone. StockFox greets you by name and shows insights tailored to YOUR patterns and goals',
+    userOutcome: 'Start each session knowing exactly what needs your attention',
+    location: 'dashboard',
+    targetElement: 'personalized-greeting',
+  },
+
+  // Watchlist with Scores
+  {
+    id: 'watchlist-scores',
+    featureName: 'Scored Watchlist',
+    jtbd: 'Quickly see which of my tracked stocks need attention',
+    principle: 'fast',
+    competitiveAdvantage: 'Other watchlists just show prices. StockFox shows personalized scores, sector ranks, and top signals so you can prioritize at a glance',
+    userOutcome: 'Identify your best and worst performers in 5 seconds',
+    location: 'dashboard',
+    targetElement: 'watchlist',
+  },
+
+  // Trending Stocks
+  {
+    id: 'trending-stocks',
+    featureName: 'Trending This Week',
+    jtbd: 'Stay on top of what the market is excited about',
+    principle: 'fast',
+    competitiveAdvantage: 'Instead of scouring Twitter and forums, StockFox surfaces trending stocks with context on WHY they are trending and if they match YOUR profile',
+    userOutcome: 'Never miss a market opportunity because you were not paying attention',
+    location: 'dashboard',
+    targetElement: 'trending-stocks',
+  },
+
+  // AI Recommendations
+  {
+    id: 'similar-picks',
+    featureName: 'AI-Powered Recommendations',
+    jtbd: 'Discover new stocks that match my investment style',
+    principle: 'personalization',
+    competitiveAdvantage: 'Generic screeners show the same results to everyone. StockFox recommends stocks similar to YOUR picks based on YOUR 6D profile',
+    userOutcome: 'Find your next multi-bagger without hours of research',
+    location: 'dashboard',
+    targetElement: 'similar-picks',
+  },
+
+  // Alerts
+  {
+    id: 'smart-alerts',
+    featureName: 'Smart Price & Event Alerts',
+    jtbd: 'Get notified when something important happens to my stocks',
+    principle: 'fast',
+    competitiveAdvantage: 'Generic price alerts are noisy. StockFox alerts are contextual - red flags, earnings beats, promoter changes - filtered by what matters to YOUR profile',
+    userOutcome: 'Never be caught off guard by a material event in your portfolio',
+    location: 'dashboard',
+    targetElement: 'alerts-section',
+  },
+
+  // Free Tier Banner (Monetization)
+  {
+    id: 'freemium-model',
+    featureName: 'Freemium with Value',
+    jtbd: 'Try the product before paying',
+    principle: 'transparent',
+    competitiveAdvantage: 'Unlike platforms that hide features behind paywalls, StockFox gives you 5 free analyses per month to experience the full value before upgrading',
+    userOutcome: 'Make an informed purchase decision based on real usage',
+    location: 'dashboard',
+    targetElement: 'free-tier-banner',
+  },
+
   // ===== SEGMENT DEEP DIVE PAGE =====
 
   // Segment Score Justification
