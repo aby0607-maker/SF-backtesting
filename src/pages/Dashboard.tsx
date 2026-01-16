@@ -5,7 +5,7 @@ import { motion } from 'framer-motion'
 import { useAppStore } from '@/store/useAppStore'
 import { cn, formatCurrency, formatPercent } from '@/lib/utils'
 import { stocks, getAlertsForProfile, getVerdictForStock } from '@/data'
-import { VerdictBadge } from '@/components/ui'
+import { VerdictBadge, FreeTierBanner } from '@/components/ui'
 import { StaggerContainer, StaggerItem } from '@/components/motion'
 import type { Stock, Alert, StockVerdict } from '@/types'
 
@@ -427,12 +427,29 @@ export function Dashboard() {
         </div>
       </motion.section>
 
+      {/* ============== FREE TIER BANNER ============== */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.35 }}
+      >
+        <FreeTierBanner
+          analysesUsed={3}
+          analysesLimit={5}
+          variant="banner"
+          onUpgradeClick={() => {
+            // Demo: would navigate to pricing/upgrade page
+            alert('This would open the upgrade flow')
+          }}
+        />
+      </motion.div>
+
       {/* ============== ALERTS (Compact) ============== */}
       {alerts.length > 0 && (
         <motion.section
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
+          transition={{ delay: 0.4 }}
           className="rounded-2xl bg-dark-800 border border-white/5 p-4"
         >
           <div className="flex items-center justify-between mb-3">
