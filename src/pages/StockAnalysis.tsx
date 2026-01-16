@@ -791,6 +791,44 @@ export function StockAnalysis() {
         )}
       </motion.div>
 
+      {/* ============== QUICK VALIDATION CTA - Below Score Card ============== */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1 }}
+        className="flex gap-3"
+      >
+        {/* Ask AI - Primary CTA */}
+        <Link
+          to="/chat"
+          className="flex-1 flex items-center gap-3 p-3 rounded-xl bg-gradient-to-r from-purple-500/10 to-primary-500/10 border border-purple-500/20 hover:border-purple-500/40 transition-all group"
+        >
+          <div className="w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center group-hover:bg-purple-500/30 transition-colors">
+            <Sparkles className="w-5 h-5 text-purple-400" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <span className="text-sm font-medium text-white block">Ask AI</span>
+            <span className="text-[10px] text-neutral-400">Get instant answers about {stock.symbol}</span>
+          </div>
+          <ChevronRight className="w-4 h-4 text-neutral-500 group-hover:text-purple-400 transition-colors" />
+        </Link>
+
+        {/* Consult Advisor */}
+        <Link
+          to="/advisors"
+          className="flex-1 flex items-center gap-3 p-3 rounded-xl bg-dark-800 border border-white/5 hover:border-warning-500/30 transition-all group"
+        >
+          <div className="w-10 h-10 rounded-full bg-warning-500/10 flex items-center justify-center group-hover:bg-warning-500/20 transition-colors">
+            <UserCheck className="w-5 h-5 text-warning-400" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <span className="text-sm font-medium text-white block">Consult Expert</span>
+            <span className="text-[10px] text-neutral-400">SEBI Registered Advisors</span>
+          </div>
+          <ChevronRight className="w-4 h-4 text-neutral-500 group-hover:text-warning-400 transition-colors" />
+        </Link>
+      </motion.div>
+
       {/* ============== PROS/CONS (Quick View) - DFY ONLY ============== */}
       {analysisMode === 'dfy' && <ProsCons verdict={verdict} />}
 
@@ -1067,19 +1105,19 @@ export function StockAnalysis() {
         </motion.div>
       )}
 
-      {/* ============== QUICK ACTIONS - Unified Bottom Section ============== */}
+      {/* ============== MORE ACTIONS - Bottom Section ============== */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
         className="rounded-2xl bg-dark-800 border border-white/5 p-4"
       >
-        <div className="flex items-center gap-2 mb-4">
+        <div className="flex items-center gap-2 mb-3">
           <ShieldCheck className="w-4 h-4 text-primary-400" />
-          <span className="text-sm font-medium text-white">Quick Actions</span>
+          <span className="text-sm font-medium text-white">More Actions</span>
         </div>
 
-        {/* Primary Actions - 2x2 Grid */}
+        {/* Primary Actions - 2 Column Grid */}
         <div className="grid grid-cols-2 gap-3 mb-3">
           {/* Compare with Peers */}
           <Link
@@ -1103,30 +1141,6 @@ export function StockAnalysis() {
             </div>
             <span className="text-sm font-medium text-white">Back-Test</span>
             <span className="text-[10px] text-neutral-500 text-center">Historical returns</span>
-          </Link>
-
-          {/* Consult Advisor */}
-          <Link
-            to="/advisors"
-            className="flex flex-col items-center gap-2 p-4 rounded-xl bg-dark-700/50 border border-white/5 hover:border-white/10 hover:bg-dark-700 transition-all group"
-          >
-            <div className="w-10 h-10 rounded-full bg-warning-500/10 flex items-center justify-center group-hover:bg-warning-500/20 transition-colors">
-              <UserCheck className="w-5 h-5 text-warning-400" />
-            </div>
-            <span className="text-sm font-medium text-white">Consult Advisor</span>
-            <span className="text-[10px] text-neutral-500 text-center">SEBI Registered</span>
-          </Link>
-
-          {/* Ask AI */}
-          <Link
-            to="/chat"
-            className="flex flex-col items-center gap-2 p-4 rounded-xl bg-dark-700/50 border border-white/5 hover:border-white/10 hover:bg-dark-700 transition-all group"
-          >
-            <div className="w-10 h-10 rounded-full bg-purple-500/10 flex items-center justify-center group-hover:bg-purple-500/20 transition-colors">
-              <Sparkles className="w-5 h-5 text-purple-400" />
-            </div>
-            <span className="text-sm font-medium text-white">Ask AI</span>
-            <span className="text-[10px] text-neutral-500 text-center">About {stock.symbol}</span>
           </Link>
         </div>
 
