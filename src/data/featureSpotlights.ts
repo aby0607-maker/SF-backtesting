@@ -173,43 +173,7 @@ export const featureSpotlights: FeatureSpotlight[] = [
     targetElement: 'guided-tour',
   },
 
-  // 9. Entry Assessment / Position Sizing
-  {
-    id: 'position-sizing',
-    featureName: 'Smart Position Sizing',
-    jtbd: 'Know exactly how much of my portfolio to allocate',
-    principle: 'personalization',
-    competitiveAdvantage: 'Other platforms say "Buy" without sizing guidance. StockFox recommends specific allocation % based on your risk profile and existing portfolio',
-    userOutcome: 'Avoid the common mistake of putting too much in one stock',
-    location: 'stock-analysis',
-    targetElement: 'entry-assessment',
-  },
-
-  // 10. Compare Peers
-  {
-    id: 'compare-peers-cta',
-    featureName: 'Side-by-Side Peer Comparison',
-    jtbd: 'Quickly see how this stock stacks up against competitors',
-    principle: 'comprehensive',
-    competitiveAdvantage: 'Tickertape comparison is manual. Screener shows raw numbers. StockFox auto-identifies relevant peers and compares all 11 segments with visual indicators',
-    userOutcome: 'Decide between Zomato and Swiggy in 2 minutes instead of 2 hours',
-    location: 'stock-analysis',
-    targetElement: 'compare-peers',
-  },
-
-  // 11. Back-Test / Historical Validation
-  {
-    id: 'back-test',
-    featureName: 'Back-Test Historical Returns',
-    jtbd: 'Validate if this scoring model would have worked historically',
-    principle: 'transparent',
-    competitiveAdvantage: 'Most platforms show forward-looking predictions. StockFox shows what returns you would have earned if you followed our system historically',
-    userOutcome: 'Trust the model because you can verify it worked in the past',
-    location: 'stock-analysis',
-    targetElement: 'back-test',
-  },
-
-  // 12. News Section
+  // 9. News Section (appears after learning actions in UI)
   {
     id: 'news-section',
     featureName: 'Sentiment-Tagged News Feed',
@@ -221,7 +185,7 @@ export const featureSpotlights: FeatureSpotlight[] = [
     targetElement: 'news-section',
   },
 
-  // 13. Upcoming Events
+  // 10. Upcoming Events
   {
     id: 'upcoming-events',
     featureName: 'Earnings Calendar & Events',
@@ -231,6 +195,42 @@ export const featureSpotlights: FeatureSpotlight[] = [
     userOutcome: 'Never be surprised by a quarterly result again',
     location: 'stock-analysis',
     targetElement: 'upcoming-events',
+  },
+
+  // 11. Entry Assessment / Position Sizing
+  {
+    id: 'position-sizing',
+    featureName: 'Smart Position Sizing',
+    jtbd: 'Know exactly how much of my portfolio to allocate',
+    principle: 'personalization',
+    competitiveAdvantage: 'Other platforms say "Buy" without sizing guidance. StockFox recommends specific allocation % based on your risk profile and existing portfolio',
+    userOutcome: 'Avoid the common mistake of putting too much in one stock',
+    location: 'stock-analysis',
+    targetElement: 'entry-assessment',
+  },
+
+  // 12. Compare Peers (in More Actions section)
+  {
+    id: 'compare-peers-cta',
+    featureName: 'Side-by-Side Peer Comparison',
+    jtbd: 'Quickly see how this stock stacks up against competitors',
+    principle: 'comprehensive',
+    competitiveAdvantage: 'Tickertape comparison is manual. Screener shows raw numbers. StockFox auto-identifies relevant peers and compares all 11 segments with visual indicators',
+    userOutcome: 'Decide between Zomato and Swiggy in 2 minutes instead of 2 hours',
+    location: 'stock-analysis',
+    targetElement: 'compare-peers',
+  },
+
+  // 13. Back-Test / Historical Validation (in More Actions section)
+  {
+    id: 'back-test',
+    featureName: 'Back-Test Historical Returns',
+    jtbd: 'Validate if this scoring model would have worked historically',
+    principle: 'transparent',
+    competitiveAdvantage: 'Most platforms show forward-looking predictions. StockFox shows what returns you would have earned if you followed our system historically',
+    userOutcome: 'Trust the model because you can verify it worked in the past',
+    location: 'stock-analysis',
+    targetElement: 'back-test',
   },
 
   // ===== DASHBOARD PAGE =====
