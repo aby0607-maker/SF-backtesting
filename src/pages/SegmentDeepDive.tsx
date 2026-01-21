@@ -181,8 +181,7 @@ export function SegmentDeepDive() {
 
   const isDIY = analysisMode === 'diy'
 
-  // Demo Mode - Only for Ankit profile
-  const isAnkitProfile = currentProfile?.id === 'ankit'
+  // Demo Mode - Available for all profiles
   const spotlights = useMemo(() => getSpotlightsForLocation('segment-deep-dive'), [])
 
   useEffect(() => {
@@ -275,8 +274,8 @@ export function SegmentDeepDive() {
           Back to Segments
         </button>
 
-        {/* Demo Mode Toggle - Ankit only */}
-        <DemoModeToggle isEnabled={demoMode} onToggle={toggleDemoMode} isAnkitProfile={isAnkitProfile} />
+        {/* Demo Mode Toggle */}
+        <DemoModeToggle isEnabled={demoMode} onToggle={toggleDemoMode} />
       </motion.div>
 
       {/* ============== SECTOR ANCHORING - DFY ONLY ============== */}

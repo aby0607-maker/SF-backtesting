@@ -130,8 +130,7 @@ function getOutcomeLabel(status: 'win' | 'loss' | 'pending' | 'neutral') {
 export function Journal() {
   const { currentProfile, demoMode, toggleDemoMode } = useAppStore()
 
-  // Demo Mode - Only for Ankit profile
-  const isAnkitProfile = currentProfile?.id === 'ankit'
+  // Demo Mode - Available for all profiles
   const spotlights = useMemo(() => getSpotlightsForLocation('journal'), [])
 
   if (!currentProfile) return null
@@ -159,8 +158,8 @@ export function Journal() {
           </p>
         </div>
 
-        {/* Demo Mode Toggle - Ankit only */}
-        <DemoModeToggle isEnabled={demoMode} onToggle={toggleDemoMode} isAnkitProfile={isAnkitProfile} />
+        {/* Demo Mode Toggle */}
+        <DemoModeToggle isEnabled={demoMode} onToggle={toggleDemoMode} />
       </motion.div>
 
       {/* Skill Level Card */}
