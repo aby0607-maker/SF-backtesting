@@ -317,8 +317,7 @@ export function Chat() {
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const { currentProfile, demoMode, toggleDemoMode } = useAppStore()
 
-  // Demo Mode - Only for Ankit profile
-  const isAnkitProfile = currentProfile?.id === 'ankit'
+  // Demo Mode - Available for all profiles
   const spotlights = useMemo(() => getSpotlightsForLocation('chat'), [])
 
   const scrollToBottom = () => {
@@ -388,8 +387,8 @@ export function Chat() {
               <p className="text-sm text-neutral-400">Ask anything about stocks & analysis</p>
             </div>
           </div>
-          {/* Demo Mode Toggle - Ankit only */}
-          <DemoModeToggle isEnabled={demoMode} onToggle={toggleDemoMode} isAnkitProfile={isAnkitProfile} />
+          {/* Demo Mode Toggle */}
+          <DemoModeToggle isEnabled={demoMode} onToggle={toggleDemoMode} />
         </div>
       </div>
 
