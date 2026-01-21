@@ -259,8 +259,8 @@ export interface GroundingSource {
   type: 'primary' | 'secondary'
 }
 
-// Red Flag Types (per tech spec: Critical, High, Medium, Low)
-export type RedFlagSeverity = 'critical' | 'high' | 'medium' | 'low'
+// Red Flag Types (per tech spec: Critical, High, Medium, Low/Monitor)
+export type RedFlagSeverity = 'critical' | 'high' | 'medium' | 'low' | 'monitor'
 export type RedFlagCategory = 'financial' | 'governance' | 'quality' | 'structural' | 'historical'
 
 export interface RedFlag {
@@ -409,3 +409,35 @@ export interface ChatMessage {
   timestamp: string
   citations?: Citation[]
 }
+
+// Watchlist Types
+export interface WatchlistItem extends Stock {
+  score: number
+  verdict: string
+  verdictLabel?: string
+  peerRank?: number
+  peerTotal?: number
+  sectorRank?: number
+  sectorTotal?: number
+  sectorAvgScore?: number
+  verdictPeerGroup?: string
+  quickInsight?: string
+  topSignal?: string
+  lastAnalyzed?: string
+}
+
+// Local Discovery Stock for Dashboard (extends base DiscoveryStock)
+export interface DashboardDiscoveryStock {
+  symbol: string
+  name: string
+  shortName: string
+  score: number
+  verdict: string
+  change: number
+  reason: string
+  sectorRank?: number
+  sectorTotal?: number
+}
+
+// User Rating Types (for guided analysis)
+export type UserRating = 'weak' | 'fair' | 'good' | 'great' | null

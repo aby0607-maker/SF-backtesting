@@ -12,15 +12,12 @@ import { EvidenceChainPanel, KeyMetricsCard } from '@/components/analysis'
 import { GuidedAnalysisModal, ReflectionPromptModal } from '@/components/learning'
 import { DemoModeToggle, SpotlightTour } from '@/components/demo'
 import { getSpotlightsForLocation } from '@/data/featureSpotlights'
-import type { Stock, StockVerdict, SegmentScore } from '@/types'
+import type { Stock, StockVerdict, SegmentScore, RedFlagSeverity } from '@/types'
 
 // Skeleton components for loading state
 function SkeletonBlock({ className }: { className?: string }) {
   return <div className={cn('bg-dark-600 rounded animate-pulse', className)} />
 }
-
-// Severity types
-type RedFlagSeverity = 'critical' | 'high' | 'medium' | 'monitor'
 
 // Generate comprehensive 35-parameter Red Flag Framework
 function generateRedFlagFramework(verdict: StockVerdict) {

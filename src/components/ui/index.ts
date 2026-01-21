@@ -6,3 +6,4 @@ export { Skeleton, SkeletonCard, SkeletonStockRow, SkeletonScoreRing } from './S
 export { LoadingSpinner } from './LoadingSpinner'
 export { AnimatedContainer } from './AnimatedContainer'
 export { FreeTierBanner } from './FreeTierBanner'
+export { ErrorBoundary, withErrorBoundary } from './ErrorBoundary'

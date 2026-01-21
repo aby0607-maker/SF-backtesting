@@ -9,34 +9,9 @@ import { VerdictBadge, FreeTierBanner } from '@/components/ui'
 import { StaggerContainer, StaggerItem } from '@/components/motion'
 import { DemoModeToggle, SpotlightTour } from '@/components/demo'
 import { getSpotlightsForLocation } from '@/data/featureSpotlights'
-import type { Stock, Alert, StockVerdict } from '@/types'
+import type { Stock, Alert, StockVerdict, WatchlistItem, DashboardDiscoveryStock } from '@/types'
 
-// Watchlist item combining stock and verdict data
-interface WatchlistItem extends Stock {
-  score: number
-  verdict: string
-  sectorRank: number
-  sectorTotal: number
-  sectorAvgScore: number
-  verdictPeerGroup: string
-  quickInsight?: string
-  topSignal?: string
-}
-
-// Discovery stock (trending or similar)
-interface DiscoveryStock {
-  symbol: string
-  name: string
-  shortName: string
-  score: number
-  verdict: string
-  change: number
-  reason: string
-  sectorRank?: number
-  sectorTotal?: number
-}
-
-// Get score color based on score
+// Get score color based on score (local version with 6.5 threshold)
 function getScoreColor(score: number): string {
   if (score >= 8) return 'text-success-400'
   if (score >= 6.5) return 'text-teal-400'
@@ -80,8 +55,8 @@ export function Dashboard() {
   const [isLoading, setIsLoading] = useState(true)
   const [watchlist, setWatchlist] = useState<WatchlistItem[]>([])
   const [alerts, setAlerts] = useState<Alert[]>([])
-  const [trendingStocks, setTrendingStocks] = useState<DiscoveryStock[]>([])
-  const [similarStocks, setSimilarStocks] = useState<DiscoveryStock[]>([])
+  const [trendingStocks, setTrendingStocks] = useState<DashboardDiscoveryStock[]>([])
+  const [similarStocks, setSimilarStocks] = useState<DashboardDiscoveryStock[]>([])
 
   // Demo mode spotlight state
   const spotlights = getSpotlightsForLocation('dashboard')
@@ -201,7 +176,10 @@ export function Dashboard() {
           <StaggerContainer className="space-y-3" staggerDelay={0.05} initialDelay={0.1}>
             {watchlist.map(stock => {
               const scoreInfo = getScoreLabel(stock.score)
-              const vsSector = stock.score - stock.sectorAvgScore
+              const sectorAvg = stock.sectorAvgScore ?? stock.score
+              const vsSector = stock.score - sectorAvg
+              const sectorRank = stock.sectorRank ?? 1
+              const sectorTotal = stock.sectorTotal ?? 1
 
               return (
                 <StaggerItem key={stock.symbol}>
@@ -233,12 +211,12 @@ export function Dashboard() {
 
                       {/* Sector Rank */}
                       <div className="flex items-center gap-1.5">
-                        <Trophy className={cn('w-3.5 h-3.5', getRankColor(stock.sectorRank, stock.sectorTotal))} />
-                        <span className={cn('text-sm font-medium', getRankColor(stock.sectorRank, stock.sectorTotal))}>
-                          #{stock.sectorRank}
+                        <Trophy className={cn('w-3.5 h-3.5', getRankColor(sectorRank, sectorTotal))} />
+                        <span className={cn('text-sm font-medium', getRankColor(sectorRank, sectorTotal))}>
+                          #{sectorRank}
                         </span>
                         <span className="text-xs text-neutral-500">
-                          of {stock.sectorTotal}
+                          of {sectorTotal}
                         </span>
                       </div>
 

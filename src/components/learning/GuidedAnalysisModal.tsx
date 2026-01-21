@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { cn } from '@/lib/utils'
 import { X, ChevronRight, ChevronLeft, CheckCircle2, Target, BarChart3, TrendingUp, TrendingDown, Minus } from 'lucide-react'
-import type { StockVerdict, SegmentScore } from '@/types'
+import type { StockVerdict, SegmentScore, UserRating } from '@/types'
 
 interface GuidedAnalysisModalProps {
   isOpen: boolean
@@ -10,8 +10,6 @@ interface GuidedAnalysisModalProps {
   verdict: StockVerdict
   stockName: string
 }
-
-type UserRating = 'weak' | 'fair' | 'good' | 'great' | null
 
 const ratingOptions: { value: UserRating; label: string; color: string }[] = [
   { value: 'weak', label: 'Weak', color: 'bg-destructive-500 hover:bg-destructive-400' },
