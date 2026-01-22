@@ -7,7 +7,11 @@ import { cn } from '@/lib/utils'
 // StockFox icon component
 function FoxIcon({ className }: { className?: string }) {
   return (
-    <span className={cn('text-2xl', className)}>🦊</span>
+    <img
+      src="/stockfox-logo.svg"
+      alt="StockFox"
+      className={cn('w-7 h-7 object-contain', className)}
+    />
   )
 }
 
