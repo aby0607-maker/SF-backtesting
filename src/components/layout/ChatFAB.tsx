@@ -8,9 +8,9 @@ import { cn } from '@/lib/utils'
 function FoxIcon({ className }: { className?: string }) {
   return (
     <img
-      src="/stockfox-logo.svg"
+      src="/High Resolution SF Logo.png"
       alt="StockFox"
-      className={cn('w-7 h-7 object-contain', className)}
+      className={cn('w-8 h-8 object-contain', className)}
     />
   )
 }
