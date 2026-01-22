@@ -546,9 +546,12 @@ export function ProfileSelection() {
         transition={{ duration: 0.5 }}
         className="text-center pt-10 pb-4 px-4 relative z-10"
       >
-        <div className="flex items-center justify-center gap-3 mb-2">
-          <span className="text-4xl">🦊</span>
-          <h1 className="text-3xl font-bold text-gradient-primary">StockFox</h1>
+        <div className="flex flex-col items-center justify-center mb-2">
+          <img
+            src="/High Resolution SF Logo.png"
+            alt="StockFox"
+            className="h-16 w-auto object-contain"
+          />
         </div>
         <p className="text-sm text-neutral-400 max-w-md mx-auto">
           Every tool you need to invest with{' '}
