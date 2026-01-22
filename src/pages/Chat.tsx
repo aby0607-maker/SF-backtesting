@@ -379,8 +379,12 @@ export function Chat() {
       <div className="bg-dark-800/80 backdrop-blur-xl rounded-2xl border border-white/5 p-4 mb-4" data-spotlight="chat-header">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl flex items-center justify-center shadow-lg shadow-primary-500/20">
-              <span className="text-2xl">🦊</span>
+            <div className="w-12 h-12 bg-gradient-to-br from-primary-500/20 to-primary-600/20 rounded-xl flex items-center justify-center shadow-lg shadow-primary-500/20">
+              <img
+                src="/High Resolution SF Logo.png"
+                alt="StockFox"
+                className="w-10 h-10 object-contain"
+              />
             </div>
             <div>
               <h1 className="text-lg font-semibold text-white">StockFox AI</h1>
@@ -402,7 +406,7 @@ export function Chat() {
             className="flex flex-col items-center justify-center h-full text-center px-4"
           >
             <div className="w-20 h-20 bg-gradient-to-br from-primary-500/20 to-primary-600/20 rounded-2xl flex items-center justify-center mb-4">
-              <span className="text-4xl">🦊</span>
+              <img src="/High Resolution SF Logo.png" alt="StockFox" className="w-16 h-16 object-contain" />
             </div>
             <h2 className="text-xl font-semibold text-white mb-2">How can I help you today?</h2>
             <p className="text-neutral-400 text-sm max-w-md mb-6">
@@ -433,7 +437,7 @@ export function Chat() {
                 )}
               >
                 {message.role === 'assistant' ? (
-                  <span className="text-sm">🦊</span>
+                  <img src="/High Resolution SF Logo.png" alt="StockFox" className="w-6 h-6 object-contain" />
                 ) : (
                   <span className="text-sm">👤</span>
                 )}
@@ -493,7 +497,7 @@ export function Chat() {
             className="flex gap-3"
           >
             <div className="w-8 h-8 rounded-lg bg-primary-500/20 flex items-center justify-center">
-              <span className="text-sm">🦊</span>
+              <img src="/High Resolution SF Logo.png" alt="StockFox" className="w-6 h-6 object-contain" />
             </div>
             <div className="bg-dark-800 border border-white/5 rounded-2xl px-4 py-3">
               <div className="flex gap-1">
