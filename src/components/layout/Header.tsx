@@ -13,13 +13,17 @@ export function Header() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/dashboard" className="flex items-center gap-2 group">
-            <motion.span
-              className="text-2xl"
+            <motion.div
+              className="w-8 h-8 flex-shrink-0"
               whileHover={{ rotate: [0, -10, 10, 0] }}
               transition={{ duration: 0.4 }}
             >
-              🦊
-            </motion.span>
+              <img
+                src="/stockfox-logo.svg"
+                alt="StockFox"
+                className="w-full h-full object-contain"
+              />
+            </motion.div>
             <span className="text-h4 text-gradient-primary font-bold">StockFox</span>
           </Link>
 
