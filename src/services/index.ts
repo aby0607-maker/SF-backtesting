@@ -34,3 +34,36 @@ export {
   getAllJournalEntries,
   invalidateJournalCache,
 } from './journalService'
+
+// CMOTS services
+export {
+  isMockMode,
+  getCompanyMaster,
+  searchCompanies,
+  getCompanyBySymbol,
+  getHistoricalPrices,
+  getLatestPrice,
+  getBatchPrices,
+  getTTMData,
+  getQuarterlyResults,
+  getFinancialData,
+  getAllFundamentals,
+  getShareholdingPattern,
+} from './cmots'
+
+// Scoring service
+export {
+  scoreWithScorecard,
+  scoreFullUniverse,
+  buildCohort,
+  backtestScorecard,
+  getAvailableSectors,
+  getVerdictDistribution,
+} from './scoringService'
+
+// Metric resolver
+export {
+  resolveMetricValues,
+  resolveMetricValuesBatch,
+  getStockInfo,
+} from './metricResolver'

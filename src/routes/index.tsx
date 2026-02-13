@@ -46,126 +46,41 @@ function LazyPage({ children }: { children: React.ReactNode }) {
 export function AppRoutes() {
   return (
     <Routes>
-      {/* Profile Selection - Entry point for demo */}
-      <Route path="/" element={<ProfileSelection />} />
+      {/* ── Backtesting — Primary experience (standalone, no demo chrome) ── */}
+      <Route
+        path="/"
+        element={
+          <LazyPage>
+            <Backtest />
+          </LazyPage>
+        }
+      />
+      <Route
+        path="/backtest"
+        element={
+          <LazyPage>
+            <Backtest />
+          </LazyPage>
+        }
+      />
 
-      {/* Main app routes with layout */}
+      {/* ── Demo app routes (preserved but not primary) ── */}
+      <Route path="/demo" element={<ProfileSelection />} />
       <Route element={<MainLayout />}>
-        {/* Dashboard - eagerly loaded for fast access */}
         <Route path="/dashboard" element={<Dashboard />} />
-
-        {/* Stock Analysis - lazy loaded */}
-        <Route
-          path="/stock/:ticker"
-          element={
-            <LazyPage>
-              <StockAnalysis />
-            </LazyPage>
-          }
-        />
-
-        {/* Segment Deep Dive - lazy loaded */}
-        <Route
-          path="/segment/:ticker/:segmentId"
-          element={
-            <LazyPage>
-              <SegmentDeepDive />
-            </LazyPage>
-          }
-        />
-
-        {/* Chat - lazy loaded */}
-        <Route
-          path="/chat"
-          element={
-            <LazyPage>
-              <Chat />
-            </LazyPage>
-          }
-        />
-
-        {/* Compare - lazy loaded */}
-        <Route
-          path="/compare"
-          element={
-            <LazyPage>
-              <Compare />
-            </LazyPage>
-          }
-        />
-
-        {/* Journal - lazy loaded */}
-        <Route
-          path="/journal"
-          element={
-            <LazyPage>
-              <Journal />
-            </LazyPage>
-          }
-        />
-
-        {/* Portfolio - lazy loaded */}
-        <Route
-          path="/portfolio"
-          element={
-            <LazyPage>
-              <Portfolio />
-            </LazyPage>
-          }
-        />
-
-        {/* Discover - lazy loaded */}
-        <Route
-          path="/discover"
-          element={
-            <LazyPage>
-              <Discover />
-            </LazyPage>
-          }
-        />
-
-        {/* Advisors - lazy loaded */}
-        <Route
-          path="/advisors"
-          element={
-            <LazyPage>
-              <Advisors />
-            </LazyPage>
-          }
-        />
-
-        {/* Backtest - lazy loaded */}
-        <Route
-          path="/backtest"
-          element={
-            <LazyPage>
-              <Backtest />
-            </LazyPage>
-          }
-        />
-
-        {/* Alerts - lazy loaded */}
-        <Route
-          path="/alerts"
-          element={
-            <LazyPage>
-              <Alerts />
-            </LazyPage>
-          }
-        />
-
-        {/* Settings - lazy loaded */}
-        <Route
-          path="/settings"
-          element={
-            <LazyPage>
-              <Settings />
-            </LazyPage>
-          }
-        />
+        <Route path="/stock/:ticker" element={<LazyPage><StockAnalysis /></LazyPage>} />
+        <Route path="/segment/:ticker/:segmentId" element={<LazyPage><SegmentDeepDive /></LazyPage>} />
+        <Route path="/chat" element={<LazyPage><Chat /></LazyPage>} />
+        <Route path="/compare" element={<LazyPage><Compare /></LazyPage>} />
+        <Route path="/journal" element={<LazyPage><Journal /></LazyPage>} />
+        <Route path="/portfolio" element={<LazyPage><Portfolio /></LazyPage>} />
+        <Route path="/discover" element={<LazyPage><Discover /></LazyPage>} />
+        <Route path="/advisors" element={<LazyPage><Advisors /></LazyPage>} />
+        <Route path="/alerts" element={<LazyPage><Alerts /></LazyPage>} />
+        <Route path="/settings" element={<LazyPage><Settings /></LazyPage>} />
       </Route>
 
-      {/* Fallback redirect */}
+      {/* Fallback → backtest */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   )
