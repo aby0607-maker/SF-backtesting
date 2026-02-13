@@ -55,6 +55,7 @@ interface ScoringState {
     customSymbols: string[] // e.g. ['RELIANCE', 'TCS'] — individual mode + cohort additions
   }
   currentRun: ModelRunResult | null
+  currentRunFilterHash: string | null  // hash of the universe filter that produced currentRun
 
   // Stage 4: Cohort
   cohort: CohortDefinition | null
@@ -116,7 +117,7 @@ interface ScoringState {
 
   // ─── Actions: Universe & Scoring & Backtest ───
   setUniverseFilter: (filter: Partial<ScoringState['universeFilter']>) => void
-  setCurrentRun: (run: ModelRunResult | null) => void
+  setCurrentRun: (run: ModelRunResult | null, filterHash?: string | null) => void
   setCohort: (cohort: CohortDefinition | null) => void
   applyCohortFilter: (filters: CohortFilter[]) => void
   setBacktestConfig: (config: Partial<BacktestConfig>) => void
@@ -173,6 +174,7 @@ export const useScoringStore = create<ScoringState>()(
 
       universeFilter: { mode: 'cohort', mcapTypes: ['Large Cap'], sectors: [], customSymbols: [] },
       currentRun: null,
+      currentRunFilterHash: null,
       cohort: null,
       backtestConfig: null,
       reviewSnapshot: null,
@@ -681,8 +683,8 @@ export const useScoringStore = create<ScoringState>()(
         }))
       },
 
-      setCurrentRun: (run: ModelRunResult | null) => {
-        set({ currentRun: run })
+      setCurrentRun: (run: ModelRunResult | null, filterHash?: string | null) => {
+        set({ currentRun: run, currentRunFilterHash: filterHash ?? null })
       },
 
       setCohort: (cohort: CohortDefinition | null) => {
@@ -799,6 +801,7 @@ export const useScoringStore = create<ScoringState>()(
         set({
           currentStage: 1,
           currentRun: null,
+          currentRunFilterHash: null,
           cohort: null,
           backtestConfig: null,
           reviewSnapshot: null,
@@ -817,6 +820,8 @@ export const useScoringStore = create<ScoringState>()(
         savedRuns: state.savedRuns,
         uiMode: state.uiMode,
         universeFilter: state.universeFilter,
+        currentRun: state.currentRun,
+        currentRunFilterHash: state.currentRunFilterHash,
       }),
       migrate: (persisted: unknown, version: number) => {
         const state = persisted as Record<string, unknown>

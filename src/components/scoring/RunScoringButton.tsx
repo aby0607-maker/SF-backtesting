@@ -36,10 +36,10 @@ export function RunScoringButton() {
   const setStatus = useScoringStore(s => s.setStatus)
   const nextStage = useScoringStore(s => s.nextStage)
 
+  const lastRunFilterHash = useScoringStore(s => s.currentRunFilterHash)
+
   const [progress, setProgress] = useState<{ scored: number; total: number } | null>(null)
   const abortRef = useRef<AbortController | null>(null)
-  // Track which filter produced the current run
-  const [lastRunFilterHash, setLastRunFilterHash] = useState<string | null>(null)
 
   const isRunning = status === 'scoring'
   const hasStocks = universeFilter.mode !== 'individual' || universeFilter.customSymbols.length > 0
@@ -105,8 +105,7 @@ export function RunScoringButton() {
         onProgress: (scored, total) => setProgress({ scored, total }),
       })
 
-      setCurrentRun(result)
-      setLastRunFilterHash(currentFilterHash)
+      setCurrentRun(result, currentFilterHash)
       setStatus('idle')
       setProgress(null)
       abortRef.current = null
