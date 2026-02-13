@@ -49,9 +49,10 @@ interface ScoringState {
 
   // Stage 3: Universe filter + Scoring results
   universeFilter: {
-    mcapTypes: string[]    // e.g. ['Large Cap'] — empty = all
-    sectors: string[]      // e.g. ['Finance'] — empty = all
-    customSymbols: string[] // e.g. ['RELIANCE', 'TCS'] — manual additions
+    mode: 'individual' | 'cohort' | 'all'
+    mcapTypes: string[]    // e.g. ['Large Cap'] — cohort mode only
+    sectors: string[]      // e.g. ['Finance'] — cohort mode only
+    customSymbols: string[] // e.g. ['RELIANCE', 'TCS'] — individual mode + cohort additions
   }
   currentRun: ModelRunResult | null
 
@@ -170,7 +171,7 @@ export const useScoringStore = create<ScoringState>()(
       activeScorecardId: null,
       versionHistory: {},
 
-      universeFilter: { mcapTypes: ['Large Cap'], sectors: [], customSymbols: [] },
+      universeFilter: { mode: 'cohort', mcapTypes: ['Large Cap'], sectors: [], customSymbols: [] },
       currentRun: null,
       cohort: null,
       backtestConfig: null,
@@ -808,6 +809,7 @@ export const useScoringStore = create<ScoringState>()(
     }),
     {
       name: 'stockfox-scoring-storage',
+      version: 1,
       partialize: state => ({
         scorecards: state.scorecards,
         activeScorecardId: state.activeScorecardId,
@@ -816,6 +818,15 @@ export const useScoringStore = create<ScoringState>()(
         uiMode: state.uiMode,
         universeFilter: state.universeFilter,
       }),
+      migrate: (persisted: unknown, version: number) => {
+        const state = persisted as Record<string, unknown>
+        // v0 → v1: add mode to universeFilter
+        if (version < 1 && state.universeFilter) {
+          const uf = state.universeFilter as Record<string, unknown>
+          if (!uf.mode) uf.mode = 'cohort'
+        }
+        return state
+      },
     }
   )
 )

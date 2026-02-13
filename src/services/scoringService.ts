@@ -27,21 +27,36 @@ import { getBatchPrices } from '@/services/cmots/priceData'
 
 /**
  * Score a list of stocks using a scorecard.
- * This is the main entry point for Stage 3.
+ * Supports cancellation via AbortSignal and progress callbacks.
  */
 export async function scoreWithScorecard(
   stockIds: string[],
-  scorecard: ScorecardVersion
+  scorecard: ScorecardVersion,
+  options?: {
+    signal?: AbortSignal
+    onProgress?: (scored: number, total: number) => void
+  }
 ): Promise<ModelRunResult> {
   const stocks: StockScoreResult[] = []
+  const total = stockIds.length
 
-  for (const stockId of stockIds) {
+  for (let i = 0; i < stockIds.length; i++) {
+    // Check for cancellation
+    if (options?.signal?.aborted) {
+      console.log(`[Scoring] Cancelled after ${i}/${total} stocks`)
+      break
+    }
+
+    const stockId = stockIds[i]
     const metricValues = await resolveMetricValues(stockId)
     const info = await getStockInfo(stockId)
     if (!metricValues || !info) continue
 
     const scored = scoreStock(metricValues, scorecard, info)
-    stocks.push({ ...scored, rank: 0 })  // Rank assigned after sorting
+    stocks.push({ ...scored, rank: 0 })
+
+    // Report progress
+    options?.onProgress?.(i + 1, total)
   }
 
   // Sort by score descending, assign ranks
