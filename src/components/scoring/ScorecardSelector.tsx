@@ -70,14 +70,14 @@ export function ScorecardSelector() {
                     <button
                       onClick={() => { setActiveScorecard(sc.id); setIsOpen(false) }}
                       className={cn(
-                        'flex-1 flex items-center justify-between px-2 py-1.5 text-left text-sm',
+                        'flex-1 min-w-0 flex items-center gap-2 px-2 py-1.5 text-left text-sm',
                         sc.id === activeScorecard?.id
                           ? 'text-primary-400'
                           : 'text-neutral-300',
                       )}
                     >
-                      <span className="truncate">{sc.versionInfo.name}</span>
-                      <span className="text-xs text-neutral-500 ml-2">{sc.versionInfo.displayVersion}</span>
+                      <span className="truncate flex-1 min-w-0">{sc.versionInfo.name}</span>
+                      <span className="text-xs text-neutral-500 shrink-0">{sc.versionInfo.displayVersion}</span>
                     </button>
                     <button
                       onClick={(e) => {
@@ -87,10 +87,10 @@ export function ScorecardSelector() {
                       }}
                       title={scorecards.length <= 1 ? 'Cannot delete last scorecard' : 'Delete scorecard'}
                       className={cn(
-                        'p-1.5 rounded-md mr-1 transition-colors',
+                        'p-1.5 rounded-md mr-1 shrink-0 transition-colors',
                         scorecards.length <= 1
                           ? 'text-neutral-700 cursor-not-allowed'
-                          : 'text-neutral-600 hover:text-destructive-400 hover:bg-destructive-500/10 opacity-0 group-hover/item:opacity-100',
+                          : 'text-neutral-600 hover:text-destructive-400 hover:bg-destructive-500/10',
                       )}
                     >
                       <Trash2 className="w-3 h-3" />

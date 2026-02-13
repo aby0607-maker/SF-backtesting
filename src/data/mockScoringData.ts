@@ -277,7 +277,7 @@ function generateMockOHLCV(
   basePrice: number,
   annualReturn: number,
   volatility: number,
-  days: number = 504  // ~2 years of trading days
+  days: number = 650  // ~2.6 years of trading days (covers through mid-2026)
 ): { date: string; price: number }[] {
   const data: { date: string; price: number }[] = []
   let price = basePrice

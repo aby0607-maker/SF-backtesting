@@ -2,11 +2,13 @@
  * DateRangeSelector — Stage 5: Date range and interval selection for backtest
  */
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { cn } from '@/lib/utils'
 import { useScoringStore } from '@/store/useScoringStore'
+import { MOCK_OHLCV } from '@/data/mockScoringData'
+import { isMockMode } from '@/services/cmots/client'
 import type { BacktestInterval } from '@/types/scoring'
-import { Calendar, Clock } from 'lucide-react'
+import { Calendar, Clock, Info } from 'lucide-react'
 
 const INTERVAL_OPTIONS: { value: BacktestInterval; label: string; description: string }[] = [
   { value: 'daily', label: 'Daily', description: 'Score snapshots every trading day' },
@@ -23,12 +25,29 @@ const QUICK_PRESETS = [
   { label: '5Y', years: 5 },
 ]
 
+/** Compute min/max dates available in mock OHLCV data */
+function getMockDataRange(): { minDate: string; maxDate: string } {
+  let minDate = '9999-12-31'
+  let maxDate = '0000-01-01'
+  for (const data of Object.values(MOCK_OHLCV)) {
+    if (data.length > 0) {
+      if (data[0].date < minDate) minDate = data[0].date
+      if (data[data.length - 1].date > maxDate) maxDate = data[data.length - 1].date
+    }
+  }
+  return { minDate, maxDate }
+}
+
 export function DateRangeSelector() {
   const backtestConfig = useScoringStore(s => s.backtestConfig)
   const setBacktestConfig = useScoringStore(s => s.setBacktestConfig)
 
+  // In mock mode, clamp dates to available data range
+  const dataRange = useMemo(() => isMockMode() ? getMockDataRange() : null, [])
+  const effectiveMaxDate = dataRange?.maxDate ?? getToday()
+
   const [fromDate, setFromDate] = useState(backtestConfig?.dateRange.from ?? '')
-  const [toDate, setToDate] = useState(backtestConfig?.dateRange.to ?? getToday())
+  const [toDate, setToDate] = useState(backtestConfig?.dateRange.to ?? effectiveMaxDate)
   const [interval, setInterval] = useState<BacktestInterval>(backtestConfig?.interval ?? 'monthly')
 
   // Sync local state to store
@@ -42,11 +61,17 @@ export function DateRangeSelector() {
   }, [fromDate, toDate, interval])
 
   const applyPreset = (years: number) => {
-    const to = new Date()
-    const from = new Date()
-    from.setFullYear(from.getFullYear() - years)
-    setFromDate(formatDate(from))
-    setToDate(formatDate(to))
+    const toD = new Date(effectiveMaxDate)
+    let fromD = new Date(effectiveMaxDate)
+    fromD.setFullYear(fromD.getFullYear() - years)
+
+    // Clamp 'from' to min available date
+    if (dataRange && formatDate(fromD) < dataRange.minDate) {
+      fromD = new Date(dataRange.minDate)
+    }
+
+    setFromDate(formatDate(fromD))
+    setToDate(formatDate(toD))
   }
 
   return (
@@ -84,7 +109,8 @@ export function DateRangeSelector() {
               type="date"
               value={fromDate}
               onChange={e => setFromDate(e.target.value)}
-              max={toDate || getToday()}
+              min={dataRange?.minDate}
+              max={toDate || effectiveMaxDate}
               className="w-full px-3 py-2 bg-dark-700/40 border border-white/5 rounded-lg text-sm text-white focus:outline-none focus:border-primary-500/30 [color-scheme:dark]"
             />
           </div>
@@ -95,8 +121,8 @@ export function DateRangeSelector() {
               type="date"
               value={toDate}
               onChange={e => setToDate(e.target.value)}
-              min={fromDate}
-              max={getToday()}
+              min={fromDate || dataRange?.minDate}
+              max={effectiveMaxDate}
               className="w-full px-3 py-2 bg-dark-700/40 border border-white/5 rounded-lg text-sm text-white focus:outline-none focus:border-primary-500/30 [color-scheme:dark]"
             />
           </div>
@@ -105,6 +131,14 @@ export function DateRangeSelector() {
         {fromDate && toDate && (
           <div className="mt-2 text-[10px] text-neutral-500">
             Period: {daysBetween(fromDate, toDate)} days ({monthsBetween(fromDate, toDate)} months)
+          </div>
+        )}
+
+        {/* Mock data range info */}
+        {dataRange && (
+          <div className="mt-2 flex items-center gap-1.5 text-[10px] text-neutral-600">
+            <Info className="w-3 h-3" />
+            <span>Mock data available: {dataRange.minDate} — {dataRange.maxDate}</span>
           </div>
         )}
       </div>

@@ -152,22 +152,39 @@ function buildReviewSnapshot(
 /**
  * Run a full backtest using mock price data.
  * Stage 7 entry point.
+ *
+ * @param config - Backtest configuration (dates, interval)
+ * @param scorecard - Active scorecard version
+ * @param cohortStockIds - Stock IDs from cohort selection (Stage 4). All are evaluated as a group.
  */
 export async function backtestScorecard(
   config: BacktestConfig,
-  scorecard: ScorecardVersion
+  scorecard: ScorecardVersion,
+  cohortStockIds?: string[]
 ): Promise<BacktestResult> {
-  // Build price history from mock OHLCV
+  // Determine which stocks to include — cohort if provided, otherwise all
+  const stockFilter = cohortStockIds && cohortStockIds.length > 0
+    ? new Set(cohortStockIds)
+    : null
+
+  // Build price history from mock OHLCV, filtered to cohort + date range
   const priceHistory: Record<string, { date: string; price: number }[]> = {}
   for (const [symbol, data] of Object.entries(MOCK_OHLCV)) {
-    priceHistory[symbol] = data
-      .filter(d => d.date >= config.dateRange.from && d.date <= config.dateRange.to)
+    if (stockFilter && !stockFilter.has(symbol)) continue
+    const filtered = data.filter(d => d.date >= config.dateRange.from && d.date <= config.dateRange.to)
+    if (filtered.length > 0) {
+      priceHistory[symbol] = filtered
+    }
   }
 
-  // Build a single snapshot (current scoring) — in production we'd have historical snapshots
+  // Build a single snapshot (current scoring) for cohort stocks only
   const allData = getAllStocksForScoring()
+  const cohortData = stockFilter
+    ? allData.filter(s => stockFilter.has(s.info.id))
+    : allData
+
   const snapshotStocks: StockScoreResult[] = []
-  for (const stock of allData) {
+  for (const stock of cohortData) {
     const scored = scoreStock(stock.data, scorecard, {
       id: stock.info.id,
       name: stock.info.name,

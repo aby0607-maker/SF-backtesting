@@ -37,14 +37,16 @@ export function ConfirmAndRunButton() {
     // Confirm the review
     confirmReview()
 
-    // Run the backtest
+    // Run the backtest with cohort stocks
     setStatus('backtesting')
     try {
-      const result = await backtestScorecard(backtestConfig, scorecard)
+      const cohortIds = cohort?.stockIds
+      const result = await backtestScorecard(backtestConfig, scorecard, cohortIds)
       setBacktestResult(result)
       setStatus('idle')
       nextStage()
-    } catch {
+    } catch (err) {
+      console.error('[Backtest] Failed:', err)
       setStatus('error')
     }
   }
