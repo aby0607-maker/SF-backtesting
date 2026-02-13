@@ -395,49 +395,103 @@ export interface BacktestResult {
 }
 
 // ─────────────────────────────────────────────────
-// CMOTS API Types
+// CMOTS API Types (matches deltastockzapis.cmots.com)
 // ─────────────────────────────────────────────────
 
-export interface CMOTSCompany {
-  CO_CODE: number
-  CompanyName: string
-  NSESYMBOL?: string
-  BSESYMBOL?: string
-  Sector: string
-  Industry: string
-  MarketCap: number
+/** Wrapper for all CMOTS API responses */
+export interface CMOTSApiResponse<T> {
+  success: boolean
+  data: T[]
+  message: string
 }
 
+/** /companymaster */
+export interface CMOTSCompany {
+  co_code: number
+  bsecode: string
+  nsesymbol: string
+  companyname: string
+  companyshortname: string
+  categoryname: string
+  isin: string
+  bsegroup: string
+  mcaptype: string        // 'Large Cap' | 'Mid Cap' | 'Small Cap'
+  sectorcode: string
+  sectorname: string
+  industrycode: string
+  industryname: string
+  bselistedflag: string
+  nselistedflag: string
+  BSEStatus: string
+  NSEStatus: string
+}
+
+/** /AdjustedPriceChart/{exchange}/{co_code}/{from}/{to} */
 export interface CMOTSOHLCVRecord {
   CO_CODE: number
-  Tradedate: string
+  companyname: string
+  Tradedate: string       // ISO datetime "2025-01-15T00:00:00"
   DayOpen: number
   DayHigh: number
   Daylow: number
   Dayclose: number
   TotalVolume: number
-  DMCAP?: number
+  TotalValue: number
+  DMCAP: number
 }
 
+/** /TTMData/{co_code}/{type} */
 export interface CMOTSTTMRecord {
-  CO_CODE: number
-  [key: string]: number | string  // Dynamic fields from TTM API
+  co_code: number
+  pe_ttm: number
+  dividendyield: number
+  roe_ttm: number
+  roce_ttm: number
+  mcap: number            // Market cap in crores
+  pb_ttm: number
+  eps_ttm: number
+  debttoequity: number
+  ev_ebitda: number
+  currentratio: number
+  returnonassets: number
+  operatingprofitmargin: number
+  netprofitmargin: number
+  quickratio: number
+  assetturnover_ttm: number
+  pegratio: number
 }
 
+/** /FinData/{co_code}/{type} — one record per year */
 export interface CMOTSFinancialRecord {
-  CO_CODE: number
-  YEAR: string
-  [key: string]: number | string  // Dynamic P&L / Balance Sheet fields
+  co_code: number
+  yrc: number             // Year code, e.g. 202503
+  revenue: number
+  totalassets: number
+  totalliabilities: number
+  workingcapital: number
+  interestcoverageratio: number
+  freecashflowpershare: number
+  revenue_perc: number    // Revenue growth %
 }
 
+/** Row-based financial statement (P&L, Balance Sheet, Cash Flow, Quarterly) */
+export interface CMOTSStatementRow {
+  COLUMNNAME: string
+  RID: number
+  rowno: number
+  [key: string]: string | number  // Y202503, Y202403, etc.
+}
+
+/** /Aggregate-Share-Holding/{co_code} */
 export interface CMOTSShareholding {
-  CO_CODE: number
-  Quarter: string
-  PromoterHolding: number
-  FIIHolding: number
-  DIIHolding: number
-  PublicHolding: number
-  [key: string]: number | string
+  co_code: number
+  YRC: number             // Quarter code, e.g. 202512
+  Promoters: number
+  Retail: number
+  ForeignInstitution: number
+  MutualFund: number
+  OtherDomesticInstitution: number
+  Others: number
 }
 
 // ─────────────────────────────────────────────────

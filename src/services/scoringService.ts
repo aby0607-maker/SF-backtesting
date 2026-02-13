@@ -66,7 +66,7 @@ export async function scoreFullUniverse(
   scorecard: ScorecardVersion
 ): Promise<ModelRunResult> {
   const companies = await getCompanyMaster()
-  const allStockIds = companies.map(c => c.NSESYMBOL ?? String(c.CO_CODE))
+  const allStockIds = companies.map(c => c.nsesymbol ?? String(c.co_code))
   return scoreWithScorecard(allStockIds, scorecard)
 }
 
@@ -170,7 +170,7 @@ export async function backtestScorecard(
   // Determine which stocks to include — cohort if provided, otherwise full universe
   const targetStockIds = cohortStockIds && cohortStockIds.length > 0
     ? cohortStockIds
-    : (await getCompanyMaster()).map(c => c.NSESYMBOL ?? String(c.CO_CODE))
+    : (await getCompanyMaster()).map(c => c.nsesymbol ?? String(c.co_code))
 
   // Fetch price history from CMOTS service (handles mock/API mode internally)
   const batchPrices = await getBatchPrices(targetStockIds, config.dateRange.from, config.dateRange.to)

@@ -32,6 +32,7 @@ import { VerdictThresholdEditor } from '@/components/scoring/VerdictThresholdEdi
 import { ScorecardTemplateCard } from '@/components/scoring/ScorecardTemplateCard'
 
 // Stage 3: Score & Rank
+import { UniverseSelector } from '@/components/scoring/UniverseSelector'
 import { RunScoringButton } from '@/components/scoring/RunScoringButton'
 import { ScoreboardTable } from '@/components/scoring/ScoreboardTable'
 import { ScoreDistributionChart } from '@/components/scoring/ScoreDistributionChart'
@@ -167,9 +168,10 @@ const STAGE_CONFIGS: Record<PipelineStage, StageConfig> = {
   },
   3: {
     title: 'Score & Rank',
-    description: 'Apply scorecard to universe, view scores and verdicts',
+    description: 'Select universe, apply scorecard, view scores and verdicts',
     render: () => (
       <div className="space-y-4">
+        <UniverseSelector />
         <div className="flex items-center justify-between">
           <RunScoringButton />
         </div>

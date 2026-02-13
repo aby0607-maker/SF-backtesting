@@ -47,7 +47,12 @@ interface ScoringState {
   activeScorecardId: string | null
   versionHistory: Record<string, ScorecardVersion[]>  // macroVersion → versions
 
-  // Stage 3: Scoring results
+  // Stage 3: Universe filter + Scoring results
+  universeFilter: {
+    mcapTypes: string[]    // e.g. ['Large Cap'] — empty = all
+    sectors: string[]      // e.g. ['Finance'] — empty = all
+    customSymbols: string[] // e.g. ['RELIANCE', 'TCS'] — manual additions
+  }
   currentRun: ModelRunResult | null
 
   // Stage 4: Cohort
@@ -108,7 +113,8 @@ interface ScoringState {
   generateReviewSnapshot: () => void
   confirmReview: () => void
 
-  // ─── Actions: Scoring & Backtest ───
+  // ─── Actions: Universe & Scoring & Backtest ───
+  setUniverseFilter: (filter: Partial<ScoringState['universeFilter']>) => void
   setCurrentRun: (run: ModelRunResult | null) => void
   setCohort: (cohort: CohortDefinition | null) => void
   applyCohortFilter: (filters: CohortFilter[]) => void
@@ -164,6 +170,7 @@ export const useScoringStore = create<ScoringState>()(
       activeScorecardId: null,
       versionHistory: {},
 
+      universeFilter: { mcapTypes: ['Large Cap'], sectors: [], customSymbols: [] },
       currentRun: null,
       cohort: null,
       backtestConfig: null,
@@ -665,7 +672,13 @@ export const useScoringStore = create<ScoringState>()(
         }))
       },
 
-      // ─── Scoring & Backtest ───
+      // ─── Universe & Scoring & Backtest ───
+
+      setUniverseFilter: (filter: Partial<ScoringState['universeFilter']>) => {
+        set(state => ({
+          universeFilter: { ...state.universeFilter, ...filter },
+        }))
+      },
 
       setCurrentRun: (run: ModelRunResult | null) => {
         set({ currentRun: run })
@@ -801,6 +814,7 @@ export const useScoringStore = create<ScoringState>()(
         versionHistory: state.versionHistory,
         savedRuns: state.savedRuns,
         uiMode: state.uiMode,
+        universeFilter: state.universeFilter,
       }),
     }
   )
