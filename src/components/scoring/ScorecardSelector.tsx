@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { cn } from '@/lib/utils'
 import { useScoringStore, useActiveScorecard } from '@/store/useScoringStore'
 import { SCORECARD_TEMPLATES } from '@/data/scorecardTemplates'
-import { ChevronDown, Plus, Copy, FileText } from 'lucide-react'
+import { ChevronDown, Plus, Copy, FileText, Trash2 } from 'lucide-react'
 
 export function ScorecardSelector() {
   const [isOpen, setIsOpen] = useState(false)
@@ -16,6 +16,7 @@ export function ScorecardSelector() {
   const setActiveScorecard = useScoringStore(s => s.setActiveScorecard)
   const loadTemplate = useScoringStore(s => s.loadTemplate)
   const duplicateScorecard = useScoringStore(s => s.duplicateScorecard)
+  const deleteScorecard = useScoringStore(s => s.deleteScorecard)
   const createScorecard = useScoringStore(s => s.createScorecard)
 
   return (
@@ -57,19 +58,44 @@ export function ScorecardSelector() {
                   Your Scorecards
                 </div>
                 {scorecards.map(sc => (
-                  <button
+                  <div
                     key={sc.id}
-                    onClick={() => { setActiveScorecard(sc.id); setIsOpen(false) }}
                     className={cn(
-                      'w-full flex items-center justify-between px-2 py-1.5 rounded-lg text-left text-sm transition-colors',
+                      'flex items-center gap-1 rounded-lg transition-colors group/item',
                       sc.id === activeScorecard?.id
-                        ? 'bg-primary-500/15 text-primary-400'
-                        : 'text-neutral-300 hover:bg-dark-700/80',
+                        ? 'bg-primary-500/15'
+                        : 'hover:bg-dark-700/80',
                     )}
                   >
-                    <span className="truncate">{sc.versionInfo.name}</span>
-                    <span className="text-xs text-neutral-500 ml-2">{sc.versionInfo.displayVersion}</span>
-                  </button>
+                    <button
+                      onClick={() => { setActiveScorecard(sc.id); setIsOpen(false) }}
+                      className={cn(
+                        'flex-1 flex items-center justify-between px-2 py-1.5 text-left text-sm',
+                        sc.id === activeScorecard?.id
+                          ? 'text-primary-400'
+                          : 'text-neutral-300',
+                      )}
+                    >
+                      <span className="truncate">{sc.versionInfo.name}</span>
+                      <span className="text-xs text-neutral-500 ml-2">{sc.versionInfo.displayVersion}</span>
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        if (scorecards.length <= 1) return
+                        deleteScorecard(sc.id)
+                      }}
+                      title={scorecards.length <= 1 ? 'Cannot delete last scorecard' : 'Delete scorecard'}
+                      className={cn(
+                        'p-1.5 rounded-md mr-1 transition-colors',
+                        scorecards.length <= 1
+                          ? 'text-neutral-700 cursor-not-allowed'
+                          : 'text-neutral-600 hover:text-destructive-400 hover:bg-destructive-500/10 opacity-0 group-hover/item:opacity-100',
+                      )}
+                    >
+                      <Trash2 className="w-3 h-3" />
+                    </button>
+                  </div>
                 ))}
               </div>
             )}

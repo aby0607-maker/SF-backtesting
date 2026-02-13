@@ -75,6 +75,38 @@ const valuationVs5YBands: ScoreBand[] = [
   { min: 1.5, max: Infinity, score: 0, label: 'Significantly Overvalued', color: 'text-destructive-400' },
 ]
 
+// Technical bands: Price vs EMA deviation (%) — positive = above EMA = bullish
+const priceVsEmaBands: ScoreBand[] = [
+  { min: 10, max: Infinity, score: 100, label: 'Strongly Above EMA', color: 'text-success-400' },
+  { min: 5, max: 9.99, score: 80, label: 'Above EMA', color: 'text-success-400' },
+  { min: 2, max: 4.99, score: 65, label: 'Slightly Above', color: 'text-teal-400' },
+  { min: -2, max: 1.99, score: 50, label: 'Near EMA', color: 'text-warning-400' },
+  { min: -5, max: -2.01, score: 30, label: 'Below EMA', color: 'text-warning-400' },
+  { min: -10, max: -5.01, score: 15, label: 'Well Below EMA', color: 'text-destructive-400' },
+  { min: -Infinity, max: -10.01, score: 0, label: 'Deeply Below EMA', color: 'text-destructive-400' },
+]
+
+// RSI bands (0-100 range): 50 is neutral
+const rsiBands: ScoreBand[] = [
+  { min: 60, max: 70, score: 100, label: 'Strong Momentum', color: 'text-success-400' },
+  { min: 50, max: 59.99, score: 80, label: 'Positive Momentum', color: 'text-success-400' },
+  { min: 70.01, max: 80, score: 65, label: 'Overbought (Mild)', color: 'text-teal-400' },
+  { min: 40, max: 49.99, score: 50, label: 'Neutral', color: 'text-warning-400' },
+  { min: 30, max: 39.99, score: 30, label: 'Weak Momentum', color: 'text-warning-400' },
+  { min: 80.01, max: Infinity, score: 20, label: 'Overbought', color: 'text-destructive-400' },
+  { min: -Infinity, max: 29.99, score: 10, label: 'Oversold', color: 'text-destructive-400' },
+]
+
+// Volume-Price Trend (VPT): positive = accumulation, negative = distribution
+const vptBands: ScoreBand[] = [
+  { min: 25, max: Infinity, score: 100, label: 'Strong Accumulation', color: 'text-success-400' },
+  { min: 15, max: 24.99, score: 80, label: 'Accumulation', color: 'text-success-400' },
+  { min: 5, max: 14.99, score: 60, label: 'Mild Accumulation', color: 'text-teal-400' },
+  { min: -5, max: 4.99, score: 40, label: 'Neutral', color: 'text-warning-400' },
+  { min: -15, max: -5.01, score: 20, label: 'Distribution', color: 'text-warning-400' },
+  { min: -Infinity, max: -15.01, score: 0, label: 'Strong Distribution', color: 'text-destructive-400' },
+]
+
 // ─────────────────────────────────────────────────
 // V2 Expert Model — Negative Handling Rules
 // ─────────────────────────────────────────────────
@@ -216,27 +248,27 @@ const v2TechnicalSegment: ScorecardSegment = {
     {
       id: 'v2_price_ema20', name: 'Price vs 20D EMA', type: 'raw',
       rawMetric: { id: 'v2_price_ema20', name: 'Price vs 20D EMA', cmots_source: 'ohlcv', cmots_field: 'PriceVsEMA20', unit: 'percent', description: 'Price deviation from 20-day EMA' },
-      scoreBands: [], weight: 0.15,
+      scoreBands: priceVsEmaBands, weight: 0.15,
     },
     {
       id: 'v2_price_ema50', name: 'Price vs 50D EMA', type: 'raw',
       rawMetric: { id: 'v2_price_ema50', name: 'Price vs 50D EMA', cmots_source: 'ohlcv', cmots_field: 'PriceVsEMA50', unit: 'percent', description: 'Price deviation from 50-day EMA' },
-      scoreBands: [], weight: 0.20,
+      scoreBands: priceVsEmaBands, weight: 0.20,
     },
     {
       id: 'v2_price_ema200', name: 'Price vs 200D EMA', type: 'raw',
       rawMetric: { id: 'v2_price_ema200', name: 'Price vs 200D EMA', cmots_source: 'ohlcv', cmots_field: 'PriceVsEMA200', unit: 'percent', description: 'Price deviation from 200-day EMA' },
-      scoreBands: [], weight: 0.25,
+      scoreBands: priceVsEmaBands, weight: 0.25,
     },
     {
       id: 'v2_rsi', name: 'RSI (14)', type: 'raw',
       rawMetric: { id: 'v2_rsi', name: 'RSI', cmots_source: 'ohlcv', cmots_field: 'RSI14', unit: 'number', description: 'Relative Strength Index (14-period)' },
-      scoreBands: [], weight: 0.20,
+      scoreBands: rsiBands, weight: 0.20,
     },
     {
       id: 'v2_vpt', name: 'Volume-Price Trend', type: 'raw',
       rawMetric: { id: 'v2_vpt', name: 'VPT', cmots_source: 'ohlcv', cmots_field: 'VPT', unit: 'number', description: 'Volume-Price Trend indicator' },
-      scoreBands: [], weight: 0.20,
+      scoreBands: vptBands, weight: 0.20,
     },
   ],
   verdictThresholds: [

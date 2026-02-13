@@ -103,6 +103,9 @@ function applyNegativeHandling(
  * Bands should be ordered from highest score to lowest (best to worst).
  */
 function lookupScoreBand(rawValue: number, scoreBands: ScoreBand[]): number {
+  // Guard: no bands defined → return 0
+  if (!scoreBands || scoreBands.length === 0) return 0
+
   // Sort bands by score descending for priority
   const sorted = [...scoreBands].sort((a, b) => b.score - a.score)
 

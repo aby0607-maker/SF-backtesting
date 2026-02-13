@@ -63,6 +63,29 @@ import { ExportReportButton } from '@/components/scoring/ExportReportButton'
 
 import { SCORECARD_TEMPLATES } from '@/data/scorecardTemplates'
 
+// ─── Wired component for Stage 2 template section ───
+
+function Stage2TemplateSection() {
+  const scorecard = useActiveScorecard()
+  const hasSegments = (scorecard?.segments.length ?? 0) > 0
+
+  // If a scorecard is already loaded with segments, collapse templates
+  if (hasSegments) {
+    return null
+  }
+
+  return (
+    <div>
+      <div className="text-xs text-neutral-500 mb-2">Quick Start Templates</div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        {SCORECARD_TEMPLATES.map(t => (
+          <ScorecardTemplateCard key={t.id} template={t} />
+        ))}
+      </div>
+    </div>
+  )
+}
+
 // ─── Wired component for MetricCatalogBrowser ───
 
 function MetricCatalogBrowserWired() {
@@ -126,15 +149,8 @@ const STAGE_CONFIGS: Record<PipelineStage, StageConfig> = {
     description: 'Group metrics into segments, assign weights, set verdict thresholds',
     render: () => (
       <div className="space-y-4">
-        {/* Templates */}
-        <div>
-          <div className="text-xs text-neutral-500 mb-2">Quick Start Templates</div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            {SCORECARD_TEMPLATES.map(t => (
-              <ScorecardTemplateCard key={t.id} template={t} />
-            ))}
-          </div>
-        </div>
+        {/* Templates — only shown when no scorecard is loaded */}
+        <Stage2TemplateSection />
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <div className="space-y-4">

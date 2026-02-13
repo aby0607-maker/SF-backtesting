@@ -63,7 +63,15 @@ export function CohortFilterPanel() {
     return count
   }, [currentRun, filters])
 
-  if (!currentRun) return null
+  if (!currentRun) return (
+    <div className="rounded-xl bg-dark-800/60 border border-white/5 p-6 text-center">
+      <Filter className="w-6 h-6 text-neutral-600 mx-auto mb-2" />
+      <div className="text-sm text-neutral-400 mb-1">No scoring results yet</div>
+      <div className="text-xs text-neutral-600">
+        Go to <span className="text-primary-400 font-medium">Stage 3: Score & Rank</span> and click "Run Scoring" first
+      </div>
+    </div>
+  )
 
   const addSectorFilter = (sector: string) => {
     const exists = filters.some(f => f.type === 'sector' && f.value === sector)

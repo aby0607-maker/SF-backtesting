@@ -28,7 +28,15 @@ export function StockSelectionList() {
     return currentRun.stocks
   }, [currentRun, cohort])
 
-  if (!currentRun) return null
+  if (!currentRun) return (
+    <div className="rounded-xl bg-dark-800/60 border border-white/5 p-6 text-center">
+      <Square className="w-6 h-6 text-neutral-600 mx-auto mb-2" />
+      <div className="text-sm text-neutral-400 mb-1">No stocks to select</div>
+      <div className="text-xs text-neutral-600">
+        Run scoring in <span className="text-primary-400 font-medium">Stage 3</span> to see scored stocks here
+      </div>
+    </div>
+  )
 
   const toggle = (id: string) => {
     const next = new Set(selectedIds)

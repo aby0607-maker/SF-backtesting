@@ -26,7 +26,8 @@ export function RunScoringButton() {
       setCurrentRun(result)
       setStatus('idle')
       nextStage()
-    } catch {
+    } catch (err) {
+      console.error('[RunScoring] Scoring failed:', err)
       setStatus('error')
     }
   }
