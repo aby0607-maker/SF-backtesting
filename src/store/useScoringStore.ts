@@ -74,6 +74,7 @@ interface ScoringState {
 
   // Status
   status: ScoringStatus
+  errorMessage: string | null
 
   // ─── Actions: Pipeline Navigation ───
   setStage: (stage: PipelineStage) => void
@@ -123,6 +124,7 @@ interface ScoringState {
   setBacktestConfig: (config: Partial<BacktestConfig>) => void
   setBacktestResult: (result: BacktestResult | null) => void
   setStatus: (status: ScoringStatus) => void
+  setError: (message: string | null) => void
 
   // ─── Actions: Persistence ───
   saveRun: (name: string) => string | null
@@ -182,6 +184,7 @@ export const useScoringStore = create<ScoringState>()(
 
       savedRuns: [],
       status: 'idle',
+      errorMessage: null,
 
       // ─── Pipeline Navigation ───
 
@@ -752,7 +755,11 @@ export const useScoringStore = create<ScoringState>()(
       },
 
       setStatus: (status: ScoringStatus) => {
-        set({ status })
+        set({ status, errorMessage: status !== 'error' ? null : get().errorMessage })
+      },
+
+      setError: (message: string | null) => {
+        set({ errorMessage: message, status: message ? 'error' : 'idle' })
       },
 
       // ─── Persistence ───
@@ -807,6 +814,7 @@ export const useScoringStore = create<ScoringState>()(
           reviewSnapshot: null,
           backtestResult: null,
           status: 'idle',
+          errorMessage: null,
         })
       },
     }),
@@ -822,6 +830,9 @@ export const useScoringStore = create<ScoringState>()(
         universeFilter: state.universeFilter,
         currentRun: state.currentRun,
         currentRunFilterHash: state.currentRunFilterHash,
+        currentStage: state.currentStage,
+        cohort: state.cohort,
+        backtestConfig: state.backtestConfig,
       }),
       migrate: (persisted: unknown, version: number) => {
         const state = persisted as Record<string, unknown>
@@ -852,6 +863,9 @@ export const useCurrentStage = () =>
 
 export const useScoringStatus = () =>
   useScoringStore(state => state.status)
+
+export const useScoringError = () =>
+  useScoringStore(state => state.errorMessage)
 
 export const useCurrentScores = () =>
   useScoringStore(state => state.currentRun)
