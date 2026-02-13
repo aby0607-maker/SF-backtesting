@@ -16,21 +16,25 @@ export function CohortComparisonTable() {
   const [sortDir, setSortDir] = useState<SortDir>('desc')
 
   const rows = useMemo(() => {
-    if (!result) return []
+    if (!result || result.comparisons.length === 0) return []
 
     // Build row data from comparisons and snapshots
-    const cohortPeriods = result.comparisons[0]?.cohortAvg.periods
-    const cohortAvgReturn = cohortPeriods?.[cohortPeriods.length - 1]?.cumulativeReturn ?? 0
+    const cohortPeriods = result.comparisons[0]?.cohortAvg?.periods
+    const cohortAvgReturn = cohortPeriods && cohortPeriods.length > 0
+      ? cohortPeriods[cohortPeriods.length - 1].cumulativeReturn
+      : 0
     const targetIds = new Set(result.comparisons.map(c => c.targetStockId))
 
     // Get score from first snapshot
-    const snapshot = result.snapshots[0]
+    const snapshot = result.snapshots?.[0]
     if (!snapshot) return []
 
     return snapshot.stockScores.map(stock => {
       const comp = result.comparisons.find(c => c.targetStockId === stock.stockId)
-      const tPeriods = comp?.targetPerformance.periods
-      const finalReturn = tPeriods?.[tPeriods.length - 1]?.cumulativeReturn ?? 0
+      const tPeriods = comp?.targetPerformance?.periods
+      const finalReturn = tPeriods && tPeriods.length > 0
+        ? tPeriods[tPeriods.length - 1].cumulativeReturn
+        : 0
       const alpha = finalReturn - cohortAvgReturn
 
       return {

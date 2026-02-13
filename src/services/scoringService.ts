@@ -3,6 +3,9 @@
  *
  * Ties together: metric resolution → scoring engine → cohort building → backtesting.
  * The store calls this service; the service calls engines and data sources.
+ *
+ * Data access goes through CMOTS services (which handle mock/API mode internally),
+ * so switching from mock to live data is just an env variable toggle.
  */
 
 import type {
@@ -19,7 +22,8 @@ import type {
 import { scoreStock } from '@/lib/scoringEngine'
 import { runBacktest } from '@/lib/backtestEngine'
 import { resolveMetricValues, getStockInfo } from '@/services/metricResolver'
-import { getAllStocksForScoring, MOCK_COMPANIES, MOCK_OHLCV } from '@/data/mockScoringData'
+import { getCompanyMaster } from '@/services/cmots/companyMaster'
+import { getBatchPrices } from '@/services/cmots/priceData'
 
 /**
  * Score a list of stocks using a scorecard.
@@ -33,7 +37,7 @@ export async function scoreWithScorecard(
 
   for (const stockId of stockIds) {
     const metricValues = await resolveMetricValues(stockId)
-    const info = getStockInfo(stockId)
+    const info = await getStockInfo(stockId)
     if (!metricValues || !info) continue
 
     const scored = scoreStock(metricValues, scorecard, info)
@@ -55,13 +59,14 @@ export async function scoreWithScorecard(
 }
 
 /**
- * Score the entire mock universe.
- * Convenience for demo/testing.
+ * Score the full universe of stocks.
+ * Uses Company Master to get all available stocks.
  */
 export async function scoreFullUniverse(
   scorecard: ScorecardVersion
 ): Promise<ModelRunResult> {
-  const allStockIds = MOCK_COMPANIES.map(c => c.id)
+  const companies = await getCompanyMaster()
+  const allStockIds = companies.map(c => c.NSESYMBOL ?? String(c.CO_CODE))
   return scoreWithScorecard(allStockIds, scorecard)
 }
 
@@ -150,7 +155,7 @@ function buildReviewSnapshot(
 }
 
 /**
- * Run a full backtest using mock price data.
+ * Run a full backtest using price data from CMOTS service.
  * Stage 7 entry point.
  *
  * @param config - Backtest configuration (dates, interval)
@@ -162,36 +167,33 @@ export async function backtestScorecard(
   scorecard: ScorecardVersion,
   cohortStockIds?: string[]
 ): Promise<BacktestResult> {
-  // Determine which stocks to include — cohort if provided, otherwise all
-  const stockFilter = cohortStockIds && cohortStockIds.length > 0
-    ? new Set(cohortStockIds)
-    : null
+  // Determine which stocks to include — cohort if provided, otherwise full universe
+  const targetStockIds = cohortStockIds && cohortStockIds.length > 0
+    ? cohortStockIds
+    : (await getCompanyMaster()).map(c => c.NSESYMBOL ?? String(c.CO_CODE))
 
-  // Build price history from mock OHLCV, filtered to cohort + date range
+  // Fetch price history from CMOTS service (handles mock/API mode internally)
+  const batchPrices = await getBatchPrices(targetStockIds, config.dateRange.from, config.dateRange.to)
+
+  // Convert CMOTS OHLCV records to simplified price format for backtest engine
   const priceHistory: Record<string, { date: string; price: number }[]> = {}
-  for (const [symbol, data] of Object.entries(MOCK_OHLCV)) {
-    if (stockFilter && !stockFilter.has(symbol)) continue
-    const filtered = data.filter(d => d.date >= config.dateRange.from && d.date <= config.dateRange.to)
-    if (filtered.length > 0) {
-      priceHistory[symbol] = filtered
+  for (const [symbol, records] of Object.entries(batchPrices)) {
+    if (records.length > 0) {
+      priceHistory[symbol] = records.map(r => ({
+        date: r.Tradedate,
+        price: r.Dayclose,
+      }))
     }
   }
 
-  // Build a single snapshot (current scoring) for cohort stocks only
-  const allData = getAllStocksForScoring()
-  const cohortData = stockFilter
-    ? allData.filter(s => stockFilter.has(s.info.id))
-    : allData
-
+  // Score all cohort stocks to build a snapshot
   const snapshotStocks: StockScoreResult[] = []
-  for (const stock of cohortData) {
-    const scored = scoreStock(stock.data, scorecard, {
-      id: stock.info.id,
-      name: stock.info.name,
-      symbol: stock.info.symbol,
-      sector: stock.info.sector,
-      marketCap: stock.info.marketCap,
-    })
+  for (const stockId of targetStockIds) {
+    const metricValues = await resolveMetricValues(stockId)
+    const info = await getStockInfo(stockId)
+    if (!metricValues || !info) continue
+
+    const scored = scoreStock(metricValues, scorecard, info)
     snapshotStocks.push({ ...scored, rank: 0 })
   }
   snapshotStocks.sort((a, b) => b.normalizedScore - a.normalizedScore)

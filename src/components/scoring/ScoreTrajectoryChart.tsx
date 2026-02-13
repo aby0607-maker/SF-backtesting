@@ -4,7 +4,7 @@
 
 import { useState, useMemo } from 'react'
 import { cn } from '@/lib/utils'
-import { useBacktestResult, useCurrentScores } from '@/store/useScoringStore'
+import { useBacktestResult } from '@/store/useScoringStore'
 import {
   LineChart,
   Line,
@@ -18,21 +18,26 @@ import {
 
 export function ScoreTrajectoryChart() {
   const result = useBacktestResult()
-  const currentRun = useCurrentScores()
   const [selectedStockId, setSelectedStockId] = useState<string | null>(null)
 
-  const stocks = currentRun?.stocks ?? []
+  // Derive available stocks from backtest snapshots (only cohort stocks have data)
+  const stocks = useMemo(() => {
+    if (!result || result.snapshots.length === 0) return []
+    return result.snapshots[0].stockScores
+  }, [result])
+
   const selectedStock = stocks.find(s => s.stockId === selectedStockId) ?? stocks[0]
 
   const trajectoryData = useMemo(() => {
-    if (!result || !selectedStock) return []
+    if (!result || !selectedStock || result.snapshots.length === 0) return []
 
     // Build score trajectory from snapshots
     return result.snapshots.map(snapshot => {
       const stockScore = snapshot.stockScores.find(s => s.stockId === selectedStock.stockId)
       // Get price from comparisons
       const comp = result.comparisons.find(c => c.targetStockId === selectedStock.stockId)
-      const pricePeriod = comp?.targetPerformance.periods.find(p => p.date === snapshot.date)
+      const periods = comp?.targetPerformance?.periods
+      const pricePeriod = periods?.find(p => p.date === snapshot.date)
 
       return {
         date: snapshot.date,
@@ -43,7 +48,7 @@ export function ScoreTrajectoryChart() {
     })
   }, [result, selectedStock])
 
-  if (!result || trajectoryData.length === 0) return null
+  if (!result || stocks.length === 0 || trajectoryData.length === 0) return null
 
   return (
     <div className="rounded-xl bg-dark-800/60 border border-white/5 p-4">

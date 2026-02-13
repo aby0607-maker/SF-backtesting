@@ -10,6 +10,16 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  server: {
+    proxy: {
+      '/api/cmots': {
+        target: 'https://api.cmots.com',
+        changeOrigin: true,
+        rewrite: (p) => p.replace(/^\/api\/cmots/, ''),
+        secure: true,
+      },
+    },
+  },
   build: {
     chunkSizeWarningLimit: 600,
     rollupOptions: {
