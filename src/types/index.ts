@@ -441,3 +441,6 @@ export interface DashboardDiscoveryStock {
 
 // User Rating Types (for guided analysis)
 export type UserRating = 'weak' | 'fair' | 'good' | 'great' | null
+
+// Scoring & Backtesting Types
+export * from './scoring'
