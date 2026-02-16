@@ -124,6 +124,12 @@ function lookupScoreBand(rawValue: number, scoreBands: ScoreBand[]): number {
 
 /**
  * Score a single metric: apply negative rules first, then band lookup.
+ *
+ * Key ordering: When context is available, check negative handling rules BEFORE
+ * the null-exclusion check. Growth metrics return null when the base year is
+ * negative (CAGR is mathematically undefined), but context carries start/end
+ * values so the negative handling rules can still fire and assign a score
+ * (e.g., start_negative → 0, both_negative → improvement_check → 25).
  */
 export function scoreMetric(
   rawValue: number | null,
@@ -131,7 +137,29 @@ export function scoreMetric(
   negativeRules: NegativeHandling[] = [],
   context?: { startValue?: number; endValue?: number }
 ): MetricScore {
-  // Null raw value → excluded
+  const allNegativeRules = [
+    ...negativeRules,
+    ...(metric.negativeHandling || []),
+  ]
+
+  // Check negative handling rules FIRST when context is available.
+  // This is critical for growth metrics where rawValue is null due to
+  // negative base years — the context tells us WHY it's null.
+  if (context && allNegativeRules.length > 0) {
+    const negativeResult = applyNegativeHandling(rawValue, metric.id, allNegativeRules, context)
+    if (negativeResult) {
+      return {
+        metricId: metric.id,
+        metricName: metric.name,
+        rawValue,
+        normalizedScore: negativeResult.score,
+        isExcluded: negativeResult.excluded,
+        excludeReason: negativeResult.reason,
+      }
+    }
+  }
+
+  // Null raw value with no applicable negative rule → excluded
   if (rawValue == null) {
     return {
       metricId: metric.id,
@@ -143,21 +171,18 @@ export function scoreMetric(
     }
   }
 
-  // Check negative handling rules
-  const allNegativeRules = [
-    ...negativeRules,
-    ...(metric.negativeHandling || []),
-  ]
-  const negativeResult = applyNegativeHandling(rawValue, metric.id, allNegativeRules, context)
-
-  if (negativeResult) {
-    return {
-      metricId: metric.id,
-      metricName: metric.name,
-      rawValue,
-      normalizedScore: negativeResult.score,
-      isExcluded: negativeResult.excluded,
-      excludeReason: negativeResult.reason,
+  // Standard negative handling for non-null values (no context provided)
+  if (allNegativeRules.length > 0 && !context) {
+    const negativeResult = applyNegativeHandling(rawValue, metric.id, allNegativeRules)
+    if (negativeResult) {
+      return {
+        metricId: metric.id,
+        metricName: metric.name,
+        rawValue,
+        normalizedScore: negativeResult.score,
+        isExcluded: negativeResult.excluded,
+        excludeReason: negativeResult.reason,
+      }
     }
   }
 
