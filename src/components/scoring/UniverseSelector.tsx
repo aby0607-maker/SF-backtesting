@@ -12,8 +12,9 @@ import { cn } from '@/lib/utils'
 import { useScoringStore } from '@/store/useScoringStore'
 import { getCompanyMaster, searchCompanies } from '@/services/cmots/companyMaster'
 import { isMockMode } from '@/services/cmots/client'
+import { MOCK_COMPANIES } from '@/data/mockScoringData'
 import type { CMOTSCompany } from '@/types/scoring'
-import { Globe, Search, Filter, Users, X, Hash, AlertTriangle } from 'lucide-react'
+import { Globe, Search, Filter, Users, X, Hash, AlertTriangle, Check } from 'lucide-react'
 
 type SelectionMode = 'individual' | 'cohort' | 'all'
 
@@ -88,19 +89,9 @@ export function UniverseSelector() {
     setUniverseFilter({ mode })
   }
 
-  // Mock mode: minimal display
+  // Mock mode: show selectable stock list
   if (isMockMode()) {
-    return (
-      <div className="rounded-xl bg-dark-800/60 border border-white/5 p-4">
-        <div className="flex items-center gap-2">
-          <Globe className="w-3.5 h-3.5 text-primary-400" />
-          <span className="text-sm font-medium text-white">Stock Universe</span>
-          <span className="text-[10px] bg-primary-500/20 text-primary-400 px-2 py-0.5 rounded-full">
-            Mock: 20 stocks
-          </span>
-        </div>
-      </div>
-    )
+    return <MockStockPicker />
   }
 
   return (
@@ -394,6 +385,114 @@ function AllMode({ totalUniverse }: { totalUniverse: number | null }) {
         Each stock requires multiple API calls for fundamental data.
         This may take several minutes to complete.
       </p>
+    </div>
+  )
+}
+
+// ─── Mock Mode Stock Picker ───
+
+function MockStockPicker() {
+  const universeFilter = useScoringStore(s => s.universeFilter)
+  const setUniverseFilter = useScoringStore(s => s.setUniverseFilter)
+
+  const selected = new Set(universeFilter.customSymbols)
+  const allSelected = selected.size === MOCK_COMPANIES.length
+
+  const toggle = (symbol: string) => {
+    const next = new Set(selected)
+    if (next.has(symbol)) {
+      next.delete(symbol)
+    } else {
+      next.add(symbol)
+    }
+    setUniverseFilter({ customSymbols: [...next], mode: 'individual' })
+  }
+
+  const selectAll = () => {
+    setUniverseFilter({
+      customSymbols: MOCK_COMPANIES.map(c => c.symbol),
+      mode: 'individual',
+    })
+  }
+
+  const deselectAll = () => {
+    setUniverseFilter({ customSymbols: [], mode: 'individual' })
+  }
+
+  // Group by sector
+  const bySector = MOCK_COMPANIES.reduce<Record<string, typeof MOCK_COMPANIES>>((acc, c) => {
+    ;(acc[c.sector] ??= []).push(c)
+    return acc
+  }, {})
+
+  return (
+    <div className="rounded-xl bg-dark-800/60 border border-white/5 p-4 space-y-3">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <Globe className="w-3.5 h-3.5 text-primary-400" />
+          <span className="text-sm font-medium text-white">Stock Universe</span>
+          <span className="text-[10px] bg-dark-700/60 text-neutral-400 px-2 py-0.5 rounded-full">
+            Mock Data
+          </span>
+        </div>
+        <StockCountBadge count={selected.size} />
+      </div>
+
+      {/* Select all / deselect */}
+      <div className="flex items-center gap-2">
+        <button
+          onClick={allSelected ? deselectAll : selectAll}
+          className="text-[11px] text-primary-400 hover:text-primary-300 transition-colors"
+        >
+          {allSelected ? 'Deselect All' : 'Select All 20 Stocks'}
+        </button>
+        {selected.size > 0 && !allSelected && (
+          <>
+            <span className="text-neutral-600">•</span>
+            <button
+              onClick={deselectAll}
+              className="text-[11px] text-neutral-500 hover:text-neutral-300 transition-colors"
+            >
+              Clear
+            </button>
+          </>
+        )}
+      </div>
+
+      {/* Stock grid by sector */}
+      <div className="space-y-2 max-h-64 overflow-y-auto pr-1">
+        {Object.entries(bySector).map(([sector, companies]) => (
+          <div key={sector}>
+            <div className="text-[10px] text-neutral-500 font-medium mb-1">{sector}</div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-1">
+              {companies.map(company => {
+                const isSelected = selected.has(company.symbol)
+                return (
+                  <button
+                    key={company.id}
+                    onClick={() => toggle(company.symbol)}
+                    className={cn(
+                      'flex items-center gap-1.5 px-2 py-1.5 rounded-lg text-left text-[11px] transition-all border',
+                      isSelected
+                        ? 'bg-primary-500/15 border-primary-500/30 text-primary-400'
+                        : 'bg-dark-700/30 border-white/5 text-neutral-400 hover:border-white/10 hover:text-neutral-300',
+                    )}
+                  >
+                    <div className={cn(
+                      'w-3.5 h-3.5 rounded flex items-center justify-center shrink-0 transition-colors',
+                      isSelected ? 'bg-primary-500 text-white' : 'bg-dark-600 border border-white/10',
+                    )}>
+                      {isSelected && <Check className="w-2.5 h-2.5" />}
+                    </div>
+                    <span className="truncate font-medium">{company.symbol}</span>
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   )
 }
