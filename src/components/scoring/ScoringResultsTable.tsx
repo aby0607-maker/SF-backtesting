@@ -9,9 +9,9 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { cn } from '@/lib/utils'
-import { useCombinedResult } from '@/store/useScoringStore'
+import { useCombinedResult, useActiveScorecard, useBacktestResult } from '@/store/useScoringStore'
 import type { SegmentResult, MetricScore } from '@/types/scoring'
-import { ChevronRight, TrendingUp, TrendingDown, Minus } from 'lucide-react'
+import { ChevronRight, TrendingUp, TrendingDown, Minus, Calendar, Layers } from 'lucide-react'
 
 export function ScoringResultsTable() {
   const combinedResult = useCombinedResult()
@@ -20,6 +20,9 @@ export function ScoringResultsTable() {
   const [sortField, setSortField] = useState<'score' | 'name'>('score')
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc')
 
+  const scorecard = useActiveScorecard()
+  const backtestResult = useBacktestResult()
+
   if (!combinedResult?.scoring) {
     return (
       <div className="text-center py-8 text-neutral-500 text-sm">
@@ -27,6 +30,12 @@ export function ScoringResultsTable() {
       </div>
     )
   }
+
+  const scoredAt = new Date(combinedResult.scoring.runTimestamp).toLocaleDateString('en-IN', {
+    day: 'numeric', month: 'short', year: 'numeric',
+  })
+  const backtestFrom = backtestResult?.config?.dateRange?.from
+  const backtestTo = backtestResult?.config?.dateRange?.to
 
   const stocks = [...combinedResult.scoring.stocks]
   if (sortField === 'score') {
@@ -51,7 +60,32 @@ export function ScoringResultsTable() {
 
   return (
     <div className="rounded-xl bg-dark-800/40 border border-white/5 overflow-hidden">
-      {/* Header */}
+      {/* Context header */}
+      <div className="flex items-center gap-4 px-4 py-2.5 border-b border-white/5 bg-dark-800/60">
+        <div className="flex items-center gap-1.5 text-[11px] text-neutral-400">
+          <Calendar className="w-3 h-3 text-primary-400" />
+          <span>Scored: <span className="text-white font-medium">{scoredAt}</span></span>
+        </div>
+        {backtestFrom && backtestTo && (
+          <div className="text-[11px] text-neutral-400">
+            Period: <span className="text-white font-medium">{backtestFrom}</span>
+            <span className="text-neutral-600 mx-1">→</span>
+            <span className="text-white font-medium">{backtestTo}</span>
+          </div>
+        )}
+        <div className="flex items-center gap-1.5 text-[11px] text-neutral-400 ml-auto">
+          <Layers className="w-3 h-3 text-primary-400" />
+          <span className="text-white font-medium">{stocks.length}</span> stocks
+          {scorecard && (
+            <>
+              <span className="text-neutral-600 mx-0.5">·</span>
+              <span className="text-primary-400 font-medium">{scorecard.versionInfo.displayVersion}</span>
+            </>
+          )}
+        </div>
+      </div>
+
+      {/* Column header */}
       <div className="grid grid-cols-[1fr_100px_80px_80px] px-4 py-2.5 border-b border-white/5 text-[10px] text-neutral-500 uppercase tracking-wider">
         <button onClick={() => toggleSort('name')} className="text-left hover:text-neutral-300 transition-colors">
           Stock {sortField === 'name' && (sortDir === 'asc' ? '↑' : '↓')}

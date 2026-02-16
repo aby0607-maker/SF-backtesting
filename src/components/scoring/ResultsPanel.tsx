@@ -1,9 +1,19 @@
 /**
- * ResultsPanel — Stage 5: Tab switcher for Scores / Performance
+ * ResultsPanel — Stage 5: Tab switcher for Scores / Performance / Analysis
  *
- * Tab 1: ScoringResultsTable — 3-level progressive disclosure
- * Tab 2: PriceDeltaTable — interval-column price delta grid
- * Below tabs: Existing analysis charts (equity curves, quintile, waterfall, etc.)
+ * Performance tab (restructured):
+ *   ├── ScoreReturnCorrelation      ← Score vs Return scatter + correlation timeline
+ *   ├── PriceDeltaTable             ← Expandable rows with sparkline/score history/heatmap
+ *   ├── PerformanceChart            ← Equity curves
+ *   ├── MetricContributionWaterfall ← Per-stock metric breakdown (moved from Analysis)
+ *   └── ScoreTrajectoryChart        ← Score timeline (moved from Analysis)
+ *
+ * Analysis tab (macro-level):
+ *   ├── QuintileAnalysisChart
+ *   ├── RelativePerformanceChart
+ *   └── CohortComparisonTable
+ *
+ * Selected stock state lives here, passed to children.
  */
 
 import { useState } from 'react'
@@ -12,6 +22,7 @@ import { useCombinedResult, useBacktestResult } from '@/store/useScoringStore'
 import { ScoringResultsTable } from './ScoringResultsTable'
 import { PriceDeltaTable } from './PriceDeltaTable'
 import { SummaryMetricsGrid } from './SummaryMetricsGrid'
+import { ScoreReturnCorrelation } from './ScoreReturnCorrelation'
 import { PerformanceChart } from './PerformanceChart'
 import { QuintileAnalysisChart } from './QuintileAnalysisChart'
 import { RelativePerformanceChart } from './RelativePerformanceChart'
@@ -31,6 +42,7 @@ const TABS: { id: ResultsTab; label: string; icon: typeof BarChart3 }[] = [
 
 export function ResultsPanel() {
   const [activeTab, setActiveTab] = useState<ResultsTab>('scores')
+  const [selectedStockId, setSelectedStockId] = useState<string | null>(null)
   const combinedResult = useCombinedResult()
   const backtestResult = useBacktestResult()
 
@@ -45,17 +57,23 @@ export function ResultsPanel() {
     )
   }
 
+  // Clear selected stock when switching tabs (avoid stale state)
+  const handleTabChange = (tab: ResultsTab) => {
+    setActiveTab(tab)
+    if (tab !== 'performance') setSelectedStockId(null)
+  }
+
   return (
     <div className="space-y-4">
-      {/* Summary metrics */}
-      <SummaryMetricsGrid />
+      {/* Summary metrics — switches between aggregate and per-stock */}
+      <SummaryMetricsGrid selectedStockId={selectedStockId} />
 
       {/* Tab bar */}
       <div className="flex items-center gap-1 border-b border-white/5 pb-px">
         {TABS.map(({ id, label, icon: Icon }) => (
           <button
             key={id}
-            onClick={() => setActiveTab(id)}
+            onClick={() => handleTabChange(id)}
             className={cn(
               'flex items-center gap-1.5 px-4 py-2 text-xs font-medium border-b-2 transition-all -mb-px',
               activeTab === id
@@ -67,6 +85,16 @@ export function ResultsPanel() {
             {label}
           </button>
         ))}
+
+        {/* Selected stock indicator */}
+        {selectedStockId && activeTab === 'performance' && (
+          <button
+            onClick={() => setSelectedStockId(null)}
+            className="ml-2 text-[10px] text-primary-400 bg-primary-500/10 px-2 py-1 rounded-full hover:bg-primary-500/20 transition-colors"
+          >
+            Clear selection ✕
+          </button>
+        )}
 
         {/* Export button on the right */}
         <div className="ml-auto">
@@ -81,8 +109,25 @@ export function ResultsPanel() {
 
       {activeTab === 'performance' && (
         <div className="space-y-4">
-          <PriceDeltaTable />
+          {/* Score vs Return correlation — the key insight chart */}
+          <ScoreReturnCorrelation />
+
+          {/* Price delta table with expandable rows */}
+          <PriceDeltaTable
+            onSelectStock={setSelectedStockId}
+            selectedStockId={selectedStockId}
+          />
+
+          {/* Equity curves */}
           {hasBacktest && <PerformanceChart />}
+
+          {/* Per-stock deep dive (moved from Analysis) */}
+          {hasBacktest && (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <MetricContributionWaterfall />
+              <ScoreTrajectoryChart />
+            </div>
+          )}
         </div>
       )}
 
@@ -95,10 +140,6 @@ export function ResultsPanel() {
                 <RelativePerformanceChart />
               </div>
               <CohortComparisonTable />
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                <MetricContributionWaterfall />
-                <ScoreTrajectoryChart />
-              </div>
             </>
           )}
           {!hasBacktest && (

@@ -51,6 +51,7 @@ export { RelativePerformanceChart } from './RelativePerformanceChart'
 export { QuintileAnalysisChart } from './QuintileAnalysisChart'
 export { MetricContributionWaterfall } from './MetricContributionWaterfall'
 export { ScoreTrajectoryChart } from './ScoreTrajectoryChart'
+export { ScoreReturnCorrelation } from './ScoreReturnCorrelation'
 export { ExportReportButton } from './ExportReportButton'
 
 // ─── Legacy (not used in 5-stage pipeline) ───
