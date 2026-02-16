@@ -15,6 +15,17 @@ import { getStockDataForScoring } from '@/data/mockScoringData'
 import { isMockMode } from '@/services/cmots/client'
 import { getAllFundamentals, findStatementRow, getStatementValue, getYearColumns } from '@/services/cmots/fundamentals'
 import { getCompanyBySymbol } from '@/services/cmots/companyMaster'
+import { getHistoricalPrices } from '@/services/cmots/priceData'
+import { ema, rsi, volumePriceTrend, priceVsEMA } from '@/lib/technicalCalc'
+
+// ─────────────────────────────────────────────────
+// Return Type — includes context for negative handling
+// ─────────────────────────────────────────────────
+
+export interface ResolvedMetrics {
+  data: Record<string, number | null>
+  context?: Record<string, { startValue?: number; endValue?: number }>
+}
 
 // ─────────────────────────────────────────────────
 // P&L / Cash Flow Row Numbers (from CMOTS API testing)
@@ -44,10 +55,10 @@ function mapCMOTSToMetricIds(
 ): Record<string, number | null> {
   const metrics: Record<string, number | null> = {}
 
-  // ── Growth Metrics (derived from P&L + FinData) ──
-  metrics['v2_revenue_growth'] = computeRevenueGrowth3Y(finData, pnl)
-  metrics['v2_ebitda_growth'] = computeRowGrowth3Y(pnl, PNL_ROW_EBITDA)
-  metrics['v2_earnings_growth'] = computeRowGrowth3Y(pnl, PNL_ROW_PAT)
+  // ── Growth Metrics (derived from P&L + FinData, 5Y CAGR) ──
+  metrics['v2_revenue_growth'] = computeRevenueGrowth5Y(finData, pnl)
+  metrics['v2_ebitda_growth'] = computeRowGrowth5Y(pnl, PNL_ROW_EBITDA)
+  metrics['v2_earnings_growth'] = computeRowGrowth5Y(pnl, PNL_ROW_PAT)
 
   // ── Profitability (from TTM) ──
   metrics['v2_roe'] = ttm?.roe_ttm ?? null
@@ -108,45 +119,45 @@ function mapCMOTSToMetricIds(
 // ─────────────────────────────────────────────────
 
 /**
- * Compute 3-year revenue CAGR from FinData.
+ * Compute 5-year revenue CAGR from FinData.
  * FinData has `revenue` for each year and `revenue_perc` (YoY growth).
- * We prefer CAGR from absolute values when 3+ years available.
+ * We prefer CAGR from absolute values when 5+ years available.
  */
-function computeRevenueGrowth3Y(
+function computeRevenueGrowth5Y(
   finData: CMOTSFinancialRecord[],
   pnl: CMOTSStatementRow[]
 ): number | null {
   // Try FinData first (cleaner — has yearly revenue)
-  if (finData.length >= 3) {
+  if (finData.length >= 5) {
     const latest = finData[finData.length - 1]
-    const threeYearsAgo = finData[finData.length - 3]
-    if (latest.revenue > 0 && threeYearsAgo.revenue > 0) {
-      return computeCAGR(threeYearsAgo.revenue, latest.revenue, 3)
+    const fiveYearsAgo = finData[finData.length - 5]
+    if (latest.revenue > 0 && fiveYearsAgo.revenue > 0) {
+      return computeCAGR(fiveYearsAgo.revenue, latest.revenue, 5)
     }
   }
 
   // Fall back to P&L revenue row
-  return computeRowGrowth3Y(pnl, PNL_ROW_REVENUE)
+  return computeRowGrowth5Y(pnl, PNL_ROW_REVENUE)
 }
 
 /**
- * Compute 3-year CAGR from a P&L or Cash Flow row.
- * Extracts the latest and 3rd-oldest year column values.
+ * Compute 5-year CAGR from a P&L or Cash Flow row.
+ * Extracts the latest and 5th-oldest year column values.
  */
-function computeRowGrowth3Y(rows: CMOTSStatementRow[], rowno: number): number | null {
+function computeRowGrowth5Y(rows: CMOTSStatementRow[], rowno: number): number | null {
   const row = findStatementRow(rows, rowno)
   if (!row) return null
 
   const yearCols = getYearColumns(row)  // Newest first
-  if (yearCols.length < 3) return null
+  if (yearCols.length < 5) return null
 
   const latest = getStatementValue(row, yearCols[0])
-  const threeYearsAgo = getStatementValue(row, yearCols[2])
+  const fiveYearsAgo = getStatementValue(row, yearCols[4])
 
-  if (latest == null || threeYearsAgo == null) return null
-  if (threeYearsAgo <= 0) return null  // Can't compute CAGR from negative base
+  if (latest == null || fiveYearsAgo == null) return null
+  if (fiveYearsAgo <= 0) return null  // Can't compute CAGR from negative base
 
-  return computeCAGR(threeYearsAgo, latest, 3)
+  return computeCAGR(fiveYearsAgo, latest, 5)
 }
 
 /** Compute growth in a FinData field over the available period */
@@ -174,6 +185,110 @@ function getLatestStatementValue(rows: CMOTSStatementRow[], rowno: number): numb
   const yearCols = getYearColumns(row)
   if (yearCols.length === 0) return null
   return getStatementValue(row, yearCols[0])
+}
+
+// ─────────────────────────────────────────────────
+// Growth Context Extraction (for negative handling)
+// ─────────────────────────────────────────────────
+
+/**
+ * Extract start/end year raw values from a P&L row (5Y span).
+ * These values feed the scoring engine's negative handling rules
+ * (e.g., start_negative → exclude, both_negative → exclude).
+ */
+function extractRowContext(
+  rows: CMOTSStatementRow[], rowno: number
+): { startValue?: number; endValue?: number } | null {
+  const row = findStatementRow(rows, rowno)
+  if (!row) return null
+  const yearCols = getYearColumns(row)
+  if (yearCols.length < 5) return null
+  const latest = getStatementValue(row, yearCols[0])
+  const fiveYearsAgo = getStatementValue(row, yearCols[4])
+  if (latest == null && fiveYearsAgo == null) return null
+  return { startValue: fiveYearsAgo ?? undefined, endValue: latest ?? undefined }
+}
+
+/**
+ * Build context for all growth metrics from P&L + FinData.
+ * Context carries start/end year values so the scoring engine can determine
+ * which negative handling rule applies (start_negative, end_negative, both_negative).
+ */
+function extractGrowthContext(
+  pnl: CMOTSStatementRow[],
+  finData: CMOTSFinancialRecord[]
+): Record<string, { startValue?: number; endValue?: number }> {
+  const context: Record<string, { startValue?: number; endValue?: number }> = {}
+
+  // Revenue — try FinData first (cleaner yearly data), fall back to P&L
+  if (finData.length >= 5) {
+    context.v2_revenue_growth = {
+      startValue: finData[finData.length - 5].revenue,
+      endValue: finData[finData.length - 1].revenue,
+    }
+  } else {
+    const revCtx = extractRowContext(pnl, PNL_ROW_REVENUE)
+    if (revCtx) context.v2_revenue_growth = revCtx
+  }
+
+  // EBITDA
+  const ebitdaCtx = extractRowContext(pnl, PNL_ROW_EBITDA)
+  if (ebitdaCtx) context.v2_ebitda_growth = ebitdaCtx
+
+  // Earnings (PAT)
+  const patCtx = extractRowContext(pnl, PNL_ROW_PAT)
+  if (patCtx) context.v2_earnings_growth = patCtx
+
+  return context
+}
+
+// ─────────────────────────────────────────────────
+// Technical Metrics from OHLCV Price Data
+// ─────────────────────────────────────────────────
+
+/**
+ * Fetch 1 year of OHLCV data and compute all 5 technical metrics.
+ * Returns raw values (deviation %, RSI, VPT) — the scorecard's score bands
+ * handle the 0-100 scoring.
+ */
+async function computeTechnicalFromPrices(
+  stockId: string
+): Promise<{ ema20Dev: number; ema50Dev: number; ema200Dev: number; rsi: number; vpt: number } | null> {
+  try {
+    const to = new Date().toISOString().split('T')[0]
+    const from = new Date(Date.now() - 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+    const prices = await getHistoricalPrices(stockId, from, to)
+
+    if (!prices || prices.length < 200) return null  // Need 200+ days for 200-day EMA
+
+    const closes = prices.map(p => p.Dayclose)
+    const volumes = prices.map(p => p.TotalVolume)
+    const currentPrice = closes[closes.length - 1]
+
+    const ema20 = ema(closes, 20)
+    const ema50 = ema(closes, 50)
+    const ema200 = ema(closes, 200)
+
+    const latestEma20 = ema20.length > 0 ? ema20[ema20.length - 1] : null
+    const latestEma50 = ema50.length > 0 ? ema50[ema50.length - 1] : null
+    const latestEma200 = ema200.length > 0 ? ema200[ema200.length - 1] : null
+
+    if (latestEma20 == null || latestEma50 == null || latestEma200 == null) return null
+
+    const rsiValue = rsi(closes, 14)
+    const vptValue = volumePriceTrend(closes, volumes)
+
+    return {
+      ema20Dev: priceVsEMA(currentPrice, latestEma20),
+      ema50Dev: priceVsEMA(currentPrice, latestEma50),
+      ema200Dev: priceVsEMA(currentPrice, latestEma200),
+      rsi: rsiValue ?? 50,      // Neutral fallback
+      vpt: vptValue ?? 0,       // Neutral fallback
+    }
+  } catch (err) {
+    console.warn(`[MetricResolver] Failed to compute technical metrics for ${stockId}`, err)
+    return null
+  }
 }
 
 // ─────────────────────────────────────────────────
@@ -240,22 +355,28 @@ function computeYoYMultiplier(row: CMOTSStatementRow): number | null {
 
 /**
  * Resolve all metric values for a stock given its NSE symbol.
- * Returns a flat Record<metricId, value> suitable for the scoring engine.
+ * Returns metric data + context (start/end year values for negative handling).
  *
  * In mock mode: pulls from MOCK_STOCK_METRICS directly.
- * In API mode: fetches from CMOTS services and maps fields.
+ * In API mode: fetches from CMOTS services, computes technical indicators,
+ * and extracts growth context from P&L rows.
  */
 export async function resolveMetricValues(
   stockId: string
-): Promise<Record<string, number | null> | null> {
+): Promise<ResolvedMetrics | null> {
   if (isMockMode()) {
     const stockData = getStockDataForScoring(stockId)
     if (!stockData) return null
-    return stockData.data
+    return { data: stockData.data, context: stockData.context }
   }
 
-  // API mode: fetch all fundamental data from CMOTS
-  const { ttm, finData, pnl, cashFlow, quarterly } = await getAllFundamentals(stockId)
+  // API mode: fetch fundamentals + price data in parallel
+  const [fundamentals, technicalData] = await Promise.all([
+    getAllFundamentals(stockId),
+    computeTechnicalFromPrices(stockId),
+  ])
+
+  const { ttm, finData, pnl, cashFlow, quarterly } = fundamentals
 
   // If no TTM data available, this stock can't be scored
   if (!ttm) {
@@ -263,22 +384,28 @@ export async function resolveMetricValues(
     return null
   }
 
-  return mapCMOTSToMetricIds(ttm, finData, pnl, cashFlow, quarterly)
+  const data = mapCMOTSToMetricIds(ttm, finData, pnl, cashFlow, quarterly, technicalData ?? undefined)
+  const context = extractGrowthContext(pnl, finData)
+
+  return {
+    data,
+    context: Object.keys(context).length > 0 ? context : undefined,
+  }
 }
 
 /**
  * Resolve metric values for multiple stocks (batch).
- * Returns a map of stockId → metric values.
+ * Returns a map of stockId → resolved metrics (data + context).
  */
 export async function resolveMetricValuesBatch(
   stockIds: string[]
-): Promise<Record<string, Record<string, number | null>>> {
-  const result: Record<string, Record<string, number | null>> = {}
+): Promise<Record<string, ResolvedMetrics>> {
+  const result: Record<string, ResolvedMetrics> = {}
 
   if (isMockMode()) {
     for (const id of stockIds) {
-      const data = await resolveMetricValues(id)
-      if (data) result[id] = data
+      const resolved = await resolveMetricValues(id)
+      if (resolved) result[id] = resolved
     }
     return result
   }
@@ -288,8 +415,8 @@ export async function resolveMetricValuesBatch(
   for (let i = 0; i < stockIds.length; i += BATCH_SIZE) {
     const batch = stockIds.slice(i, i + BATCH_SIZE)
     const fetches = batch.map(async id => {
-      const data = await resolveMetricValues(id)
-      if (data) result[id] = data
+      const resolved = await resolveMetricValues(id)
+      if (resolved) result[id] = resolved
     })
     await Promise.all(fetches)
   }

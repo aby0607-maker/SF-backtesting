@@ -1,16 +1,16 @@
 /**
- * Conditional Valuation Logic — V2 Expert Model
+ * Conditional Valuation Logic — V2.2 Expert Model (PB-Anchored)
  *
- * The V2 valuation score has complex conditional weighting:
+ * The V2.2 valuation score uses PB as the anchor metric:
  * - 3 metrics: PE vs 5Y Avg, PB vs 5Y Avg, EV/EBITDA vs 5Y Avg
- * - Default weights: PE=40%, PB=30%, EV=30%
- * - But conditions override these weights based on raw values
+ * - Default weights: PE=30%, PB=50%, EV=20%  (PB-anchored)
+ * - Conditions override these weights based on raw values
  *
- * Conditions (from SME CSV):
- * 1. PB > 30 → Exclude PB, use PE=60% + EV=40%
+ * Conditions (from SME CSV V2.2):
+ * 1. PB > 30 → Entire valuation = NA (unreliable at extreme PB)
  * 2. PE > 75 AND EV > 35 → Use PB only (100%)
- * 3. PE > 75 → Use PB=50% + EV=50% (exclude PE)
- * 4. EV > 35 → Use PE=50% + PB=50% (exclude EV)
+ * 3. PE > 75 → Use PB=60% + EV=40% (exclude PE)
+ * 4. EV > 35 → Use PB=60% + PE=40% (exclude EV)
  * 5. Only PE available → PE=100%
  * 6. Only PB available → PB=100%
  * 7. Only EV available → EV=100%
@@ -29,10 +29,11 @@ interface ValuationResult {
   score: number
   weights: { pe: number; pb: number; ev: number }
   condition: string          // Which condition was applied
+  isNA?: boolean             // True when valuation is unreliable (PB > 30)
 }
 
 /**
- * Compute the V2 valuation score with conditional weighting logic.
+ * Compute the V2.2 valuation score with PB-anchored conditional weighting.
  */
 export function computeValuationScore(input: ValuationInput): ValuationResult {
   const { peScore, pbScore, evScore, rawPE, rawPB, rawEV } = input
@@ -47,7 +48,13 @@ export function computeValuationScore(input: ValuationInput): ValuationResult {
 
   // No metrics available
   if (availableCount === 0) {
-    return { score: 0, weights: { pe: 0, pb: 0, ev: 0 }, condition: 'No valuation metrics available' }
+    return { score: 0, weights: { pe: 0, pb: 0, ev: 0 }, condition: 'No valuation metrics available', isNA: true }
+  }
+
+  // Condition 1: PB > 30 → Entire valuation NA
+  // At extreme PB levels, valuation ratios are unreliable — return NA
+  if (hasPB && rawPB! > 30) {
+    return { score: 0, weights: { pe: 0, pb: 0, ev: 0 }, condition: 'PB > 30 → valuation NA (unreliable)', isNA: true }
   }
 
   // Single metric available
@@ -57,34 +64,20 @@ export function computeValuationScore(input: ValuationInput): ValuationResult {
     if (hasEV) return { score: evScore!, weights: { pe: 0, pb: 0, ev: 1 }, condition: 'Only EV available → EV=100%' }
   }
 
-  // Condition 1: PB > 30 → Exclude PB
-  if (hasPB && rawPB! > 30) {
-    if (hasPE && hasEV) {
-      const score = peScore! * 0.6 + evScore! * 0.4
-      return { score, weights: { pe: 0.6, pb: 0, ev: 0.4 }, condition: 'PB > 30 → excluded, PE=60% + EV=40%' }
-    }
-    if (hasPE) {
-      return { score: peScore!, weights: { pe: 1, pb: 0, ev: 0 }, condition: 'PB > 30 → excluded, only PE available' }
-    }
-    if (hasEV) {
-      return { score: evScore!, weights: { pe: 0, pb: 0, ev: 1 }, condition: 'PB > 30 → excluded, only EV available' }
-    }
-  }
-
   // Condition 2: PE > 75 AND EV > 35 → Use PB only
   if (hasPE && hasEV && rawPE! > 75 && rawEV! > 35) {
     if (hasPB) {
       return { score: pbScore!, weights: { pe: 0, pb: 1, ev: 0 }, condition: 'PE > 75 & EV > 35 → PB only (100%)' }
     }
-    // If no PB but PE & EV are extreme, score = 0
-    return { score: 0, weights: { pe: 0, pb: 0, ev: 0 }, condition: 'PE > 75 & EV > 35, no PB → score = 0' }
+    // If no PB but PE & EV are extreme, valuation = NA
+    return { score: 0, weights: { pe: 0, pb: 0, ev: 0 }, condition: 'PE > 75 & EV > 35, no PB → valuation NA', isNA: true }
   }
 
-  // Condition 3: PE > 75 → Exclude PE
+  // Condition 3: PE > 75 → Exclude PE, use PB=60% + EV=40%
   if (hasPE && rawPE! > 75) {
     if (hasPB && hasEV) {
-      const score = pbScore! * 0.5 + evScore! * 0.5
-      return { score, weights: { pe: 0, pb: 0.5, ev: 0.5 }, condition: 'PE > 75 → excluded, PB=50% + EV=50%' }
+      const score = pbScore! * 0.6 + evScore! * 0.4
+      return { score, weights: { pe: 0, pb: 0.6, ev: 0.4 }, condition: 'PE > 75 → excluded, PB=60% + EV=40%' }
     }
     if (hasPB) {
       return { score: pbScore!, weights: { pe: 0, pb: 1, ev: 0 }, condition: 'PE > 75 → excluded, only PB available' }
@@ -94,29 +87,29 @@ export function computeValuationScore(input: ValuationInput): ValuationResult {
     }
   }
 
-  // Condition 4: EV > 35 → Exclude EV
+  // Condition 4: EV > 35 → Exclude EV, use PB=60% + PE=40%
   if (hasEV && rawEV! > 35) {
     if (hasPE && hasPB) {
-      const score = peScore! * 0.5 + pbScore! * 0.5
-      return { score, weights: { pe: 0.5, pb: 0.5, ev: 0 }, condition: 'EV > 35 → excluded, PE=50% + PB=50%' }
-    }
-    if (hasPE) {
-      return { score: peScore!, weights: { pe: 1, pb: 0, ev: 0 }, condition: 'EV > 35 → excluded, only PE available' }
+      const score = pbScore! * 0.6 + peScore! * 0.4
+      return { score, weights: { pe: 0.4, pb: 0.6, ev: 0 }, condition: 'EV > 35 → excluded, PB=60% + PE=40%' }
     }
     if (hasPB) {
       return { score: pbScore!, weights: { pe: 0, pb: 1, ev: 0 }, condition: 'EV > 35 → excluded, only PB available' }
     }
+    if (hasPE) {
+      return { score: peScore!, weights: { pe: 1, pb: 0, ev: 0 }, condition: 'EV > 35 → excluded, only PE available' }
+    }
   }
 
-  // Default: Standard weights (PE=40%, PB=30%, EV=30%)
+  // Default: PB-anchored weights (PE=30%, PB=50%, EV=20%)
   // Only use available metrics, re-normalize weights
   let totalWeight = 0
   let weightedSum = 0
   const weights = { pe: 0, pb: 0, ev: 0 }
 
-  if (hasPE) { weights.pe = 0.4; totalWeight += 0.4; weightedSum += peScore! * 0.4 }
-  if (hasPB) { weights.pb = 0.3; totalWeight += 0.3; weightedSum += pbScore! * 0.3 }
-  if (hasEV) { weights.ev = 0.3; totalWeight += 0.3; weightedSum += evScore! * 0.3 }
+  if (hasPE) { weights.pe = 0.3; totalWeight += 0.3; weightedSum += peScore! * 0.3 }
+  if (hasPB) { weights.pb = 0.5; totalWeight += 0.5; weightedSum += pbScore! * 0.5 }
+  if (hasEV) { weights.ev = 0.2; totalWeight += 0.2; weightedSum += evScore! * 0.2 }
 
   // Re-normalize if not all metrics available
   if (totalWeight > 0 && totalWeight < 1) {
@@ -129,6 +122,6 @@ export function computeValuationScore(input: ValuationInput): ValuationResult {
   return {
     score: Math.round(weightedSum * 100) / 100,
     weights,
-    condition: 'Default weights: PE=40%, PB=30%, EV=30%',
+    condition: 'Default PB-anchored: PE=30%, PB=50%, EV=20%',
   }
 }

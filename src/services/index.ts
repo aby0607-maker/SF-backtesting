@@ -67,3 +67,4 @@ export {
   resolveMetricValuesBatch,
   getStockInfo,
 } from './metricResolver'
+export type { ResolvedMetrics } from './metricResolver'

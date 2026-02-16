@@ -48,11 +48,11 @@ export async function scoreWithScorecard(
     }
 
     const stockId = stockIds[i]
-    const metricValues = await resolveMetricValues(stockId)
+    const resolved = await resolveMetricValues(stockId)
     const info = await getStockInfo(stockId)
-    if (!metricValues || !info) continue
+    if (!resolved || !info) continue
 
-    const scored = scoreStock(metricValues, scorecard, info)
+    const scored = scoreStock(resolved.data, scorecard, info, resolved.context)
     stocks.push({ ...scored, rank: 0 })
 
     // Report progress
@@ -204,11 +204,11 @@ export async function backtestScorecard(
   // Score all cohort stocks to build a snapshot
   const snapshotStocks: StockScoreResult[] = []
   for (const stockId of targetStockIds) {
-    const metricValues = await resolveMetricValues(stockId)
+    const resolved = await resolveMetricValues(stockId)
     const info = await getStockInfo(stockId)
-    if (!metricValues || !info) continue
+    if (!resolved || !info) continue
 
-    const scored = scoreStock(metricValues, scorecard, info)
+    const scored = scoreStock(resolved.data, scorecard, info, resolved.context)
     snapshotStocks.push({ ...scored, rank: 0 })
   }
   snapshotStocks.sort((a, b) => b.normalizedScore - a.normalizedScore)
