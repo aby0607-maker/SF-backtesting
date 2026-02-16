@@ -30,7 +30,7 @@ import { resolveMetricValues, resolveMetricsAtDate, getStockInfo } from '@/servi
 import { getCompanyMaster } from '@/services/cmots/companyMaster'
 import { getBatchPrices } from '@/services/cmots/priceData'
 import type { CMOTSOHLCVRecord } from '@/types/scoring'
-import { getAllFundamentals } from '@/services/cmots/fundamentals'
+import { getAllFundamentals, getYearColumns } from '@/services/cmots/fundamentals'
 import type { FundamentalsBundle } from '@/services/cmots/fundamentals'
 
 // ─────────────────────────────────────────────────
@@ -528,6 +528,15 @@ export async function backtestScorecard(
     stockData.push({ stockId, fundamentals, info })
   }))
 
+  // ── Data Coverage Check ──
+  // Detect if the backtest start date is before the earliest scoreable date.
+  // CMOTS provides ~5 recent fiscal year columns. If the start date is before
+  // the oldest FY end, windowed year columns will be empty → all metrics N/A.
+  const coverageInfo = computeDataCoverage(stockData, priceHistoryWithVolume, config.dateRange.from)
+  if (coverageInfo.warning) {
+    backtestWarnings.unshift(coverageInfo.warning)
+  }
+
   // ── Phase 2: Compute interval dates ──
 
   const anyPriceHistory = Object.values(priceHistory)[0]
@@ -595,6 +604,128 @@ export async function backtestScorecard(
     batchPrices: filteredBatchPrices,
     intervalDates,
   }
+}
+
+// ─────────────────────────────────────────────────
+// Data Coverage Detection
+// ─────────────────────────────────────────────────
+
+/**
+ * Compute the earliest date where meaningful scoring is possible.
+ *
+ * CMOTS provides ~5 recent fiscal year columns. Growth metrics need ≥ 2 windowed
+ * year columns, and technical metrics need ≥ 200 trading days of price history.
+ * If the user's backtest start date is before these thresholds, scores will be
+ * mostly N/A at early intervals.
+ */
+function computeDataCoverage(
+  stockData: { stockId: string; fundamentals: FundamentalsBundle; info: { name: string } }[],
+  priceHistoryWithVolume: Record<string, { date: string; price: number; volume?: number }[]>,
+  fromDate: string,
+): { warning: string | null; earliestFundamental: string | null; earliestTechnical: string | null } {
+  // Find the earliest fiscal year end across all stocks' P&L data.
+  // Year columns are like Y202103 → fiscal year ending March 2021.
+  let earliestFYEnd: Date | null = null
+  let secondEarliestFYEnd: Date | null = null
+
+  for (const { fundamentals } of stockData) {
+    if (fundamentals.pnl.length === 0) continue
+
+    // Check any P&L row for year columns (they're the same across rows)
+    const sampleRow = fundamentals.pnl[0]
+    const yearCols = getYearColumns(sampleRow)
+    if (yearCols.length === 0) continue
+
+    // Year columns are newest first — last one is oldest
+    for (const col of yearCols) {
+      const year = parseInt(col.slice(1, 5))
+      const month = parseInt(col.slice(5, 7))
+      const fyEnd = new Date(year, month - 1, 28)
+
+      if (!earliestFYEnd || fyEnd < earliestFYEnd) {
+        secondEarliestFYEnd = earliestFYEnd
+        earliestFYEnd = fyEnd
+      } else if (!secondEarliestFYEnd || fyEnd < secondEarliestFYEnd) {
+        secondEarliestFYEnd = fyEnd
+      }
+    }
+
+    // Only need to check one stock — year columns are the same across stocks
+    break
+  }
+
+  // Earliest date for single-value metrics (ROE, valuation): 1 FY column needed
+  const earliestFundamental = earliestFYEnd
+    ? earliestFYEnd.toISOString().split('T')[0]
+    : null
+
+  // Earliest date for growth metrics: 2 FY columns needed
+  const earliestGrowth = secondEarliestFYEnd
+    ? secondEarliestFYEnd.toISOString().split('T')[0]
+    : null
+
+  // Earliest date for technical: first available price date + 200 trading days
+  let earliestTechnical: string | null = null
+  const allFirstDates: string[] = []
+  for (const prices of Object.values(priceHistoryWithVolume)) {
+    if (prices.length > 0) {
+      allFirstDates.push(prices[0].date)
+    }
+  }
+  if (allFirstDates.length > 0) {
+    allFirstDates.sort()
+    const first = allFirstDates[0]
+    // ~200 trading days ≈ 10 calendar months
+    const techDate = new Date(first)
+    techDate.setMonth(techDate.getMonth() + 10)
+    earliestTechnical = techDate.toISOString().split('T')[0]
+  }
+
+  // Build structured warning with per-category dates and reasons
+  const thresholds: { category: string; metrics: string; availableFrom: string; reason: string }[] = []
+
+  if (earliestFundamental && fromDate < earliestFundamental) {
+    thresholds.push({
+      category: 'Financial & Valuation',
+      metrics: 'ROE, OCF/EBITDA, Debt/EBITDA, PE, PB, EV/EBITDA',
+      availableFrom: formatFYDate(earliestFYEnd!),
+      reason: `CMOTS P&L/Balance Sheet data starts from FY ending ${formatFYDate(earliestFYEnd!)}. Need ≥1 fiscal year column.`,
+    })
+  }
+  if (earliestGrowth && fromDate < earliestGrowth) {
+    thresholds.push({
+      category: 'Growth',
+      metrics: 'Revenue CAGR, EBITDA CAGR, Earnings CAGR, Gross Block Growth',
+      availableFrom: formatFYDate(secondEarliestFYEnd!),
+      reason: `CAGR computation needs ≥2 fiscal year columns. Second-oldest FY ends ${formatFYDate(secondEarliestFYEnd!)}.`,
+    })
+  }
+  if (earliestTechnical && fromDate < earliestTechnical) {
+    thresholds.push({
+      category: 'Technical',
+      metrics: 'EMA20/50/200, RSI, Volume-Price Trend',
+      availableFrom: `~${earliestTechnical}`,
+      reason: `EMA200 needs 200+ trading days. Price data starts ${allFirstDates[0]}, so ~10 months later.`,
+    })
+  }
+
+  if (thresholds.length === 0) {
+    return { warning: null, earliestFundamental, earliestTechnical }
+  }
+
+  // Compute recommended start date (max of all thresholds)
+  const allDates = [earliestFundamental, earliestGrowth, earliestTechnical].filter(Boolean) as string[]
+  const recommendedDate = allDates.sort().pop() ?? fromDate
+
+  // Encode as JSON inside the ⚠ prefix so the UI can parse the structure
+  const warning = `⚠ Data coverage: ${JSON.stringify({ fromDate, recommendedDate, thresholds })}`
+
+  return { warning, earliestFundamental, earliestTechnical }
+}
+
+/** Format a fiscal year end date for display (e.g., "March 2021") */
+function formatFYDate(date: Date): string {
+  return date.toLocaleDateString('en-IN', { month: 'long', year: 'numeric' })
 }
 
 /**

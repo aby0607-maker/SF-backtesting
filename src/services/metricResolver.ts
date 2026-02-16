@@ -171,6 +171,7 @@ function mapCMOTSToMetricIds(
 
   // ── Valuation: PE, PB, EV/EBITDA ──
   if (asOfDate && priceAtDate != null) {
+    // Backtest mode with price available: compute from windowed fundamentals
     const valuation = computeHistoricalValuation(
       priceAtDate, pnl, balanceSheet, asOfDate
     )
@@ -180,7 +181,17 @@ function mapCMOTSToMetricIds(
     metrics['raw_pe'] = valuation.pe
     metrics['raw_pb'] = valuation.pb
     metrics['raw_ev'] = valuation.evEbitda
+  } else if (asOfDate) {
+    // Backtest mode but NO price at this date — valuation not possible.
+    // Do NOT fall back to current TTM (that would mix future data into historical scoring).
+    metrics['v2_pe_vs_5y'] = null
+    metrics['v2_pb_vs_5y'] = null
+    metrics['v2_ev_vs_5y'] = null
+    metrics['raw_pe'] = null
+    metrics['raw_pb'] = null
+    metrics['raw_ev'] = null
   } else {
+    // Current scoring (no backtest) — use TTM ratios directly
     metrics['v2_pe_vs_5y'] = ttm?.pe_ttm ?? null
     metrics['v2_pb_vs_5y'] = ttm?.pb_ttm ?? null
     metrics['v2_ev_vs_5y'] = ttm?.ev_ebitda ?? null

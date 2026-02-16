@@ -72,10 +72,17 @@ export function ResultsPanel() {
     ...(combinedResult.backtest?.warnings ?? []),
   ]
 
+  // Separate coverage warnings (start with ⚠) from per-stock warnings
+  const coverageWarnings = allWarnings.filter(w => w.startsWith('⚠'))
+  const stockWarnings = allWarnings.filter(w => !w.startsWith('⚠'))
+
   return (
     <div className="space-y-4">
-      {/* API data warnings */}
-      {allWarnings.length > 0 && <DataWarningsBanner warnings={allWarnings} />}
+      {/* Data coverage warning — prominent, always visible */}
+      {coverageWarnings.length > 0 && <DataCoverageBanner warnings={coverageWarnings} />}
+
+      {/* Per-stock API data warnings — collapsible */}
+      {stockWarnings.length > 0 && <DataWarningsBanner warnings={stockWarnings} />}
 
       {/* Summary metrics — switches between aggregate and per-stock */}
       <SummaryMetricsGrid selectedStockId={selectedStockId} />
@@ -174,7 +181,90 @@ export function ResultsPanel() {
   )
 }
 
-// ─── Data Warnings Banner ───
+// ─── Data Coverage Banner (prominent, always visible) ───
+
+interface CoverageThreshold {
+  category: string
+  metrics: string
+  availableFrom: string
+  reason: string
+}
+
+interface CoverageData {
+  fromDate: string
+  recommendedDate: string
+  thresholds: CoverageThreshold[]
+}
+
+function parseCoverageWarning(raw: string): CoverageData | null {
+  try {
+    const json = raw.replace(/^⚠\s*Data coverage:\s*/, '')
+    return JSON.parse(json)
+  } catch {
+    return null
+  }
+}
+
+function DataCoverageBanner({ warnings }: { warnings: string[] }) {
+  const parsed = warnings.map(parseCoverageWarning).filter(Boolean) as CoverageData[]
+  if (parsed.length === 0) return null
+
+  const data = parsed[0]
+
+  return (
+    <div className="rounded-xl bg-amber-500/10 border border-amber-500/20 p-4">
+      <div className="flex items-start gap-3">
+        <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0 mt-1" />
+        <div className="flex-1 space-y-3">
+          <div>
+            <div className="text-xs font-semibold text-amber-300">Limited Data Coverage</div>
+            <p className="text-[11px] text-neutral-400 mt-0.5">
+              Your start date ({data.fromDate}) is before some CMOTS data thresholds.
+              Scores at early intervals will be N/A for the affected categories.
+            </p>
+          </div>
+
+          {/* Per-category table */}
+          <div className="rounded-lg bg-dark-800/60 border border-white/5 overflow-hidden">
+            <table className="w-full text-[11px]">
+              <thead>
+                <tr className="border-b border-white/5 text-neutral-500">
+                  <th className="text-left px-3 py-1.5 font-medium">Category</th>
+                  <th className="text-left px-3 py-1.5 font-medium">Available From</th>
+                  <th className="text-left px-3 py-1.5 font-medium">Reason</th>
+                </tr>
+              </thead>
+              <tbody>
+                {data.thresholds.map((t, i) => (
+                  <tr key={i} className="border-b border-white/5 last:border-0">
+                    <td className="px-3 py-2 text-amber-300 font-medium whitespace-nowrap">{t.category}</td>
+                    <td className="px-3 py-2 text-white font-mono whitespace-nowrap">{t.availableFrom}</td>
+                    <td className="px-3 py-2 text-neutral-400">{t.reason}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Affected metrics list */}
+          <div className="text-[10px] text-neutral-500">
+            <span className="text-neutral-400 font-medium">Affected metrics: </span>
+            {data.thresholds.map(t => t.metrics).join(', ')}
+          </div>
+
+          {/* Recommended date */}
+          <div className="flex items-center gap-2 text-[11px]">
+            <span className="text-neutral-500">Recommended start date:</span>
+            <span className="text-primary-400 font-semibold font-mono">{data.recommendedDate}</span>
+            <span className="text-neutral-600">— all segments will have complete data from this date.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ─── Data Warnings Banner (per-stock, collapsible) ───
 
 function DataWarningsBanner({ warnings }: { warnings: string[] }) {
   const [expanded, setExpanded] = useState(false)
