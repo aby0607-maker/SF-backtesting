@@ -615,12 +615,14 @@ export const useScoringStore = create<ScoringState>()(
         }
 
         // Add stock selection summary from universe filter
-        const stockNames = universeFilter.customSymbols.slice(0, 5)
+        const stockNames = universeFilter.mode === 'cohort'
+          ? [...universeFilter.mcapTypes, ...universeFilter.sectors].slice(0, 5)
+          : universeFilter.customSymbols.slice(0, 5)
         const totalStocks = universeFilter.mode === 'all'
-          ? -1  // Unknown until we fetch
+          ? -1  // Unknown until we fetch — will be resolved at run time
           : universeFilter.mode === 'individual'
             ? universeFilter.customSymbols.length
-            : universeFilter.customSymbols.length // cohort mode — symbols resolved by UniverseSelector
+            : -1  // Cohort mode — resolved at run time from company master
         snapshot.stockSelectionSummary = {
           totalStocks,
           selectionMode: universeFilter.mode,

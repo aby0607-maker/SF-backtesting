@@ -15,6 +15,9 @@ import {
 } from '@/store/useScoringStore'
 import { scoreAndBacktest } from '@/services/scoringService'
 import type { CombinedProgressPhase } from '@/services/scoringService'
+import { getCompanyMaster } from '@/services/cmots/companyMaster'
+import { isMockMode } from '@/services/cmots/client'
+import { getAllStocksForScoring } from '@/data/mockScoringData'
 import { Loader2, Rocket, AlertTriangle, X } from 'lucide-react'
 
 const PHASE_LABELS: Record<CombinedProgressPhase, string> = {
@@ -43,11 +46,19 @@ export function RunCombinedButton() {
 
   // Readiness checks
   const hasScorecard = !!scorecard && scorecard.segments.length > 0
-  const hasStocks = universeFilter.mode === 'all' || universeFilter.customSymbols.length > 0
+  const hasStocks =
+    universeFilter.mode === 'all' ||
+    universeFilter.customSymbols.length > 0 ||
+    (universeFilter.mode === 'cohort' && (universeFilter.mcapTypes.length > 0 || universeFilter.sectors.length > 0))
   const hasDateRange = !!backtestConfig?.dateRange.from && !!backtestConfig?.dateRange.to
   const canRun = hasScorecard && hasStocks && hasDateRange && !isRunning
 
-  const stockCount = universeFilter.mode === 'all' ? 'All NSE stocks' : `${universeFilter.customSymbols.length} stocks`
+  const stockCount =
+    universeFilter.mode === 'all'
+      ? 'All NSE stocks'
+      : universeFilter.mode === 'cohort'
+        ? `${universeFilter.mcapTypes.join(', ') || ''} ${universeFilter.sectors.join(', ') || ''}`.trim() || 'Cohort'
+        : `${universeFilter.customSymbols.length} stocks`
 
   const handleRun = async () => {
     if (!scorecard || !backtestConfig) return
@@ -59,8 +70,13 @@ export function RunCombinedButton() {
     abortRef.current = new AbortController()
 
     try {
-      // Resolve stock IDs
-      const stockIds = universeFilter.customSymbols
+      // Resolve stock IDs based on selection mode
+      const stockIds = await resolveStockIds(universeFilter)
+
+      if (stockIds.length === 0) {
+        setError('No stocks found matching your selection. Try broadening your filters.')
+        return
+      }
 
       const result = await scoreAndBacktest(
         stockIds,
@@ -231,6 +247,44 @@ export function RunCombinedButton() {
       </div>
     </div>
   )
+}
+
+/** Resolve universe filter into concrete stock ID list */
+async function resolveStockIds(
+  filter: { mode: string; mcapTypes: string[]; sectors: string[]; customSymbols: string[] }
+): Promise<string[]> {
+  // Individual mode: symbols already specified
+  if (filter.mode === 'individual') {
+    return filter.customSymbols
+  }
+
+  // Mock mode shortcut: return all mock stocks (no company master API)
+  if (isMockMode()) {
+    return getAllStocksForScoring().map(s => s.info.id)
+  }
+
+  // API mode: fetch company master and filter
+  const companies = await getCompanyMaster()
+
+  if (filter.mode === 'all') {
+    return companies.filter(c => c.nsesymbol).map(c => c.nsesymbol)
+  }
+
+  // Cohort mode: apply mcap + sector filters
+  const filtered = companies.filter(c => {
+    if (!c.nsesymbol) return false
+    if (filter.mcapTypes.length > 0 && !filter.mcapTypes.includes(c.mcaptype)) return false
+    if (filter.sectors.length > 0 && !filter.sectors.includes(c.sectorname)) return false
+    return true
+  })
+
+  // Include any custom additions on top of cohort filters
+  const symbols = new Set(filtered.map(c => c.nsesymbol))
+  for (const sym of filter.customSymbols) {
+    symbols.add(sym)
+  }
+
+  return [...symbols]
 }
 
 function CheckItem({ label, done, detail }: { label: string; done: boolean; detail?: string }) {
