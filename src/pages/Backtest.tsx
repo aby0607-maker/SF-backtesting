@@ -168,10 +168,6 @@ const STAGE_CONFIGS: Record<PipelineStage, StageConfig> = {
             <NormalizationSelector />
           </div>
         </div>
-        {/* Negative value handling rules */}
-        <div className="p-4 rounded-xl bg-dark-800/30 backdrop-blur-xl border border-white/5">
-          <NegativeHandlingEditor />
-        </div>
       </div>
     ),
   },
