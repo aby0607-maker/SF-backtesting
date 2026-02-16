@@ -176,7 +176,7 @@ export function UniverseSelector() {
       </div>
 
       {/* Mode-specific content */}
-      {universeFilter.mode === 'individual' && (
+      {(universeFilter.mode === 'individual' || universeFilter.mode === 'cohort') && (
         <IndividualSearch
           customSymbols={universeFilter.customSymbols}
           onAdd={symbol => setUniverseFilter({ customSymbols: [...universeFilter.customSymbols, symbol] })}
@@ -208,7 +208,7 @@ export function UniverseSelector() {
       )}
 
       {/* ── Selected stocks (always visible across all modes) ── */}
-      {selectedCount > 0 && (
+      {selectedCount > 0 && universeFilter.mode !== 'all' && (
         <SelectedStocksList
           symbols={universeFilter.customSymbols}
           excludedCount={excluded.size}
