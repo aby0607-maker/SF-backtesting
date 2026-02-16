@@ -1,0 +1,78 @@
+/**
+ * Vercel Serverless Function — CMOTS API Proxy
+ *
+ * Proxies requests from /api/cmots/* to https://deltastockzapis.cmots.com/api/*
+ * Adds Bearer auth token from environment variable.
+ *
+ * This replaces the Vite dev proxy for production deployments.
+ * The frontend client always calls /api/cmots/... — in dev the Vite proxy
+ * handles it, in production this serverless function does.
+ */
+
+import type { VercelRequest, VercelResponse } from '@vercel/node'
+
+const CMOTS_BASE = 'https://deltastockzapis.cmots.com/api'
+
+// Allowed CMOTS endpoint prefixes (whitelist for security)
+const ALLOWED_PREFIXES = [
+  '/companymaster',
+  '/TTMData',
+  '/FinData',
+  '/ProftandLoss',
+  '/CashFlow',
+  '/QuarterlyResults',
+  '/AdjustedPriceChart',
+  '/Aggregate-Share-Holding',
+]
+
+export default async function handler(req: VercelRequest, res: VercelResponse) {
+  // Only allow GET requests
+  if (req.method !== 'GET') {
+    return res.status(405).json({ error: 'Method not allowed' })
+  }
+
+  const token = process.env.CMOTS_API_TOKEN
+  if (!token) {
+    console.error('[CMOTS Proxy] CMOTS_API_TOKEN not configured')
+    return res.status(500).json({ error: 'API not configured' })
+  }
+
+  // Extract the path after /api/cmots/
+  const { path } = req.query
+  const cmotPath = Array.isArray(path) ? `/${path.join('/')}` : `/${path}`
+
+  // Whitelist check
+  const isAllowed = ALLOWED_PREFIXES.some(prefix => cmotPath.startsWith(prefix))
+  if (!isAllowed) {
+    return res.status(403).json({ error: `Endpoint not allowed: ${cmotPath}` })
+  }
+
+  const targetUrl = `${CMOTS_BASE}${cmotPath}`
+
+  try {
+    const upstream = await fetch(targetUrl, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    })
+
+    const contentType = upstream.headers.get('content-type') || 'application/json'
+    const body = await upstream.text()
+
+    // Set CORS headers
+    res.setHeader('Access-Control-Allow-Origin', '*')
+    res.setHeader('Access-Control-Allow-Methods', 'GET')
+    res.setHeader('Content-Type', contentType)
+
+    // Cache successful responses for 5 minutes at CDN level
+    if (upstream.ok) {
+      res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate=600')
+    }
+
+    return res.status(upstream.status).send(body)
+  } catch (error) {
+    console.error(`[CMOTS Proxy] Failed to fetch ${targetUrl}:`, error)
+    return res.status(502).json({ error: 'Upstream API error' })
+  }
+}
