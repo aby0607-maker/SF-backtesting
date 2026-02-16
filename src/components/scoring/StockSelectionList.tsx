@@ -5,14 +5,15 @@
 import { useState, useMemo } from 'react'
 import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
-import { useScoringStore, useCurrentScores, useCohort } from '@/store/useScoringStore'
+import { useScoringStore, useCurrentScores } from '@/store/useScoringStore'
 import type { CohortDefinition } from '@/types/scoring'
 import { Check, CheckSquare, Square, Hash } from 'lucide-react'
 
 export function StockSelectionList() {
   const currentRun = useCurrentScores()
-  const cohort = useCohort()
-  const setCohort = useScoringStore(s => s.setCohort)
+  // Deprecated: cohort removed in 5-stage pipeline
+  const cohort = null as any
+  const setCohort = (_cohort: any) => {}
   const nextStage = useScoringStore(s => s.nextStage)
 
   const [selectedIds, setSelectedIds] = useState<Set<string>>(

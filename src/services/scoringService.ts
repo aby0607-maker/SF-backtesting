@@ -1,7 +1,7 @@
 /**
  * Scoring Service — Orchestrates the scoring pipeline
  *
- * Ties together: metric resolution → scoring engine → cohort building → backtesting.
+ * Ties together: metric resolution → scoring engine → backtesting.
  * The store calls this service; the service calls engines and data sources.
  *
  * Data access goes through CMOTS services (which handle mock/API mode internally),
@@ -18,12 +18,231 @@ import type {
   BacktestResult,
   BacktestSnapshot,
   PipelineReviewSnapshot,
+  CombinedRunResult,
+  PriceDeltaRow,
+  BacktestInterval,
 } from '@/types/scoring'
 import { scoreStock } from '@/lib/scoringEngine'
 import { runBacktest } from '@/lib/backtestEngine'
 import { resolveMetricValues, getStockInfo } from '@/services/metricResolver'
 import { getCompanyMaster } from '@/services/cmots/companyMaster'
 import { getBatchPrices } from '@/services/cmots/priceData'
+
+// ─────────────────────────────────────────────────
+// Combined Scoring + Backtest (new 5-stage pipeline)
+// ─────────────────────────────────────────────────
+
+export type CombinedProgressPhase = 'scoring' | 'backtest' | 'building_table'
+
+/**
+ * Score and backtest selected stocks in one combined operation.
+ * This is the main entry point for the new 5-stage pipeline (Stage 4 → 5).
+ *
+ * Phase 1: Score all selected stocks using the scorecard
+ * Phase 2: Run backtest using price data over the date range
+ * Phase 3: Build the price delta table for interval-based view
+ */
+export async function scoreAndBacktest(
+  stockIds: string[],
+  scorecard: ScorecardVersion,
+  config: BacktestConfig,
+  options?: {
+    signal?: AbortSignal
+    onProgress?: (phase: CombinedProgressPhase, current: number, total: number) => void
+  }
+): Promise<CombinedRunResult> {
+  // Phase 1: Score all stocks
+  const scoring = await scoreWithScorecard(stockIds, scorecard, {
+    signal: options?.signal,
+    onProgress: (current, total) => options?.onProgress?.('scoring', current, total),
+  })
+
+  if (options?.signal?.aborted) {
+    throw new Error('Operation cancelled')
+  }
+
+  // Phase 2: Run backtest
+  options?.onProgress?.('backtest', 0, 1)
+  const backtest = await backtestScorecard(config, scorecard, stockIds)
+  options?.onProgress?.('backtest', 1, 1)
+
+  if (options?.signal?.aborted) {
+    throw new Error('Operation cancelled')
+  }
+
+  // Phase 3: Build price delta table
+  options?.onProgress?.('building_table', 0, 1)
+  const priceDeltaTable = await buildPriceDeltaTable(
+    scoring.stocks,
+    stockIds,
+    config.dateRange.from,
+    config.dateRange.to,
+    config.interval,
+  )
+  options?.onProgress?.('building_table', 1, 1)
+
+  return { scoring, backtest, priceDeltaTable }
+}
+
+/**
+ * Build the price delta table — shows cumulative return % at each interval.
+ * Columns: Stock | Score | Verdict | Month 1 | Month 2 | ... (or Week 1, etc.)
+ */
+export async function buildPriceDeltaTable(
+  scoredStocks: StockScoreResult[],
+  stockIds: string[],
+  fromDate: string,
+  toDate: string,
+  interval: BacktestInterval,
+): Promise<PriceDeltaRow[]> {
+  // Fetch price data
+  const batchPrices = await getBatchPrices(stockIds, fromDate, toDate)
+
+  const rows: PriceDeltaRow[] = []
+
+  for (const stock of scoredStocks) {
+    const prices = batchPrices[stock.stockId]
+    if (!prices || prices.length < 2) continue
+
+    // Group prices by interval and compute cumulative returns
+    const deltas: Record<string, number> = {}
+    const basePrice = prices[0].Dayclose
+    if (basePrice <= 0) continue
+
+    const intervalDates = getIntervalDates(prices.map(p => p.Tradedate), interval)
+
+    for (let i = 0; i < intervalDates.length; i++) {
+      const date = intervalDates[i]
+      // Find the closest price on or before this date
+      const price = findClosestPrice(prices, date)
+      if (price != null) {
+        const cumulativeReturn = ((price - basePrice) / basePrice) * 100
+        deltas[getIntervalLabel(interval, i + 1)] = Math.round(cumulativeReturn * 100) / 100
+      }
+    }
+
+    rows.push({
+      stockId: stock.stockId,
+      stockName: stock.stockName,
+      stockSymbol: stock.stockSymbol,
+      score: stock.normalizedScore,
+      verdict: stock.verdict,
+      verdictColor: stock.verdictColor,
+      deltas,
+    })
+  }
+
+  // Sort by score descending
+  rows.sort((a, b) => b.score - a.score)
+  return rows
+}
+
+/** Get interval boundary dates from a list of all trade dates */
+function getIntervalDates(tradeDates: string[], interval: BacktestInterval): string[] {
+  if (tradeDates.length === 0) return []
+
+  const dates: string[] = []
+  const sorted = [...tradeDates].sort()
+
+  switch (interval) {
+    case 'daily':
+      // Every trading day
+      return sorted.slice(1) // Skip first (base) date
+
+    case 'weekly': {
+      // Every ~7 days
+      let nextTarget = addDays(sorted[0], 7)
+      for (const d of sorted) {
+        if (d >= nextTarget) {
+          dates.push(d)
+          nextTarget = addDays(d, 7)
+        }
+      }
+      return dates
+    }
+
+    case 'monthly': {
+      // Month boundaries
+      let currentMonth = sorted[0].slice(0, 7) // "YYYY-MM"
+      for (const d of sorted) {
+        const month = d.slice(0, 7)
+        if (month !== currentMonth) {
+          dates.push(d) // First trading day of new month
+          currentMonth = month
+        }
+      }
+      return dates
+    }
+
+    case 'quarterly': {
+      // Every 3 months
+      const firstDate = new Date(sorted[0])
+      let nextQ = new Date(firstDate)
+      nextQ.setMonth(nextQ.getMonth() + 3)
+      for (const d of sorted) {
+        if (new Date(d) >= nextQ) {
+          dates.push(d)
+          nextQ = new Date(d)
+          nextQ.setMonth(nextQ.getMonth() + 3)
+        }
+      }
+      return dates
+    }
+
+    case 'yearly': {
+      let currentYear = sorted[0].slice(0, 4)
+      for (const d of sorted) {
+        const year = d.slice(0, 4)
+        if (year !== currentYear) {
+          dates.push(d)
+          currentYear = year
+        }
+      }
+      return dates
+    }
+
+    default:
+      return sorted.slice(1)
+  }
+}
+
+function addDays(dateStr: string, days: number): string {
+  const d = new Date(dateStr)
+  d.setDate(d.getDate() + days)
+  return d.toISOString().split('T')[0]
+}
+
+function findClosestPrice(
+  prices: { Tradedate: string; Dayclose: number }[],
+  targetDate: string
+): number | null {
+  // Prices are sorted by date — find the closest on or before target
+  let closest: number | null = null
+  for (const p of prices) {
+    const pDate = p.Tradedate.split('T')[0]
+    if (pDate <= targetDate) {
+      closest = p.Dayclose
+    } else {
+      break
+    }
+  }
+  return closest
+}
+
+function getIntervalLabel(interval: BacktestInterval, index: number): string {
+  switch (interval) {
+    case 'daily': return `Day ${index}`
+    case 'weekly': return `Week ${index}`
+    case 'monthly': return `Month ${index}`
+    case 'quarterly': return `Q${index}`
+    case 'yearly': return `Year ${index}`
+    default: return `Period ${index}`
+  }
+}
+
+// ─────────────────────────────────────────────────
+// Original scoring functions (still used internally)
+// ─────────────────────────────────────────────────
 
 /**
  * Score a list of stocks using a scorecard.
@@ -41,7 +260,6 @@ export async function scoreWithScorecard(
   const total = stockIds.length
 
   for (let i = 0; i < stockIds.length; i++) {
-    // Check for cancellation
     if (options?.signal?.aborted) {
       console.log(`[Scoring] Cancelled after ${i}/${total} stocks`)
       break
@@ -55,11 +273,9 @@ export async function scoreWithScorecard(
     const scored = scoreStock(resolved.data, scorecard, info, resolved.context)
     stocks.push({ ...scored, rank: 0 })
 
-    // Report progress
     options?.onProgress?.(i + 1, total)
   }
 
-  // Sort by score descending, assign ranks
   stocks.sort((a, b) => b.normalizedScore - a.normalizedScore)
   stocks.forEach((s, i) => { s.rank = i + 1 })
 
@@ -75,7 +291,6 @@ export async function scoreWithScorecard(
 
 /**
  * Score the full universe of stocks.
- * Uses Company Master to get all available stocks.
  */
 export async function scoreFullUniverse(
   scorecard: ScorecardVersion
@@ -87,7 +302,6 @@ export async function scoreFullUniverse(
 
 /**
  * Build a cohort from scored stocks using filter criteria.
- * Stage 4 entry point.
  */
 export function buildCohort(
   scoredStocks: StockScoreResult[],
@@ -128,7 +342,6 @@ export function buildCohort(
 
 /**
  * Build a minimal review snapshot from scorecard + run data.
- * Used when the store hasn't generated a full snapshot yet.
  */
 function buildReviewSnapshot(
   scorecard: ScorecardVersion,
@@ -171,26 +384,18 @@ function buildReviewSnapshot(
 
 /**
  * Run a full backtest using price data from CMOTS service.
- * Stage 7 entry point.
- *
- * @param config - Backtest configuration (dates, interval)
- * @param scorecard - Active scorecard version
- * @param cohortStockIds - Stock IDs from cohort selection (Stage 4). All are evaluated as a group.
  */
 export async function backtestScorecard(
   config: BacktestConfig,
   scorecard: ScorecardVersion,
   cohortStockIds?: string[]
 ): Promise<BacktestResult> {
-  // Determine which stocks to include — cohort if provided, otherwise full universe
   const targetStockIds = cohortStockIds && cohortStockIds.length > 0
     ? cohortStockIds
     : (await getCompanyMaster()).map(c => c.nsesymbol ?? String(c.co_code))
 
-  // Fetch price history from CMOTS service (handles mock/API mode internally)
   const batchPrices = await getBatchPrices(targetStockIds, config.dateRange.from, config.dateRange.to)
 
-  // Convert CMOTS OHLCV records to simplified price format for backtest engine
   const priceHistory: Record<string, { date: string; price: number }[]> = {}
   for (const [symbol, records] of Object.entries(batchPrices)) {
     if (records.length > 0) {
@@ -201,7 +406,6 @@ export async function backtestScorecard(
     }
   }
 
-  // Score all cohort stocks to build a snapshot
   const snapshotStocks: StockScoreResult[] = []
   for (const stockId of targetStockIds) {
     const resolved = await resolveMetricValues(stockId)
@@ -226,7 +430,6 @@ export async function backtestScorecard(
 
 /**
  * Get unique sectors from the scored universe.
- * Used by Stage 4 filter panel.
  */
 export function getAvailableSectors(stocks: StockScoreResult[]): string[] {
   return [...new Set(stocks.map(s => s.sector))].sort()
@@ -234,7 +437,6 @@ export function getAvailableSectors(stocks: StockScoreResult[]): string[] {
 
 /**
  * Get verdict distribution from scored stocks.
- * Used by Stage 3 summary cards.
  */
 export function getVerdictDistribution(
   stocks: StockScoreResult[]

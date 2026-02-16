@@ -1,8 +1,10 @@
 /**
- * Scoring Pipeline Store — Zustand state management for the 7-stage pipeline
+ * Scoring Pipeline Store — Zustand state management for the 5-stage pipeline
+ *
+ * Pipeline: Metrics → Scorecard → Configure → Review & Run → Results
  *
  * Manages: pipeline navigation, scorecard CRUD, version history,
- * scoring runs, cohort selection, backtest config, and review snapshots.
+ * universe selection, combined scoring+backtest results, and review snapshots.
  *
  * Pattern: Follows useAppStore.ts — Zustand v5 + persist + selector hooks
  */
@@ -21,8 +23,7 @@ import type {
   VerdictThreshold,
   VerdictDisplayMode,
   ModelRunResult,
-  CohortDefinition,
-  CohortFilter,
+  CombinedRunResult,
   BacktestConfig,
   BacktestInterval,
   BacktestResult,
@@ -47,27 +48,27 @@ interface ScoringState {
   activeScorecardId: string | null
   versionHistory: Record<string, ScorecardVersion[]>  // macroVersion → versions
 
-  // Stage 3: Universe filter + Scoring results
+  // Stage 3: Universe filter (stock selection + date range + benchmark)
   universeFilter: {
     mode: 'individual' | 'cohort' | 'all'
     mcapTypes: string[]    // e.g. ['Large Cap'] — cohort mode only
     sectors: string[]      // e.g. ['Finance'] — cohort mode only
     customSymbols: string[] // e.g. ['RELIANCE', 'TCS'] — individual mode + cohort additions
   }
-  currentRun: ModelRunResult | null
-  currentRunFilterHash: string | null  // hash of the universe filter that produced currentRun
 
-  // Stage 4: Cohort
-  cohort: CohortDefinition | null
-
-  // Stage 5: Backtest config
+  // Backtest config (date range, interval, benchmark)
   backtestConfig: BacktestConfig | null
 
-  // Stage 6: Review snapshot
-  reviewSnapshot: PipelineReviewSnapshot | null
+  // Stage 4→5: Combined scoring + backtest result
+  combinedResult: CombinedRunResult | null
 
-  // Stage 7: Backtest results
+  // Legacy fields kept for backward compatibility with saved runs
+  currentRun: ModelRunResult | null
+  currentRunFilterHash: string | null
   backtestResult: BacktestResult | null
+
+  // Review snapshot
+  reviewSnapshot: PipelineReviewSnapshot | null
 
   // Saved runs for comparison
   savedRuns: SavedRun[]
@@ -81,7 +82,7 @@ interface ScoringState {
   nextStage: () => void
   prevStage: () => void
   setUIMode: (mode: UIMode) => void
-  editFromReview: (stageNumber: 1 | 2 | 3 | 4 | 5) => void
+  editFromReview: (stageNumber: 1 | 2 | 3) => void
 
   // ─── Actions: Scorecard CRUD ───
   createScorecard: (name: string, macroVersion: string) => string
@@ -116,12 +117,11 @@ interface ScoringState {
   generateReviewSnapshot: () => void
   confirmReview: () => void
 
-  // ─── Actions: Universe & Scoring & Backtest ───
+  // ─── Actions: Universe & Config & Results ───
   setUniverseFilter: (filter: Partial<ScoringState['universeFilter']>) => void
-  setCurrentRun: (run: ModelRunResult | null, filterHash?: string | null) => void
-  setCohort: (cohort: CohortDefinition | null) => void
-  applyCohortFilter: (filters: CohortFilter[]) => void
   setBacktestConfig: (config: Partial<BacktestConfig>) => void
+  setCombinedResult: (result: CombinedRunResult | null) => void
+  setCurrentRun: (run: ModelRunResult | null, filterHash?: string | null) => void
   setBacktestResult: (result: BacktestResult | null) => void
   setStatus: (status: ScoringStatus) => void
   setError: (message: string | null) => void
@@ -167,23 +167,23 @@ export const useScoringStore = create<ScoringState>()(
   persist(
     (set, get) => ({
       // Initial state
-      currentStage: 1,
-      uiMode: 'wizard',
+      currentStage: 1 as PipelineStage,
+      uiMode: 'wizard' as UIMode,
 
       scorecards: [],
       activeScorecardId: null,
       versionHistory: {},
 
-      universeFilter: { mode: 'cohort', mcapTypes: ['Large Cap'], sectors: [], customSymbols: [] },
+      universeFilter: { mode: 'cohort' as const, mcapTypes: ['Large Cap'], sectors: [], customSymbols: [] },
+      backtestConfig: null,
+      combinedResult: null,
       currentRun: null,
       currentRunFilterHash: null,
-      cohort: null,
-      backtestConfig: null,
-      reviewSnapshot: null,
       backtestResult: null,
+      reviewSnapshot: null,
 
       savedRuns: [],
-      status: 'idle',
+      status: 'idle' as ScoringStatus,
       errorMessage: null,
 
       // ─── Pipeline Navigation ───
@@ -194,7 +194,7 @@ export const useScoringStore = create<ScoringState>()(
 
       nextStage: () => {
         set(state => ({
-          currentStage: Math.min(7, state.currentStage + 1) as PipelineStage,
+          currentStage: Math.min(5, state.currentStage + 1) as PipelineStage,
         }))
       },
 
@@ -208,7 +208,7 @@ export const useScoringStore = create<ScoringState>()(
         set({ uiMode: mode })
       },
 
-      editFromReview: (stageNumber: 1 | 2 | 3 | 4 | 5) => {
+      editFromReview: (stageNumber: 1 | 2 | 3) => {
         set({ currentStage: stageNumber })
       },
 
@@ -385,7 +385,6 @@ export const useScoringStore = create<ScoringState>()(
         const target = get().scorecards.find(s => s.id === scorecardId)
         if (!target) return
 
-        // Create a new micro version that's a copy of the target
         const macro = target.versionInfo.macroVersion
         const existingVersions = get().versionHistory[macro] || []
         const nextMicro = existingVersions.length + 1
@@ -425,7 +424,6 @@ export const useScoringStore = create<ScoringState>()(
       },
 
       // ─── Metric Operations ───
-      // All metric ops mutate the *active* scorecard only
 
       addMetric: (segmentId: string, metric: CompositeMetric) => {
         const { activeScorecardId } = get()
@@ -509,7 +507,6 @@ export const useScoringStore = create<ScoringState>()(
           scorecards: updateActiveInList(state.scorecards, activeScorecardId, sc => ({
             ...sc,
             segments: sc.segments.filter(s => s.id !== segmentId),
-            // Also clean composite formula references
             compositeFormula: {
               ...sc.compositeFormula,
               baseSegments: sc.compositeFormula.baseSegments.filter(bs => bs.segmentId !== segmentId),
@@ -577,7 +574,7 @@ export const useScoringStore = create<ScoringState>()(
         const scorecard = getActiveScorecard(get())
         if (!scorecard) return
 
-        const { currentRun, cohort, backtestConfig } = get()
+        const { universeFilter, backtestConfig } = get()
 
         // Build metrics summary
         const bySegment = scorecard.segments.map(seg => ({
@@ -617,44 +614,17 @@ export const useScoringStore = create<ScoringState>()(
           },
         }
 
-        // Add scoring results summary if available
-        if (currentRun) {
-          const stocks = currentRun.stocks
-          const sorted = [...stocks].sort((a, b) => b.normalizedScore - a.normalizedScore)
-
-          // Score distribution by verdict
-          const verdictCounts: Record<string, number> = {}
-          for (const stock of stocks) {
-            verdictCounts[stock.verdict] = (verdictCounts[stock.verdict] || 0) + 1
-          }
-          const scoreDistribution = Object.entries(verdictCounts).map(([band, count]) => ({ band, count }))
-
-          snapshot.scoringResultsSummary = {
-            universeSize: stocks.length,
-            scoreDistribution,
-            topFive: sorted.slice(0, 5).map(s => ({ name: s.stockName, score: s.normalizedScore, verdict: s.verdict })),
-            bottomFive: sorted.slice(-5).map(s => ({ name: s.stockName, score: s.normalizedScore, verdict: s.verdict })),
-          }
-        }
-
-        // Add cohort summary if available
-        if (cohort) {
-          // Build sector breakdown from the current run
-          const sectorBreakdown: Record<string, number> = {}
-          if (currentRun) {
-            for (const stockId of cohort.stockIds) {
-              const stock = currentRun.stocks.find(s => s.stockId === stockId)
-              if (stock) {
-                sectorBreakdown[stock.sector] = (sectorBreakdown[stock.sector] || 0) + 1
-              }
-            }
-          }
-
-          snapshot.cohortSummary = {
-            totalStocks: cohort.stockIds.length,
-            filters: cohort.filters.map(f => f.label || `${f.type}: ${f.value}`),
-            sectorBreakdown: Object.entries(sectorBreakdown).map(([sector, count]) => ({ sector, count })),
-          }
+        // Add stock selection summary from universe filter
+        const stockNames = universeFilter.customSymbols.slice(0, 5)
+        const totalStocks = universeFilter.mode === 'all'
+          ? -1  // Unknown until we fetch
+          : universeFilter.mode === 'individual'
+            ? universeFilter.customSymbols.length
+            : universeFilter.customSymbols.length // cohort mode — symbols resolved by UniverseSelector
+        snapshot.stockSelectionSummary = {
+          totalStocks,
+          selectionMode: universeFilter.mode,
+          stockNames,
         }
 
         // Add date config if available
@@ -678,62 +648,12 @@ export const useScoringStore = create<ScoringState>()(
         }))
       },
 
-      // ─── Universe & Scoring & Backtest ───
+      // ─── Universe & Config & Results ───
 
       setUniverseFilter: (filter: Partial<ScoringState['universeFilter']>) => {
         set(state => ({
           universeFilter: { ...state.universeFilter, ...filter },
         }))
-      },
-
-      setCurrentRun: (run: ModelRunResult | null, filterHash?: string | null) => {
-        set({ currentRun: run, currentRunFilterHash: filterHash ?? null })
-      },
-
-      setCohort: (cohort: CohortDefinition | null) => {
-        set({ cohort })
-      },
-
-      applyCohortFilter: (filters: CohortFilter[]) => {
-        const { currentRun } = get()
-        if (!currentRun) return
-
-        // Filter stocks based on criteria
-        const matchingIds: string[] = []
-        for (const stock of currentRun.stocks) {
-          let matches = true
-          for (const filter of filters) {
-            switch (filter.type) {
-              case 'sector':
-                if (stock.sector !== filter.value) matches = false
-                break
-              case 'market_cap': {
-                const [min, max] = filter.value as [number, number]
-                if (stock.marketCap < min || stock.marketCap > max) matches = false
-                break
-              }
-              case 'score_range': {
-                const [minS, maxS] = filter.value as [number, number]
-                if (stock.normalizedScore < minS || stock.normalizedScore > maxS) matches = false
-                break
-              }
-              case 'verdict':
-                if (stock.verdict !== filter.value) matches = false
-                break
-            }
-            if (!matches) break
-          }
-          if (matches) matchingIds.push(stock.stockId)
-        }
-
-        const cohort: CohortDefinition = {
-          id: generateId(),
-          name: `Filtered Cohort (${matchingIds.length} stocks)`,
-          filters,
-          stockIds: matchingIds,
-        }
-
-        set({ cohort })
       },
 
       setBacktestConfig: (config: Partial<BacktestConfig>) => {
@@ -742,12 +662,25 @@ export const useScoringStore = create<ScoringState>()(
             ? { ...state.backtestConfig, ...config }
             : {
                 scorecardId: state.activeScorecardId || '',
-                cohortId: state.cohort?.id || '',
+                cohortId: '',
                 dateRange: { from: '', to: '' },
                 interval: 'monthly' as BacktestInterval,
                 ...config,
               },
         }))
+      },
+
+      setCombinedResult: (result: CombinedRunResult | null) => {
+        set({
+          combinedResult: result,
+          // Also update legacy fields for backward compatibility with charts/components
+          currentRun: result?.scoring ?? null,
+          backtestResult: result?.backtest ?? null,
+        })
+      },
+
+      setCurrentRun: (run: ModelRunResult | null, filterHash?: string | null) => {
+        set({ currentRun: run, currentRunFilterHash: filterHash ?? null })
       },
 
       setBacktestResult: (result: BacktestResult | null) => {
@@ -765,17 +698,18 @@ export const useScoringStore = create<ScoringState>()(
       // ─── Persistence ───
 
       saveRun: (name: string) => {
-        const { currentRun, backtestResult, reviewSnapshot } = get()
+        const { combinedResult, reviewSnapshot } = get()
         const scorecard = getActiveScorecard(get())
-        if (!scorecard || !currentRun || !reviewSnapshot) return null
+        const run = combinedResult?.scoring ?? get().currentRun
+        if (!scorecard || !run || !reviewSnapshot) return null
 
         const id = generateId()
         const saved: SavedRun = {
           id,
           name,
           scorecard: structuredClone(scorecard),
-          run: structuredClone(currentRun),
-          backtest: backtestResult ? structuredClone(backtestResult) : undefined,
+          run: structuredClone(run),
+          backtest: combinedResult?.backtest ? structuredClone(combinedResult.backtest) : undefined,
           reviewSnapshot: structuredClone(reviewSnapshot),
           savedAt: Date.now(),
         }
@@ -806,21 +740,21 @@ export const useScoringStore = create<ScoringState>()(
 
       resetPipeline: () => {
         set({
-          currentStage: 1,
+          currentStage: 1 as PipelineStage,
+          combinedResult: null,
           currentRun: null,
           currentRunFilterHash: null,
-          cohort: null,
           backtestConfig: null,
           reviewSnapshot: null,
           backtestResult: null,
-          status: 'idle',
+          status: 'idle' as ScoringStatus,
           errorMessage: null,
         })
       },
     }),
     {
       name: 'stockfox-scoring-storage',
-      version: 1,
+      version: 2,
       partialize: state => ({
         scorecards: state.scorecards,
         activeScorecardId: state.activeScorecardId,
@@ -828,10 +762,7 @@ export const useScoringStore = create<ScoringState>()(
         savedRuns: state.savedRuns,
         uiMode: state.uiMode,
         universeFilter: state.universeFilter,
-        currentRun: state.currentRun,
-        currentRunFilterHash: state.currentRunFilterHash,
         currentStage: state.currentStage,
-        cohort: state.cohort,
         backtestConfig: state.backtestConfig,
       }),
       migrate: (persisted: unknown, version: number) => {
@@ -840,6 +771,16 @@ export const useScoringStore = create<ScoringState>()(
         if (version < 1 && state.universeFilter) {
           const uf = state.universeFilter as Record<string, unknown>
           if (!uf.mode) uf.mode = 'cohort'
+        }
+        // v1 → v2: 7-stage → 5-stage pipeline migration
+        if (version < 2) {
+          // Clamp currentStage to new max of 5
+          const stage = state.currentStage as number
+          if (stage > 5) state.currentStage = 3
+          // Clear removed fields
+          delete state.cohort
+          delete state.currentRun
+          delete state.currentRunFilterHash
         }
         return state
       },
@@ -870,6 +811,9 @@ export const useScoringError = () =>
 export const useCurrentScores = () =>
   useScoringStore(state => state.currentRun)
 
+export const useCombinedResult = () =>
+  useScoringStore(state => state.combinedResult)
+
 export const useBacktestResult = () =>
   useScoringStore(state => state.backtestResult)
 
@@ -884,6 +828,3 @@ export const useReviewSnapshot = () =>
 
 export const useSavedRuns = () =>
   useScoringStore(state => state.savedRuns)
-
-export const useCohort = () =>
-  useScoringStore(state => state.cohort)

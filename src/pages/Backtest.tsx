@@ -1,5 +1,7 @@
 /**
- * Backtest Page — 7-Stage Scorecard Backtesting Pipeline
+ * Backtest Page — 5-Stage Scorecard Backtesting Pipeline
+ *
+ * Pipeline: Metrics → Scorecard → Configure → Review & Run → Results
  *
  * Supports three UI modes:
  * - Wizard: Step-by-step, one stage at a time
@@ -32,36 +34,14 @@ import { NormalizationSelector } from '@/components/scoring/NormalizationSelecto
 import { VerdictThresholdEditor } from '@/components/scoring/VerdictThresholdEditor'
 import { ScorecardTemplateCard } from '@/components/scoring/ScorecardTemplateCard'
 
-// Stage 3: Score & Rank
-import { UniverseSelector } from '@/components/scoring/UniverseSelector'
-import { RunScoringButton } from '@/components/scoring/RunScoringButton'
-import { ScoreboardTable } from '@/components/scoring/ScoreboardTable'
-import { ScoreDistributionChart } from '@/components/scoring/ScoreDistributionChart'
-import { VerdictSummaryCards } from '@/components/scoring/VerdictSummaryCards'
+// Stage 3: Configure Run
+import { ConfigureRunPanel } from '@/components/scoring/ConfigureRunPanel'
 
-// Stage 4: Select Cohort
-import { CohortFilterPanel } from '@/components/scoring/CohortFilterPanel'
-import { StockSelectionList } from '@/components/scoring/StockSelectionList'
+// Stage 4: Review & Run
+import { ReviewAndRunPanel } from '@/components/scoring/ReviewAndRunPanel'
 
-// Stage 5: Set Date Range
-import { DateRangeSelector } from '@/components/scoring/DateRangeSelector'
-import { BenchmarkSelector } from '@/components/scoring/BenchmarkSelector'
-
-// Stage 6: Review & Confirm
-import { PipelineReviewPanel } from '@/components/scoring/PipelineReviewPanel'
-import { ConfirmAndRunButton } from '@/components/scoring/ConfirmAndRunButton'
-import { VersionInfoEditor } from '@/components/scoring/VersionInfoEditor'
-import { VersionHistoryPanel } from '@/components/scoring/VersionHistoryPanel'
-
-// Stage 7: Performance Report
-import { PerformanceChart } from '@/components/scoring/PerformanceChart'
-import { CohortComparisonTable } from '@/components/scoring/CohortComparisonTable'
-import { SummaryMetricsGrid } from '@/components/scoring/SummaryMetricsGrid'
-import { RelativePerformanceChart } from '@/components/scoring/RelativePerformanceChart'
-import { QuintileAnalysisChart } from '@/components/scoring/QuintileAnalysisChart'
-import { MetricContributionWaterfall } from '@/components/scoring/MetricContributionWaterfall'
-import { ScoreTrajectoryChart } from '@/components/scoring/ScoreTrajectoryChart'
-import { ExportReportButton } from '@/components/scoring/ExportReportButton'
+// Stage 5: Results
+import { ResultsPanel } from '@/components/scoring/ResultsPanel'
 
 import { SCORECARD_TEMPLATES } from '@/data/scorecardTemplates'
 
@@ -172,79 +152,19 @@ const STAGE_CONFIGS: Record<PipelineStage, StageConfig> = {
     ),
   },
   3: {
-    title: 'Score & Rank',
-    description: 'Select universe, apply scorecard, view scores and verdicts',
-    render: () => (
-      <div className="space-y-4">
-        <UniverseSelector />
-        <div className="flex items-center justify-between">
-          <RunScoringButton />
-        </div>
-        <VerdictSummaryCards />
-        <ScoreDistributionChart />
-        <ScoreboardTable />
-      </div>
-    ),
+    title: 'Configure Run',
+    description: 'Select stocks, set date range, and choose benchmark',
+    render: () => <ConfigureRunPanel />,
   },
   4: {
-    title: 'Select Cohort',
-    description: 'Pick stocks by sector, market cap, score range, or verdict',
-    render: () => (
-      <div className="space-y-4">
-        <CohortFilterPanel />
-        <StockSelectionList />
-      </div>
-    ),
+    title: 'Review & Run',
+    description: 'Review all configuration, then run scoring + backtest',
+    render: () => <ReviewAndRunPanel />,
   },
   5: {
-    title: 'Set Date Range',
-    description: 'Choose backtest period, interval, and optional benchmark',
-    render: () => (
-      <div className="space-y-4">
-        <DateRangeSelector />
-        <BenchmarkSelector />
-      </div>
-    ),
-  },
-  6: {
-    title: 'Review & Confirm',
-    description: 'Review all configuration, edit any stage, then confirm',
-    render: () => (
-      <div className="space-y-4">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          <div className="lg:col-span-2">
-            <PipelineReviewPanel />
-          </div>
-          <div className="space-y-4">
-            <VersionInfoEditor />
-            <VersionHistoryPanel />
-            <ConfirmAndRunButton />
-          </div>
-        </div>
-      </div>
-    ),
-  },
-  7: {
-    title: 'Performance Report',
-    description: 'See how selections performed vs cohort over time',
-    render: () => (
-      <div className="space-y-4">
-        <SummaryMetricsGrid />
-        <PerformanceChart />
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <QuintileAnalysisChart />
-          <RelativePerformanceChart />
-        </div>
-        <CohortComparisonTable />
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <MetricContributionWaterfall />
-          <ScoreTrajectoryChart />
-        </div>
-        <div className="flex justify-end">
-          <ExportReportButton />
-        </div>
-      </div>
-    ),
+    title: 'Results',
+    description: 'Scoring results, price performance, and analysis',
+    render: () => <ResultsPanel />,
   },
 }
 
@@ -355,7 +275,7 @@ function WizardMode({
           Back
         </button>
 
-        {currentStage < 7 && (
+        {currentStage < 5 && (
           <button
             onClick={onNext}
             className="flex items-center gap-1 px-4 py-2 rounded-lg text-sm bg-primary-500/20 text-primary-400 hover:bg-primary-500/30 transition-colors"
