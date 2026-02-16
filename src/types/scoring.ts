@@ -226,6 +226,8 @@ export interface ModelRunResult {
   rankedList: string[]      // Stock IDs in rank order
   runTimestamp: number
   universeSize: number
+  /** Diagnostic warnings — stocks skipped due to missing API data, etc. */
+  warnings?: string[]
 }
 
 // ─────────────────────────────────────────────────
@@ -425,6 +427,8 @@ export interface BacktestResult {
   summaryMetrics: SummaryMetrics
   quintileAnalysis?: QuintileResult[]
   runTimestamp: number
+  /** Diagnostic warnings — stocks with missing price/fundamental data */
+  warnings?: string[]
 }
 
 // ─────────────────────────────────────────────────

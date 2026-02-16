@@ -127,7 +127,7 @@ function mapCMOTSToMetricIds(
   asOfDate?: string,
   priceAtDate?: number,
   config?: MetricResolutionConfig,
-  priceHistory?: { date: string; price: number }[],
+  _unused?: unknown,
   shareholding?: CMOTSShareholding[],
 ): Record<string, number | null> {
   const metrics: Record<string, number | null> = {}
@@ -757,10 +757,11 @@ export async function resolveMetricValues(
   }
 
   // API mode: fetch fundamentals + price data in parallel
-  const [fundamentals, technicalData] = await Promise.all([
+  const [fundamentals, priceResult] = await Promise.all([
     getAllFundamentals(stockId),
-    computeTechnicalFromPrices(stockId),
+    fetchPriceDataForScoring(stockId),
   ])
+  const technicalData = priceResult.technicalData
 
   const { ttm, finData, pnl, cashFlow, balanceSheet, quarterly, shareholding } = fundamentals
 
@@ -776,14 +777,6 @@ export async function resolveMetricValues(
     undefined, shareholding,
   )
   const context = extractGrowthContext(pnl, finData, undefined, config?.growthPeriods)
-
-  // Resolve custom metrics and merge
-  if (config?.customMetrics && config.customMetrics.length > 0) {
-    const customValues = resolveCustomMetrics(
-      config.customMetrics, ttm, pnl, cashFlow, balanceSheet, quarterly,
-    )
-    Object.assign(data, customValues)
-  }
 
   return {
     data,

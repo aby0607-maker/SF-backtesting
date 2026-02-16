@@ -303,6 +303,7 @@ export async function scoreWithScorecard(
   }
 ): Promise<ModelRunResult> {
   const stocks: StockScoreResult[] = []
+  const warnings: string[] = []
   const total = stockIds.length
   const resConfig = extractResolutionConfig(scorecard, options?.customMetrics)
 
@@ -313,9 +314,19 @@ export async function scoreWithScorecard(
     }
 
     const stockId = stockIds[i]
-    const resolved = await resolveMetricValues(stockId, resConfig)
     const info = await getStockInfo(stockId)
-    if (!resolved || !info) continue
+    if (!info) {
+      warnings.push(`Stock ${stockId}: Company not found in BSE master`)
+      options?.onProgress?.(i + 1, total)
+      continue
+    }
+
+    const resolved = await resolveMetricValues(stockId, resConfig)
+    if (!resolved) {
+      warnings.push(`${info.name} (${stockId}): No fundamental data from API`)
+      options?.onProgress?.(i + 1, total)
+      continue
+    }
 
     const scored = scoreStock(resolved.data, scorecard, info, resolved.context)
     stocks.push({ ...scored, rank: 0 })
@@ -326,6 +337,10 @@ export async function scoreWithScorecard(
   stocks.sort((a, b) => b.normalizedScore - a.normalizedScore)
   stocks.forEach((s, i) => { s.rank = i + 1 })
 
+  if (warnings.length > 0) {
+    console.warn(`[Scoring] ${warnings.length} stocks skipped:`, warnings)
+  }
+
   return {
     scorecardId: scorecard.id,
     scorecardVersion: scorecard.versionInfo.displayVersion,
@@ -333,6 +348,7 @@ export async function scoreWithScorecard(
     rankedList: stocks.map(s => s.stockId),
     runTimestamp: Date.now(),
     universeSize: stocks.length,
+    warnings: warnings.length > 0 ? warnings : undefined,
   }
 }
 
@@ -483,13 +499,32 @@ export async function backtestScorecard(
     fundamentals: FundamentalsBundle
     info: { id: string; name: string; symbol: string; sector: string; marketCap: number }
   }[] = []
+  const backtestWarnings: string[] = []
+
+  // Track which stocks had no price data from the API
+  const noPriceStocks: string[] = []
+  for (const stockId of targetStockIds) {
+    const records = batchPrices[stockId]
+    if (!records || records.length === 0) {
+      noPriceStocks.push(stockId)
+    }
+  }
 
   await Promise.all(targetStockIds.map(async (stockId) => {
     const [fundamentals, info] = await Promise.all([
       getAllFundamentals(stockId),
       getStockInfo(stockId),
     ])
-    if (!info) return
+    if (!info) {
+      backtestWarnings.push(`Stock ${stockId}: Company not found in BSE master`)
+      return
+    }
+    if (noPriceStocks.includes(stockId)) {
+      backtestWarnings.push(`${info.name}: No price data from API for ${config.dateRange.from} → ${config.dateRange.to}`)
+    }
+    if (!fundamentals.ttm && fundamentals.pnl.length === 0) {
+      backtestWarnings.push(`${info.name}: No fundamental data (TTM/P&L) from API`)
+    }
     stockData.push({ stockId, fundamentals, info })
   }))
 
@@ -546,8 +581,17 @@ export async function backtestScorecard(
     filteredBatchPrices[symbol] = records.filter(r => r.Tradedate.split('T')[0] >= fromDate)
   }
 
+  if (backtestWarnings.length > 0) {
+    console.warn(`[Backtest] ${backtestWarnings.length} data warnings:`, backtestWarnings)
+  }
+
+  const btResult = runBacktest(config, priceHistory, snapshots, reviewSnapshot)
+  if (backtestWarnings.length > 0) {
+    btResult.warnings = backtestWarnings
+  }
+
   return {
-    result: runBacktest(config, priceHistory, snapshots, reviewSnapshot),
+    result: btResult,
     batchPrices: filteredBatchPrices,
     intervalDates,
   }
