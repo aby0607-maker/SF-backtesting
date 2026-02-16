@@ -15,7 +15,7 @@
  *   Technical metrics use price history up to asOfDate.
  */
 
-import type { CMOTSTTMRecord, CMOTSFinancialRecord, CMOTSStatementRow, MetricResolutionConfig, CustomMetricDefinition } from '@/types/scoring'
+import type { CMOTSTTMRecord, CMOTSFinancialRecord, CMOTSStatementRow, CMOTSShareholding, MetricResolutionConfig, CustomMetricDefinition } from '@/types/scoring'
 import { getStockDataForScoring } from '@/data/mockScoringData'
 import { isMockMode } from '@/services/cmots/client'
 import type { FundamentalsBundle } from '@/services/cmots/fundamentals'
@@ -97,6 +97,17 @@ function windowFinData(finData: CMOTSFinancialRecord[], asOfDate?: string): CMOT
 }
 
 // ─────────────────────────────────────────────────
+// Shareholding Windowing
+// ─────────────────────────────────────────────────
+
+/** Filter shareholding quarters to only those available at asOfDate (YRC ≤ cutoff) */
+function windowShareholding(data: CMOTSShareholding[], asOfDate?: string): CMOTSShareholding[] {
+  if (!asOfDate) return data  // Already sorted YRC descending from getShareholdingHistory
+  const cutoffYRC = parseInt(asOfDate.slice(0, 4) + asOfDate.slice(5, 7))
+  return data.filter(d => d.YRC <= cutoffYRC)
+}
+
+// ─────────────────────────────────────────────────
 // Core Mapping Function (with optional asOfDate)
 // ─────────────────────────────────────────────────
 
@@ -116,6 +127,8 @@ function mapCMOTSToMetricIds(
   asOfDate?: string,
   priceAtDate?: number,
   config?: MetricResolutionConfig,
+  priceHistory?: { date: string; price: number }[],
+  shareholding?: CMOTSShareholding[],
 ): Record<string, number | null> {
   const metrics: Record<string, number | null> = {}
   const gp = config?.growthPeriods
@@ -194,6 +207,34 @@ function mapCMOTSToMetricIds(
     metrics['v2_price_ema200'] = null
     metrics['v2_rsi'] = null
     metrics['v2_vpt'] = null
+  }
+
+  // ── Ownership Metrics (from shareholding pattern) ──
+  if (shareholding && shareholding.length > 0) {
+    const windowed = windowShareholding(shareholding, asOfDate)
+    const latest = windowed[0]
+
+    if (latest) {
+      metrics['promoter_holding'] = latest.Promoters
+      metrics['fii_holding'] = latest.ForeignInstitution
+      metrics['dii_holding'] = latest.MutualFund + latest.OtherDomesticInstitution
+
+      // 3M change: compare latest vs previous quarter
+      const prev = windowed[1]
+      if (prev) {
+        metrics['promoter_holding_change_3m'] = latest.Promoters - prev.Promoters
+        metrics['fii_holding_change_3m'] = latest.ForeignInstitution - prev.ForeignInstitution
+      } else {
+        metrics['promoter_holding_change_3m'] = null
+        metrics['fii_holding_change_3m'] = null
+      }
+    }
+  } else {
+    metrics['promoter_holding'] = null
+    metrics['fii_holding'] = null
+    metrics['dii_holding'] = null
+    metrics['promoter_holding_change_3m'] = null
+    metrics['fii_holding_change_3m'] = null
   }
 
   return metrics
@@ -522,24 +563,33 @@ function computeTechnicalFromPriceArray(
 }
 
 /**
- * Fetch 1 year of OHLCV data and compute all 5 technical metrics.
+ * Fetch 6 years of OHLCV data. Computes technical metrics (needs 200+ days)
+ * and returns the full price history for valuation 5Y average computation.
  */
-async function computeTechnicalFromPrices(
+async function fetchPriceDataForScoring(
   stockId: string
-): Promise<TechnicalResult | null> {
+): Promise<{ technicalData: TechnicalResult | null; priceHistory: { date: string; price: number }[] }> {
   try {
     const to = new Date().toISOString().split('T')[0]
-    const from = new Date(Date.now() - 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+    // 6 years: enough for 5 FY-end prices (valuation avg) + 200 trading days (EMA200)
+    const from = new Date(Date.now() - 6 * 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
     const prices = await getHistoricalPrices(stockId, from, to)
 
-    if (!prices || prices.length < 200) return null
+    if (!prices || prices.length === 0) return { technicalData: null, priceHistory: [] }
 
     const closes = prices.map(p => p.Dayclose)
     const volumes = prices.map(p => p.TotalVolume)
-    return computeTechnicalFromPriceArray(closes, volumes)
+    const technicalData = closes.length >= 200 ? computeTechnicalFromPriceArray(closes, volumes) : null
+
+    const priceHistory = prices.map(p => ({
+      date: p.Tradedate.split('T')[0],
+      price: p.Dayclose,
+    }))
+
+    return { technicalData, priceHistory }
   } catch (err) {
-    console.warn(`[MetricResolver] Failed to compute technical metrics for ${stockId}`, err)
-    return null
+    console.warn(`[MetricResolver] Failed to fetch price data for ${stockId}`, err)
+    return { technicalData: null, priceHistory: [] }
   }
 }
 
@@ -711,7 +761,7 @@ export async function resolveMetricValues(
     computeTechnicalFromPrices(stockId),
   ])
 
-  const { ttm, finData, pnl, cashFlow, balanceSheet, quarterly } = fundamentals
+  const { ttm, finData, pnl, cashFlow, balanceSheet, quarterly, shareholding } = fundamentals
 
   // If no TTM data available, this stock can't be scored
   if (!ttm) {
@@ -722,6 +772,7 @@ export async function resolveMetricValues(
   const data = mapCMOTSToMetricIds(
     ttm, finData, pnl, cashFlow, balanceSheet, quarterly,
     technicalData ?? undefined, undefined, undefined, config,
+    undefined, shareholding,
   )
   const context = extractGrowthContext(pnl, finData, undefined, config?.growthPeriods)
 

@@ -10,4 +10,4 @@ export {
   getAllFundamentals, getStatementValue, findStatementRow, getYearColumns,
 } from './fundamentals'
 export type { FundamentalsBundle } from './fundamentals'
-export { getShareholdingPattern } from './shareholding'
+export { getShareholdingPattern, getShareholdingHistory } from './shareholding'

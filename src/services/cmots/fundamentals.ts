@@ -17,10 +17,12 @@ import type {
   CMOTSTTMRecord,
   CMOTSFinancialRecord,
   CMOTSStatementRow,
+  CMOTSShareholding,
 } from '@/types/scoring'
 import { MOCK_STOCK_METRICS } from '@/data/mockScoringData'
 import { cmotsFetch, cmotsFetchOne, isMockMode } from './client'
 import { getCoCode } from './companyMaster'
+import { getShareholdingHistory } from './shareholding'
 
 const CACHE_TTL = 12 * 60 * 60 * 1000  // 12 hours — fundamentals barely change intra-day
 
@@ -117,6 +119,7 @@ export interface FundamentalsBundle {
   cashFlow: CMOTSStatementRow[]
   balanceSheet: CMOTSStatementRow[]
   quarterly: CMOTSStatementRow[]
+  shareholding: CMOTSShareholding[]
 }
 
 /**
@@ -132,19 +135,21 @@ export async function getAllFundamentals(symbol: string): Promise<FundamentalsBu
       cashFlow: [],
       balanceSheet: [],
       quarterly: [],
+      shareholding: [],
     }
   }
 
-  const [ttm, finData, pnl, cashFlow, balanceSheet, quarterly] = await Promise.all([
+  const [ttm, finData, pnl, cashFlow, balanceSheet, quarterly, shareholding] = await Promise.all([
     getTTMData(symbol),
     getFinancialData(symbol),
     getProfitAndLoss(symbol),
     getCashFlow(symbol),
     getBalanceSheet(symbol),
     getQuarterlyResults(symbol),
+    getShareholdingHistory(symbol),
   ])
 
-  return { ttm, finData, pnl, cashFlow, balanceSheet, quarterly }
+  return { ttm, finData, pnl, cashFlow, balanceSheet, quarterly, shareholding }
 }
 
 // ── Statement row helpers (exported for metricResolver) ──

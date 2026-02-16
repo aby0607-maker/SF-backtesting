@@ -21,6 +21,8 @@ import type {
   CombinedRunResult,
   PriceDeltaRow,
   BacktestInterval,
+  MetricResolutionConfig,
+  CustomMetricDefinition,
 } from '@/types/scoring'
 import { scoreStock } from '@/lib/scoringEngine'
 import { runBacktest } from '@/lib/backtestEngine'
@@ -38,6 +40,34 @@ import type { FundamentalsBundle } from '@/services/cmots/fundamentals'
 export type CombinedProgressPhase = 'scoring' | 'backtest' | 'building_table'
 
 /**
+ * Extract MetricResolutionConfig from a scorecard.
+ * Scans all segments for growthPeriod overrides and collects custom metric IDs.
+ */
+function extractResolutionConfig(
+  scorecard: ScorecardVersion,
+  customMetrics?: CustomMetricDefinition[],
+): MetricResolutionConfig | undefined {
+  const growthPeriods: Record<string, number> = {}
+  for (const seg of scorecard.segments) {
+    for (const m of seg.metrics) {
+      if (m.growthPeriod) {
+        growthPeriods[m.id] = m.growthPeriod
+      }
+    }
+  }
+
+  const hasGrowthPeriods = Object.keys(growthPeriods).length > 0
+  const hasCustomMetrics = customMetrics && customMetrics.length > 0
+
+  if (!hasGrowthPeriods && !hasCustomMetrics) return undefined
+
+  return {
+    growthPeriods: hasGrowthPeriods ? growthPeriods : undefined,
+    customMetrics: hasCustomMetrics ? customMetrics : undefined,
+  }
+}
+
+/**
  * Score and backtest selected stocks in one combined operation.
  * This is the main entry point for the new 5-stage pipeline (Stage 4 → 5).
  *
@@ -52,12 +82,14 @@ export async function scoreAndBacktest(
   options?: {
     signal?: AbortSignal
     onProgress?: (phase: CombinedProgressPhase, current: number, total: number) => void
+    customMetrics?: CustomMetricDefinition[]
   }
 ): Promise<CombinedRunResult> {
   // Phase 1: Score all stocks
   const scoring = await scoreWithScorecard(stockIds, scorecard, {
     signal: options?.signal,
     onProgress: (current, total) => options?.onProgress?.('scoring', current, total),
+    customMetrics: options?.customMetrics,
   })
 
   if (options?.signal?.aborted) {
@@ -267,10 +299,12 @@ export async function scoreWithScorecard(
   options?: {
     signal?: AbortSignal
     onProgress?: (scored: number, total: number) => void
+    customMetrics?: CustomMetricDefinition[]
   }
 ): Promise<ModelRunResult> {
   const stocks: StockScoreResult[] = []
   const total = stockIds.length
+  const resConfig = extractResolutionConfig(scorecard, options?.customMetrics)
 
   for (let i = 0; i < stockIds.length; i++) {
     if (options?.signal?.aborted) {
@@ -279,7 +313,7 @@ export async function scoreWithScorecard(
     }
 
     const stockId = stockIds[i]
-    const resolved = await resolveMetricValues(stockId)
+    const resolved = await resolveMetricValues(stockId, resConfig)
     const info = await getStockInfo(stockId)
     if (!resolved || !info) continue
 
@@ -469,6 +503,8 @@ export async function backtestScorecard(
 
   // ── Phase 3: Score at each interval (CPU-only, no network) ──
 
+  const resConfig = extractResolutionConfig(scorecard)
+
   const scoreAtDate = (asOfDate: string): StockScoreResult[] => {
     const stocks: StockScoreResult[] = []
 
@@ -476,7 +512,7 @@ export async function backtestScorecard(
       const prices = priceHistoryWithVolume[stockId]
       if (!prices || prices.length === 0) continue
 
-      const resolved = resolveMetricsAtDate(fundamentals, prices, asOfDate)
+      const resolved = resolveMetricsAtDate(fundamentals, prices, asOfDate, resConfig)
       const scored = scoreStock(resolved.data, scorecard, info, resolved.context)
       stocks.push({ ...scored, rank: 0 })
     }
