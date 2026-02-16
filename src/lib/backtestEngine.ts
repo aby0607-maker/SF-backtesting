@@ -48,11 +48,14 @@ export function runBacktest(
   // Build performance data for all stocks in the cohort
   const cohortStockIds = Object.keys(historicalPrices)
 
-  // Compute price performance for each stock
+  // Use snapshot dates as the sample points so prices align exactly with scores
+  const snapshotDates = snapshots.map(s => s.date.split('T')[0])
+
+  // Compute price performance for each stock at snapshot dates
   const performances: Record<string, PricePerformance> = {}
   for (const stockId of cohortStockIds) {
     const prices = historicalPrices[stockId] || []
-    performances[stockId] = aggregatePerformance(stockId, prices, config.interval)
+    performances[stockId] = aggregatePerformance(stockId, prices, config.interval, undefined, snapshotDates)
   }
 
   // Build cohort comparisons for each stock vs the rest
@@ -89,12 +92,20 @@ export function runBacktest(
 
 /**
  * Aggregate daily price data into the chosen interval.
+ *
+ * When `sampleDates` is provided, prices are sampled at those exact dates
+ * (closest price on or before each date). This ensures performance periods
+ * align exactly with scoring snapshots — no date mismatch.
+ *
+ * When `sampleDates` is not provided, falls back to interval-based sampling
+ * (last trading day of each period).
  */
 export function aggregatePerformance(
   stockId: string,
   priceData: { date: string; price: number }[],
   interval: string,
-  stockName?: string
+  stockName?: string,
+  sampleDates?: string[]
 ): PricePerformance {
   if (priceData.length === 0) {
     return { stockId, stockName, periods: [] }
@@ -104,8 +115,10 @@ export function aggregatePerformance(
   const sorted = [...priceData].sort((a, b) => a.date.localeCompare(b.date))
   const startPrice = sorted[0].price
 
-  // Sample at the right interval
-  const sampled = sampleAtInterval(sorted, interval)
+  // Sample at the right dates
+  const sampled = sampleDates
+    ? sampleAtExactDates(sorted, sampleDates)
+    : sampleAtInterval(sorted, interval)
 
   const periods = sampled.map(point => {
     const returnPct = startPrice > 0
@@ -128,6 +141,35 @@ export function aggregatePerformance(
   }
 
   return { stockId, stockName, periods }
+}
+
+/**
+ * Sample price data at specific target dates.
+ * For each target date, finds the closest price on or before that date.
+ */
+function sampleAtExactDates(
+  sortedData: { date: string; price: number }[],
+  targetDates: string[]
+): { date: string; price: number }[] {
+  const result: { date: string; price: number }[] = []
+
+  for (const target of targetDates) {
+    // Find closest price on or before this date
+    let closest: { date: string; price: number } | null = null
+    for (const point of sortedData) {
+      if (point.date.split('T')[0] <= target) {
+        closest = point
+      } else {
+        break  // sorted, so no need to continue
+      }
+    }
+    if (closest) {
+      // Use the target date (snapshot date) as the period date, with the closest actual price
+      result.push({ date: target, price: closest.price })
+    }
+  }
+
+  return result
 }
 
 /**
