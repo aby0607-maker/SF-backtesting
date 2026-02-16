@@ -108,6 +108,7 @@ export async function buildPriceDeltaTable(
 
     // Group prices by interval and compute cumulative returns
     const deltas: Record<string, number> = {}
+    const intervalPrices: Record<string, number> = {}
     const basePrice = prices[0].Dayclose
     if (basePrice <= 0) continue
 
@@ -118,8 +119,10 @@ export async function buildPriceDeltaTable(
       // Find the closest price on or before this date
       const price = findClosestPrice(prices, date)
       if (price != null) {
+        const label = getIntervalLabel(interval, i + 1)
         const cumulativeReturn = ((price - basePrice) / basePrice) * 100
-        deltas[getIntervalLabel(interval, i + 1)] = Math.round(cumulativeReturn * 100) / 100
+        deltas[label] = Math.round(cumulativeReturn * 100) / 100
+        intervalPrices[label] = Math.round(price * 100) / 100
       }
     }
 
@@ -131,6 +134,8 @@ export async function buildPriceDeltaTable(
       verdict: stock.verdict,
       verdictColor: stock.verdictColor,
       deltas,
+      basePrice: Math.round(basePrice * 100) / 100,
+      prices: intervalPrices,
     })
   }
 

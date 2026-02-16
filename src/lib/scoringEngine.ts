@@ -155,6 +155,7 @@ export function scoreMetric(
         normalizedScore: negativeResult.score,
         isExcluded: negativeResult.excluded,
         excludeReason: negativeResult.reason,
+        evidence: context,
       }
     }
   }
@@ -168,6 +169,7 @@ export function scoreMetric(
       normalizedScore: 0,
       isExcluded: true,
       excludeReason: 'No data available',
+      evidence: context,
     }
   }
 
@@ -195,6 +197,7 @@ export function scoreMetric(
     rawValue,
     normalizedScore: score,
     isExcluded: false,
+    evidence: context,
   }
 }
 

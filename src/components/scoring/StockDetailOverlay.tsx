@@ -48,13 +48,16 @@ export function StockDetailOverlay({ stockId, onClose }: StockDetailOverlayProps
   const intervals = useMemo(() => {
     if (snapshots.length === 0) return []
 
-    // Build a date→cumulativeReturn lookup from the comparison's price performance
-    const returnByDate = new Map<string, number>()
+    // Build date→{cumulativeReturn, price} lookup from comparison's price performance
+    const periodByDate = new Map<string, { cumulativeReturn: number; price: number }>()
     if (stockPerformance?.periods) {
       for (const p of stockPerformance.periods) {
-        returnByDate.set(p.date.split('T')[0], p.cumulativeReturn)
+        periodByDate.set(p.date.split('T')[0], { cumulativeReturn: p.cumulativeReturn, price: p.price })
       }
     }
+
+    // Base price = first period's price
+    const basePrice = stockPerformance?.periods?.[0]?.price ?? null
 
     return snapshots.map((snap, i) => {
       const stockScore = snap.stockScores.find(s => s.stockId === stockId)
@@ -62,21 +65,31 @@ export function StockDetailOverlay({ stockId, onClose }: StockDetailOverlayProps
       const sorted = [...snap.stockScores].sort((a, b) => b.normalizedScore - a.normalizedScore)
       const rank = sorted.findIndex(s => s.stockId === stockId) + 1
 
-      // Price delta: first snapshot is the base, subsequent ones use cumulative return from comparisons
+      // Price delta + price at this interval
       const snapDate = snap.date.split('T')[0]
       let priceDelta: number | null = null
-      if (i > 0) {
+      let priceAtInterval: number | null = null
+
+      if (i === 0) {
+        // Base interval — show base price
+        priceAtInterval = basePrice
+      } else {
         // Exact date match first, then closest date on or before
-        priceDelta = returnByDate.get(snapDate) ?? null
-        if (priceDelta == null && stockPerformance?.periods) {
-          // Find closest period on or before this snapshot date
-          let closest: number | null = null
+        const exact = periodByDate.get(snapDate)
+        if (exact) {
+          priceDelta = exact.cumulativeReturn
+          priceAtInterval = exact.price
+        } else if (stockPerformance?.periods) {
+          let closestReturn: number | null = null
+          let closestPrice: number | null = null
           for (const p of stockPerformance.periods) {
             if (p.date.split('T')[0] <= snapDate) {
-              closest = p.cumulativeReturn
+              closestReturn = p.cumulativeReturn
+              closestPrice = p.price
             }
           }
-          priceDelta = closest
+          priceDelta = closestReturn
+          priceAtInterval = closestPrice
         }
       }
 
@@ -88,6 +101,8 @@ export function StockDetailOverlay({ stockId, onClose }: StockDetailOverlayProps
         verdict: stockScore?.verdict ?? '—',
         verdictColor: stockScore?.verdictColor ?? '',
         priceDelta,
+        basePrice,
+        priceAtInterval,
         segmentResults: stockScore?.segmentResults ?? [],
       }
     })
@@ -271,6 +286,8 @@ interface IntervalData {
   totalStocks: number
   verdict: string
   priceDelta: number | null
+  basePrice: number | null
+  priceAtInterval: number | null
   segmentResults: SegmentResult[]
 }
 
@@ -290,7 +307,7 @@ function IntervalLevel({
       </div>
 
       {/* Column header */}
-      <div className="grid grid-cols-[100px_70px_60px_100px_80px] px-4 py-2 border-b border-white/5 text-[9px] text-neutral-500 uppercase tracking-wider">
+      <div className="grid grid-cols-[100px_70px_60px_100px_1fr] px-4 py-2 border-b border-white/5 text-[9px] text-neutral-500 uppercase tracking-wider">
         <span>Interval</span>
         <span className="text-right">Score</span>
         <span className="text-right">Rank</span>
@@ -303,7 +320,7 @@ function IntervalLevel({
           <button
             key={interval.date}
             onClick={() => onSelectInterval(i)}
-            className="w-full grid grid-cols-[100px_70px_60px_100px_80px] px-4 py-2.5 items-center hover:bg-dark-700/30 transition-colors text-left"
+            className="w-full grid grid-cols-[100px_70px_60px_100px_1fr] px-4 py-2.5 items-center hover:bg-dark-700/30 transition-colors text-left"
           >
             <span className="text-[11px] text-neutral-300 font-mono">
               {formatDate(interval.date)}
@@ -333,20 +350,36 @@ function IntervalLevel({
             </div>
 
             <div className="text-right">
-              {interval.priceDelta != null ? (
-                <span className={cn(
-                  'text-[11px] font-medium font-mono inline-flex items-center gap-0.5',
-                  interval.priceDelta > 0 ? 'text-success-400' : interval.priceDelta < 0 ? 'text-red-400' : 'text-neutral-500',
-                )}>
-                  {interval.priceDelta > 0 ? (
-                    <ArrowUpRight className="w-3 h-3" />
-                  ) : interval.priceDelta < 0 ? (
-                    <ArrowDownRight className="w-3 h-3" />
-                  ) : null}
-                  {interval.priceDelta > 0 ? '+' : ''}{interval.priceDelta.toFixed(1)}%
-                </span>
+              {i === 0 ? (
+                <div>
+                  <span className="text-[10px] text-neutral-500">Base</span>
+                  {interval.priceAtInterval != null && (
+                    <div className="text-[9px] text-neutral-600 font-mono mt-0.5">
+                      ₹{formatPrice(interval.priceAtInterval)}
+                    </div>
+                  )}
+                </div>
+              ) : interval.priceDelta != null ? (
+                <div>
+                  <span className={cn(
+                    'text-[11px] font-medium font-mono inline-flex items-center gap-0.5 justify-end',
+                    interval.priceDelta > 0 ? 'text-success-400' : interval.priceDelta < 0 ? 'text-red-400' : 'text-neutral-500',
+                  )}>
+                    {interval.priceDelta > 0 ? (
+                      <ArrowUpRight className="w-3 h-3" />
+                    ) : interval.priceDelta < 0 ? (
+                      <ArrowDownRight className="w-3 h-3" />
+                    ) : null}
+                    {interval.priceDelta > 0 ? '+' : ''}{interval.priceDelta.toFixed(1)}%
+                  </span>
+                  {interval.basePrice != null && interval.priceAtInterval != null && (
+                    <div className="text-[9px] text-neutral-600 font-mono mt-0.5">
+                      ₹{formatPrice(interval.basePrice)} → ₹{formatPrice(interval.priceAtInterval)}
+                    </div>
+                  )}
+                </div>
               ) : (
-                <span className="text-[10px] text-neutral-600">Base</span>
+                <span className="text-[10px] text-neutral-600">—</span>
               )}
             </div>
           </button>
@@ -397,6 +430,11 @@ function SegmentLevel({
             )}>
               {snapshot.priceDelta > 0 ? '+' : ''}{snapshot.priceDelta.toFixed(1)}%
             </div>
+            {snapshot.basePrice != null && snapshot.priceAtInterval != null && (
+              <div className="text-[9px] text-neutral-600 font-mono mt-0.5">
+                ₹{formatPrice(snapshot.basePrice)} → ₹{formatPrice(snapshot.priceAtInterval)}
+              </div>
+            )}
           </div>
         )}
       </div>
@@ -503,6 +541,17 @@ function MetricLevel({ segment }: { segment: SegmentResult }) {
                 {metric.isExcluded && metric.excludeReason && (
                   <div className="text-[9px] text-neutral-600 mt-0.5">{metric.excludeReason}</div>
                 )}
+                {metric.evidence && (metric.evidence.startValue != null || metric.evidence.endValue != null) && (
+                  <div className="text-[9px] text-neutral-600 font-mono mt-0.5">
+                    {metric.evidence.startValue != null && metric.evidence.endValue != null ? (
+                      <span>{formatValue(metric.evidence.startValue)} → {formatValue(metric.evidence.endValue)}</span>
+                    ) : metric.evidence.endValue != null ? (
+                      <span>Latest: {formatValue(metric.evidence.endValue)}</span>
+                    ) : metric.evidence.startValue != null ? (
+                      <span>Start: {formatValue(metric.evidence.startValue)}</span>
+                    ) : null}
+                  </div>
+                )}
               </div>
 
               <span className="text-[11px] text-neutral-400 text-right font-mono">
@@ -556,6 +605,12 @@ function MetricLevel({ segment }: { segment: SegmentResult }) {
 function formatDate(dateStr: string): string {
   const d = new Date(dateStr)
   return d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: '2-digit' })
+}
+
+function formatPrice(price: number): string {
+  if (price >= 10000) return price.toFixed(0)
+  if (price >= 100) return price.toFixed(1)
+  return price.toFixed(2)
 }
 
 function formatValue(value: number): string {

@@ -186,6 +186,8 @@ export interface MetricScore {
   normalizedScore: number   // 0-100
   isExcluded: boolean
   excludeReason?: string
+  /** Evidence inputs that produced this metric's raw value (e.g., start/end values for growth) */
+  evidence?: { startValue?: number; endValue?: number }
 }
 
 /** Score result for a segment (group of metrics) */
@@ -398,6 +400,10 @@ export interface PriceDeltaRow {
   verdictColor: string
   /** Key: interval label (e.g., "Month 1", "Week 3"), Value: cumulative return % */
   deltas: Record<string, number>
+  /** Base price used for all delta calculations */
+  basePrice?: number
+  /** Key: interval label, Value: price at that interval (evidence for deltas) */
+  prices?: Record<string, number>
 }
 
 /** Combined result from scoring + backtesting in one operation (Stage 4→5) */

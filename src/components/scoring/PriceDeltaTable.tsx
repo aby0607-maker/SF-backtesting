@@ -233,14 +233,22 @@ function DeltaRow({
         {/* Interval delta cells */}
         {intervalColumns.map(col => {
           const delta = row.deltas[col]
+          const price = row.prices?.[col]
           return (
             <td key={col} className="px-2 py-2 text-right whitespace-nowrap font-mono text-[11px]">
               {delta != null ? (
-                <span className={cn(
-                  delta > 0 ? 'text-success-400' : delta < 0 ? 'text-red-400' : 'text-neutral-500',
-                )}>
-                  {delta > 0 ? '+' : ''}{delta.toFixed(1)}%
-                </span>
+                <div>
+                  <span className={cn(
+                    delta > 0 ? 'text-success-400' : delta < 0 ? 'text-red-400' : 'text-neutral-500',
+                  )}>
+                    {delta > 0 ? '+' : ''}{delta.toFixed(1)}%
+                  </span>
+                  {row.basePrice != null && price != null && (
+                    <div className="text-[8px] text-neutral-600 mt-0.5">
+                      ₹{row.basePrice}→₹{price}
+                    </div>
+                  )}
+                </div>
               ) : (
                 <span className="text-neutral-600">—</span>
               )}
