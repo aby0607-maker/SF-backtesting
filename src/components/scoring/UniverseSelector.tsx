@@ -4,7 +4,7 @@
  * Three selection modes — all resolve into customSymbols immediately:
  * - Individual: Search and pick specific stocks by name/symbol
  * - Cohort: Filter by market cap and/or sector → resolves to symbols
- * - All: Select the entire NSE-listed universe
+ * - All: Select the entire listed universe (NSE + BSE)
  *
  * Switching between modes preserves the selected stock list.
  * The selected stocks chips are always visible at the bottom for editing.
@@ -21,10 +21,13 @@ import { Globe, Search, Filter, Users, X, Hash, AlertTriangle, Check } from 'luc
 
 type SelectionMode = 'individual' | 'cohort' | 'all'
 
+/** Get display symbol: NSE preferred, BSE code fallback */
+const getSymbol = (c: CMOTSCompany) => c.nsesymbol || c.bsecode || String(c.co_code)
+
 const MODE_TABS: { id: SelectionMode; label: string; icon: React.ReactNode; description: string }[] = [
   { id: 'individual', label: 'Individual', icon: <Search className="w-3 h-3" />, description: 'Search & pick specific stocks' },
   { id: 'cohort', label: 'Cohort', icon: <Filter className="w-3 h-3" />, description: 'Filter by cap & sector' },
-  { id: 'all', label: 'All NSE', icon: <Users className="w-3 h-3" />, description: 'Entire NSE universe' },
+  { id: 'all', label: 'All Stocks', icon: <Users className="w-3 h-3" />, description: 'Entire listed universe' },
 ]
 
 const MCAP_OPTIONS = [
@@ -46,7 +49,7 @@ export function UniverseSelector() {
     if (isMockMode()) return
     setLoading(true)
     getCompanyMaster().then(companies => {
-      setAllCompanies(companies.filter(c => c.nsesymbol))
+      setAllCompanies(companies.filter(c => c.nsesymbol || c.bsecode))
       setLoading(false)
     })
   }, [])
@@ -96,7 +99,7 @@ export function UniverseSelector() {
     // Subtract manually excluded stocks
     const currentExcluded = new Set(universeFilter.excludedSymbols ?? [])
     setUniverseFilter({
-      customSymbols: filtered.map(c => c.nsesymbol).filter(s => !currentExcluded.has(s)),
+      customSymbols: filtered.map(getSymbol).filter(s => !currentExcluded.has(s)),
       mcapTypes,
       sectors: sectorFilters,
     })
@@ -118,7 +121,7 @@ export function UniverseSelector() {
     if (mode === 'all') {
       const allSymbols = isMockMode()
         ? MOCK_COMPANIES.map(c => c.symbol)
-        : allCompanies.map(c => c.nsesymbol)
+        : allCompanies.map(getSymbol)
       setUniverseFilter({
         mode,
         customSymbols: allSymbols.filter(s => !excluded.has(s)),
@@ -228,9 +231,9 @@ export function UniverseSelector() {
                 if (universeFilter.sectors.length > 0 && !universeFilter.sectors.includes(c.sectorname)) return false
                 return true
               })
-              setUniverseFilter({ customSymbols: filtered.map(c => c.nsesymbol), excludedSymbols: [] })
+              setUniverseFilter({ customSymbols: filtered.map(getSymbol), excludedSymbols: [] })
             } else if (universeFilter.mode === 'all') {
-              setUniverseFilter({ customSymbols: allCompanies.map(c => c.nsesymbol), excludedSymbols: [] })
+              setUniverseFilter({ customSymbols: allCompanies.map(getSymbol), excludedSymbols: [] })
             }
           }}
         />
@@ -262,7 +265,7 @@ function IndividualSearch({
     setSearching(true)
     searchCompanies(q).then(companies => {
       const selected = new Set(customSymbols.map(s => s.toUpperCase()))
-      setResults(companies.filter(c => !selected.has(c.nsesymbol.toUpperCase())).slice(0, 15))
+      setResults(companies.filter(c => !selected.has(getSymbol(c).toUpperCase())).slice(0, 15))
       setSearching(false)
     })
   }, [customSymbols])
@@ -274,7 +277,7 @@ function IndividualSearch({
   }
 
   const addSymbol = (company: CMOTSCompany) => {
-    onAdd(company.nsesymbol)
+    onAdd(getSymbol(company))
     setQuery('')
     setResults([])
     inputRef.current?.focus()
@@ -306,7 +309,10 @@ function IndividualSearch({
               className="w-full flex items-center justify-between px-3 py-2 text-left hover:bg-primary-500/10 transition-colors border-b border-white/[0.02] last:border-0"
             >
               <div className="flex items-center gap-2 min-w-0">
-                <span className="text-xs font-semibold text-primary-400 shrink-0">{company.nsesymbol}</span>
+                <span className="text-xs font-semibold text-primary-400 shrink-0">
+                  {company.nsesymbol || company.bsecode}
+                  {!company.nsesymbol && company.bsecode && <span className="text-[9px] text-neutral-600 ml-1">(BSE)</span>}
+                </span>
                 <span className="text-[11px] text-neutral-400 truncate">{company.companyname}</span>
               </div>
               <div className="flex items-center gap-2 shrink-0 ml-2">

@@ -24,9 +24,11 @@ import type {
 } from '@/types/scoring'
 import { scoreStock } from '@/lib/scoringEngine'
 import { runBacktest } from '@/lib/backtestEngine'
-import { resolveMetricValues, getStockInfo } from '@/services/metricResolver'
+import { resolveMetricValues, resolveMetricsAtDate, getStockInfo } from '@/services/metricResolver'
 import { getCompanyMaster } from '@/services/cmots/companyMaster'
 import { getBatchPrices } from '@/services/cmots/priceData'
+import { getAllFundamentals } from '@/services/cmots/fundamentals'
+import type { FundamentalsBundle } from '@/services/cmots/fundamentals'
 
 // ─────────────────────────────────────────────────
 // Combined Scoring + Backtest (new 5-stage pipeline)
@@ -384,6 +386,9 @@ function buildReviewSnapshot(
 
 /**
  * Run a full backtest using price data from CMOTS service.
+ *
+ * Fetches fundamentals + prices once per stock, then re-scores at each
+ * interval date using windowed historical data (no additional network calls).
  */
 export async function backtestScorecard(
   config: BacktestConfig,
@@ -394,55 +399,87 @@ export async function backtestScorecard(
     ? cohortStockIds
     : (await getCompanyMaster()).map(c => c.nsesymbol ?? String(c.co_code))
 
+  // ── Phase 1: Fetch all data upfront (network-heavy, done once) ──
+
   const batchPrices = await getBatchPrices(targetStockIds, config.dateRange.from, config.dateRange.to)
 
+  // Price history in two formats: simplified (for backtestEngine) and detailed (for resolveMetricsAtDate)
   const priceHistory: Record<string, { date: string; price: number }[]> = {}
+  const priceHistoryWithVolume: Record<string, { date: string; price: number; volume?: number }[]> = {}
   for (const [symbol, records] of Object.entries(batchPrices)) {
     if (records.length > 0) {
       priceHistory[symbol] = records.map(r => ({
         date: r.Tradedate,
         price: r.Dayclose,
       }))
+      priceHistoryWithVolume[symbol] = records.map(r => ({
+        date: r.Tradedate,
+        price: r.Dayclose,
+        volume: r.TotalVolume,
+      }))
     }
   }
 
-  const snapshotStocks: StockScoreResult[] = []
-  for (const stockId of targetStockIds) {
-    const resolved = await resolveMetricValues(stockId)
-    const info = await getStockInfo(stockId)
-    if (!resolved || !info) continue
+  // Fetch fundamentals + stock info for each stock (parallel)
+  const stockData: {
+    stockId: string
+    fundamentals: FundamentalsBundle
+    info: { id: string; name: string; symbol: string; sector: string; marketCap: number }
+  }[] = []
 
-    const scored = scoreStock(resolved.data, scorecard, info, resolved.context)
-    snapshotStocks.push({ ...scored, rank: 0 })
-  }
-  snapshotStocks.sort((a, b) => b.normalizedScore - a.normalizedScore)
-  snapshotStocks.forEach((s, i) => { s.rank = i + 1 })
+  await Promise.all(targetStockIds.map(async (stockId) => {
+    const [fundamentals, info] = await Promise.all([
+      getAllFundamentals(stockId),
+      getStockInfo(stockId),
+    ])
+    if (!info) return
+    stockData.push({ stockId, fundamentals, info })
+  }))
 
-  // Build interval snapshots — one per interval date (+ start date)
-  // Extract interval dates from any stock's price history
+  // ── Phase 2: Compute interval dates ──
+
   const anyPriceHistory = Object.values(priceHistory)[0]
   const allTradeDates = anyPriceHistory
     ? anyPriceHistory.map(p => p.date.split('T')[0]).sort()
     : []
   const intervalDates = getIntervalDates(allTradeDates, config.interval)
 
+  // ── Phase 3: Score at each interval (CPU-only, no network) ──
+
+  const scoreAtDate = (asOfDate: string): StockScoreResult[] => {
+    const stocks: StockScoreResult[] = []
+
+    for (const { stockId, fundamentals, info } of stockData) {
+      const prices = priceHistoryWithVolume[stockId]
+      if (!prices || prices.length === 0) continue
+
+      const resolved = resolveMetricsAtDate(fundamentals, prices, asOfDate)
+      const scored = scoreStock(resolved.data, scorecard, info, resolved.context)
+      stocks.push({ ...scored, rank: 0 })
+    }
+
+    // Rank by score descending
+    stocks.sort((a, b) => b.normalizedScore - a.normalizedScore)
+    stocks.forEach((s, i) => { s.rank = i + 1 })
+    return stocks
+  }
+
   // Start snapshot (earliest date)
+  const startStocks = scoreAtDate(config.dateRange.from)
   const snapshots: BacktestSnapshot[] = [{
     date: config.dateRange.from,
-    stockScores: snapshotStocks,
+    stockScores: startStocks,
   }]
 
-  // Interval snapshots — clone scored results with each interval date
-  // Scores are identical since we use current fundamentals; architecture
-  // supports historical fundamentals when available.
+  // Interval snapshots — re-score at each date with windowed fundamentals + prices
   for (const date of intervalDates) {
     snapshots.push({
       date,
-      stockScores: snapshotStocks.map(s => ({ ...s })),
+      stockScores: scoreAtDate(date),
     })
   }
 
-  const reviewSnapshot = buildReviewSnapshot(scorecard, snapshotStocks)
+  const reviewSnapshot = buildReviewSnapshot(scorecard, startStocks)
 
   return runBacktest(config, priceHistory, snapshots, reviewSnapshot)
 }

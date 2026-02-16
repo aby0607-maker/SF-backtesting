@@ -2,8 +2,11 @@
  * CMOTS Company Master — Company lookup with symbol→co_code resolution
  *
  * The CMOTS API uses `co_code` (integer) as its primary identifier,
- * but the scoring system uses NSE symbols (strings). This module bridges
+ * but the scoring system uses symbols (strings). This module bridges
  * the two by maintaining a cached symbol→company lookup map.
+ *
+ * Lookup key: NSE symbol (preferred) or BSE code (fallback for BSE-only stocks).
+ * This ensures the full universe (NSE + BSE) is available for scoring.
  *
  * Mock mode: returns from MOCK_COMPANIES
  * API mode: fetches from /companymaster, builds lookup cache
@@ -19,7 +22,7 @@ const CACHE_TTL = 24 * 60 * 60 * 1000  // 24 hours
 let companyMap: Map<string, CMOTSCompany> | null = null
 let companyMapPromise: Promise<Map<string, CMOTSCompany>> | null = null
 
-/** Build the lookup map (keyed by uppercase NSE symbol) */
+/** Build the lookup map (keyed by uppercase NSE symbol or BSE code) */
 async function ensureCompanyMap(): Promise<Map<string, CMOTSCompany>> {
   if (companyMap) return companyMap
 
@@ -30,13 +33,13 @@ async function ensureCompanyMap(): Promise<Map<string, CMOTSCompany>> {
     const companies = await getCompanyMaster()
     const map = new Map<string, CMOTSCompany>()
     for (const c of companies) {
-      if (c.nsesymbol) {
-        map.set(c.nsesymbol.toUpperCase(), c)
-      }
+      // Prefer NSE symbol as key; fall back to BSE code for BSE-only stocks
+      const key = c.nsesymbol?.toUpperCase() || c.bsecode?.toUpperCase()
+      if (key) map.set(key, c)
     }
     companyMap = map
     companyMapPromise = null
-    console.log(`[CompanyMaster] Loaded ${map.size} NSE-listed companies`)
+    console.log(`[CompanyMaster] Loaded ${map.size} companies (NSE + BSE)`)
     return map
   })()
 
@@ -58,7 +61,7 @@ export async function getCompanyMaster(): Promise<CMOTSCompany[]> {
   return data
 }
 
-/** Resolve an NSE symbol to its co_code. Returns null if not found. */
+/** Resolve a symbol (NSE or BSE) to its co_code. Returns null if not found. */
 export async function getCoCode(symbol: string): Promise<number | null> {
   if (isMockMode()) return null
 
@@ -67,7 +70,7 @@ export async function getCoCode(symbol: string): Promise<number | null> {
   return company?.co_code ?? null
 }
 
-/** Get company details by NSE symbol */
+/** Get company details by symbol (NSE or BSE code) */
 export async function getCompanyBySymbol(symbol: string): Promise<CMOTSCompany | null> {
   if (isMockMode()) {
     const mock = MOCK_COMPANIES.find(c => c.symbol === symbol.toUpperCase())
@@ -96,7 +99,8 @@ export async function searchCompanies(query: string): Promise<CMOTSCompany[]> {
   for (const company of map.values()) {
     if (
       company.companyname.toLowerCase().includes(q) ||
-      company.nsesymbol.toLowerCase().includes(q) ||
+      company.nsesymbol?.toLowerCase().includes(q) ||
+      company.bsecode?.toLowerCase().includes(q) ||
       company.companyshortname?.toLowerCase().includes(q)
     ) {
       results.push(company)

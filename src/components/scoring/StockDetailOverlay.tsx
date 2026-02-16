@@ -41,21 +41,20 @@ export function StockDetailOverlay({ stockId, onClose }: StockDetailOverlayProps
   // Find stock info from scoring results
   const stockInfo = combinedResult?.scoring?.stocks.find(s => s.stockId === stockId)
 
-  // Build price delta map from priceDeltaTable
-  const priceDeltaRow = combinedResult?.priceDeltaTable?.find(r => r.stockId === stockId)
+  // Get per-stock price performance from backtest comparisons (date-aligned, reliable)
+  const stockPerformance = backtestResult?.comparisons?.find(c => c.targetStockId === stockId)?.targetPerformance
 
   // Build interval data: score + rank + price delta at each snapshot
   const intervals = useMemo(() => {
     if (snapshots.length === 0) return []
 
-    // Get interval delta keys sorted
-    const deltaKeys = priceDeltaRow
-      ? Object.keys(priceDeltaRow.deltas).sort((a, b) => {
-          const numA = parseInt(a.replace(/\D/g, '')) || 0
-          const numB = parseInt(b.replace(/\D/g, '')) || 0
-          return numA - numB
-        })
-      : []
+    // Build a date→cumulativeReturn lookup from the comparison's price performance
+    const returnByDate = new Map<string, number>()
+    if (stockPerformance?.periods) {
+      for (const p of stockPerformance.periods) {
+        returnByDate.set(p.date.split('T')[0], p.cumulativeReturn)
+      }
+    }
 
     return snapshots.map((snap, i) => {
       const stockScore = snap.stockScores.find(s => s.stockId === stockId)
@@ -63,8 +62,23 @@ export function StockDetailOverlay({ stockId, onClose }: StockDetailOverlayProps
       const sorted = [...snap.stockScores].sort((a, b) => b.normalizedScore - a.normalizedScore)
       const rank = sorted.findIndex(s => s.stockId === stockId) + 1
 
-      // Price delta: first snapshot has no delta (it's the base), subsequent ones use the delta table
-      const priceDelta = i === 0 ? null : (deltaKeys[i - 1] ? priceDeltaRow?.deltas[deltaKeys[i - 1]] ?? null : null)
+      // Price delta: first snapshot is the base, subsequent ones use cumulative return from comparisons
+      const snapDate = snap.date.split('T')[0]
+      let priceDelta: number | null = null
+      if (i > 0) {
+        // Exact date match first, then closest date on or before
+        priceDelta = returnByDate.get(snapDate) ?? null
+        if (priceDelta == null && stockPerformance?.periods) {
+          // Find closest period on or before this snapshot date
+          let closest: number | null = null
+          for (const p of stockPerformance.periods) {
+            if (p.date.split('T')[0] <= snapDate) {
+              closest = p.cumulativeReturn
+            }
+          }
+          priceDelta = closest
+        }
+      }
 
       return {
         date: snap.date,
@@ -77,7 +91,7 @@ export function StockDetailOverlay({ stockId, onClose }: StockDetailOverlayProps
         segmentResults: stockScore?.segmentResults ?? [],
       }
     })
-  }, [snapshots, stockId, priceDeltaRow])
+  }, [snapshots, stockId, stockPerformance])
 
   // Selected snapshot's segment data
   const selectedSnapshot = selectedSnapshotIdx !== null ? intervals[selectedSnapshotIdx] : null
