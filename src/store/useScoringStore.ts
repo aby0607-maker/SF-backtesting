@@ -54,6 +54,7 @@ interface ScoringState {
     mcapTypes: string[]    // e.g. ['Large Cap'] — cohort mode only
     sectors: string[]      // e.g. ['Finance'] — cohort mode only
     customSymbols: string[] // e.g. ['RELIANCE', 'TCS'] — individual mode + cohort additions
+    excludedSymbols: string[] // Stocks manually removed while in cohort/all mode
   }
 
   // Backtest config (date range, interval, benchmark)
@@ -174,7 +175,7 @@ export const useScoringStore = create<ScoringState>()(
       activeScorecardId: null,
       versionHistory: {},
 
-      universeFilter: { mode: 'cohort' as const, mcapTypes: ['Large Cap'], sectors: [], customSymbols: [] },
+      universeFilter: { mode: 'cohort' as const, mcapTypes: ['Large Cap'], sectors: [], customSymbols: [], excludedSymbols: [] },
       backtestConfig: null,
       combinedResult: null,
       currentRun: null,

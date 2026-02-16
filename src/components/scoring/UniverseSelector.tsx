@@ -78,7 +78,12 @@ export function UniverseSelector() {
     return counts
   }, [allCompanies])
 
-  // ── Cohort filter → resolve to customSymbols ──
+  // ── Cohort filter → resolve to customSymbols (respecting exclusions) ──
+  const excluded = useMemo(
+    () => new Set(universeFilter.excludedSymbols ?? []),
+    [universeFilter.excludedSymbols]
+  )
+
   const resolveCohort = useCallback((mcapTypes: string[], sectorFilters: string[]) => {
     if (mcapTypes.length === 0 && sectorFilters.length === 0) return
 
@@ -88,30 +93,41 @@ export function UniverseSelector() {
       return true
     })
 
+    // Subtract manually excluded stocks
+    const currentExcluded = new Set(universeFilter.excludedSymbols ?? [])
     setUniverseFilter({
-      customSymbols: filtered.map(c => c.nsesymbol),
+      customSymbols: filtered.map(c => c.nsesymbol).filter(s => !currentExcluded.has(s)),
       mcapTypes,
       sectors: sectorFilters,
     })
-  }, [allCompanies, setUniverseFilter])
+  }, [allCompanies, setUniverseFilter, universeFilter.excludedSymbols])
 
-  // ── Mode switching — preserve symbols when switching to individual ──
+  // ── Remove a stock — in cohort/all mode, track as excluded so filter toggles don't re-add it ──
+  const removeStock = useCallback((symbol: string) => {
+    const isCohortOrAll = universeFilter.mode === 'cohort' || universeFilter.mode === 'all'
+    setUniverseFilter({
+      customSymbols: universeFilter.customSymbols.filter(s => s !== symbol),
+      ...(isCohortOrAll && {
+        excludedSymbols: [...(universeFilter.excludedSymbols ?? []), symbol],
+      }),
+    })
+  }, [universeFilter, setUniverseFilter])
+
+  // ── Mode switching — preserve symbols, clear exclusions when going to individual ──
   const setMode = (mode: SelectionMode) => {
     if (mode === 'all') {
-      // Select everything
-      if (isMockMode()) {
-        setUniverseFilter({
-          mode,
-          customSymbols: MOCK_COMPANIES.map(c => c.symbol),
-        })
-      } else {
-        setUniverseFilter({
-          mode,
-          customSymbols: allCompanies.map(c => c.nsesymbol),
-        })
-      }
+      const allSymbols = isMockMode()
+        ? MOCK_COMPANIES.map(c => c.symbol)
+        : allCompanies.map(c => c.nsesymbol)
+      setUniverseFilter({
+        mode,
+        customSymbols: allSymbols.filter(s => !excluded.has(s)),
+      })
+    } else if (mode === 'individual') {
+      // Switching to individual: keep stocks, clear exclusions (manual edits are the norm)
+      setUniverseFilter({ mode, excludedSymbols: [] })
     } else {
-      // Individual or cohort — keep current customSymbols
+      // Switching to cohort: keep current customSymbols
       setUniverseFilter({ mode })
     }
   }
@@ -195,14 +211,28 @@ export function UniverseSelector() {
       {selectedCount > 0 && (
         <SelectedStocksList
           symbols={universeFilter.customSymbols}
-          onRemove={symbol => setUniverseFilter({
-            customSymbols: universeFilter.customSymbols.filter(s => s !== symbol),
-          })}
+          excludedCount={excluded.size}
+          onRemove={removeStock}
           onClear={() => setUniverseFilter({
             customSymbols: [],
             mcapTypes: [],
             sectors: [],
+            excludedSymbols: [],
           })}
+          onResetExclusions={() => {
+            // Re-resolve cohort without exclusions
+            setUniverseFilter({ excludedSymbols: [] })
+            if (universeFilter.mode === 'cohort') {
+              const filtered = allCompanies.filter(c => {
+                if (universeFilter.mcapTypes.length > 0 && !universeFilter.mcapTypes.includes(c.mcaptype)) return false
+                if (universeFilter.sectors.length > 0 && !universeFilter.sectors.includes(c.sectorname)) return false
+                return true
+              })
+              setUniverseFilter({ customSymbols: filtered.map(c => c.nsesymbol), excludedSymbols: [] })
+            } else if (universeFilter.mode === 'all') {
+              setUniverseFilter({ customSymbols: allCompanies.map(c => c.nsesymbol), excludedSymbols: [] })
+            }
+          }}
         />
       )}
     </div>
@@ -414,12 +444,16 @@ function CohortFilters({
 
 function SelectedStocksList({
   symbols,
+  excludedCount,
   onRemove,
   onClear,
+  onResetExclusions,
 }: {
   symbols: string[]
+  excludedCount: number
   onRemove: (symbol: string) => void
   onClear: () => void
+  onResetExclusions: () => void
 }) {
   const [expanded, setExpanded] = useState(false)
   const COLLAPSE_THRESHOLD = 20
@@ -430,9 +464,19 @@ function SelectedStocksList({
   return (
     <div className="border-t border-white/5 pt-3 space-y-2">
       <div className="flex items-center justify-between">
-        <span className="text-[11px] text-neutral-400 font-medium">
-          Selected Stocks ({symbols.length})
-        </span>
+        <div className="flex items-center gap-2">
+          <span className="text-[11px] text-neutral-400 font-medium">
+            Selected Stocks ({symbols.length})
+          </span>
+          {excludedCount > 0 && (
+            <button
+              onClick={onResetExclusions}
+              className="text-[10px] text-amber-400/70 hover:text-amber-400 transition-colors"
+            >
+              {excludedCount} excluded · restore
+            </button>
+          )}
+        </div>
         <button
           onClick={onClear}
           className="text-[10px] text-red-400/70 hover:text-red-400 transition-colors"
