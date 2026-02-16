@@ -53,6 +53,7 @@ export { MetricContributionWaterfall } from './MetricContributionWaterfall'
 export { ScoreTrajectoryChart } from './ScoreTrajectoryChart'
 export { ScoreReturnCorrelation } from './ScoreReturnCorrelation'
 export { ExportReportButton } from './ExportReportButton'
+export { StockDetailOverlay } from './StockDetailOverlay'
 
 // ─── Legacy (not used in 5-stage pipeline) ───
 // RunScoringButton, ScoreboardTable, ScoreDistributionChart, VerdictSummaryCards,

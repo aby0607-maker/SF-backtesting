@@ -17,9 +17,11 @@
  */
 
 import { useState } from 'react'
+import { AnimatePresence } from 'framer-motion'
 import { cn } from '@/lib/utils'
 import { useCombinedResult, useBacktestResult } from '@/store/useScoringStore'
 import { ScoringResultsTable } from './ScoringResultsTable'
+import { StockDetailOverlay } from './StockDetailOverlay'
 import { PriceDeltaTable } from './PriceDeltaTable'
 import { SummaryMetricsGrid } from './SummaryMetricsGrid'
 import { ScoreReturnCorrelation } from './ScoreReturnCorrelation'
@@ -43,6 +45,7 @@ const TABS: { id: ResultsTab; label: string; icon: typeof BarChart3 }[] = [
 export function ResultsPanel() {
   const [activeTab, setActiveTab] = useState<ResultsTab>('scores')
   const [selectedStockId, setSelectedStockId] = useState<string | null>(null)
+  const [overlayStockId, setOverlayStockId] = useState<string | null>(null)
   const combinedResult = useCombinedResult()
   const backtestResult = useBacktestResult()
 
@@ -104,7 +107,7 @@ export function ResultsPanel() {
 
       {/* Tab content */}
       {activeTab === 'scores' && (
-        <ScoringResultsTable />
+        <ScoringResultsTable onSelectStock={setOverlayStockId} />
       )}
 
       {activeTab === 'performance' && (
@@ -149,6 +152,15 @@ export function ResultsPanel() {
           )}
         </div>
       )}
+      {/* Stock detail overlay */}
+      <AnimatePresence>
+        {overlayStockId && (
+          <StockDetailOverlay
+            stockId={overlayStockId}
+            onClose={() => setOverlayStockId(null)}
+          />
+        )}
+      </AnimatePresence>
     </div>
   )
 }

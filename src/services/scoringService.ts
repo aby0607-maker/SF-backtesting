@@ -418,10 +418,29 @@ export async function backtestScorecard(
   snapshotStocks.sort((a, b) => b.normalizedScore - a.normalizedScore)
   snapshotStocks.forEach((s, i) => { s.rank = i + 1 })
 
+  // Build interval snapshots — one per interval date (+ start date)
+  // Extract interval dates from any stock's price history
+  const anyPriceHistory = Object.values(priceHistory)[0]
+  const allTradeDates = anyPriceHistory
+    ? anyPriceHistory.map(p => p.date.split('T')[0]).sort()
+    : []
+  const intervalDates = getIntervalDates(allTradeDates, config.interval)
+
+  // Start snapshot (earliest date)
   const snapshots: BacktestSnapshot[] = [{
     date: config.dateRange.from,
     stockScores: snapshotStocks,
   }]
+
+  // Interval snapshots — clone scored results with each interval date
+  // Scores are identical since we use current fundamentals; architecture
+  // supports historical fundamentals when available.
+  for (const date of intervalDates) {
+    snapshots.push({
+      date,
+      stockScores: snapshotStocks.map(s => ({ ...s })),
+    })
+  }
 
   const reviewSnapshot = buildReviewSnapshot(scorecard, snapshotStocks)
 
