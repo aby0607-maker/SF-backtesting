@@ -128,9 +128,7 @@ export function PipelineReviewPanel() {
               <div className="text-[10px] text-neutral-500 mb-1">Stock Selection</div>
               <div className="flex items-center gap-2 text-xs">
                 <span className="text-white font-medium">
-                  {snapshot.stockSelectionSummary.totalStocks === -1
-                    ? 'Filter-based'
-                    : `${snapshot.stockSelectionSummary.totalStocks} stocks`}
+                  {`${snapshot.stockSelectionSummary.totalStocks} stocks`}
                 </span>
                 <span className="text-neutral-600">•</span>
                 <span className="text-neutral-400 capitalize">

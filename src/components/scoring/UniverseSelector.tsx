@@ -1,13 +1,16 @@
 /**
  * UniverseSelector — Stage 3: Choose which stocks to score
  *
- * Three selection modes:
+ * Three selection modes — all resolve into customSymbols immediately:
  * - Individual: Search and pick specific stocks by name/symbol
- * - Cohort: Filter by market cap and/or sector
- * - All: Score the entire NSE-listed universe (slow but comprehensive)
+ * - Cohort: Filter by market cap and/or sector → resolves to symbols
+ * - All: Select the entire NSE-listed universe
+ *
+ * Switching between modes preserves the selected stock list.
+ * The selected stocks chips are always visible at the bottom for editing.
  */
 
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import { cn } from '@/lib/utils'
 import { useScoringStore } from '@/store/useScoringStore'
 import { getCompanyMaster, searchCompanies } from '@/services/cmots/companyMaster'
@@ -25,74 +28,100 @@ const MODE_TABS: { id: SelectionMode; label: string; icon: React.ReactNode; desc
 ]
 
 const MCAP_OPTIONS = [
-  { id: 'Large Cap', label: 'Large Cap', count: '~100' },
-  { id: 'Mid Cap', label: 'Mid Cap', count: '~150' },
-  { id: 'Small Cap', label: 'Small Cap', count: '~5,600' },
+  { id: 'Large Cap', label: 'Large Cap' },
+  { id: 'Mid Cap', label: 'Mid Cap' },
+  { id: 'Small Cap', label: 'Small Cap' },
 ]
 
 export function UniverseSelector() {
   const universeFilter = useScoringStore(s => s.universeFilter)
   const setUniverseFilter = useScoringStore(s => s.setUniverseFilter)
 
-  const [sectors, setSectors] = useState<string[]>([])
-  const [estimatedCount, setEstimatedCount] = useState<number | null>(null)
-  const [totalUniverse, setTotalUniverse] = useState<number | null>(null)
+  // Full company list from API (cached)
+  const [allCompanies, setAllCompanies] = useState<CMOTSCompany[]>([])
+  const [loading, setLoading] = useState(false)
 
-  // ── Load sectors + universe size on mount ──
+  // ── Load company master on mount ──
   useEffect(() => {
-    if (isMockMode()) {
-      setEstimatedCount(20)
-      setTotalUniverse(20)
-      return
-    }
+    if (isMockMode()) return
+    setLoading(true)
     getCompanyMaster().then(companies => {
-      const nseListed = companies.filter(c => c.nsesymbol)
-      setTotalUniverse(nseListed.length)
-
-      const uniqueSectors = [...new Set(
-        companies
-          .map(c => c.sectorname)
-          .filter(s => s && s !== 'None' && s !== 'ETF')
-      )].sort()
-      setSectors(uniqueSectors)
+      setAllCompanies(companies.filter(c => c.nsesymbol))
+      setLoading(false)
     })
   }, [])
 
-  // ── Update estimated count when filter changes ──
-  useEffect(() => {
-    if (isMockMode()) {
-      setEstimatedCount(20)
-      return
+  // ── Derived: sector list with counts ──
+  const sectorCounts = useMemo(() => {
+    const counts = new Map<string, number>()
+    for (const c of allCompanies) {
+      if (c.sectorname && c.sectorname !== 'None' && c.sectorname !== 'ETF') {
+        counts.set(c.sectorname, (counts.get(c.sectorname) ?? 0) + 1)
+      }
     }
+    return counts
+  }, [allCompanies])
 
-    if (universeFilter.mode === 'individual') {
-      setEstimatedCount(universeFilter.customSymbols.length)
-      return
+  const sectors = useMemo(() =>
+    [...sectorCounts.keys()].sort(),
+    [sectorCounts]
+  )
+
+  // ── Derived: mcap counts ──
+  const mcapCounts = useMemo(() => {
+    const counts = new Map<string, number>()
+    for (const c of allCompanies) {
+      if (c.mcaptype) {
+        counts.set(c.mcaptype, (counts.get(c.mcaptype) ?? 0) + 1)
+      }
     }
+    return counts
+  }, [allCompanies])
 
-    if (universeFilter.mode === 'all') {
-      setEstimatedCount(totalUniverse)
-      return
-    }
+  // ── Cohort filter → resolve to customSymbols ──
+  const resolveCohort = useCallback((mcapTypes: string[], sectorFilters: string[]) => {
+    if (mcapTypes.length === 0 && sectorFilters.length === 0) return
 
-    // Cohort mode
-    getCompanyMaster().then(companies => {
-      const filtered = filterCompanies(companies, universeFilter)
-      const extra = universeFilter.customSymbols.filter(
-        sym => !filtered.some(c => c.nsesymbol === sym)
-      ).length
-      setEstimatedCount(filtered.length + extra)
+    const filtered = allCompanies.filter(c => {
+      if (mcapTypes.length > 0 && !mcapTypes.includes(c.mcaptype)) return false
+      if (sectorFilters.length > 0 && !sectorFilters.includes(c.sectorname)) return false
+      return true
     })
-  }, [universeFilter, totalUniverse])
 
+    setUniverseFilter({
+      customSymbols: filtered.map(c => c.nsesymbol),
+      mcapTypes,
+      sectors: sectorFilters,
+    })
+  }, [allCompanies, setUniverseFilter])
+
+  // ── Mode switching — preserve symbols when switching to individual ──
   const setMode = (mode: SelectionMode) => {
-    setUniverseFilter({ mode })
+    if (mode === 'all') {
+      // Select everything
+      if (isMockMode()) {
+        setUniverseFilter({
+          mode,
+          customSymbols: MOCK_COMPANIES.map(c => c.symbol),
+        })
+      } else {
+        setUniverseFilter({
+          mode,
+          customSymbols: allCompanies.map(c => c.nsesymbol),
+        })
+      }
+    } else {
+      // Individual or cohort — keep current customSymbols
+      setUniverseFilter({ mode })
+    }
   }
 
   // Mock mode: show selectable stock list
   if (isMockMode()) {
     return <MockStockPicker />
   }
+
+  const selectedCount = universeFilter.customSymbols.length
 
   return (
     <div className="rounded-xl bg-dark-800/60 border border-white/5 p-4 space-y-3">
@@ -101,10 +130,11 @@ export function UniverseSelector() {
         <div className="flex items-center gap-2">
           <Globe className="w-3.5 h-3.5 text-primary-400" />
           <span className="text-sm font-medium text-white">Stock Universe</span>
+          {loading && (
+            <div className="w-3 h-3 border-2 border-primary-400 border-t-transparent rounded-full animate-spin" />
+          )}
         </div>
-        {estimatedCount !== null && (
-          <StockCountBadge count={estimatedCount} />
-        )}
+        <StockCountBadge count={selectedCount} />
       </div>
 
       {/* Mode tabs */}
@@ -131,35 +161,62 @@ export function UniverseSelector() {
 
       {/* Mode-specific content */}
       {universeFilter.mode === 'individual' && (
-        <IndividualMode
+        <IndividualSearch
           customSymbols={universeFilter.customSymbols}
-          onUpdate={customSymbols => setUniverseFilter({ customSymbols })}
+          onAdd={symbol => setUniverseFilter({ customSymbols: [...universeFilter.customSymbols, symbol] })}
         />
       )}
 
       {universeFilter.mode === 'cohort' && (
-        <CohortMode
-          universeFilter={universeFilter}
-          setUniverseFilter={setUniverseFilter}
+        <CohortFilters
+          mcapTypes={universeFilter.mcapTypes}
+          sectorFilters={universeFilter.sectors}
+          mcapCounts={mcapCounts}
+          sectorCounts={sectorCounts}
           sectors={sectors}
+          onApply={resolveCohort}
         />
       )}
 
       {universeFilter.mode === 'all' && (
-        <AllMode totalUniverse={totalUniverse} />
+        <div className="rounded-lg bg-amber-500/5 border border-amber-500/10 p-3 space-y-1">
+          <div className="flex items-center gap-2">
+            <AlertTriangle className="w-3.5 h-3.5 text-amber-400" />
+            <span className="text-xs font-medium text-amber-400">Full Universe Selected</span>
+          </div>
+          <p className="text-[11px] text-neutral-400 leading-relaxed">
+            All {allCompanies.length.toLocaleString()} NSE-listed stocks selected.
+            Each stock requires multiple API calls. This may take several minutes.
+          </p>
+        </div>
+      )}
+
+      {/* ── Selected stocks (always visible across all modes) ── */}
+      {selectedCount > 0 && (
+        <SelectedStocksList
+          symbols={universeFilter.customSymbols}
+          onRemove={symbol => setUniverseFilter({
+            customSymbols: universeFilter.customSymbols.filter(s => s !== symbol),
+          })}
+          onClear={() => setUniverseFilter({
+            customSymbols: [],
+            mcapTypes: [],
+            sectors: [],
+          })}
+        />
       )}
     </div>
   )
 }
 
-// ─── Individual Stock Search Mode ───
+// ─── Individual: search bar only (chips moved to shared section) ───
 
-function IndividualMode({
+function IndividualSearch({
   customSymbols,
-  onUpdate,
+  onAdd,
 }: {
   customSymbols: string[]
-  onUpdate: (symbols: string[]) => void
+  onAdd: (symbol: string) => void
 }) {
   const [query, setQuery] = useState('')
   const [results, setResults] = useState<CMOTSCompany[]>([])
@@ -174,7 +231,6 @@ function IndividualMode({
     }
     setSearching(true)
     searchCompanies(q).then(companies => {
-      // Exclude already-selected symbols
       const selected = new Set(customSymbols.map(s => s.toUpperCase()))
       setResults(companies.filter(c => !selected.has(c.nsesymbol.toUpperCase())).slice(0, 15))
       setSearching(false)
@@ -188,19 +244,14 @@ function IndividualMode({
   }
 
   const addSymbol = (company: CMOTSCompany) => {
-    onUpdate([...customSymbols, company.nsesymbol])
+    onAdd(company.nsesymbol)
     setQuery('')
     setResults([])
     inputRef.current?.focus()
   }
 
-  const removeSymbol = (symbol: string) => {
-    onUpdate(customSymbols.filter(s => s !== symbol))
-  }
-
   return (
     <div className="space-y-2">
-      {/* Search box */}
       <div className="relative">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-neutral-500" />
         <input
@@ -216,7 +267,6 @@ function IndividualMode({
         )}
       </div>
 
-      {/* Search results dropdown */}
       {results.length > 0 && (
         <div className="rounded-lg bg-dark-700/80 border border-white/5 max-h-48 overflow-y-auto">
           {results.map(company => (
@@ -238,58 +288,44 @@ function IndividualMode({
         </div>
       )}
 
-      {/* Selected stocks chips */}
-      {customSymbols.length > 0 ? (
-        <div className="flex flex-wrap gap-1.5">
-          {customSymbols.map(symbol => (
-            <span
-              key={symbol}
-              className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-primary-500/15 border border-primary-500/20 text-[11px] font-medium text-primary-400"
-            >
-              {symbol}
-              <button
-                onClick={() => removeSymbol(symbol)}
-                className="ml-0.5 hover:text-red-400 transition-colors"
-              >
-                <X className="w-3 h-3" />
-              </button>
-            </span>
-          ))}
-        </div>
-      ) : (
+      {customSymbols.length === 0 && (
         <p className="text-[11px] text-neutral-600">
-          Search and add stocks above. Type at least 2 characters to search.
+          Search and add stocks above, or switch to Cohort mode to select by sector/cap.
         </p>
       )}
     </div>
   )
 }
 
-// ─── Cohort Filter Mode ───
+// ─── Cohort: filters that resolve immediately ───
 
-function CohortMode({
-  universeFilter,
-  setUniverseFilter,
+function CohortFilters({
+  mcapTypes,
+  sectorFilters,
+  mcapCounts,
+  sectorCounts,
   sectors,
+  onApply,
 }: {
-  universeFilter: { mcapTypes: string[]; sectors: string[]; customSymbols: string[] }
-  setUniverseFilter: (filter: { mcapTypes?: string[]; sectors?: string[] }) => void
+  mcapTypes: string[]
+  sectorFilters: string[]
+  mcapCounts: Map<string, number>
+  sectorCounts: Map<string, number>
   sectors: string[]
+  onApply: (mcapTypes: string[], sectors: string[]) => void
 }) {
   const toggleMcap = (mcap: string) => {
-    const current = universeFilter.mcapTypes
-    const next = current.includes(mcap)
-      ? current.filter(m => m !== mcap)
-      : [...current, mcap]
-    setUniverseFilter({ mcapTypes: next })
+    const next = mcapTypes.includes(mcap)
+      ? mcapTypes.filter(m => m !== mcap)
+      : [...mcapTypes, mcap]
+    onApply(next, sectorFilters)
   }
 
   const toggleSector = (sector: string) => {
-    const current = universeFilter.sectors
-    const next = current.includes(sector)
-      ? current.filter(s => s !== sector)
-      : [...current, sector]
-    setUniverseFilter({ sectors: next })
+    const next = sectorFilters.includes(sector)
+      ? sectorFilters.filter(s => s !== sector)
+      : [...sectorFilters, sector]
+    onApply(mcapTypes, next)
   }
 
   return (
@@ -302,7 +338,8 @@ function CohortMode({
         </div>
         <div className="flex flex-wrap gap-2">
           {MCAP_OPTIONS.map(opt => {
-            const active = universeFilter.mcapTypes.includes(opt.id)
+            const active = mcapTypes.includes(opt.id)
+            const count = mcapCounts.get(opt.id) ?? 0
             return (
               <button
                 key={opt.id}
@@ -315,7 +352,7 @@ function CohortMode({
                 )}
               >
                 <span className="font-medium">{opt.label}</span>
-                <span className="text-[9px] opacity-60">{opt.count}</span>
+                <span className="text-[9px] opacity-60">{count > 0 ? count : '...'}</span>
               </button>
             )
           })}
@@ -328,20 +365,21 @@ function CohortMode({
           <div className="flex items-center gap-1.5 mb-2">
             <Filter className="w-3 h-3 text-neutral-500" />
             <span className="text-[11px] text-neutral-400 font-medium">
-              Sector {universeFilter.sectors.length > 0 && `(${universeFilter.sectors.length} selected)`}
+              Sector {sectorFilters.length > 0 && `(${sectorFilters.length} selected)`}
             </span>
-            {universeFilter.sectors.length > 0 && (
+            {sectorFilters.length > 0 && (
               <button
-                onClick={() => setUniverseFilter({ sectors: [] })}
+                onClick={() => onApply(mcapTypes, [])}
                 className="text-[10px] text-primary-400 hover:underline ml-auto"
               >
-                Clear
+                Clear Sectors
               </button>
             )}
           </div>
-          <div className="flex flex-wrap gap-1.5 max-h-24 overflow-y-auto">
+          <div className="flex flex-wrap gap-1.5 max-h-32 overflow-y-auto">
             {sectors.map(sector => {
-              const active = universeFilter.sectors.includes(sector)
+              const active = sectorFilters.includes(sector)
+              const count = sectorCounts.get(sector) ?? 0
               return (
                 <button
                   key={sector}
@@ -354,6 +392,7 @@ function CohortMode({
                   )}
                 >
                   {sector}
+                  <span className="ml-1 opacity-50">{count}</span>
                 </button>
               )
             })}
@@ -361,30 +400,70 @@ function CohortMode({
         </div>
       )}
 
-      {universeFilter.mcapTypes.length === 0 && universeFilter.sectors.length === 0 && (
+      {mcapTypes.length === 0 && sectorFilters.length === 0 && (
         <p className="text-[11px] text-amber-400/70 flex items-center gap-1">
           <AlertTriangle className="w-3 h-3" />
-          Select at least one market cap or sector to narrow results
+          Select at least one market cap or sector to add stocks
         </p>
       )}
     </div>
   )
 }
 
-// ─── All NSE Mode ───
+// ─── Selected Stocks List (shared across all modes) ───
 
-function AllMode({ totalUniverse }: { totalUniverse: number | null }) {
+function SelectedStocksList({
+  symbols,
+  onRemove,
+  onClear,
+}: {
+  symbols: string[]
+  onRemove: (symbol: string) => void
+  onClear: () => void
+}) {
+  const [expanded, setExpanded] = useState(false)
+  const COLLAPSE_THRESHOLD = 20
+  const showExpand = symbols.length > COLLAPSE_THRESHOLD
+
+  const visible = expanded ? symbols : symbols.slice(0, COLLAPSE_THRESHOLD)
+
   return (
-    <div className="rounded-lg bg-amber-500/5 border border-amber-500/10 p-3 space-y-1">
-      <div className="flex items-center gap-2">
-        <AlertTriangle className="w-3.5 h-3.5 text-amber-400" />
-        <span className="text-xs font-medium text-amber-400">Full Universe Scoring</span>
+    <div className="border-t border-white/5 pt-3 space-y-2">
+      <div className="flex items-center justify-between">
+        <span className="text-[11px] text-neutral-400 font-medium">
+          Selected Stocks ({symbols.length})
+        </span>
+        <button
+          onClick={onClear}
+          className="text-[10px] text-red-400/70 hover:text-red-400 transition-colors"
+        >
+          Clear All
+        </button>
       </div>
-      <p className="text-[11px] text-neutral-400 leading-relaxed">
-        This will score all {totalUniverse?.toLocaleString() ?? '...'} NSE-listed stocks.
-        Each stock requires multiple API calls for fundamental data.
-        This may take several minutes to complete.
-      </p>
+      <div className="flex flex-wrap gap-1.5 max-h-40 overflow-y-auto">
+        {visible.map(symbol => (
+          <span
+            key={symbol}
+            className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-primary-500/15 border border-primary-500/20 text-[11px] font-medium text-primary-400"
+          >
+            {symbol}
+            <button
+              onClick={() => onRemove(symbol)}
+              className="ml-0.5 hover:text-red-400 transition-colors"
+            >
+              <X className="w-3 h-3" />
+            </button>
+          </span>
+        ))}
+        {showExpand && !expanded && (
+          <button
+            onClick={() => setExpanded(true)}
+            className="px-2 py-1 rounded-md bg-dark-700/40 border border-white/5 text-[11px] text-neutral-500 hover:text-neutral-300"
+          >
+            +{symbols.length - COLLAPSE_THRESHOLD} more
+          </button>
+        )}
+      </div>
     </div>
   )
 }
@@ -520,18 +599,4 @@ function StockCountBadge({ count }: { count: number }) {
       )}
     </div>
   )
-}
-
-// ── Helper: apply cohort filters to company list ──
-
-function filterCompanies(
-  companies: { mcaptype: string; sectorname: string; nsesymbol: string }[],
-  filter: { mcapTypes: string[]; sectors: string[] }
-) {
-  return companies.filter(c => {
-    if (!c.nsesymbol) return false
-    if (filter.mcapTypes.length > 0 && !filter.mcapTypes.includes(c.mcaptype)) return false
-    if (filter.sectors.length > 0 && !filter.sectors.includes(c.sectorname)) return false
-    return true
-  })
 }
