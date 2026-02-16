@@ -686,6 +686,7 @@ function resolveOneCustomMetric(
     case 'quarterly':
       return resolveStatementCustomMetric(quarterly, metric, asOfDate)
     default:
+      // Shareholding and other sources are resolved in mapCMOTSToMetricIds, not here
       return null
   }
 }
@@ -803,7 +804,7 @@ export function resolveMetricsAtDate(
   asOfDate: string,
   config?: MetricResolutionConfig,
 ): ResolvedMetrics {
-  const { ttm, finData, pnl, cashFlow, balanceSheet, quarterly } = fundamentals
+  const { ttm, finData, pnl, cashFlow, balanceSheet, quarterly, shareholding } = fundamentals
 
   // Find price at asOfDate (closest trading day on or before)
   const priceAtDate = findClosestPriceValue(priceHistory, asOfDate)
@@ -820,6 +821,7 @@ export function resolveMetricsAtDate(
   const data = mapCMOTSToMetricIds(
     ttm, finData, pnl, cashFlow, balanceSheet, quarterly,
     technicalData, asOfDate, priceAtDate ?? undefined, config,
+    undefined, shareholding,
   )
   const context = extractGrowthContext(pnl, finData, asOfDate, config?.growthPeriods)
 
