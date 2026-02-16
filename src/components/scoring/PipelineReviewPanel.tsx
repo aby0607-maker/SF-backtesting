@@ -1,5 +1,13 @@
 /**
- * PipelineReviewPanel — Stage 6: Full read-only summary of all pipeline config
+ * PipelineReviewPanel — Stage 4: Read-only summary of pipeline config (Stages 1-3)
+ *
+ * In the 5-stage pipeline, this shows in Stage 4 (Review & Run) so users can
+ * verify all configuration before triggering the combined scoring + backtest run.
+ *
+ * Sections:
+ *   1. Metrics — selected metrics by segment
+ *   2. Scorecard — segment weights, composite formula, verdict thresholds
+ *   3. Configuration — stock selection, date range, benchmark
  */
 
 import { useEffect } from 'react'
@@ -106,129 +114,93 @@ export function PipelineReviewPanel() {
         </div>
       </ReviewSectionCard>
 
-      {/* Stage 3: Scoring Results */}
+      {/* Stage 3: Configuration (stocks + dates + benchmark) */}
       <ReviewSectionCard
         stageNumber={3}
-        title="Scoring Results"
-        summary={
-          snapshot.scoringResultsSummary
-            ? `${snapshot.scoringResultsSummary.universeSize} stocks scored`
-            : 'Not yet scored'
-        }
+        title="Run Configuration"
+        summary={buildConfigSummary(snapshot)}
         onEdit={() => editFromReview(3)}
       >
-        {snapshot.scoringResultsSummary ? (
-          <div className="space-y-3">
-            {/* Score distribution */}
+        <div className="space-y-3">
+          {/* Stock selection */}
+          {snapshot.stockSelectionSummary && (
             <div>
-              <div className="text-[10px] text-neutral-500 mb-1">Score Distribution</div>
-              <div className="flex gap-1">
-                {snapshot.scoringResultsSummary.scoreDistribution.map(d => (
-                  <div key={d.band} className="flex-1 text-center">
-                    <div className="text-sm font-semibold text-white">{d.count}</div>
-                    <div className="text-[9px] text-neutral-500">{d.band}</div>
-                  </div>
-                ))}
+              <div className="text-[10px] text-neutral-500 mb-1">Stock Selection</div>
+              <div className="flex items-center gap-2 text-xs">
+                <span className="text-white font-medium">
+                  {snapshot.stockSelectionSummary.totalStocks} stocks
+                </span>
+                <span className="text-neutral-600">•</span>
+                <span className="text-neutral-400 capitalize">
+                  {snapshot.stockSelectionSummary.selectionMode} selection
+                </span>
               </div>
-            </div>
-
-            {/* Top 5 */}
-            <div>
-              <div className="text-[10px] text-neutral-500 mb-1">Top 5</div>
-              {snapshot.scoringResultsSummary.topFive.map((s, i) => (
-                <div key={s.name} className="flex items-center justify-between text-xs py-0.5">
-                  <span className="text-neutral-300">{i + 1}. {s.name}</span>
-                  <span className="text-success-400 font-mono">{s.score.toFixed(1)}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        ) : (
-          <div className="text-xs text-neutral-500">Run scoring in Stage 3 to see results here.</div>
-        )}
-      </ReviewSectionCard>
-
-      {/* Stage 4: Cohort */}
-      <ReviewSectionCard
-        stageNumber={4}
-        title="Cohort Selection"
-        summary={
-          snapshot.cohortSummary
-            ? `${snapshot.cohortSummary.totalStocks} stocks selected`
-            : 'No cohort defined'
-        }
-        onEdit={() => editFromReview(4)}
-      >
-        {snapshot.cohortSummary ? (
-          <div className="space-y-2">
-            {/* Filters */}
-            {snapshot.cohortSummary.filters.length > 0 && (
-              <div>
-                <div className="text-[10px] text-neutral-500 mb-1">Filters Applied</div>
-                <div className="flex flex-wrap gap-1">
-                  {snapshot.cohortSummary.filters.map((f, i) => (
-                    <span key={i} className="px-2 py-0.5 rounded bg-dark-700/60 text-[10px] text-neutral-400">
-                      {f}
+              {snapshot.stockSelectionSummary.stockNames.length > 0 && (
+                <div className="flex flex-wrap gap-1 mt-1.5">
+                  {snapshot.stockSelectionSummary.stockNames.slice(0, 8).map(name => (
+                    <span
+                      key={name}
+                      className="px-2 py-0.5 rounded bg-dark-700/60 text-[10px] text-neutral-400"
+                    >
+                      {name}
                     </span>
                   ))}
+                  {snapshot.stockSelectionSummary.stockNames.length > 8 && (
+                    <span className="px-2 py-0.5 rounded bg-dark-700/60 text-[10px] text-neutral-500">
+                      +{snapshot.stockSelectionSummary.stockNames.length - 8} more
+                    </span>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Date range */}
+          {snapshot.dateConfig ? (
+            <div>
+              <div className="text-[10px] text-neutral-500 mb-1">Date Range</div>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                <div>
+                  <div className="text-[10px] text-neutral-500">From</div>
+                  <div className="text-xs text-white">{snapshot.dateConfig.from}</div>
+                </div>
+                <div>
+                  <div className="text-[10px] text-neutral-500">To</div>
+                  <div className="text-xs text-white">{snapshot.dateConfig.to}</div>
+                </div>
+                <div>
+                  <div className="text-[10px] text-neutral-500">Interval</div>
+                  <div className="text-xs text-white capitalize">{snapshot.dateConfig.interval}</div>
+                </div>
+                <div>
+                  <div className="text-[10px] text-neutral-500">Benchmark</div>
+                  <div className="text-xs text-white">{snapshot.dateConfig.benchmark ?? 'None'}</div>
                 </div>
               </div>
-            )}
-
-            {/* Sector breakdown */}
-            {snapshot.cohortSummary.sectorBreakdown.length > 0 && (
-              <div>
-                <div className="text-[10px] text-neutral-500 mb-1">Sector Breakdown</div>
-                <div className="grid grid-cols-2 gap-1">
-                  {snapshot.cohortSummary.sectorBreakdown.map(sb => (
-                    <div key={sb.sector} className="flex items-center justify-between text-[10px]">
-                      <span className="text-neutral-400">{sb.sector}</span>
-                      <span className="text-neutral-500">{sb.count}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-        ) : (
-          <div className="text-xs text-neutral-500">Define a cohort in Stage 4 to see details here.</div>
-        )}
-      </ReviewSectionCard>
-
-      {/* Stage 5: Date Range */}
-      <ReviewSectionCard
-        stageNumber={5}
-        title="Backtest Configuration"
-        summary={
-          snapshot.dateConfig
-            ? `${snapshot.dateConfig.from} → ${snapshot.dateConfig.to} (${snapshot.dateConfig.interval})`
-            : 'No date range set'
-        }
-        onEdit={() => editFromReview(5)}
-      >
-        {snapshot.dateConfig ? (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            <div>
-              <div className="text-[10px] text-neutral-500">From</div>
-              <div className="text-xs text-white">{snapshot.dateConfig.from}</div>
             </div>
-            <div>
-              <div className="text-[10px] text-neutral-500">To</div>
-              <div className="text-xs text-white">{snapshot.dateConfig.to}</div>
+          ) : (
+            <div className="text-xs text-neutral-500">
+              Set date range in Stage 3 to see configuration here.
             </div>
-            <div>
-              <div className="text-[10px] text-neutral-500">Interval</div>
-              <div className="text-xs text-white capitalize">{snapshot.dateConfig.interval}</div>
-            </div>
-            <div>
-              <div className="text-[10px] text-neutral-500">Benchmark</div>
-              <div className="text-xs text-white">{snapshot.dateConfig.benchmark ?? 'None'}</div>
-            </div>
-          </div>
-        ) : (
-          <div className="text-xs text-neutral-500">Set date range in Stage 5 to see configuration here.</div>
-        )}
+          )}
+        </div>
       </ReviewSectionCard>
     </div>
   )
+}
+
+/** Build a short summary string for the configuration section header */
+function buildConfigSummary(snapshot: NonNullable<ReturnType<typeof useReviewSnapshot>>): string {
+  const parts: string[] = []
+
+  if (snapshot.stockSelectionSummary) {
+    parts.push(`${snapshot.stockSelectionSummary.totalStocks} stocks`)
+  }
+
+  if (snapshot.dateConfig) {
+    parts.push(`${snapshot.dateConfig.from} → ${snapshot.dateConfig.to}`)
+    parts.push(snapshot.dateConfig.interval)
+  }
+
+  return parts.length > 0 ? parts.join(' • ') : 'Not configured'
 }

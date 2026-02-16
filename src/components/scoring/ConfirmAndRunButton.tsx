@@ -11,14 +11,14 @@ import {
   useActiveScorecard,
   useScoringStatus,
   useScoringError,
-  useCohort,
 } from '@/store/useScoringStore'
 import { backtestScorecard } from '@/services/scoringService'
 import { Loader2, Rocket, AlertTriangle, X } from 'lucide-react'
 
 export function ConfirmAndRunButton() {
   const scorecard = useActiveScorecard()
-  const cohort = useCohort()
+  // Deprecated: cohort removed in 5-stage pipeline
+  const cohort = null as any
   const status = useScoringStatus()
   const errorMessage = useScoringError()
   const backtestConfig = useScoringStore(s => s.backtestConfig)

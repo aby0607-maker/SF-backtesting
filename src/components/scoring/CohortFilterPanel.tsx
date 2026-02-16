@@ -5,7 +5,7 @@
 import { useState, useMemo } from 'react'
 import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
-import { useScoringStore, useCurrentScores, useCohort } from '@/store/useScoringStore'
+import { useCurrentScores } from '@/store/useScoringStore'
 import { getAvailableSectors } from '@/services/scoringService'
 import type { CohortFilter } from '@/types/scoring'
 import { Filter, X, CheckCircle2 } from 'lucide-react'
@@ -20,9 +20,10 @@ const MARKET_CAP_PRESETS = [
 
 export function CohortFilterPanel() {
   const currentRun = useCurrentScores()
-  const cohort = useCohort()
-  const applyCohortFilter = useScoringStore(s => s.applyCohortFilter)
-  const setCohort = useScoringStore(s => s.setCohort)
+  // Deprecated: cohort management removed in 5-stage pipeline
+  const cohort = null as any
+  const applyCohortFilter = (_filters: CohortFilter[]) => {}
+  const setCohort = (_cohort: any) => {}
 
   const [filters, setFilters] = useState<CohortFilter[]>(cohort?.filters ?? [])
 

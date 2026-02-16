@@ -1,10 +1,9 @@
 /**
  * Scoring & Backtesting Type Definitions
  *
- * Foundation types for the 7-stage scorecard backtesting pipeline:
- * Stage 1: Build Metrics → Stage 2: Build Scorecard → Stage 3: Score & Rank
- * Stage 4: Select Cohort → Stage 5: Set Date Range → Stage 6: Review & Confirm
- * Stage 7: Performance Report
+ * Foundation types for the 5-stage scorecard backtesting pipeline:
+ * Stage 1: Build Metrics → Stage 2: Build Scorecard → Stage 3: Configure Run
+ * Stage 4: Review & Run → Stage 5: Results
  */
 
 // ─────────────────────────────────────────────────
@@ -283,6 +282,12 @@ export interface PipelineReviewSnapshot {
     segments: { name: string; weight: number; metricCount: number }[]
     compositeFormula: string  // Human-readable formula string
   }
+  /** Stock selection summary — new 5-stage pipeline (Stage 3 config) */
+  stockSelectionSummary?: {
+    totalStocks: number
+    selectionMode: 'individual' | 'cohort' | 'all'
+    stockNames: string[]       // First few stock names for display
+  }
   scoringResultsSummary?: {
     universeSize: number
     scoreDistribution: { band: string; count: number }[]
@@ -305,7 +310,7 @@ export interface PipelineReviewSnapshot {
 
 /** Request to edit a specific pipeline stage from the review panel */
 export interface StageEditRequest {
-  stageNumber: 1 | 2 | 3 | 4 | 5
+  stageNumber: 1 | 2 | 3
   reason?: string
 }
 
@@ -381,6 +386,25 @@ export interface ScoreTrajectoryPoint {
   verdictColor: string
   price: number
   segmentScores?: Record<string, number>
+}
+
+/** A row in the price delta table — stock score + interval returns */
+export interface PriceDeltaRow {
+  stockId: string
+  stockName: string
+  stockSymbol: string
+  score: number
+  verdict: string
+  verdictColor: string
+  /** Key: interval label (e.g., "Month 1", "Week 3"), Value: cumulative return % */
+  deltas: Record<string, number>
+}
+
+/** Combined result from scoring + backtesting in one operation (Stage 4→5) */
+export interface CombinedRunResult {
+  scoring: ModelRunResult
+  backtest: BacktestResult
+  priceDeltaTable: PriceDeltaRow[]
 }
 
 /** Complete backtest result */
@@ -498,7 +522,7 @@ export interface CMOTSShareholding {
 // Store State Types
 // ─────────────────────────────────────────────────
 
-export type PipelineStage = 1 | 2 | 3 | 4 | 5 | 6 | 7
+export type PipelineStage = 1 | 2 | 3 | 4 | 5
 
 export type UIMode = 'wizard' | 'dashboard' | 'hybrid'
 
