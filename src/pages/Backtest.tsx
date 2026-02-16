@@ -23,6 +23,7 @@ import { ScorecardSelector } from '@/components/scoring/ScorecardSelector'
 import { MetricCatalogBrowser } from '@/components/scoring/MetricCatalogBrowser'
 import { FormulaBuilder } from '@/components/scoring/FormulaBuilder'
 import { SelectedMetricsList } from '@/components/scoring/SelectedMetricsList'
+import { NegativeHandlingEditor } from '@/components/scoring/NegativeHandlingEditor'
 
 // Stage 2: Build Scorecard
 import { SegmentBuilder } from '@/components/scoring/SegmentBuilder'
@@ -142,6 +143,10 @@ const STAGE_CONFIGS: Record<PipelineStage, StageConfig> = {
             <FormulaBuilder />
           </div>
         </div>
+        {/* Negative value handling rules — collapsible section */}
+        <div className="p-4 rounded-xl bg-dark-800/30 backdrop-blur-xl border border-white/5">
+          <NegativeHandlingEditor />
+        </div>
       </div>
     ),
   },
@@ -162,6 +167,10 @@ const STAGE_CONFIGS: Record<PipelineStage, StageConfig> = {
             <VerdictThresholdEditor />
             <NormalizationSelector />
           </div>
+        </div>
+        {/* Negative value handling rules */}
+        <div className="p-4 rounded-xl bg-dark-800/30 backdrop-blur-xl border border-white/5">
+          <NegativeHandlingEditor />
         </div>
       </div>
     ),
