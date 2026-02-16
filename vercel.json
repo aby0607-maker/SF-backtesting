@@ -1,6 +1,10 @@
 {
   "rewrites": [
     {
+      "source": "/api/cmots/:path*",
+      "destination": "/api/cmots/:path*"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
