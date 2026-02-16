@@ -13,6 +13,7 @@ export { ScorecardSelector } from './ScorecardSelector'
 export { MetricCatalogBrowser } from './MetricCatalogBrowser'
 export { FormulaBuilder } from './FormulaBuilder'
 export { ScoreBandEditor } from './ScoreBandEditor'
+export { NegativeHandlingEditor } from './NegativeHandlingEditor'
 export { SelectedMetricsList } from './SelectedMetricsList'
 
 // ─── Stage 2: Build Scorecard ───

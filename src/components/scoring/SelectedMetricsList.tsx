@@ -4,7 +4,7 @@
 
 import { motion, AnimatePresence } from 'framer-motion'
 import { useScoringStore, useActiveScorecard } from '@/store/useScoringStore'
-import { X, GripVertical, Calculator, Database } from 'lucide-react'
+import { X, GripVertical, Calculator, Database, ShieldAlert } from 'lucide-react'
 
 export function SelectedMetricsList() {
   const scorecard = useActiveScorecard()
@@ -17,6 +17,8 @@ export function SelectedMetricsList() {
       </div>
     )
   }
+
+  const negativeRules = scorecard.negativeHandlingRules || []
 
   const allMetrics = scorecard.segments.flatMap(seg =>
     seg.metrics.map(m => ({ ...m, segmentName: seg.name, segmentId: seg.id }))
@@ -57,9 +59,15 @@ export function SelectedMetricsList() {
 
             <div className="flex-1 min-w-0">
               <div className="text-sm text-white truncate">{metric.name}</div>
-              <div className="text-[10px] text-neutral-500">
+              <div className="text-[10px] text-neutral-500 flex items-center gap-1">
                 {metric.segmentName} • {metric.scoreBands.length} bands
                 {metric.weight && ` • ${(metric.weight * 100).toFixed(0)}%`}
+                {negativeRules.filter(r => r.metricId === metric.id).length > 0 && (
+                  <span className="inline-flex items-center gap-0.5 px-1 py-px rounded bg-warning-500/10 text-warning-400">
+                    <ShieldAlert className="w-2.5 h-2.5" />
+                    {negativeRules.filter(r => r.metricId === metric.id).length}
+                  </span>
+                )}
               </div>
             </div>
 
