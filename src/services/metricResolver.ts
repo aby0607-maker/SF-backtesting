@@ -81,11 +81,19 @@ function windowYearColumns(row: CMOTSStatementRow, asOfDate?: string): string[] 
   })
 }
 
-/** Filter FinData records to those where fiscal year ≤ asOfDate year */
+/** Filter FinData records to those where fiscal year end ≤ asOfDate.
+ *  FinData yrc is YYYYMM format (e.g., 202503 = FY ending March 2025).
+ *  Only include if the fiscal year end date ≤ asOfDate. */
 function windowFinData(finData: CMOTSFinancialRecord[], asOfDate?: string): CMOTSFinancialRecord[] {
   if (!asOfDate) return finData
-  const cutoffYear = new Date(asOfDate).getFullYear()
-  return finData.filter(f => f.yrc <= cutoffYear)
+  const cutoff = new Date(asOfDate)
+  return finData.filter(f => {
+    // yrc is YYYYMM (e.g., 202503 → year 2025, month 03)
+    const year = Math.floor(f.yrc / 100)
+    const month = f.yrc % 100
+    const fyEndDate = new Date(year, month - 1, 28) // Last-ish day of fiscal year end month
+    return fyEndDate <= cutoff
+  })
 }
 
 // ─────────────────────────────────────────────────
@@ -346,12 +354,12 @@ function computeRevenueGrowth5Y(
   pnl: CMOTSStatementRow[],
   asOfDate?: string,
 ): number | null {
-  // Try FinData first (cleaner — has yearly revenue)
-  if (finData.length >= 5) {
+  // Try FinData first (cleaner — has yearly revenue). Use available span (min 2 years).
+  if (finData.length >= 2) {
     const latest = finData[finData.length - 1]
-    const fiveYearsAgo = finData[finData.length - 5]
-    if (latest.revenue > 0 && fiveYearsAgo.revenue > 0) {
-      return computeCAGR(fiveYearsAgo.revenue, latest.revenue, 5)
+    const oldest = finData[0]
+    if (latest.revenue > 0 && oldest.revenue > 0) {
+      return computeCAGR(oldest.revenue, latest.revenue, finData.length - 1)
     }
   }
 
@@ -360,22 +368,23 @@ function computeRevenueGrowth5Y(
 }
 
 /**
- * Compute 5-year CAGR from a P&L or Cash Flow row (windowed).
+ * Compute CAGR from a P&L or Cash Flow row using available windowed years.
+ * Uses up to 5 years if available, but works with as few as 2 (min for CAGR).
  */
 function computeRowGrowth5Y(rows: CMOTSStatementRow[], rowno: number, asOfDate?: string): number | null {
   const row = findStatementRow(rows, rowno)
   if (!row) return null
 
   const yearCols = windowYearColumns(row, asOfDate)  // Newest first
-  if (yearCols.length < 5) return null
+  if (yearCols.length < 2) return null  // Need at least 2 years for CAGR
 
   const latest = getStatementValue(row, yearCols[0])
-  const fiveYearsAgo = getStatementValue(row, yearCols[4])
+  const oldest = getStatementValue(row, yearCols[yearCols.length - 1])
 
-  if (latest == null || fiveYearsAgo == null) return null
-  if (fiveYearsAgo <= 0) return null  // Can't compute CAGR from negative base
+  if (latest == null || oldest == null) return null
+  if (oldest <= 0) return null  // Can't compute CAGR from negative base
 
-  return computeCAGR(fiveYearsAgo, latest, 5)
+  return computeCAGR(oldest, latest, yearCols.length - 1)
 }
 
 /** Compute growth in a FinData field over the available period */

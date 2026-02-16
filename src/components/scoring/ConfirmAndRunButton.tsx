@@ -47,7 +47,7 @@ export function ConfirmAndRunButton() {
     setStatus('backtesting')
     try {
       const cohortIds = cohort?.stockIds
-      const result = await backtestScorecard(backtestConfig, scorecard, cohortIds)
+      const { result } = await backtestScorecard(backtestConfig, scorecard, cohortIds)
 
       if (!result || !result.comparisons || result.comparisons.length === 0) {
         setError('Backtest completed but no performance data was generated. This may indicate the date range has no price data available.')

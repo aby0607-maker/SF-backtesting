@@ -27,6 +27,7 @@ import { runBacktest } from '@/lib/backtestEngine'
 import { resolveMetricValues, resolveMetricsAtDate, getStockInfo } from '@/services/metricResolver'
 import { getCompanyMaster } from '@/services/cmots/companyMaster'
 import { getBatchPrices } from '@/services/cmots/priceData'
+import type { CMOTSOHLCVRecord } from '@/types/scoring'
 import { getAllFundamentals } from '@/services/cmots/fundamentals'
 import type { FundamentalsBundle } from '@/services/cmots/fundamentals'
 
@@ -63,16 +64,16 @@ export async function scoreAndBacktest(
     throw new Error('Operation cancelled')
   }
 
-  // Phase 2: Run backtest
+  // Phase 2: Run backtest (returns pre-fetched prices + interval dates for reuse)
   options?.onProgress?.('backtest', 0, 1)
-  const backtest = await backtestScorecard(config, scorecard, stockIds)
+  const { result: backtest, batchPrices, intervalDates } = await backtestScorecard(config, scorecard, stockIds)
   options?.onProgress?.('backtest', 1, 1)
 
   if (options?.signal?.aborted) {
     throw new Error('Operation cancelled')
   }
 
-  // Phase 3: Build price delta table
+  // Phase 3: Build price delta table (reuses prices + dates from backtest — no redundant fetch)
   options?.onProgress?.('building_table', 0, 1)
   const priceDeltaTable = await buildPriceDeltaTable(
     scoring.stocks,
@@ -80,6 +81,8 @@ export async function scoreAndBacktest(
     config.dateRange.from,
     config.dateRange.to,
     config.interval,
+    batchPrices,
+    intervalDates,
   )
   options?.onProgress?.('building_table', 1, 1)
 
@@ -96,9 +99,11 @@ export async function buildPriceDeltaTable(
   fromDate: string,
   toDate: string,
   interval: BacktestInterval,
+  prefetchedPrices?: Record<string, CMOTSOHLCVRecord[]>,
+  prefetchedDates?: string[],
 ): Promise<PriceDeltaRow[]> {
-  // Fetch price data
-  const batchPrices = await getBatchPrices(stockIds, fromDate, toDate)
+  // Reuse pre-fetched prices if available (from backtestScorecard), otherwise fetch
+  const batchPrices = prefetchedPrices ?? await getBatchPrices(stockIds, fromDate, toDate)
 
   const rows: PriceDeltaRow[] = []
 
@@ -112,7 +117,8 @@ export async function buildPriceDeltaTable(
     const basePrice = prices[0].Dayclose
     if (basePrice <= 0) continue
 
-    const intervalDates = getIntervalDates(prices.map(p => p.Tradedate), interval)
+    // Reuse pre-computed interval dates if available, otherwise compute from trade dates
+    const intervalDates = prefetchedDates ?? getIntervalDates(prices.map(p => p.Tradedate), interval)
 
     for (let i = 0; i < intervalDates.length; i++) {
       const date = intervalDates[i]
@@ -399,28 +405,40 @@ export async function backtestScorecard(
   config: BacktestConfig,
   scorecard: ScorecardVersion,
   cohortStockIds?: string[]
-): Promise<BacktestResult> {
+): Promise<{ result: BacktestResult; batchPrices: Record<string, CMOTSOHLCVRecord[]>; intervalDates: string[] }> {
   const targetStockIds = cohortStockIds && cohortStockIds.length > 0
     ? cohortStockIds
     : (await getCompanyMaster()).map(c => c.nsesymbol ?? String(c.co_code))
 
   // ── Phase 1: Fetch all data upfront (network-heavy, done once) ──
 
-  const batchPrices = await getBatchPrices(targetStockIds, config.dateRange.from, config.dateRange.to)
+  // Extend price fetch 1 year before from-date so technical metrics (EMA200)
+  // have 200+ trading days even at the earliest interval
+  const extendedFrom = new Date(config.dateRange.from)
+  extendedFrom.setFullYear(extendedFrom.getFullYear() - 1)
+  const extendedFromStr = extendedFrom.toISOString().split('T')[0]
 
-  // Price history in two formats: simplified (for backtestEngine) and detailed (for resolveMetricsAtDate)
+  const batchPrices = await getBatchPrices(targetStockIds, extendedFromStr, config.dateRange.to)
+
+  // Two views of price data:
+  // - priceHistoryWithVolume: FULL extended range (for resolveMetricsAtDate — EMA200 needs 200+ days lookback)
+  // - priceHistory: FILTERED to user's date range (for backtestEngine + interval computation)
   const priceHistory: Record<string, { date: string; price: number }[]> = {}
   const priceHistoryWithVolume: Record<string, { date: string; price: number; volume?: number }[]> = {}
+  const fromDate = config.dateRange.from
   for (const [symbol, records] of Object.entries(batchPrices)) {
     if (records.length > 0) {
-      priceHistory[symbol] = records.map(r => ({
-        date: r.Tradedate,
-        price: r.Dayclose,
-      }))
+      // Full range with normalized dates — for metric resolution (technical lookback)
       priceHistoryWithVolume[symbol] = records.map(r => ({
-        date: r.Tradedate,
+        date: r.Tradedate.split('T')[0],  // Normalize ISO datetime to plain date
         price: r.Dayclose,
         volume: r.TotalVolume,
+      }))
+      // Filtered to user's range — for backtest engine + interval dates + cumulative returns
+      const inRange = records.filter(r => r.Tradedate.split('T')[0] >= fromDate)
+      priceHistory[symbol] = inRange.map(r => ({
+        date: r.Tradedate.split('T')[0],
+        price: r.Dayclose,
       }))
     }
   }
@@ -445,7 +463,7 @@ export async function backtestScorecard(
 
   const anyPriceHistory = Object.values(priceHistory)[0]
   const allTradeDates = anyPriceHistory
-    ? anyPriceHistory.map(p => p.date.split('T')[0]).sort()
+    ? anyPriceHistory.map(p => p.date).sort()  // Already plain dates, already filtered to user's range
     : []
   const intervalDates = getIntervalDates(allTradeDates, config.interval)
 
@@ -486,7 +504,17 @@ export async function backtestScorecard(
 
   const reviewSnapshot = buildReviewSnapshot(scorecard, startStocks)
 
-  return runBacktest(config, priceHistory, snapshots, reviewSnapshot)
+  // Filter batchPrices to user's date range for delta table (exclude extended lookback period)
+  const filteredBatchPrices: Record<string, CMOTSOHLCVRecord[]> = {}
+  for (const [symbol, records] of Object.entries(batchPrices)) {
+    filteredBatchPrices[symbol] = records.filter(r => r.Tradedate.split('T')[0] >= fromDate)
+  }
+
+  return {
+    result: runBacktest(config, priceHistory, snapshots, reviewSnapshot),
+    batchPrices: filteredBatchPrices,
+    intervalDates,
+  }
 }
 
 /**
