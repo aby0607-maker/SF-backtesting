@@ -34,7 +34,12 @@ interface StockRow {
   verdict: string
   verdictColor: string
   segmentResults: SegmentResult[]
+  startSegmentResults: SegmentResult[]
+  endSegmentResults: SegmentResult[]
 }
+
+/** Which score cell's drill-down is open */
+type ScoreDrillDown = { stockId: string; type: 'start' | 'end' } | null
 
 type SortField = 'name' | 'startScore' | 'endScore' | 'deltaScore' | 'deltaPrice'
 
@@ -44,6 +49,7 @@ export function ScoringResultsTable({ onSelectStock }: ScoringResultsTableProps)
   const scorecard = useActiveScorecard()
   const [expandedStock, setExpandedStock] = useState<string | null>(null)
   const [expandedSegment, setExpandedSegment] = useState<string | null>(null)
+  const [scoreDrillDown, setScoreDrillDown] = useState<ScoreDrillDown>(null)
   const [sortField, setSortField] = useState<SortField>('endScore')
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc')
 
@@ -55,18 +61,18 @@ export function ScoringResultsTable({ onSelectStock }: ScoringResultsTableProps)
     const firstSnapshot = snapshots.length > 0 ? snapshots[0] : null
     const lastSnapshot = snapshots.length > 1 ? snapshots[snapshots.length - 1] : firstSnapshot
 
-    // Build start score/rank map
-    const startMap = new Map<string, { score: number; rank: number }>()
+    // Build start score/rank/segments map
+    const startMap = new Map<string, { score: number; rank: number; segments: SegmentResult[] }>()
     if (firstSnapshot) {
       const sorted = [...firstSnapshot.stockScores].sort((a, b) => b.normalizedScore - a.normalizedScore)
-      sorted.forEach((s, i) => startMap.set(s.stockId, { score: s.normalizedScore, rank: i + 1 }))
+      sorted.forEach((s, i) => startMap.set(s.stockId, { score: s.normalizedScore, rank: i + 1, segments: s.segmentResults }))
     }
 
-    // Build end score/rank map
-    const endMap = new Map<string, { score: number; rank: number }>()
+    // Build end score/rank/segments map
+    const endMap = new Map<string, { score: number; rank: number; segments: SegmentResult[] }>()
     if (lastSnapshot) {
       const sorted = [...lastSnapshot.stockScores].sort((a, b) => b.normalizedScore - a.normalizedScore)
-      sorted.forEach((s, i) => endMap.set(s.stockId, { score: s.normalizedScore, rank: i + 1 }))
+      sorted.forEach((s, i) => endMap.set(s.stockId, { score: s.normalizedScore, rank: i + 1, segments: s.segmentResults }))
     }
 
     // Build price delta map (total return = last interval value)
@@ -105,6 +111,8 @@ export function ScoringResultsTable({ onSelectStock }: ScoringResultsTableProps)
         verdict: stock.verdict,
         verdictColor: stock.verdictColor,
         segmentResults: stock.segmentResults,
+        startSegmentResults: start?.segments ?? stock.segmentResults,
+        endSegmentResults: end?.segments ?? stock.segmentResults,
       }
     })
   }, [combinedResult, backtestResult])
@@ -141,6 +149,14 @@ export function ScoringResultsTable({ onSelectStock }: ScoringResultsTableProps)
 
   const toggleStock = (stockId: string) => {
     setExpandedStock(prev => prev === stockId ? null : stockId)
+    setExpandedSegment(null)
+    setScoreDrillDown(null)
+  }
+
+  const toggleScoreDrillDown = (stockId: string, type: 'start' | 'end') => {
+    setScoreDrillDown(prev =>
+      prev?.stockId === stockId && prev.type === type ? null : { stockId, type }
+    )
     setExpandedSegment(null)
   }
 
@@ -244,22 +260,40 @@ export function ScoringResultsTable({ onSelectStock }: ScoringResultsTableProps)
                 )}
               </div>
 
-              {/* Start Score */}
-              <div className="text-right">
+              {/* Start Score — clickable for segment drill-down */}
+              <button
+                onClick={(e) => { e.stopPropagation(); toggleScoreDrillDown(row.stockId, 'start') }}
+                className={cn(
+                  'text-right rounded px-1 -mx-1 py-0.5 transition-colors',
+                  scoreDrillDown?.stockId === row.stockId && scoreDrillDown.type === 'start'
+                    ? 'bg-primary-500/15 ring-1 ring-primary-500/30'
+                    : 'hover:bg-dark-600/40',
+                )}
+                title="Click to view segment breakdown at start date"
+              >
                 <span className="text-xs font-semibold font-mono" style={{ color: getScoreColor(row.startScore) }}>
                   {row.startScore.toFixed(1)}
                 </span>
-              </div>
+              </button>
 
               {/* Start Rank */}
               <span className="text-[10px] text-neutral-500 text-right font-mono">#{row.startRank}</span>
 
-              {/* End Score */}
-              <div className="text-right">
+              {/* End Score — clickable for segment drill-down */}
+              <button
+                onClick={(e) => { e.stopPropagation(); toggleScoreDrillDown(row.stockId, 'end') }}
+                className={cn(
+                  'text-right rounded px-1 -mx-1 py-0.5 transition-colors',
+                  scoreDrillDown?.stockId === row.stockId && scoreDrillDown.type === 'end'
+                    ? 'bg-primary-500/15 ring-1 ring-primary-500/30'
+                    : 'hover:bg-dark-600/40',
+                )}
+                title="Click to view segment breakdown at end date"
+              >
                 <span className="text-xs font-semibold font-mono" style={{ color: getScoreColor(row.endScore) }}>
                   {row.endScore.toFixed(1)}
                 </span>
-              </div>
+              </button>
 
               {/* End Rank */}
               <span className="text-[10px] text-neutral-500 text-right font-mono">#{row.endRank}</span>
@@ -289,7 +323,61 @@ export function ScoringResultsTable({ onSelectStock }: ScoringResultsTableProps)
               </div>
             </div>
 
-            {/* Level 2: Segment cards (inline expansion) */}
+            {/* Score drill-down: segment breakdown for Start or End date */}
+            <AnimatePresence>
+              {scoreDrillDown?.stockId === row.stockId && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: 'auto', opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="overflow-hidden"
+                >
+                  <div className="px-4 pb-3 pt-1">
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="text-[10px] font-medium text-primary-400">
+                        {scoreDrillDown.type === 'start' ? 'Start' : 'End'} Date Breakdown
+                      </span>
+                      <span className="text-[10px] text-neutral-500">
+                        {scoreDrillDown.type === 'start' ? startDate : endDate}
+                      </span>
+                    </div>
+
+                    {(() => {
+                      const segments = scoreDrillDown.type === 'start'
+                        ? row.startSegmentResults
+                        : row.endSegmentResults
+                      return (
+                        <>
+                          <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                            {segments.map(segment => (
+                              <SegmentCard
+                                key={segment.segmentId}
+                                segment={segment}
+                                isExpanded={expandedSegment === `${scoreDrillDown.type}-${segment.segmentId}`}
+                                onToggle={() => setExpandedSegment(
+                                  prev => prev === `${scoreDrillDown.type}-${segment.segmentId}` ? null : `${scoreDrillDown.type}-${segment.segmentId}`
+                                )}
+                              />
+                            ))}
+                          </div>
+
+                          <AnimatePresence>
+                            {expandedSegment?.startsWith(`${scoreDrillDown.type}-`) && (
+                              <MetricDetail
+                                segment={segments.find(s => `${scoreDrillDown.type}-${s.segmentId}` === expandedSegment)}
+                              />
+                            )}
+                          </AnimatePresence>
+                        </>
+                      )
+                    })()}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* Level 2: Segment cards (chevron expansion — current/latest scores) */}
             <AnimatePresence>
               {expandedStock === row.stockId && (
                 <motion.div
@@ -326,7 +414,7 @@ export function ScoringResultsTable({ onSelectStock }: ScoringResultsTableProps)
 
                     {/* Level 3: Metric detail */}
                     <AnimatePresence>
-                      {expandedSegment && (
+                      {expandedSegment && !expandedSegment.includes('-') && (
                         <MetricDetail
                           segment={row.segmentResults.find(s => s.segmentId === expandedSegment)}
                         />
@@ -342,7 +430,7 @@ export function ScoringResultsTable({ onSelectStock }: ScoringResultsTableProps)
 
       {/* Footer */}
       <div className="px-4 py-2 border-t border-white/5 text-[10px] text-neutral-500">
-        {rows.length} stocks • Click chevron for segments • Click <ExternalLink className="w-2.5 h-2.5 inline" /> for interval drill-down
+        {rows.length} stocks • Click Start/End scores for segment breakdown • Click <ExternalLink className="w-2.5 h-2.5 inline" /> for interval drill-down
       </div>
     </div>
   )

@@ -86,6 +86,9 @@ export interface CompositeMetric {
   negativeHandling?: NegativeHandling[]
   description?: string
   weight?: number         // Weight within its segment (0-1)
+  /** Number of years for growth CAGR calculation. Only applies to growth metrics.
+   *  undefined = use all available years (current default behavior). */
+  growthPeriod?: 2 | 3 | 5
 }
 
 // ─────────────────────────────────────────────────
@@ -561,4 +564,47 @@ export interface MetricCatalogEntry {
   subcategory?: string
   typicalRange?: [number, number]
   higherIsBetter?: boolean
+  /** True if this is a user-created custom metric */
+  isCustom?: boolean
+  /** Full definition if this is a custom metric */
+  customDefinition?: CustomMetricDefinition
+}
+
+// ─────────────────────────────────────────────────
+// Custom Metric Definitions (user-created)
+// ─────────────────────────────────────────────────
+
+/** How to derive a value from statement row data */
+export type MetricDerivation =
+  | 'latest'           // Latest available value from the most recent year column
+  | 'growth_cagr'      // CAGR over available years
+  | 'yoy_change'       // (Latest - Previous) / |Previous| × 100
+  | 'yoy_ratio'        // Latest / Previous
+
+/** A user-defined raw metric mapping to CMOTS data */
+export interface CustomMetricDefinition {
+  id: string                    // Auto-generated, prefixed 'custom_'
+  name: string
+  description: string
+  cmots_source: 'ttm' | 'pnl' | 'balanceSheet' | 'cashFlow' | 'quarterly'
+  cmots_field: string           // TTM field name (e.g., 'pegratio', 'assetturnover_ttm')
+  cmots_rowno?: number          // Statement row number (for pnl/bs/cf/quarterly sources)
+  derivation: MetricDerivation  // How to compute the value from raw data
+  unit: 'percent' | 'ratio' | 'currency' | 'number' | 'times'
+  category: string
+  higherIsBetter?: boolean
+  typicalRange?: [number, number]
+  createdAt: number
+}
+
+// ─────────────────────────────────────────────────
+// Metric Resolution Config (passed through pipeline)
+// ─────────────────────────────────────────────────
+
+/** Bundled configuration for the metric resolver */
+export interface MetricResolutionConfig {
+  /** Per-metric growth period overrides: metricId → maxYears */
+  growthPeriods?: Record<string, number>
+  /** User-defined custom metrics to resolve alongside built-in metrics */
+  customMetrics?: CustomMetricDefinition[]
 }

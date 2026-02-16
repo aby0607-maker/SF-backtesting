@@ -15,7 +15,7 @@
  *   Technical metrics use price history up to asOfDate.
  */
 
-import type { CMOTSTTMRecord, CMOTSFinancialRecord, CMOTSStatementRow } from '@/types/scoring'
+import type { CMOTSTTMRecord, CMOTSFinancialRecord, CMOTSStatementRow, MetricResolutionConfig, CustomMetricDefinition } from '@/types/scoring'
 import { getStockDataForScoring } from '@/data/mockScoringData'
 import { isMockMode } from '@/services/cmots/client'
 import type { FundamentalsBundle } from '@/services/cmots/fundamentals'
@@ -115,16 +115,18 @@ function mapCMOTSToMetricIds(
   technicalData?: { ema20Dev: number; ema50Dev: number; ema200Dev: number; rsi: number; vpt: number },
   asOfDate?: string,
   priceAtDate?: number,
+  config?: MetricResolutionConfig,
 ): Record<string, number | null> {
   const metrics: Record<string, number | null> = {}
+  const gp = config?.growthPeriods
 
   // Window data to asOfDate
   const windowedFinData = windowFinData(finData, asOfDate)
 
-  // ── Growth Metrics (derived from P&L + FinData, 5Y CAGR) ──
-  metrics['v2_revenue_growth'] = computeRevenueGrowth5Y(windowedFinData, pnl, asOfDate)
-  metrics['v2_ebitda_growth'] = computeRowGrowth5Y(pnl, PNL_ROW_EBITDA, asOfDate)
-  metrics['v2_earnings_growth'] = computeRowGrowth5Y(pnl, PNL_ROW_PAT, asOfDate)
+  // ── Growth Metrics (derived from P&L + FinData, configurable period CAGR) ──
+  metrics['v2_revenue_growth'] = computeRevenueGrowth5Y(windowedFinData, pnl, asOfDate, gp?.['v2_revenue_growth'])
+  metrics['v2_ebitda_growth'] = computeRowGrowth5Y(pnl, PNL_ROW_EBITDA, asOfDate, gp?.['v2_ebitda_growth'])
+  metrics['v2_earnings_growth'] = computeRowGrowth5Y(pnl, PNL_ROW_PAT, asOfDate, gp?.['v2_earnings_growth'])
 
   // ── Profitability: ROE ──
   if (asOfDate && balanceSheet.length > 0 && pnl.length > 0) {
@@ -346,37 +348,49 @@ function computeStatementGrowth(
 // ─────────────────────────────────────────────────
 
 /**
- * Compute 5-year revenue CAGR from FinData (windowed).
+ * Compute revenue CAGR from FinData (windowed).
  * Falls back to P&L revenue row.
+ * When maxYears is set, limits to that many years of data.
  */
 function computeRevenueGrowth5Y(
   finData: CMOTSFinancialRecord[],
   pnl: CMOTSStatementRow[],
   asOfDate?: string,
+  maxYears?: number,
 ): number | null {
   // Try FinData first (cleaner — has yearly revenue). Use available span (min 2 years).
   if (finData.length >= 2) {
-    const latest = finData[finData.length - 1]
-    const oldest = finData[0]
+    // If maxYears specified, limit FinData to last maxYears+1 records
+    const limited = maxYears && finData.length > maxYears + 1
+      ? finData.slice(finData.length - (maxYears + 1))
+      : finData
+    const latest = limited[limited.length - 1]
+    const oldest = limited[0]
     if (latest.revenue > 0 && oldest.revenue > 0) {
-      return computeCAGR(oldest.revenue, latest.revenue, finData.length - 1)
+      return computeCAGR(oldest.revenue, latest.revenue, limited.length - 1)
     }
   }
 
   // Fall back to P&L revenue row
-  return computeRowGrowth5Y(pnl, PNL_ROW_REVENUE, asOfDate)
+  return computeRowGrowth5Y(pnl, PNL_ROW_REVENUE, asOfDate, maxYears)
 }
 
 /**
  * Compute CAGR from a P&L or Cash Flow row using available windowed years.
  * Uses up to 5 years if available, but works with as few as 2 (min for CAGR).
+ * When maxYears is set, limits to that many years of data (e.g., 3 = 3Y CAGR).
  */
-function computeRowGrowth5Y(rows: CMOTSStatementRow[], rowno: number, asOfDate?: string): number | null {
+function computeRowGrowth5Y(rows: CMOTSStatementRow[], rowno: number, asOfDate?: string, maxYears?: number): number | null {
   const row = findStatementRow(rows, rowno)
   if (!row) return null
 
-  const yearCols = windowYearColumns(row, asOfDate)  // Newest first
+  let yearCols = windowYearColumns(row, asOfDate)  // Newest first
   if (yearCols.length < 2) return null  // Need at least 2 years for CAGR
+
+  // If maxYears specified, limit to maxYears+1 columns (need N+1 data points for N years of CAGR)
+  if (maxYears && yearCols.length > maxYears + 1) {
+    yearCols = yearCols.slice(0, maxYears + 1)
+  }
 
   const latest = getStatementValue(row, yearCols[0])
   const oldest = getStatementValue(row, yearCols[yearCols.length - 1])
@@ -419,40 +433,49 @@ function getWindowedStatementValue(rows: CMOTSStatementRow[], rowno: number, asO
 // ─────────────────────────────────────────────────
 
 function extractRowContext(
-  rows: CMOTSStatementRow[], rowno: number, asOfDate?: string,
+  rows: CMOTSStatementRow[], rowno: number, asOfDate?: string, maxYears?: number,
 ): { startValue?: number; endValue?: number } | null {
   const row = findStatementRow(rows, rowno)
   if (!row) return null
-  const yearCols = windowYearColumns(row, asOfDate)
-  if (yearCols.length < 5) return null
+  let yearCols = windowYearColumns(row, asOfDate)
+  if (yearCols.length < 2) return null  // Match computeRowGrowth5Y's 2-year minimum
+  // Respect same period windowing as growth computation
+  if (maxYears && yearCols.length > maxYears + 1) {
+    yearCols = yearCols.slice(0, maxYears + 1)
+  }
   const latest = getStatementValue(row, yearCols[0])
-  const fiveYearsAgo = getStatementValue(row, yearCols[4])
-  if (latest == null && fiveYearsAgo == null) return null
-  return { startValue: fiveYearsAgo ?? undefined, endValue: latest ?? undefined }
+  const oldest = getStatementValue(row, yearCols[yearCols.length - 1])
+  if (latest == null && oldest == null) return null
+  return { startValue: oldest ?? undefined, endValue: latest ?? undefined }
 }
 
 function extractGrowthContext(
   pnl: CMOTSStatementRow[],
   finData: CMOTSFinancialRecord[],
   asOfDate?: string,
+  growthPeriods?: Record<string, number>,
 ): Record<string, { startValue?: number; endValue?: number }> {
   const context: Record<string, { startValue?: number; endValue?: number }> = {}
   const windowedFinData = windowFinData(finData, asOfDate)
 
-  if (windowedFinData.length >= 5) {
+  if (windowedFinData.length >= 2) {
+    const maxYears = growthPeriods?.['v2_revenue_growth']
+    const limited = maxYears && windowedFinData.length > maxYears + 1
+      ? windowedFinData.slice(windowedFinData.length - (maxYears + 1))
+      : windowedFinData
     context.v2_revenue_growth = {
-      startValue: windowedFinData[windowedFinData.length - 5].revenue,
-      endValue: windowedFinData[windowedFinData.length - 1].revenue,
+      startValue: limited[0].revenue,
+      endValue: limited[limited.length - 1].revenue,
     }
   } else {
-    const revCtx = extractRowContext(pnl, PNL_ROW_REVENUE, asOfDate)
+    const revCtx = extractRowContext(pnl, PNL_ROW_REVENUE, asOfDate, growthPeriods?.['v2_revenue_growth'])
     if (revCtx) context.v2_revenue_growth = revCtx
   }
 
-  const ebitdaCtx = extractRowContext(pnl, PNL_ROW_EBITDA, asOfDate)
+  const ebitdaCtx = extractRowContext(pnl, PNL_ROW_EBITDA, asOfDate, growthPeriods?.['v2_ebitda_growth'])
   if (ebitdaCtx) context.v2_ebitda_growth = ebitdaCtx
 
-  const patCtx = extractRowContext(pnl, PNL_ROW_PAT, asOfDate)
+  const patCtx = extractRowContext(pnl, PNL_ROW_PAT, asOfDate, growthPeriods?.['v2_earnings_growth'])
   if (patCtx) context.v2_earnings_growth = patCtx
 
   return context
@@ -562,6 +585,105 @@ function computeYoYMultiplier(row: CMOTSStatementRow, asOfDate?: string): number
 }
 
 // ─────────────────────────────────────────────────
+// Custom Metric Resolution (user-defined metrics)
+// ─────────────────────────────────────────────────
+
+/**
+ * Resolve user-defined custom metrics from CMOTS data.
+ * For TTM source: direct field lookup. For statements: row-based derivation.
+ */
+function resolveCustomMetrics(
+  customMetrics: CustomMetricDefinition[],
+  ttm: CMOTSTTMRecord | null,
+  pnl: CMOTSStatementRow[],
+  cashFlow: CMOTSStatementRow[],
+  balanceSheet: CMOTSStatementRow[],
+  quarterly: CMOTSStatementRow[],
+  asOfDate?: string,
+): Record<string, number | null> {
+  const result: Record<string, number | null> = {}
+
+  for (const metric of customMetrics) {
+    result[metric.id] = resolveOneCustomMetric(
+      metric, ttm, pnl, cashFlow, balanceSheet, quarterly, asOfDate,
+    )
+  }
+
+  return result
+}
+
+function resolveOneCustomMetric(
+  metric: CustomMetricDefinition,
+  ttm: CMOTSTTMRecord | null,
+  pnl: CMOTSStatementRow[],
+  cashFlow: CMOTSStatementRow[],
+  balanceSheet: CMOTSStatementRow[],
+  quarterly: CMOTSStatementRow[],
+  asOfDate?: string,
+): number | null {
+  switch (metric.cmots_source) {
+    case 'ttm': {
+      if (!ttm) return null
+      const value = (ttm as unknown as Record<string, unknown>)[metric.cmots_field]
+      return typeof value === 'number' ? value : null
+    }
+    case 'pnl':
+      return resolveStatementCustomMetric(pnl, metric, asOfDate)
+    case 'balanceSheet':
+      return resolveStatementCustomMetric(balanceSheet, metric, asOfDate)
+    case 'cashFlow':
+      return resolveStatementCustomMetric(cashFlow, metric, asOfDate)
+    case 'quarterly':
+      return resolveStatementCustomMetric(quarterly, metric, asOfDate)
+    default:
+      return null
+  }
+}
+
+/** Resolve a custom metric from statement row data using the specified derivation */
+function resolveStatementCustomMetric(
+  rows: CMOTSStatementRow[],
+  metric: CustomMetricDefinition,
+  asOfDate?: string,
+): number | null {
+  if (metric.cmots_rowno == null) return null
+  const row = findStatementRow(rows, metric.cmots_rowno)
+  if (!row) return null
+
+  const yearCols = windowYearColumns(row, asOfDate)
+
+  switch (metric.derivation) {
+    case 'latest': {
+      if (yearCols.length === 0) return null
+      return getStatementValue(row, yearCols[0])
+    }
+    case 'growth_cagr': {
+      if (yearCols.length < 2) return null
+      const latest = getStatementValue(row, yearCols[0])
+      const oldest = getStatementValue(row, yearCols[yearCols.length - 1])
+      if (latest == null || oldest == null || oldest <= 0) return null
+      return computeCAGR(oldest, latest, yearCols.length - 1)
+    }
+    case 'yoy_change': {
+      if (yearCols.length < 2) return null
+      const current = getStatementValue(row, yearCols[0])
+      const previous = getStatementValue(row, yearCols[1])
+      if (current == null || previous == null || previous === 0) return null
+      return ((current - previous) / Math.abs(previous)) * 100
+    }
+    case 'yoy_ratio': {
+      if (yearCols.length < 2) return null
+      const current = getStatementValue(row, yearCols[0])
+      const previous = getStatementValue(row, yearCols[1])
+      if (current == null || previous == null || previous === 0) return null
+      return current / previous
+    }
+    default:
+      return null
+  }
+}
+
+// ─────────────────────────────────────────────────
 // Public API
 // ─────────────────────────────────────────────────
 
@@ -574,7 +696,8 @@ function computeYoYMultiplier(row: CMOTSStatementRow, asOfDate?: string): number
  * and extracts growth context from P&L rows.
  */
 export async function resolveMetricValues(
-  stockId: string
+  stockId: string,
+  config?: MetricResolutionConfig,
 ): Promise<ResolvedMetrics | null> {
   if (isMockMode()) {
     const stockData = getStockDataForScoring(stockId)
@@ -596,8 +719,19 @@ export async function resolveMetricValues(
     return null
   }
 
-  const data = mapCMOTSToMetricIds(ttm, finData, pnl, cashFlow, balanceSheet, quarterly, technicalData ?? undefined)
-  const context = extractGrowthContext(pnl, finData)
+  const data = mapCMOTSToMetricIds(
+    ttm, finData, pnl, cashFlow, balanceSheet, quarterly,
+    technicalData ?? undefined, undefined, undefined, config,
+  )
+  const context = extractGrowthContext(pnl, finData, undefined, config?.growthPeriods)
+
+  // Resolve custom metrics and merge
+  if (config?.customMetrics && config.customMetrics.length > 0) {
+    const customValues = resolveCustomMetrics(
+      config.customMetrics, ttm, pnl, cashFlow, balanceSheet, quarterly,
+    )
+    Object.assign(data, customValues)
+  }
 
   return {
     data,
@@ -616,6 +750,7 @@ export function resolveMetricsAtDate(
   fundamentals: FundamentalsBundle,
   priceHistory: { date: string; price: number; volume?: number }[],
   asOfDate: string,
+  config?: MetricResolutionConfig,
 ): ResolvedMetrics {
   const { ttm, finData, pnl, cashFlow, balanceSheet, quarterly } = fundamentals
 
@@ -633,9 +768,17 @@ export function resolveMetricsAtDate(
 
   const data = mapCMOTSToMetricIds(
     ttm, finData, pnl, cashFlow, balanceSheet, quarterly,
-    technicalData, asOfDate, priceAtDate ?? undefined,
+    technicalData, asOfDate, priceAtDate ?? undefined, config,
   )
-  const context = extractGrowthContext(pnl, finData, asOfDate)
+  const context = extractGrowthContext(pnl, finData, asOfDate, config?.growthPeriods)
+
+  // Resolve custom metrics and merge
+  if (config?.customMetrics && config.customMetrics.length > 0) {
+    const customValues = resolveCustomMetrics(
+      config.customMetrics, ttm, pnl, cashFlow, balanceSheet, quarterly, asOfDate,
+    )
+    Object.assign(data, customValues)
+  }
 
   return {
     data,
@@ -663,13 +806,14 @@ function findClosestPriceValue(
  * Resolve metric values for multiple stocks (batch).
  */
 export async function resolveMetricValuesBatch(
-  stockIds: string[]
+  stockIds: string[],
+  config?: MetricResolutionConfig,
 ): Promise<Record<string, ResolvedMetrics>> {
   const result: Record<string, ResolvedMetrics> = {}
 
   if (isMockMode()) {
     for (const id of stockIds) {
-      const resolved = await resolveMetricValues(id)
+      const resolved = await resolveMetricValues(id, config)
       if (resolved) result[id] = resolved
     }
     return result
@@ -679,7 +823,7 @@ export async function resolveMetricValuesBatch(
   for (let i = 0; i < stockIds.length; i += BATCH_SIZE) {
     const batch = stockIds.slice(i, i + BATCH_SIZE)
     const fetches = batch.map(async id => {
-      const resolved = await resolveMetricValues(id)
+      const resolved = await resolveMetricValues(id, config)
       if (resolved) result[id] = resolved
     })
     await Promise.all(fetches)
@@ -710,11 +854,11 @@ export async function getStockInfo(stockId: string): Promise<{
     : company.mcaptype === 'Mid Cap' ? 25000
     : 5000
 
-  const symbol = company.nsesymbol || company.bsecode || String(stockId)
+  const displaySymbol = company.nsesymbol || company.bsecode || company.companyshortname || String(company.co_code)
   return {
-    id: symbol,
+    id: String(company.co_code),
     name: company.companyname,
-    symbol,
+    symbol: displaySymbol,
     sector: company.sectorname,
     marketCap: mcapEstimate,
   }

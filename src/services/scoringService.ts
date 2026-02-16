@@ -309,7 +309,7 @@ export async function scoreFullUniverse(
   scorecard: ScorecardVersion
 ): Promise<ModelRunResult> {
   const companies = await getCompanyMaster()
-  const allStockIds = companies.map(c => c.nsesymbol ?? String(c.co_code))
+  const allStockIds = companies.map(c => String(c.co_code))
   return scoreWithScorecard(allStockIds, scorecard)
 }
 
@@ -408,7 +408,7 @@ export async function backtestScorecard(
 ): Promise<{ result: BacktestResult; batchPrices: Record<string, CMOTSOHLCVRecord[]>; intervalDates: string[] }> {
   const targetStockIds = cohortStockIds && cohortStockIds.length > 0
     ? cohortStockIds
-    : (await getCompanyMaster()).map(c => c.nsesymbol ?? String(c.co_code))
+    : (await getCompanyMaster()).map(c => String(c.co_code))
 
   // ── Phase 1: Fetch all data upfront (network-heavy, done once) ──
 

@@ -55,7 +55,7 @@ export function RunCombinedButton() {
 
   const stockCount =
     universeFilter.mode === 'all'
-      ? 'All NSE stocks'
+      ? 'All BSE stocks'
       : universeFilter.mode === 'cohort'
         ? `${universeFilter.mcapTypes.join(', ') || ''} ${universeFilter.sectors.join(', ') || ''}`.trim() || 'Cohort'
         : `${universeFilter.customSymbols.length} stocks`
@@ -267,24 +267,23 @@ async function resolveStockIds(
   const companies = await getCompanyMaster()
 
   if (filter.mode === 'all') {
-    return companies.filter(c => c.nsesymbol).map(c => c.nsesymbol)
+    return companies.map(c => String(c.co_code))
   }
 
   // Cohort mode: apply mcap + sector filters
   const filtered = companies.filter(c => {
-    if (!c.nsesymbol) return false
     if (filter.mcapTypes.length > 0 && !filter.mcapTypes.includes(c.mcaptype)) return false
     if (filter.sectors.length > 0 && !filter.sectors.includes(c.sectorname)) return false
     return true
   })
 
   // Include any custom additions on top of cohort filters
-  const symbols = new Set(filtered.map(c => c.nsesymbol))
+  const ids = new Set(filtered.map(c => String(c.co_code)))
   for (const sym of filter.customSymbols) {
-    symbols.add(sym)
+    ids.add(sym)
   }
 
-  return [...symbols]
+  return [...ids]
 }
 
 function CheckItem({ label, done, detail }: { label: string; done: boolean; detail?: string }) {

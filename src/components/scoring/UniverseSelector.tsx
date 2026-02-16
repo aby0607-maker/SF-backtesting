@@ -1,11 +1,12 @@
 /**
  * UniverseSelector — Stage 3: Choose which stocks to score
  *
- * Three selection modes — all resolve into customSymbols immediately:
+ * Three selection modes — all resolve into customSymbols (co_code IDs) immediately:
  * - Individual: Search and pick specific stocks by name/symbol
- * - Cohort: Filter by market cap and/or sector → resolves to symbols
- * - All: Select the entire listed universe (NSE + BSE)
+ * - Cohort: Filter by market cap and/or sector → resolves to co_codes
+ * - All: Select the entire BSE-listed universe
  *
+ * Stock IDs are String(co_code) throughout. Display uses nsesymbol/bsecode for readability.
  * Switching between modes preserves the selected stock list.
  * The selected stocks chips are always visible at the bottom for editing.
  */
@@ -21,8 +22,11 @@ import { Globe, Search, Filter, Users, X, Hash, AlertTriangle, Check } from 'luc
 
 type SelectionMode = 'individual' | 'cohort' | 'all'
 
-/** Get display symbol: NSE preferred, BSE code fallback */
-const getSymbol = (c: CMOTSCompany) => c.nsesymbol || c.bsecode || String(c.co_code)
+/** Canonical stock ID: co_code (used by all CMOTS endpoints) */
+const getStockId = (c: CMOTSCompany) => String(c.co_code)
+
+/** Human-readable display label for UI chips/search results */
+const getDisplayLabel = (c: CMOTSCompany) => c.nsesymbol || c.bsecode || c.companyshortname || String(c.co_code)
 
 const MODE_TABS: { id: SelectionMode; label: string; icon: React.ReactNode; description: string }[] = [
   { id: 'individual', label: 'Individual', icon: <Search className="w-3 h-3" />, description: 'Search & pick specific stocks' },
@@ -49,7 +53,7 @@ export function UniverseSelector() {
     if (isMockMode()) return
     setLoading(true)
     getCompanyMaster().then(companies => {
-      setAllCompanies(companies.filter(c => c.nsesymbol || c.bsecode))
+      setAllCompanies(companies)  // Already BSE-filtered by getCompanyMaster()
       setLoading(false)
     })
   }, [])
@@ -81,6 +85,15 @@ export function UniverseSelector() {
     return counts
   }, [allCompanies])
 
+  // ── Display map: co_code → human-readable symbol (for chip labels) ──
+  const displayMap = useMemo(() => {
+    const map = new Map<string, string>()
+    for (const c of allCompanies) {
+      map.set(getStockId(c), getDisplayLabel(c))
+    }
+    return map
+  }, [allCompanies])
+
   // ── Cohort filter → resolve to customSymbols (respecting exclusions) ──
   const excluded = useMemo(
     () => new Set(universeFilter.excludedSymbols ?? []),
@@ -99,7 +112,7 @@ export function UniverseSelector() {
     // Subtract manually excluded stocks
     const currentExcluded = new Set(universeFilter.excludedSymbols ?? [])
     setUniverseFilter({
-      customSymbols: filtered.map(getSymbol).filter(s => !currentExcluded.has(s)),
+      customSymbols: filtered.map(getStockId).filter(s => !currentExcluded.has(s)),
       mcapTypes,
       sectors: sectorFilters,
     })
@@ -121,7 +134,7 @@ export function UniverseSelector() {
     if (mode === 'all') {
       const allSymbols = isMockMode()
         ? MOCK_COMPANIES.map(c => c.symbol)
-        : allCompanies.map(getSymbol)
+        : allCompanies.map(getStockId)
       setUniverseFilter({
         mode,
         customSymbols: allSymbols.filter(s => !excluded.has(s)),
@@ -204,7 +217,7 @@ export function UniverseSelector() {
             <span className="text-xs font-medium text-amber-400">Full Universe Selected</span>
           </div>
           <p className="text-[11px] text-neutral-400 leading-relaxed">
-            All {allCompanies.length.toLocaleString()} NSE-listed stocks selected.
+            All {allCompanies.length.toLocaleString()} BSE-listed stocks selected.
             Each stock requires multiple API calls. This may take several minutes.
           </p>
         </div>
@@ -214,6 +227,7 @@ export function UniverseSelector() {
       {selectedCount > 0 && universeFilter.mode !== 'all' && (
         <SelectedStocksList
           symbols={universeFilter.customSymbols}
+          displayMap={displayMap}
           excludedCount={excluded.size}
           onRemove={removeStock}
           onClear={() => setUniverseFilter({
@@ -231,9 +245,9 @@ export function UniverseSelector() {
                 if (universeFilter.sectors.length > 0 && !universeFilter.sectors.includes(c.sectorname)) return false
                 return true
               })
-              setUniverseFilter({ customSymbols: filtered.map(getSymbol), excludedSymbols: [] })
+              setUniverseFilter({ customSymbols: filtered.map(getStockId), excludedSymbols: [] })
             } else if (universeFilter.mode === 'all') {
-              setUniverseFilter({ customSymbols: allCompanies.map(getSymbol), excludedSymbols: [] })
+              setUniverseFilter({ customSymbols: allCompanies.map(getStockId), excludedSymbols: [] })
             }
           }}
         />
@@ -265,7 +279,7 @@ function IndividualSearch({
     setSearching(true)
     searchCompanies(q).then(companies => {
       const selected = new Set(customSymbols.map(s => s.toUpperCase()))
-      setResults(companies.filter(c => !selected.has(getSymbol(c).toUpperCase())).slice(0, 15))
+      setResults(companies.filter(c => !selected.has(getStockId(c).toUpperCase())).slice(0, 15))
       setSearching(false)
     })
   }, [customSymbols])
@@ -277,7 +291,7 @@ function IndividualSearch({
   }
 
   const addSymbol = (company: CMOTSCompany) => {
-    onAdd(getSymbol(company))
+    onAdd(getStockId(company))
     setQuery('')
     setResults([])
     inputRef.current?.focus()
@@ -450,12 +464,14 @@ function CohortFilters({
 
 function SelectedStocksList({
   symbols,
+  displayMap,
   excludedCount,
   onRemove,
   onClear,
   onResetExclusions,
 }: {
   symbols: string[]
+  displayMap?: Map<string, string>
   excludedCount: number
   onRemove: (symbol: string) => void
   onClear: () => void
@@ -496,7 +512,7 @@ function SelectedStocksList({
             key={symbol}
             className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-primary-500/15 border border-primary-500/20 text-[11px] font-medium text-primary-400"
           >
-            {symbol}
+            {displayMap?.get(symbol) ?? symbol}
             <button
               onClick={() => onRemove(symbol)}
               className="ml-0.5 hover:text-red-400 transition-colors"
