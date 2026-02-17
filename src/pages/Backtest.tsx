@@ -26,6 +26,7 @@ import { MetricCatalogBrowser } from '@/components/scoring/MetricCatalogBrowser'
 import { FormulaBuilder } from '@/components/scoring/FormulaBuilder'
 import { SelectedMetricsList } from '@/components/scoring/SelectedMetricsList'
 import { NegativeHandlingEditor } from '@/components/scoring/NegativeHandlingEditor'
+import { CSVUploadParser } from '@/components/scoring/CSVUploadParser'
 
 // Stage 2: Build Scorecard
 import { SegmentBuilder } from '@/components/scoring/SegmentBuilder'
@@ -116,6 +117,10 @@ const STAGE_CONFIGS: Record<PipelineStage, StageConfig> = {
     description: 'Select raw metrics or create composite formulas',
     render: () => (
       <div className="space-y-4">
+        {/* CSV Upload + Catalog */}
+        <div className="flex items-center gap-3">
+          <CSVUploadParser />
+        </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <MetricCatalogBrowserWired />
           <div className="space-y-4">
@@ -123,7 +128,7 @@ const STAGE_CONFIGS: Record<PipelineStage, StageConfig> = {
             <FormulaBuilder />
           </div>
         </div>
-        {/* Negative value handling rules — collapsible section */}
+        {/* Negative value handling rules */}
         <div className="p-4 rounded-xl bg-dark-800/30 backdrop-blur-xl border border-white/5">
           <NegativeHandlingEditor />
         </div>
@@ -314,7 +319,7 @@ function DashboardMode({
               )}
             >
               <div className={cn(
-                'w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold',
+                'w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold',
                 isActive ? 'bg-primary-500 text-white' : 'bg-dark-600 text-neutral-500',
               )}>
                 {stage}
@@ -323,7 +328,7 @@ function DashboardMode({
                 <span className={cn('text-sm font-medium', isActive ? 'text-white' : 'text-neutral-400')}>
                   {config.title}
                 </span>
-                <span className="text-[10px] text-neutral-600 ml-2">{config.description}</span>
+                <span className="text-xs text-neutral-400 ml-2">{config.description}</span>
               </div>
             </button>
 
@@ -376,7 +381,7 @@ function HybridMode({
               )}
             >
               <span className={cn(
-                'w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-bold',
+                'w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold',
                 isActive ? 'bg-primary-500 text-white' : 'bg-dark-700 text-neutral-500',
               )}>
                 {stage}

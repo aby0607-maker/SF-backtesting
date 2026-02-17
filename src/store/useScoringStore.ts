@@ -92,6 +92,8 @@ interface ScoringState {
   deleteScorecard: (scorecardId: string) => void
   setActiveScorecard: (scorecardId: string) => void
   loadTemplate: (templateId: string) => string | null
+  /** Load a fully-formed scorecard directly (e.g., from CSV upload) */
+  loadScorecard: (scorecard: ScorecardVersion) => string
 
   // ─── Actions: Version Management ───
   createMicroVersion: (scorecardId: string) => string | null
@@ -330,6 +332,31 @@ export const useScoringStore = create<ScoringState>()(
             ...template.versionInfo,
             createdAt: Date.now(),
             parentVersionId: template.id,
+          },
+        }
+
+        const macro = loaded.versionInfo.macroVersion
+
+        set(state => ({
+          scorecards: [...state.scorecards, loaded],
+          activeScorecardId: id,
+          versionHistory: {
+            ...state.versionHistory,
+            [macro]: [...(state.versionHistory[macro] || []), loaded],
+          },
+        }))
+
+        return id
+      },
+
+      loadScorecard: (scorecard: ScorecardVersion) => {
+        const id = generateId()
+        const loaded: ScorecardVersion = {
+          ...structuredClone(scorecard),
+          id,
+          versionInfo: {
+            ...scorecard.versionInfo,
+            createdAt: Date.now(),
           },
         }
 

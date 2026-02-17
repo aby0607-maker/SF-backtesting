@@ -1,10 +1,13 @@
 /**
  * CompositeFormulaEditor — Stage 2: Visual weight editor for composite formula
  *
- * Shows: segment weight sliders, base vs overlay distinction, live formula preview.
+ * Flat weights only — no base/overlay distinction.
+ * All segments use text % inputs (no sliders).
+ * Live formula preview shows segment contributions.
  */
 
 import { useScoringStore, useActiveScorecard } from '@/store/useScoringStore'
+import { cn } from '@/lib/utils'
 import type { CompositeFormula } from '@/types/scoring'
 
 export function CompositeFormulaEditor() {
@@ -15,126 +18,85 @@ export function CompositeFormulaEditor() {
 
   const { compositeFormula, segments } = scorecard
 
-  const updateBaseWeight = (value: number) => {
-    updateCompositeFormula({ ...compositeFormula, baseWeight: value / 100 })
-  }
+  // All segments in a flat list (combine base + overlay for backwards compat)
+  const allSegmentWeights = [
+    ...compositeFormula.baseSegments,
+    ...(compositeFormula.overlaySegments ?? []),
+  ]
 
-  const updateSegmentFormulaWeight = (segmentId: string, weight: number, isOverlay: boolean) => {
-    const formula: CompositeFormula = { ...compositeFormula }
-    if (isOverlay) {
-      formula.overlaySegments = (formula.overlaySegments ?? []).map(s =>
-        s.segmentId === segmentId ? { ...s, weight: weight / 100 } : s
-      )
-    } else {
-      formula.baseSegments = formula.baseSegments.map(s =>
-        s.segmentId === segmentId ? { ...s, weight: weight / 100 } : s
-      )
+  const updateSegmentFormulaWeight = (segmentId: string, weightPct: number) => {
+    const weight = weightPct / 100
+    const formula: CompositeFormula = {
+      baseSegments: allSegmentWeights.map(s =>
+        s.segmentId === segmentId ? { ...s, weight } : s
+      ),
+      baseWeight: 1.0,  // Always flat weights
     }
     updateCompositeFormula(formula)
   }
 
   // Build formula preview string
-  const baseParts = compositeFormula.baseSegments
-    .map(bs => {
-      const seg = segments.find(s => s.id === bs.segmentId)
-      return seg ? `${seg.name}(${(bs.weight * 100).toFixed(0)}%)` : null
-    })
-    .filter(Boolean)
-  const overlayParts = (compositeFormula.overlaySegments ?? [])
-    .map(os => {
-      const seg = segments.find(s => s.id === os.segmentId)
-      return seg ? `${seg.name} × ${os.weight}` : null
+  const parts = allSegmentWeights
+    .map(sw => {
+      const seg = segments.find(s => s.id === sw.segmentId)
+      return seg ? `${seg.name}(${(sw.weight * 100).toFixed(1)}%)` : null
     })
     .filter(Boolean)
 
-  let formulaStr = baseParts.join(' + ')
-  if (compositeFormula.baseWeight !== 1.0) {
-    formulaStr = `(${formulaStr}) × ${compositeFormula.baseWeight}`
-  }
-  if (overlayParts.length > 0) {
-    formulaStr += ' + ' + overlayParts.join(' + ')
-  }
+  const formulaStr = parts.join(' + ')
+
+  // Total weight for validation
+  const totalPct = Math.round(allSegmentWeights.reduce((sum, s) => sum + s.weight, 0) * 100)
+  const isValid = totalPct >= 99 && totalPct <= 101
 
   return (
     <div className="space-y-4">
       {/* Formula preview */}
-      <div className="px-3 py-2 bg-dark-800/80 border border-white/5 rounded-lg">
-        <div className="text-[10px] uppercase tracking-wider text-neutral-500 mb-1">Composite Formula</div>
+      <div className="px-3 py-2.5 bg-dark-800/80 border border-white/5 rounded-lg">
+        <div className="flex items-center justify-between mb-1">
+          <span className="text-xs uppercase tracking-wider text-neutral-400">Composite Formula</span>
+          <span className={cn(
+            'text-xs font-mono',
+            isValid ? 'text-success-400' : 'text-warning-400',
+          )}>
+            {totalPct}%
+          </span>
+        </div>
         <div className="text-sm font-mono text-primary-400">{formulaStr || 'No segments configured'}</div>
       </div>
 
-      {/* Base segments */}
+      {/* Segment weights — flat list */}
       <div>
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-xs font-medium text-neutral-400">Base Segments</span>
-          <div className="flex items-center gap-2">
-            <span className="text-[10px] text-neutral-500">Base Weight</span>
-            <input
-              type="range"
-              min="10"
-              max="100"
-              value={Math.round(compositeFormula.baseWeight * 100)}
-              onChange={e => updateBaseWeight(Number(e.target.value))}
-              className="w-20 h-1 bg-dark-600 rounded-full appearance-none accent-primary-500"
-            />
-            <span className="text-xs font-mono text-neutral-400 w-8 text-right">
-              {Math.round(compositeFormula.baseWeight * 100)}%
-            </span>
-          </div>
-        </div>
-
+        <div className="text-xs font-medium text-neutral-400 mb-2">Segment Weights</div>
         <div className="space-y-1.5">
-          {compositeFormula.baseSegments.map(bs => {
-            const seg = segments.find(s => s.id === bs.segmentId)
+          {allSegmentWeights.map(sw => {
+            const seg = segments.find(s => s.id === sw.segmentId)
             if (!seg) return null
             return (
-              <div key={bs.segmentId} className="flex items-center gap-3 px-2 py-1.5 rounded-lg bg-dark-800/40">
+              <div key={sw.segmentId} className="flex items-center gap-3 px-3 py-2 rounded-lg bg-dark-800/40">
                 <span className="text-sm text-neutral-300 flex-1">{seg.name}</span>
-                <input
-                  type="range"
-                  min="0"
-                  max="100"
-                  value={Math.round(bs.weight * 100)}
-                  onChange={e => updateSegmentFormulaWeight(bs.segmentId, Number(e.target.value), false)}
-                  className="w-24 h-1 bg-dark-600 rounded-full appearance-none accent-teal-500"
-                />
-                <span className="text-xs font-mono text-teal-400 w-8 text-right">
-                  {Math.round(bs.weight * 100)}%
-                </span>
+                <div className="flex items-center gap-1">
+                  <input
+                    type="number"
+                    min={0}
+                    max={100}
+                    step={0.5}
+                    value={parseFloat((sw.weight * 100).toFixed(1))}
+                    onChange={e => {
+                      const val = parseFloat(e.target.value)
+                      if (!isNaN(val) && val >= 0 && val <= 100) {
+                        updateSegmentFormulaWeight(sw.segmentId, val)
+                      }
+                    }}
+                    className="w-16 px-2 py-1 bg-dark-700/60 border border-white/10 rounded text-sm font-mono text-white text-right focus:outline-none focus:border-primary-500/40"
+                  />
+                  <span className="text-xs text-neutral-400">%</span>
+                </div>
               </div>
             )
           })}
         </div>
       </div>
-
-      {/* Overlay segments */}
-      {compositeFormula.overlaySegments && compositeFormula.overlaySegments.length > 0 && (
-        <div>
-          <div className="text-xs font-medium text-neutral-400 mb-2">Overlay Segments</div>
-          <div className="space-y-1.5">
-            {compositeFormula.overlaySegments.map(os => {
-              const seg = segments.find(s => s.id === os.segmentId)
-              if (!seg) return null
-              return (
-                <div key={os.segmentId} className="flex items-center gap-3 px-2 py-1.5 rounded-lg bg-dark-800/40">
-                  <span className="text-sm text-neutral-300 flex-1">{seg.name}</span>
-                  <input
-                    type="range"
-                    min="0"
-                    max="50"
-                    value={Math.round(os.weight * 100)}
-                    onChange={e => updateSegmentFormulaWeight(os.segmentId, Number(e.target.value), true)}
-                    className="w-24 h-1 bg-dark-600 rounded-full appearance-none accent-warning-500"
-                  />
-                  <span className="text-xs font-mono text-warning-400 w-8 text-right">
-                    {Math.round(os.weight * 100)}%
-                  </span>
-                </div>
-              )
-            })}
-          </div>
-        </div>
-      )}
     </div>
   )
 }

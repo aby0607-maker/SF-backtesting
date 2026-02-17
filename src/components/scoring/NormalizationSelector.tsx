@@ -78,7 +78,7 @@ export function NormalizationSelector() {
             {/* Radio indicator */}
             <div className={cn(
               'w-3.5 h-3.5 rounded-full border mt-0.5 flex items-center justify-center',
-              current === m.method ? 'border-primary-500' : 'border-neutral-600',
+              current === m.method ? 'border-primary-500' : 'border-neutral-500',
             )}>
               {current === m.method && (
                 <div className="w-1.5 h-1.5 rounded-full bg-primary-500" />
@@ -94,12 +94,12 @@ export function NormalizationSelector() {
                   {m.label}
                 </span>
                 {!m.available && (
-                  <span className="px-1.5 py-0.5 rounded bg-dark-600 text-[9px] text-neutral-500">
+                  <span className="px-1.5 py-0.5 rounded bg-dark-600 text-xs text-neutral-400">
                     Coming Soon
                   </span>
                 )}
               </div>
-              <div className="text-[10px] text-neutral-500 mt-0.5">{m.description}</div>
+              <div className="text-xs text-neutral-400 mt-0.5">{m.description}</div>
             </div>
           </button>
         ))}

@@ -1,11 +1,18 @@
 /**
  * Pre-built Scorecard Templates
  *
+ * V3 Expert Banking Model: Banking/NBFC-specific scorecard (Vishal Rampuria — CSV Feb 2026)
+ * - 4 segments, 14 metrics (6 financial + 2 valuation + 1 QM + 5 technical)
+ * - Banking metrics: NII Growth, PPP Growth, PBT Growth, ROE, NNPA, Tier 1 Capital
+ * - PB-heavy valuation (PE=20%, PB=80%), no EV/EBITDA
+ * - Flat composite weights: F×32.5% + V×50% + QM×10% + T×7.5%
+ *
  * V2 Expert Model: Fully defined by SME (Vishal Rampuria) — updated from CSV Jan 2026
  * - 4 segments, 17 metrics, complete score bands, conditional valuation
  * - PB-anchored valuation (PE=30%, PB=50%, EV=20%)
  * - Exclude-based negative handling (weight redistributed, not zeroed)
  * - 5Y average growth period
+ *
  * V1 Comprehensive: All 11 segments skeleton with equal weights
  */
 
@@ -454,6 +461,278 @@ export const V2_EXPERT_SCORECARD: ScorecardVersion = {
 }
 
 // ─────────────────────────────────────────────────
+// V3 Expert Banking Model — Score Bands (from SME CSV Feb 2026)
+// ─────────────────────────────────────────────────
+
+// NII Growth bands (Net Interest Income, 5Y CAGR)
+// CSV calibration: 10.79→70, 12.2→80, 14.4→80, 15.9→95, 17.3→95, 20.2→100
+const niiGrowthBands: ScoreBand[] = [
+  { min: 20, max: Infinity, score: 100, label: 'Exceptional', color: 'text-success-400' },
+  { min: 15, max: 19.99, score: 95, label: 'Very Strong', color: 'text-success-400' },
+  { min: 12, max: 14.99, score: 80, label: 'Strong', color: 'text-success-400' },
+  { min: 10, max: 11.99, score: 70, label: 'Good', color: 'text-teal-400' },
+  { min: 5, max: 9.99, score: 50, label: 'Below Average', color: 'text-warning-400' },
+  { min: 0, max: 4.99, score: 30, label: 'Weak', color: 'text-warning-400' },
+  { min: -Infinity, max: -0.01, score: 15, label: 'Negative', color: 'text-destructive-400' },
+]
+
+// PPP/PBT Growth bands (Pre-Provisioning Profit / Profit Before Tax, 5Y CAGR)
+// CSV calibration: 8.9→70, 20.9→100, 24.9→100, 25.9→100, 32.1→100, 41.8→100
+const bankingGrowthBands: ScoreBand[] = [
+  { min: 20, max: Infinity, score: 100, label: 'Exceptional', color: 'text-success-400' },
+  { min: 15, max: 19.99, score: 90, label: 'Very Strong', color: 'text-success-400' },
+  { min: 10, max: 14.99, score: 80, label: 'Strong', color: 'text-success-400' },
+  { min: 5, max: 9.99, score: 70, label: 'Good', color: 'text-teal-400' },
+  { min: 0, max: 4.99, score: 50, label: 'Below Average', color: 'text-warning-400' },
+  { min: -Infinity, max: -0.01, score: 25, label: 'Negative', color: 'text-destructive-400' },
+]
+
+// Banking ROE bands (5Y Average)
+// CSV calibration: 4.16→35, 10.8→65, 11.8→65, 13.39→75, 14.8→75, 16.2→85, 19.6→85
+const bankingRoeBands: ScoreBand[] = [
+  { min: 20, max: Infinity, score: 95, label: 'Excellent', color: 'text-success-400' },
+  { min: 15, max: 19.99, score: 85, label: 'Strong', color: 'text-success-400' },
+  { min: 13, max: 14.99, score: 75, label: 'Good', color: 'text-teal-400' },
+  { min: 10, max: 12.99, score: 65, label: 'Adequate', color: 'text-teal-400' },
+  { min: 5, max: 9.99, score: 45, label: 'Below Average', color: 'text-warning-400' },
+  { min: 2, max: 4.99, score: 35, label: 'Weak', color: 'text-warning-400' },
+  { min: 0, max: 1.99, score: 20, label: 'Very Weak', color: 'text-warning-400' },
+  { min: -Infinity, max: -0.01, score: 10, label: 'Negative ROE', color: 'text-destructive-400' },
+]
+
+// NNPA bands (Net Non-Performing Assets, Latest Year %)
+// CSV: all bank values (0.19-0.57) → 50, Muthoot 2.79→50
+// Extrapolated to reasonable banking thresholds
+const nnpaBands: ScoreBand[] = [
+  { min: -Infinity, max: 0.25, score: 80, label: 'Excellent Asset Quality', color: 'text-success-400' },
+  { min: 0.25, max: 0.50, score: 65, label: 'Good', color: 'text-success-400' },
+  { min: 0.50, max: 1.0, score: 50, label: 'Acceptable', color: 'text-teal-400' },
+  { min: 1.0, max: 2.0, score: 35, label: 'Concerning', color: 'text-warning-400' },
+  { min: 2.0, max: 3.0, score: 25, label: 'Stressed', color: 'text-warning-400' },
+  { min: 3.0, max: Infinity, score: 10, label: 'Critical', color: 'text-destructive-400' },
+]
+
+// Tier 1 Capital Ratio bands (Banks & NBFCs, Latest Year %)
+// CSV calibration: 12.07→70, 13.1→80, 13.88→80, 14.71→90, 15.06→90, 17.8→100, 22.95→100
+const tier1Bands: ScoreBand[] = [
+  { min: 16, max: Infinity, score: 100, label: 'Very Strong Capital', color: 'text-success-400' },
+  { min: 14, max: 15.99, score: 90, label: 'Strong Capital', color: 'text-success-400' },
+  { min: 13, max: 13.99, score: 80, label: 'Adequate', color: 'text-teal-400' },
+  { min: 12, max: 12.99, score: 70, label: 'Minimum Regulatory', color: 'text-teal-400' },
+  { min: 10, max: 11.99, score: 60, label: 'At Risk', color: 'text-warning-400' },
+  { min: -Infinity, max: 9.99, score: 40, label: 'Below Regulatory Min', color: 'text-destructive-400' },
+]
+
+// Banking PE vs 5Y Avg bands (input as ratio: 0.85 = 85% of 5Y avg)
+// CSV calibration: 0.75→90, 0.85→85, 0.95→80, 1.23→75, 1.40→65, 1.47→60, 1.75→50
+const bankingPeBands: ScoreBand[] = [
+  { min: -Infinity, max: 0.80, score: 90, label: 'Deeply Undervalued', color: 'text-success-400' },
+  { min: 0.80, max: 0.90, score: 85, label: 'Undervalued', color: 'text-success-400' },
+  { min: 0.90, max: 1.00, score: 80, label: 'Attractive', color: 'text-teal-400' },
+  { min: 1.00, max: 1.30, score: 75, label: 'Near Fair Value', color: 'text-teal-400' },
+  { min: 1.30, max: 1.45, score: 65, label: 'Slightly Expensive', color: 'text-warning-400' },
+  { min: 1.45, max: 1.50, score: 60, label: 'Moderately Expensive', color: 'text-warning-400' },
+  { min: 1.50, max: Infinity, score: 50, label: 'Expensive', color: 'text-destructive-400' },
+]
+
+// Banking PB vs 5Y Avg bands (PB is anchor metric — 80% weight)
+// CSV calibration: 0.85→85, 1.10→75, 1.26→70, 1.43→65, 1.60→50, 1.88→50
+const bankingPbBands: ScoreBand[] = [
+  { min: -Infinity, max: 0.90, score: 85, label: 'Deeply Undervalued', color: 'text-success-400' },
+  { min: 0.90, max: 1.15, score: 75, label: 'Attractive', color: 'text-teal-400' },
+  { min: 1.15, max: 1.30, score: 70, label: 'Near Fair Value', color: 'text-teal-400' },
+  { min: 1.30, max: 1.50, score: 65, label: 'Slightly Expensive', color: 'text-warning-400' },
+  { min: 1.50, max: Infinity, score: 50, label: 'Expensive', color: 'text-destructive-400' },
+]
+
+// PBT Growth Multiplier bands (Quarterly Momentum — single metric)
+// CSV calibration: 0.1→10, 0.9→60, 0.99→65, 1.04→65, 1.09→65, 1.21→70, 1.36→80
+const pbtMultiplierBands: ScoreBand[] = [
+  { min: 1.30, max: Infinity, score: 80, label: 'Strong Acceleration', color: 'text-success-400' },
+  { min: 1.15, max: 1.299, score: 70, label: 'Improving', color: 'text-success-400' },
+  { min: 0.95, max: 1.149, score: 65, label: 'Stable', color: 'text-teal-400' },
+  { min: 0.85, max: 0.949, score: 60, label: 'Mild Slowdown', color: 'text-teal-400' },
+  { min: 0.50, max: 0.849, score: 40, label: 'Slowing', color: 'text-warning-400' },
+  { min: 0.20, max: 0.499, score: 25, label: 'Weak', color: 'text-warning-400' },
+  { min: -Infinity, max: 0.199, score: 10, label: 'Growth Deterioration', color: 'text-destructive-400' },
+]
+
+// ─────────────────────────────────────────────────
+// V3 Expert Banking Model — Negative Handling Rules
+//
+// Same philosophy as V2: growth metrics with start/end negative → exclude.
+// Banking-specific: NII, PPP, PBT growth follow same CAGR exclusion rules.
+// ROE negative → include (penalize via bands). NNPA & Tier 1 always ≥ 0.
+// ─────────────────────────────────────────────────
+
+const v3bNegativeHandlingRules: NegativeHandling[] = [
+  // ── NII Growth ──
+  { metricId: 'v3b_nii_growth', condition: 'start_negative', action: 'exclude', description: 'Start year negative NII → exclude (CAGR undefined)' },
+  { metricId: 'v3b_nii_growth', condition: 'end_negative', action: 'exclude', description: 'End year negative NII → exclude (CAGR undefined)' },
+
+  // ── PPP Growth ──
+  { metricId: 'v3b_ppp_growth', condition: 'start_negative', action: 'exclude', description: 'Start year negative PPP → exclude (CAGR undefined)' },
+  { metricId: 'v3b_ppp_growth', condition: 'end_negative', action: 'exclude', description: 'End year negative PPP → exclude (CAGR undefined)' },
+  { metricId: 'v3b_ppp_growth', condition: 'both_negative', action: 'exclude', description: 'Both years negative PPP → exclude' },
+  { metricId: 'v3b_ppp_growth', condition: 'any_negative', action: 'exclude', description: 'Any year negative PPP → exclude' },
+
+  // ── PBT Growth ──
+  { metricId: 'v3b_pbt_growth', condition: 'start_negative', action: 'exclude', description: 'Start year negative PBT → exclude (CAGR undefined)' },
+  { metricId: 'v3b_pbt_growth', condition: 'end_negative', action: 'exclude', description: 'End year negative PBT → exclude (CAGR undefined)' },
+  { metricId: 'v3b_pbt_growth', condition: 'both_negative', action: 'exclude', description: 'Both years negative PBT → exclude' },
+  { metricId: 'v3b_pbt_growth', condition: 'any_negative', action: 'exclude', description: 'Any year negative PBT → exclude' },
+
+  // ── ROE ──
+  { metricId: 'v3b_roe', condition: 'start_negative', action: 'exclude', description: 'Negative ROE in start year → exclude' },
+  { metricId: 'v3b_roe', condition: 'end_negative', action: 'exclude', description: 'Negative ROE in end year → exclude' },
+
+  // ── Valuation ──
+  { metricId: 'v3b_pe_vs_5y', condition: 'any_negative', action: 'exclude', description: 'Negative PE → valuation not meaningful, exclude' },
+  { metricId: 'v3b_pb_vs_5y', condition: 'any_negative', action: 'exclude', description: 'Negative PB → valuation not meaningful, exclude' },
+]
+
+// ─────────────────────────────────────────────────
+// V3 Expert Banking Model — Segment Definitions
+// ─────────────────────────────────────────────────
+
+const v3bFinancialSegment: ScorecardSegment = {
+  id: 'v3b_financial',
+  name: 'Financial Score',
+  segmentWeight: 0.325,
+  description: 'Banking financial health: NII growth, profitability, asset quality, capital adequacy',
+  metrics: [
+    {
+      id: 'v3b_nii_growth', name: 'NII Growth (5Y CAGR)', type: 'raw',
+      rawMetric: { id: 'v3b_nii_growth', name: 'Net Interest Income Growth', cmots_source: 'pnl', cmots_field: 'NIIGrowth5Y', unit: 'percent', description: 'Net Interest Income 5-year CAGR' },
+      scoreBands: niiGrowthBands, weight: 0.20,
+    },
+    {
+      id: 'v3b_ppp_growth', name: 'PPP Growth (5Y CAGR)', type: 'raw',
+      rawMetric: { id: 'v3b_ppp_growth', name: 'Pre-Provisioning Profit Growth', cmots_source: 'pnl', cmots_field: 'PPPGrowth5Y', unit: 'percent', description: 'Pre-Provisioning Profit 5-year CAGR' },
+      scoreBands: bankingGrowthBands, weight: 0.15,
+    },
+    {
+      id: 'v3b_pbt_growth', name: 'PBT Growth (5Y CAGR)', type: 'raw',
+      rawMetric: { id: 'v3b_pbt_growth', name: 'Profit Before Tax Growth', cmots_source: 'pnl', cmots_field: 'PBTGrowth5Y', unit: 'percent', description: 'Profit Before Tax 5-year CAGR' },
+      scoreBands: bankingGrowthBands, weight: 0.20,
+    },
+    {
+      id: 'v3b_roe', name: 'Average ROE (5Y)', type: 'raw',
+      rawMetric: { id: 'v3b_roe', name: 'ROE', cmots_source: 'ttm', cmots_field: 'ROE', unit: 'percent', description: 'Return on equity (avg 5Y)' },
+      scoreBands: bankingRoeBands, weight: 0.20,
+    },
+    {
+      id: 'v3b_nnpa', name: 'NNPA (Latest Year)', type: 'raw',
+      rawMetric: { id: 'v3b_nnpa', name: 'Net NPA', cmots_source: 'ttm', cmots_field: 'NNPA', unit: 'percent', description: 'Net Non-Performing Assets ratio (latest year)' },
+      scoreBands: nnpaBands, weight: 0.10,
+    },
+    {
+      id: 'v3b_tier1', name: 'Tier 1 Capital (Latest Year)', type: 'raw',
+      rawMetric: { id: 'v3b_tier1', name: 'Tier 1 Capital Ratio', cmots_source: 'ttm', cmots_field: 'Tier1Capital', unit: 'percent', description: 'Tier 1 Capital Adequacy Ratio (latest year)' },
+      scoreBands: tier1Bands, weight: 0.15,
+    },
+  ],
+  verdictThresholds: [
+    { minScore: 85, maxScore: 100, verdict: 'Very Strong Financials', altVerdict: 'Excellent', color: 'text-success-400', description: 'Best-in-class profitability, growth, capital adequacy' },
+    { minScore: 70, maxScore: 84, verdict: 'Strong Financials', altVerdict: 'Strong', color: 'text-success-400', description: 'Above average on most financial metrics' },
+    { minScore: 55, maxScore: 69, verdict: 'Average Financials', altVerdict: 'Average', color: 'text-warning-400', description: 'Mixed performance; some strengths, some weakness' },
+    { minScore: 40, maxScore: 54, verdict: 'Weak Financials', altVerdict: 'Weak', color: 'text-warning-400', description: 'Red flags in efficiency, growth or capital adequacy' },
+    { minScore: 0, maxScore: 39, verdict: 'Poor Financials', altVerdict: 'Poor', color: 'text-destructive-400', description: 'Structurally weak fundamentals' },
+  ],
+}
+
+const v3bValuationSegment: ScorecardSegment = {
+  id: 'v3b_valuation',
+  name: 'Valuation Score',
+  segmentWeight: 0.50,
+  description: 'Banking valuation relative to 5Y averages. PB-heavy: PE=20%, PB=80% (no EV/EBITDA for banks)',
+  metrics: [
+    {
+      id: 'v3b_pe_vs_5y', name: 'PE vs 5Y Average', type: 'raw',
+      rawMetric: { id: 'v3b_pe_vs_5y', name: 'PE vs 5Y Avg', cmots_source: 'ttm', cmots_field: 'PE_vs_5YAvg', unit: 'ratio', description: 'Current PE / 5-year average PE' },
+      scoreBands: bankingPeBands, weight: 0.20,
+    },
+    {
+      id: 'v3b_pb_vs_5y', name: 'PB vs 5Y Average', type: 'raw',
+      rawMetric: { id: 'v3b_pb_vs_5y', name: 'PB vs 5Y Avg', cmots_source: 'ttm', cmots_field: 'PB_vs_5YAvg', unit: 'ratio', description: 'Current PB / 5-year average PB' },
+      scoreBands: bankingPbBands, weight: 0.80,
+    },
+  ],
+  verdictThresholds: [
+    { minScore: 80, maxScore: 100, verdict: 'Deeply Undervalued', altVerdict: 'Excellent', color: 'text-success-400', description: 'Cheap compared to historical averages' },
+    { minScore: 75, maxScore: 79, verdict: 'Undervalued', altVerdict: 'Good', color: 'text-success-400', description: 'Attractively priced at CMP' },
+    { minScore: 65, maxScore: 74, verdict: 'Fairly Valued', altVerdict: 'Fair', color: 'text-warning-400', description: 'Priced near long-term averages' },
+    { minScore: 55, maxScore: 64, verdict: 'Moderately Expensive', altVerdict: 'Caution', color: 'text-warning-400', description: 'Limited upside from valuation' },
+    { minScore: 0, maxScore: 54, verdict: 'Expensive', altVerdict: 'Expensive', color: 'text-destructive-400', description: 'Valuation risk at CMP' },
+  ],
+}
+
+// Technical segment: reuse V2 metrics and bands (EMA/RSI/VPT work identically for banking)
+const v3bTechnicalSegment: ScorecardSegment = {
+  ...v2TechnicalSegment,
+  id: 'v3b_technical',
+  segmentWeight: 0.075,
+}
+
+const v3bQuarterlyMomentumSegment: ScorecardSegment = {
+  id: 'v3b_quarterly_momentum',
+  name: 'Quarterly Momentum',
+  segmentWeight: 0.10,
+  description: 'PBT growth acceleration: latest 2 quarters vs prior period',
+  metrics: [
+    {
+      id: 'v3b_pbt_multiplier', name: 'PBT Growth Multiplier', type: 'raw',
+      rawMetric: { id: 'v3b_pbt_multiplier', name: 'PBT Growth Multiplier', cmots_source: 'quarterly', cmots_field: 'PBTMultiplier', unit: 'times', description: 'PBT growth multiplier — latest 2 quarters vs same period last year' },
+      scoreBands: pbtMultiplierBands, weight: 1.0,
+    },
+  ],
+  verdictThresholds: [
+    { minScore: 75, maxScore: 100, verdict: 'Strong Acceleration', altVerdict: 'Accelerating', color: 'text-success-400', description: 'Strong profit growth acceleration' },
+    { minScore: 65, maxScore: 74, verdict: 'Improving Trend', altVerdict: 'Improving', color: 'text-teal-400', description: 'Positive momentum building' },
+    { minScore: 55, maxScore: 64, verdict: 'Stable / Mild Slowdown', altVerdict: 'Stable', color: 'text-warning-400', description: 'Flat or slightly decelerating growth' },
+    { minScore: 40, maxScore: 54, verdict: 'Slowing Growth', altVerdict: 'Slowing', color: 'text-warning-400', description: 'Growth momentum weakening' },
+    { minScore: 0, maxScore: 39, verdict: 'Growth Deterioration', altVerdict: 'Deteriorating', color: 'text-destructive-400', description: 'Significant profit growth decline' },
+  ],
+}
+
+// ─────────────────────────────────────────────────
+// V3 Expert Banking Model — Full Scorecard
+// ─────────────────────────────────────────────────
+
+export const V3_EXPERT_BANKING_SCORECARD: ScorecardVersion = {
+  id: 'v3-expert-banking-1',
+  versionInfo: {
+    macroVersion: 'V3',
+    microVersion: 1,
+    displayVersion: 'V3.1',
+    name: 'Expert Banking Scorecard',
+    description: 'Banking/NBFC-specific scoring model with 4 segments: NII/PPP/PBT growth, ROE, NNPA, Tier 1 Capital, PB-heavy valuation (PE=20%, PB=80%), PBT momentum, and technical overlay',
+    sourceReference: 'Vishal Rampuria - StockFox SME (Banking CSV Feb 2026)',
+    createdAt: Date.now(),
+  },
+  segments: [
+    v3bFinancialSegment,
+    v3bValuationSegment,
+    v3bTechnicalSegment,
+    v3bQuarterlyMomentumSegment,
+  ],
+  compositeFormula: {
+    baseSegments: [
+      { segmentId: 'v3b_financial', weight: 0.325 },
+      { segmentId: 'v3b_valuation', weight: 0.50 },
+      { segmentId: 'v3b_quarterly_momentum', weight: 0.10 },
+      { segmentId: 'v3b_technical', weight: 0.075 },
+    ],
+    baseWeight: 1.0,  // Flat weights — no multiplier
+  },
+  normalization: { method: 'none' },
+  verdictThresholds: v2OverallVerdicts,
+  customFactors: [],
+  negativeHandlingRules: v3bNegativeHandlingRules,
+  verdictDisplayMode: 'action',
+}
+
+// ─────────────────────────────────────────────────
 // V1 Comprehensive Model — Skeleton
 // ─────────────────────────────────────────────────
 
@@ -528,6 +807,7 @@ export const V1_COMPREHENSIVE_SCORECARD: ScorecardVersion = {
 
 /** All available scorecard templates */
 export const SCORECARD_TEMPLATES: ScorecardVersion[] = [
+  V3_EXPERT_BANKING_SCORECARD,
   V2_EXPERT_SCORECARD,
   V1_COMPREHENSIVE_SCORECARD,
 ]

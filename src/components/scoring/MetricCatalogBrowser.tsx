@@ -67,7 +67,7 @@ export function MetricCatalogBrowser({ onSelectMetric, selectedMetricIds = new S
               >
                 <span className="uppercase tracking-wider">{category}</span>
                 <div className="flex items-center gap-1.5">
-                  <span className="text-neutral-600">{metrics.length}</span>
+                  <span className="text-neutral-500">{metrics.length}</span>
                   {isExpanded ? <ChevronDown className="w-3 h-3" /> : <ChevronRight className="w-3 h-3" />}
                 </div>
               </button>
@@ -97,15 +97,15 @@ export function MetricCatalogBrowser({ onSelectMetric, selectedMetricIds = new S
                         >
                           <div className="min-w-0 flex-1">
                             <div className="truncate font-medium">{metric.name}</div>
-                            <div className="text-[10px] text-neutral-500 truncate">{metric.description}</div>
+                            <div className="text-xs text-neutral-400 truncate">{metric.description}</div>
                           </div>
                           <div className="flex items-center gap-2 ml-2 shrink-0">
-                            <span className="text-[10px] text-neutral-600 uppercase">{metric.unit}</span>
+                            <span className="text-xs text-neutral-500 uppercase">{metric.unit}</span>
                             {metric.higherIsBetter != null && (
-                              <ArrowUpDown className="w-2.5 h-2.5 text-neutral-600" />
+                              <ArrowUpDown className="w-3 h-3 text-neutral-500" />
                             )}
-                            {!isSelected && <Plus className="w-3.5 h-3.5 text-neutral-500" />}
-                            {isSelected && <span className="text-[10px] text-primary-400">Added</span>}
+                            {!isSelected && <Plus className="w-3.5 h-3.5 text-neutral-400" />}
+                            {isSelected && <span className="text-xs text-primary-400">Added</span>}
                           </div>
                         </button>
                       )

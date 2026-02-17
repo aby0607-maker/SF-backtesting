@@ -54,7 +54,7 @@ export function ScorecardSelector() {
             {/* Saved scorecards */}
             {scorecards.length > 0 && (
               <div className="p-2">
-                <div className="text-[10px] uppercase tracking-wider text-neutral-500 px-2 mb-1">
+                <div className="text-xs uppercase tracking-wider text-neutral-500 px-2 mb-1">
                   Your Scorecards
                 </div>
                 {scorecards.map(sc => (
@@ -89,7 +89,7 @@ export function ScorecardSelector() {
                       className={cn(
                         'p-1.5 rounded-md mr-1 shrink-0 transition-colors',
                         scorecards.length <= 1
-                          ? 'text-neutral-700 cursor-not-allowed'
+                          ? 'text-neutral-500 cursor-not-allowed'
                           : 'text-neutral-600 hover:text-destructive-400 hover:bg-destructive-500/10',
                       )}
                     >
@@ -105,7 +105,7 @@ export function ScorecardSelector() {
 
             {/* Templates */}
             <div className="p-2">
-              <div className="text-[10px] uppercase tracking-wider text-neutral-500 px-2 mb-1">
+              <div className="text-xs uppercase tracking-wider text-neutral-500 px-2 mb-1">
                 Templates
               </div>
               {SCORECARD_TEMPLATES.map(t => (
@@ -117,7 +117,7 @@ export function ScorecardSelector() {
                   <FileText className="w-3.5 h-3.5 text-teal-400" />
                   <div>
                     <div>{t.versionInfo.name}</div>
-                    <div className="text-[10px] text-neutral-500">
+                    <div className="text-xs text-neutral-500">
                       {t.segments.length} segments, {t.segments.reduce((s, seg) => s + seg.metrics.length, 0)} metrics
                     </div>
                   </div>
