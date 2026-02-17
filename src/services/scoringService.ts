@@ -480,17 +480,22 @@ export async function backtestScorecard(
   for (const [symbol, records] of Object.entries(batchPrices)) {
     if (records.length > 0) {
       // Full range with normalized dates — for metric resolution (technical lookback)
-      priceHistoryWithVolume[symbol] = records.map(r => ({
-        date: r.Tradedate.split('T')[0],  // Normalize ISO datetime to plain date
-        price: r.Dayclose,
-        volume: r.TotalVolume,
-      }))
+      // Sort ascending by date — CMOTS API may return descending order
+      priceHistoryWithVolume[symbol] = records
+        .map(r => ({
+          date: r.Tradedate.split('T')[0],  // Normalize ISO datetime to plain date
+          price: r.Dayclose,
+          volume: r.TotalVolume,
+        }))
+        .sort((a, b) => a.date.localeCompare(b.date))
       // Filtered to user's range — for backtest engine + interval dates + cumulative returns
       const inRange = records.filter(r => r.Tradedate.split('T')[0] >= fromDate)
-      priceHistory[symbol] = inRange.map(r => ({
-        date: r.Tradedate.split('T')[0],
-        price: r.Dayclose,
-      }))
+      priceHistory[symbol] = inRange
+        .map(r => ({
+          date: r.Tradedate.split('T')[0],
+          price: r.Dayclose,
+        }))
+        .sort((a, b) => a.date.localeCompare(b.date))
     }
   }
 

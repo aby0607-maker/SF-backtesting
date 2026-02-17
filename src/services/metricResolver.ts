@@ -729,6 +729,9 @@ async function fetchPriceDataForScoring(
 
     if (!prices || prices.length === 0) return { technicalData: null, priceHistory: [] }
 
+    // Sort ascending by date — CMOTS API may return descending order
+    prices.sort((a, b) => a.Tradedate.localeCompare(b.Tradedate))
+
     const closes = prices.map(p => p.Dayclose)
     const volumes = prices.map(p => p.TotalVolume)
     const technicalData = closes.length >= 200 ? computeTechnicalFromPriceArray(closes, volumes) : null

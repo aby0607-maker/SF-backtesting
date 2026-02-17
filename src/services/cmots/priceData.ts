@@ -35,10 +35,14 @@ export async function getHistoricalPrices(
     return []
   }
 
-  return await cmotsFetch<CMOTSOHLCVRecord>({
+  const records = await cmotsFetch<CMOTSOHLCVRecord>({
     endpoint: `/AdjustedPriceChart/${exchange}/${coCode}/${from}/${to}`,
     cacheTTL: CACHE_TTL,
   })
+  // CMOTS API may return records in descending order — ensure ascending (oldest first)
+  // for EMA, RSI, findClosestPriceValue, and other consumers that assume chronological order
+  records.sort((a, b) => a.Tradedate.localeCompare(b.Tradedate))
+  return records
 }
 
 /** Get latest price for a stock (fetches last 7 days, returns most recent) */
