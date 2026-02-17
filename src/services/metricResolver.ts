@@ -552,7 +552,8 @@ function computeRevenueGrowth5Y(
       : finData
     const latest = limited[limited.length - 1]
     const oldest = limited[0]
-    if (latest.revenue > 0 && oldest.revenue > 0) {
+    // Both same sign → CAGR works; mixed signs or zero → fall back to P&L
+    if (oldest.revenue !== 0 && (oldest.revenue > 0) === (latest.revenue > 0)) {
       return computeCAGR(oldest.revenue, latest.revenue, limited.length - 1)
     }
   }
@@ -582,8 +583,9 @@ function computeRowGrowth5Y(rows: CMOTSStatementRow[], rowno: number, asOfDate?:
   const oldest = getStatementValue(row, yearCols[yearCols.length - 1])
 
   if (latest == null || oldest == null) return null
-  if (oldest <= 0) return null  // Can't compute CAGR from negative base
-
+  if (oldest === 0) return null                          // Division by zero
+  if ((oldest < 0) !== (latest < 0)) return null         // Mixed signs → CAGR undefined
+  // Both positive OR both negative → ratio is positive → CAGR works
   return computeCAGR(oldest, latest, yearCols.length - 1)
 }
 
@@ -595,14 +597,19 @@ function computeFinDataGrowth(
   if (finData.length < 2) return null
   const oldest = finData[0][field] as number
   const latest = finData[finData.length - 1][field] as number
-  if (!oldest || !latest || oldest <= 0) return null
+  if (oldest == null || latest == null || oldest === 0) return null
+  if ((oldest < 0) !== (latest < 0)) return null  // Mixed signs
   return computeCAGR(oldest, latest, finData.length - 1)
 }
 
-/** Standard CAGR: (end/start)^(1/years) - 1, returned as percentage */
+/** Standard CAGR: (end/start)^(1/years) - 1, returned as percentage.
+ *  Works when both values share the same sign (ratio is positive).
+ *  Returns 0 for mixed signs or zero base (CAGR undefined). */
 function computeCAGR(start: number, end: number, years: number): number {
-  if (start <= 0 || years <= 0) return 0
-  return (Math.pow(end / start, 1 / years) - 1) * 100
+  if (years <= 0 || start === 0) return 0
+  const ratio = end / start
+  if (ratio < 0) return 0  // Mixed signs → CAGR undefined
+  return (Math.pow(ratio, 1 / years) - 1) * 100
 }
 
 /** Get the latest windowed year's value from a statement row */
