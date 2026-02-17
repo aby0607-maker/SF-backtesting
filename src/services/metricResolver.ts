@@ -129,6 +129,7 @@ function mapCMOTSToMetricIds(
   config?: MetricResolutionConfig,
   _unused?: unknown,
   shareholding?: CMOTSShareholding[],
+  priceHistory?: { date: string; price: number }[],
 ): Record<string, number | null> {
   const metrics: Record<string, number | null> = {}
   const gp = config?.growthPeriods
@@ -141,25 +142,28 @@ function mapCMOTSToMetricIds(
   metrics['v2_ebitda_growth'] = computeRowGrowth5Y(pnl, PNL_ROW_EBITDA, asOfDate, gp?.['v2_ebitda_growth'])
   metrics['v2_earnings_growth'] = computeRowGrowth5Y(pnl, PNL_ROW_PAT, asOfDate, gp?.['v2_earnings_growth'])
 
-  // ── Profitability: ROE ──
-  if (asOfDate && balanceSheet.length > 0 && pnl.length > 0) {
-    metrics['v2_roe'] = computeHistoricalROE(pnl, balanceSheet, asOfDate)
+  // ── Profitability: ROE (5Y average) ──
+  // Average ROE across available fiscal years for stability. Uses statement data
+  // for both backtest (windowed) and current scoring (all years).
+  if (balanceSheet.length > 0 && pnl.length > 0) {
+    metrics['v2_roe'] = computeAvgROE(pnl, balanceSheet, asOfDate)
   } else {
-    metrics['v2_roe'] = ttm?.roe_ttm ?? null
+    metrics['v2_roe'] = ttm?.roe_ttm ?? null  // Fallback to TTM if no statement data
   }
 
   // ── Cash Flow Quality: OCF / EBITDA ──
   const ocf = getWindowedStatementValue(cashFlow, CF_ROW_OCF, asOfDate)
   const ebitdaVal = getWindowedStatementValue(pnl, PNL_ROW_EBITDA, asOfDate)
   metrics['v2_ocf_ebitda'] = ocf != null && ebitdaVal != null && ebitdaVal !== 0
-    ? ocf / ebitdaVal
+    ? (ocf / ebitdaVal) * 100  // Bands expect percentage (73% not 0.73)
     : null
 
   // ── Leverage: Debt/EBITDA ──
-  if (asOfDate && balanceSheet.length > 0 && pnl.length > 0) {
+  // Always compute from statements — TTM record has debttoequity (D/E), not Debt/EBITDA
+  if (balanceSheet.length > 0 && pnl.length > 0) {
     metrics['v2_debt_ebitda'] = computeHistoricalDebtEBITDA(pnl, balanceSheet, asOfDate)
   } else {
-    metrics['v2_debt_ebitda'] = ttm?.debttoequity ?? null
+    metrics['v2_debt_ebitda'] = null
   }
 
   // ── Gross Block Growth (from Balance Sheet Fixed Assets) ──
@@ -169,18 +173,29 @@ function mapCMOTSToMetricIds(
     metrics['v2_gross_block'] = computeFinDataGrowth(windowedFinData, 'totalassets')
   }
 
-  // ── Valuation: PE, PB, EV/EBITDA ──
+  // ── Valuation: PE, PB, EV/EBITDA as RATIOS vs 5Y Average ──
+  // Score bands are calibrated for ratios (0.44 = deeply undervalued, 1.5 = overvalued).
+  // We compute current PE/PB/EV, then divide by the 5Y average to get the ratio.
   if (asOfDate && priceAtDate != null) {
-    // Backtest mode with price available: compute from windowed fundamentals
-    const valuation = computeHistoricalValuation(
-      priceAtDate, pnl, balanceSheet, asOfDate
-    )
-    metrics['v2_pe_vs_5y'] = valuation.pe
-    metrics['v2_pb_vs_5y'] = valuation.pb
-    metrics['v2_ev_vs_5y'] = valuation.evEbitda
-    metrics['raw_pe'] = valuation.pe
-    metrics['raw_pb'] = valuation.pb
-    metrics['raw_ev'] = valuation.evEbitda
+    // Backtest mode: compute current PE/PB/EV from price at date
+    const current = computeHistoricalValuation(priceAtDate, pnl, balanceSheet, asOfDate)
+    metrics['raw_pe'] = current.pe
+    metrics['raw_pb'] = current.pb
+    metrics['raw_ev'] = current.evEbitda
+
+    if (priceHistory && priceHistory.length > 0) {
+      const avg = compute5YAvgValuation(pnl, balanceSheet, priceHistory, asOfDate)
+      metrics['v2_pe_vs_5y'] = current.pe != null && avg.avgPE != null && avg.avgPE > 0
+        ? current.pe / avg.avgPE : null
+      metrics['v2_pb_vs_5y'] = current.pb != null && avg.avgPB != null && avg.avgPB > 0
+        ? current.pb / avg.avgPB : null
+      metrics['v2_ev_vs_5y'] = current.evEbitda != null && avg.avgEV != null && avg.avgEV > 0
+        ? current.evEbitda / avg.avgEV : null
+    } else {
+      metrics['v2_pe_vs_5y'] = null
+      metrics['v2_pb_vs_5y'] = null
+      metrics['v2_ev_vs_5y'] = null
+    }
   } else if (asOfDate) {
     // Backtest mode but NO price at this date — valuation not possible.
     // Do NOT fall back to current TTM (that would mix future data into historical scoring).
@@ -191,13 +206,28 @@ function mapCMOTSToMetricIds(
     metrics['raw_pb'] = null
     metrics['raw_ev'] = null
   } else {
-    // Current scoring (no backtest) — use TTM ratios directly
-    metrics['v2_pe_vs_5y'] = ttm?.pe_ttm ?? null
-    metrics['v2_pb_vs_5y'] = ttm?.pb_ttm ?? null
-    metrics['v2_ev_vs_5y'] = ttm?.ev_ebitda ?? null
-    metrics['raw_pe'] = ttm?.pe_ttm ?? null
-    metrics['raw_pb'] = ttm?.pb_ttm ?? null
-    metrics['raw_ev'] = ttm?.ev_ebitda ?? null
+    // Current scoring (no backtest) — compute ratios from TTM + 5Y average
+    const currentPE = ttm?.pe_ttm ?? null
+    const currentPB = ttm?.pb_ttm ?? null
+    const currentEV = ttm?.ev_ebitda ?? null
+    metrics['raw_pe'] = currentPE
+    metrics['raw_pb'] = currentPB
+    metrics['raw_ev'] = currentEV
+
+    if (priceHistory && priceHistory.length > 0) {
+      const avg = compute5YAvgValuation(pnl, balanceSheet, priceHistory)
+      metrics['v2_pe_vs_5y'] = currentPE != null && avg.avgPE != null && avg.avgPE > 0
+        ? currentPE / avg.avgPE : null
+      metrics['v2_pb_vs_5y'] = currentPB != null && avg.avgPB != null && avg.avgPB > 0
+        ? currentPB / avg.avgPB : null
+      metrics['v2_ev_vs_5y'] = currentEV != null && avg.avgEV != null && avg.avgEV > 0
+        ? currentEV / avg.avgEV : null
+    } else {
+      // No price history — cannot compute ratios
+      metrics['v2_pe_vs_5y'] = null
+      metrics['v2_pb_vs_5y'] = null
+      metrics['v2_ev_vs_5y'] = null
+    }
   }
 
   // ── Quarterly Momentum: Revenue & EBITDA Multipliers ──
@@ -325,14 +355,111 @@ function computeHistoricalValuation(
 }
 
 // ─────────────────────────────────────────────────
+// 5Y Average Valuation (PE, PB, EV/EBITDA at each FY-end)
+// ─────────────────────────────────────────────────
+
+/**
+ * Compute 5Y average PE, PB, EV/EBITDA from historical FY-end prices + statements.
+ *
+ * For each fiscal year end (from year columns), finds the closing price near that
+ * date from priceHistory and computes PE, PB, EV/EBITDA. Returns averages over
+ * all available years (minimum 1 valid observation per metric).
+ *
+ * This enables the "PE vs 5Y Average" ratio: currentPE / avgPE.
+ * Note: In backtest mode, the average only includes FY-end dates with available
+ * price data. If the price fetch doesn't go back far enough, fewer years are used.
+ */
+function compute5YAvgValuation(
+  pnl: CMOTSStatementRow[],
+  balanceSheet: CMOTSStatementRow[],
+  priceHistory: { date: string; price: number }[],
+  asOfDate?: string,
+): { avgPE: number | null; avgPB: number | null; avgEV: number | null } {
+  const epsRow = findStatementRow(pnl, PNL_ROW_EPS)
+  const ebitdaRow = findStatementRow(pnl, PNL_ROW_EBITDA)
+  const shFundRow = findStatementRow(balanceSheet, BS_ROW_SHAREHOLDERS_FUND)
+  const sharesRow = findStatementRow(balanceSheet, BS_ROW_SHARES_OUTSTANDING)
+  const ltDebtRow = findStatementRow(balanceSheet, BS_ROW_LT_BORROWINGS)
+  const stDebtRow = findStatementRow(balanceSheet, BS_ROW_ST_BORROWINGS)
+  const cashRow = findStatementRow(balanceSheet, BS_ROW_CASH)
+
+  // Use any available row to determine year columns
+  const referenceRow = epsRow || ebitdaRow || shFundRow
+  if (!referenceRow) return { avgPE: null, avgPB: null, avgEV: null }
+
+  const yearCols = windowYearColumns(referenceRow, asOfDate)
+  if (yearCols.length === 0) return { avgPE: null, avgPB: null, avgEV: null }
+
+  const peValues: number[] = []
+  const pbValues: number[] = []
+  const evValues: number[] = []
+
+  for (const col of yearCols) {
+    // Parse FY-end date from column name (Y202503 → 2025-03-31)
+    const year = parseInt(col.slice(1, 5))
+    const month = parseInt(col.slice(5, 7))
+    const lastDay = new Date(year, month, 0).getDate()
+    const fyEndDate = `${year}-${String(month).padStart(2, '0')}-${String(lastDay).padStart(2, '0')}`
+
+    // Find closing price near FY-end (on or before)
+    const fyPrice = findClosestPriceValue(priceHistory, fyEndDate)
+    if (fyPrice == null || fyPrice <= 0) continue
+
+    // PE = Price / EPS at this FY-end
+    if (epsRow) {
+      const eps = getStatementValue(epsRow, col)
+      if (eps != null && eps > 0) {
+        peValues.push(fyPrice / eps)
+      }
+    }
+
+    // PB = Price / Book Value per share at this FY-end
+    if (shFundRow && sharesRow) {
+      const shFund = getStatementValue(shFundRow, col)
+      const shares = getStatementValue(sharesRow, col)
+      if (shFund != null && shares != null && shares > 0) {
+        const bvPerShare = (shFund * 10000000) / shares
+        if (bvPerShare > 0) {
+          pbValues.push(fyPrice / bvPerShare)
+        }
+      }
+    }
+
+    // EV/EBITDA = (MCap + Debt - Cash) / EBITDA at this FY-end
+    if (ebitdaRow && sharesRow) {
+      const ebitda = getStatementValue(ebitdaRow, col)
+      const shares = getStatementValue(sharesRow, col)
+      if (ebitda != null && ebitda > 0 && shares != null && shares > 0) {
+        const mcapCr = (fyPrice * shares) / 10000000
+        const ltDebt = ltDebtRow ? (getStatementValue(ltDebtRow, col) ?? 0) : 0
+        const stDebt = stDebtRow ? (getStatementValue(stDebtRow, col) ?? 0) : 0
+        const cash = cashRow ? (getStatementValue(cashRow, col) ?? 0) : 0
+        const ev = mcapCr + ltDebt + stDebt - cash
+        if (ev > 0) {
+          evValues.push(ev / ebitda)
+        }
+      }
+    }
+  }
+
+  const avg = (arr: number[]) => arr.length > 0 ? arr.reduce((a, b) => a + b, 0) / arr.length : null
+
+  return {
+    avgPE: avg(peValues),
+    avgPB: avg(pbValues),
+    avgEV: avg(evValues),
+  }
+}
+
+// ─────────────────────────────────────────────────
 // Historical ROE & Debt/EBITDA
 // ─────────────────────────────────────────────────
 
-/** ROE = PAT / Shareholders Fund (same fiscal year) */
-function computeHistoricalROE(
+/** ROE = PAT / Shareholders Fund, averaged across available fiscal years (5Y avg) */
+function computeAvgROE(
   pnl: CMOTSStatementRow[],
   balanceSheet: CMOTSStatementRow[],
-  asOfDate: string,
+  asOfDate?: string,
 ): number | null {
   const patRow = findStatementRow(pnl, PNL_ROW_PAT)
   const shFundRow = findStatementRow(balanceSheet, BS_ROW_SHAREHOLDERS_FUND)
@@ -342,18 +469,25 @@ function computeHistoricalROE(
   const shFundCols = windowYearColumns(shFundRow, asOfDate)
   if (patCols.length === 0 || shFundCols.length === 0) return null
 
-  const pat = getStatementValue(patRow, patCols[0])
-  const shFund = getStatementValue(shFundRow, shFundCols[0])
-  if (pat == null || shFund == null || shFund === 0) return null
+  const roeValues: number[] = []
+  for (const col of patCols) {
+    if (!shFundCols.includes(col)) continue  // Only use columns in BOTH P&L and BS
+    const pat = getStatementValue(patRow, col)
+    const shFund = getStatementValue(shFundRow, col)
+    if (pat != null && shFund != null && shFund !== 0) {
+      roeValues.push((pat / shFund) * 100)
+    }
+  }
 
-  return (pat / shFund) * 100  // As percentage
+  if (roeValues.length === 0) return null
+  return roeValues.reduce((a, b) => a + b, 0) / roeValues.length
 }
 
 /** Debt/EBITDA = (LT Borrowings + ST Borrowings) / EBITDA */
 function computeHistoricalDebtEBITDA(
   pnl: CMOTSStatementRow[],
   balanceSheet: CMOTSStatementRow[],
-  asOfDate: string,
+  asOfDate?: string,
 ): number | null {
   const ebitdaRow = findStatementRow(pnl, PNL_ROW_EBITDA)
   if (!ebitdaRow) return null
@@ -785,7 +919,7 @@ export async function resolveMetricValues(
   const data = mapCMOTSToMetricIds(
     ttm, finData, pnl, cashFlow, balanceSheet, quarterly,
     technicalData ?? undefined, undefined, undefined, config,
-    undefined, shareholding,
+    undefined, shareholding, priceResult.priceHistory,
   )
   const context = extractGrowthContext(pnl, finData, undefined, config?.growthPeriods)
 
@@ -825,7 +959,7 @@ export function resolveMetricsAtDate(
   const data = mapCMOTSToMetricIds(
     ttm, finData, pnl, cashFlow, balanceSheet, quarterly,
     technicalData, asOfDate, priceAtDate ?? undefined, config,
-    undefined, shareholding,
+    undefined, shareholding, priceHistory,
   )
   const context = extractGrowthContext(pnl, finData, asOfDate, config?.growthPeriods)
 

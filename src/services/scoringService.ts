@@ -462,10 +462,11 @@ export async function backtestScorecard(
 
   // ── Phase 1: Fetch all data upfront (network-heavy, done once) ──
 
-  // Extend price fetch 1 year before from-date so technical metrics (EMA200)
-  // have 200+ trading days even at the earliest interval
+  // Extend price fetch 6 years before from-date:
+  // - Technical metrics (EMA200) need 200+ trading days (~1 year)
+  // - Valuation 5Y average needs FY-end prices going back 5 years
   const extendedFrom = new Date(config.dateRange.from)
-  extendedFrom.setFullYear(extendedFrom.getFullYear() - 1)
+  extendedFrom.setFullYear(extendedFrom.getFullYear() - 6)
   const extendedFromStr = extendedFrom.toISOString().split('T')[0]
 
   const batchPrices = await getBatchPrices(targetStockIds, extendedFromStr, config.dateRange.to)

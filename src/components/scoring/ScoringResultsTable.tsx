@@ -15,6 +15,7 @@ import { cn } from '@/lib/utils'
 import { useCombinedResult, useActiveScorecard, useBacktestResult } from '@/store/useScoringStore'
 import type { SegmentResult, MetricScore } from '@/types/scoring'
 import { ChevronRight, TrendingUp, TrendingDown, Minus, Calendar, Layers, ExternalLink } from 'lucide-react'
+import { NaExplainer } from './NaExplainer'
 
 interface ScoringResultsTableProps {
   onSelectStock?: (stockId: string) => void
@@ -463,9 +464,13 @@ function SegmentCard({
           {segment.segmentScore.toFixed(1)}
         </span>
         {segment.verdict && (
-          <span className={cn('text-[9px] font-medium', getVerdictTextColor(segment.verdict))}>
-            {segment.verdict}
-          </span>
+          segment.verdict === 'N/A' ? (
+            <NaExplainer label="N/A" reason={segment.naReason} className="text-[9px] font-medium text-neutral-500" />
+          ) : (
+            <span className={cn('text-[9px] font-medium', getVerdictTextColor(segment.verdict))}>
+              {segment.verdict}
+            </span>
+          )
         )}
       </div>
       <div className="w-full h-1 bg-dark-600 rounded-full mt-1.5">
@@ -513,7 +518,9 @@ function MetricRow({ metric }: { metric: MetricScore }) {
     <div className="grid grid-cols-[1fr_80px_60px_60px] px-3 py-1.5 items-center">
       <span className="text-[11px] text-neutral-300">{metric.metricName}</span>
       <span className="text-[11px] text-neutral-400 text-right font-mono">
-        {metric.rawValue != null ? formatValue(metric.rawValue) : 'N/A'}
+        {metric.rawValue != null ? formatValue(metric.rawValue) : (
+          <NaExplainer label="N/A" reason={metric.excludeReason} className="text-neutral-600" />
+        )}
       </span>
       <div className="text-right">
         {!metric.isExcluded ? (
@@ -521,14 +528,16 @@ function MetricRow({ metric }: { metric: MetricScore }) {
             {metric.normalizedScore.toFixed(0)}
           </span>
         ) : (
-          <span className="text-[10px] text-neutral-600">—</span>
+          <NaExplainer label="—" reason={metric.excludeReason} className="text-[10px] text-neutral-600" />
         )}
       </div>
       <div className="text-right">
         {metric.isExcluded ? (
-          <span className="text-[9px] text-neutral-600" title={metric.excludeReason}>
-            {metric.excludeReason === 'No data available' ? 'N/A' : 'Excl.'}
-          </span>
+          <NaExplainer
+            label={metric.excludeReason === 'No data available' ? 'N/A' : 'Excl.'}
+            reason={metric.excludeReason}
+            className="text-[9px] text-neutral-600"
+          />
         ) : metric.normalizedScore >= 65 ? (
           <TrendingUp className="w-3 h-3 text-success-400 inline" />
         ) : metric.normalizedScore >= 35 ? (

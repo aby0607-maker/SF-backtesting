@@ -20,6 +20,7 @@ import { cn } from '@/lib/utils'
 import { useCombinedResult, useBacktestResult } from '@/store/useScoringStore'
 import type { PriceDeltaRow } from '@/types/scoring'
 import { ArrowUpDown, ChevronRight } from 'lucide-react'
+import { NaExplainer } from './NaExplainer'
 
 interface PriceDeltaTableProps {
   onSelectStock?: (stockId: string | null) => void
@@ -250,7 +251,7 @@ function DeltaRow({
                   )}
                 </div>
               ) : (
-                <span className="text-neutral-600">—</span>
+                <NaExplainer label="—" reason="Price data not available for this interval" className="text-neutral-600" />
               )}
             </td>
           )

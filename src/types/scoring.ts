@@ -201,6 +201,8 @@ export interface SegmentResult {
   segmentScore: number      // 0-100
   verdict?: string
   verdictColor?: string
+  /** Why this segment scored N/A — e.g. "PB > 30 → valuation NA (unreliable)" */
+  naReason?: string
 }
 
 /** Complete score result for a single stock */

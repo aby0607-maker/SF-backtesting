@@ -24,6 +24,7 @@ import {
   X, ChevronRight, ChevronLeft, TrendingUp, TrendingDown, Minus,
   Calendar, BarChart3, Layers, ArrowUpRight, ArrowDownRight,
 } from 'lucide-react'
+import { NaExplainer } from './NaExplainer'
 
 interface StockDetailOverlayProps {
   stockId: string
@@ -465,9 +466,13 @@ function SegmentLevel({
                   {segment.segmentScore.toFixed(1)}
                 </span>
                 {segment.verdict && (
-                  <span className={cn('text-[10px] font-medium', getVerdictTextColor(segment.verdict))}>
-                    {segment.verdict}
-                  </span>
+                  segment.verdict === 'N/A' ? (
+                    <NaExplainer label="N/A" reason={segment.naReason} className="text-[10px] font-medium text-neutral-500" />
+                  ) : (
+                    <span className={cn('text-[10px] font-medium', getVerdictTextColor(segment.verdict))}>
+                      {segment.verdict}
+                    </span>
+                  )
                 )}
               </div>
               <div className="w-full h-1.5 bg-dark-600 rounded-full">
@@ -506,9 +511,13 @@ function MetricLevel({ segment }: { segment: SegmentResult }) {
         {segment.verdict && (
           <div>
             <div className="text-[10px] text-neutral-500 mb-0.5">Verdict</div>
-            <span className={cn('text-sm font-medium', getVerdictTextColor(segment.verdict))}>
-              {segment.verdict}
-            </span>
+            {segment.verdict === 'N/A' ? (
+              <NaExplainer label="N/A" reason={segment.naReason} className="text-sm font-medium text-neutral-500" />
+            ) : (
+              <span className={cn('text-sm font-medium', getVerdictTextColor(segment.verdict))}>
+                {segment.verdict}
+              </span>
+            )}
           </div>
         )}
         <div className="ml-auto text-[10px] text-neutral-500">
@@ -555,7 +564,9 @@ function MetricLevel({ segment }: { segment: SegmentResult }) {
               </div>
 
               <span className="text-[11px] text-neutral-400 text-right font-mono">
-                {metric.rawValue != null ? formatValue(metric.rawValue) : 'N/A'}
+                {metric.rawValue != null ? formatValue(metric.rawValue) : (
+                  <NaExplainer label="N/A" reason={metric.excludeReason} className="text-neutral-600" />
+                )}
               </span>
 
               <div className="text-right">
@@ -575,15 +586,17 @@ function MetricLevel({ segment }: { segment: SegmentResult }) {
                     </div>
                   </div>
                 ) : (
-                  <span className="text-[10px] text-neutral-600">—</span>
+                  <NaExplainer label="—" reason={metric.excludeReason} className="text-[10px] text-neutral-600" />
                 )}
               </div>
 
               <div className="text-right">
                 {metric.isExcluded ? (
-                  <span className="text-[9px] text-neutral-600">
-                    {metric.excludeReason === 'No data available' ? 'N/A' : 'Excl.'}
-                  </span>
+                  <NaExplainer
+                    label={metric.excludeReason === 'No data available' ? 'N/A' : 'Excl.'}
+                    reason={metric.excludeReason}
+                    className="text-[9px] text-neutral-600"
+                  />
                 ) : metric.normalizedScore >= 65 ? (
                   <TrendingUp className="w-3.5 h-3.5 text-success-400 inline" />
                 ) : metric.normalizedScore >= 35 ? (

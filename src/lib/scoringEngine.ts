@@ -21,6 +21,7 @@ import type {
   StockScoreResult,
   ModelRunResult,
 } from '@/types/scoring'
+import { computeValuationScore } from './conditionalValuation'
 
 // ─────────────────────────────────────────────────
 // Metric Scoring
@@ -266,6 +267,59 @@ export function scoreSegment(
   }
 }
 
+/**
+ * Score the valuation segment using PB-anchored conditional weights (V2.2 CSV spec).
+ *
+ * Instead of the standard proportional weight redistribution, applies exact
+ * conditional weights based on raw PE/PB/EV thresholds:
+ *   PB > 30       → Entire valuation NA (unreliable)
+ *   PE > 75 & EV > 35 → PB only (100%)
+ *   PE > 75       → PB=60% + EV=40%
+ *   EV > 35       → PB=60% + PE=40%
+ *   Default       → PE=30%, PB=50%, EV=20%
+ */
+function scoreValuationSegmentConditional(
+  metricScores: MetricScore[],
+  segment: ScorecardSegment,
+  stockData: Record<string, number | null>
+): SegmentResult {
+  // Extract scored metrics — pass null for excluded ones so computeValuationScore
+  // treats them as "not available" rather than "score 0"
+  const pe = metricScores.find(m => m.metricId === 'v2_pe_vs_5y')
+  const pb = metricScores.find(m => m.metricId === 'v2_pb_vs_5y')
+  const ev = metricScores.find(m => m.metricId === 'v2_ev_vs_5y')
+
+  const result = computeValuationScore({
+    peScore: pe && !pe.isExcluded ? pe.normalizedScore : null,
+    pbScore: pb && !pb.isExcluded ? pb.normalizedScore : null,
+    evScore: ev && !ev.isExcluded ? ev.normalizedScore : null,
+    rawPE: stockData['raw_pe'] ?? null,
+    rawPB: stockData['raw_pb'] ?? null,
+    rawEV: stockData['raw_ev'] ?? null,
+  })
+
+  const segmentScore = result.isNA ? 0 : Math.round(result.score * 100) / 100
+
+  // Apply per-segment verdict thresholds
+  let verdict: string | undefined = result.isNA ? 'N/A' : undefined
+  let verdictColor: string | undefined
+  if (!result.isNA && segment.verdictThresholds?.length) {
+    const v = getVerdict(segmentScore, segment.verdictThresholds)
+    verdict = v.verdict
+    verdictColor = v.color
+  }
+
+  return {
+    segmentId: segment.id,
+    segmentName: segment.name,
+    metricScores,
+    segmentScore,
+    verdict,
+    verdictColor,
+    naReason: result.isNA ? result.condition : undefined,
+  }
+}
+
 // ─────────────────────────────────────────────────
 // Composite Score
 // ─────────────────────────────────────────────────
@@ -458,6 +512,11 @@ export function scoreStock(
       const context = metricContext?.[metric.id]
       return scoreMetric(rawValue, metric, scorecard.negativeHandlingRules, context)
     })
+    // Use PB-anchored conditional weights for valuation segment (V2.2 CSV spec)
+    if (segment.id === 'v2_valuation') {
+      return scoreValuationSegmentConditional(metricScores, segment, stockData)
+    }
+
     return scoreSegment(metricScores, segment)
   })
 
