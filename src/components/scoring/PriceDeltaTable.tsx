@@ -245,13 +245,13 @@ function DeltaRow({
                     {delta > 0 ? '+' : ''}{delta.toFixed(1)}%
                   </span>
                   {row.basePrice != null && price != null && (
-                    <div className="text-[8px] text-neutral-600 mt-0.5">
+                    <div className="text-[8px] text-neutral-400 mt-0.5">
                       ₹{row.basePrice}→₹{price}
                     </div>
                   )}
                 </div>
               ) : (
-                <NaExplainer label="—" reason="Price data not available for this interval" className="text-neutral-600" />
+                <NaExplainer label="—" reason="Price data not available for this interval" className="text-neutral-500" />
               )}
             </td>
           )
@@ -307,7 +307,7 @@ function ExpandedPanel({
             stockPeriods={comparison?.targetPerformance?.periods ?? []}
             cohortPeriods={cohortAvgPeriods}
           />
-          <div className="flex items-center gap-3 mt-1.5 text-[9px] text-neutral-600">
+          <div className="flex items-center gap-3 mt-1.5 text-[9px] text-neutral-400">
             <span className="flex items-center gap-1">
               <span className="w-3 h-0.5 bg-primary-400 inline-block rounded" /> {row.stockSymbol}
             </span>
@@ -352,7 +352,7 @@ function StockSparkline({
   }, [stockPeriods, cohortPeriods])
 
   if (chartData.length === 0) {
-    return <div className="text-[10px] text-neutral-600 py-4 text-center">No performance data</div>
+    return <div className="text-[10px] text-neutral-500 py-4 text-center">No performance data</div>
   }
 
   return (
@@ -409,7 +409,7 @@ function ScoreHistory({
     return (
       <div className="flex items-center gap-2 py-2">
         <ScoreBadge score={currentScore} label="Current" />
-        <span className="text-[9px] text-neutral-600">No interval snapshots available</span>
+        <span className="text-[9px] text-neutral-500">No interval snapshots available</span>
       </div>
     )
   }
@@ -448,7 +448,7 @@ function SegmentHeatmap({
   segments?: { segmentId: string; segmentName: string; segmentScore: number; verdict?: string }[]
 }) {
   if (!segments || segments.length === 0) {
-    return <div className="text-[10px] text-neutral-600 py-2">No segment data</div>
+    return <div className="text-[10px] text-neutral-500 py-2">No segment data</div>
   }
 
   // Show abbreviated segment names

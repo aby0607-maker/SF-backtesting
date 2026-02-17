@@ -118,6 +118,24 @@ export async function scoreAndBacktest(
   )
   options?.onProgress?.('building_table', 1, 1)
 
+  // Phase 4: Align priceDeltaTable scores with end-date snapshot (not one-shot scoring)
+  // The one-shot scoring uses "latest" data; the end-date snapshot uses historical data at that date.
+  // All tabs should show end-date scores for consistency.
+  if (backtest.snapshots.length > 0) {
+    const endSnapshot = backtest.snapshots[backtest.snapshots.length - 1]
+    const endScoreMap = new Map(
+      endSnapshot.stockScores.map(s => [s.stockId, s])
+    )
+    for (const row of priceDeltaTable) {
+      const endStock = endScoreMap.get(row.stockId)
+      if (endStock) {
+        row.score = endStock.normalizedScore
+        row.verdict = endStock.verdict
+        row.verdictColor = endStock.verdictColor
+      }
+    }
+  }
+
   return { scoring, backtest, priceDeltaTable }
 }
 
@@ -732,6 +750,112 @@ function computeDataCoverage(
 /** Format a fiscal year end date for display (e.g., "March 2021") */
 function formatFYDate(date: Date): string {
   return date.toLocaleDateString('en-IN', { month: 'long', year: 'numeric' })
+}
+
+// ─────────────────────────────────────────────────
+// Pre-compute earliest scoreable date (for date picker enforcement)
+// ─────────────────────────────────────────────────
+
+export interface EarliestScoreableDateResult {
+  /** Absolute minimum — any earlier and no scoring is possible */
+  absoluteMin: string | null
+  /** Per-category thresholds for tiered date-picker hints */
+  categoryDates: {
+    fundamental: string | null  // 1 FY column needed
+    growth: string | null       // 2 FY columns needed
+    technical: string | null    // ~200 trading days needed
+  }
+}
+
+const EMPTY_RESULT: EarliestScoreableDateResult = {
+  absoluteMin: null,
+  categoryDates: { fundamental: null, growth: null, technical: null },
+}
+
+let cachedMinDate: { symbols: string; result: EarliestScoreableDateResult } | null = null
+
+/**
+ * Lightweight pre-computation of the earliest date where scoring is meaningful.
+ *
+ * Returns `absoluteMin` = earliest fundamental date (1 FY column available).
+ * Before this, zero metrics can be scored. Between absoluteMin and later
+ * category dates, scoring works with partial data — the scoring engine
+ * handles weight redistribution for unavailable metrics.
+ *
+ * Also returns per-category dates so the date picker can show tiered hints.
+ * Results are cached — safe to call multiple times.
+ */
+export async function computeEarliestScoreableDate(
+  stockSymbols: string[],
+): Promise<EarliestScoreableDateResult> {
+  if (stockSymbols.length === 0) return EMPTY_RESULT
+
+  const firstSymbol = stockSymbols[0]
+
+  if (cachedMinDate && cachedMinDate.symbols === firstSymbol) {
+    return cachedMinDate.result
+  }
+
+  try {
+    // Fetch P&L for one stock — FY year columns are the same across stocks
+    const fundamentals = await getAllFundamentals(firstSymbol)
+
+    // Fetch price history with a wide range to find the earliest date
+    const prices = await getBatchPrices([firstSymbol], '2018-01-01', new Date().toISOString().split('T')[0])
+    const priceList = prices[firstSymbol] ?? []
+
+    // Compute FY boundaries from P&L year columns
+    let earliestFYEnd: Date | null = null
+    let secondEarliestFYEnd: Date | null = null
+
+    if (fundamentals.pnl.length > 0) {
+      const yearCols = getYearColumns(fundamentals.pnl[0])
+      for (const col of yearCols) {
+        const year = parseInt(col.slice(1, 5))
+        const month = parseInt(col.slice(5, 7))
+        const fyEnd = new Date(year, month - 1, 28)
+
+        if (!earliestFYEnd || fyEnd < earliestFYEnd) {
+          secondEarliestFYEnd = earliestFYEnd
+          earliestFYEnd = fyEnd
+        } else if (!secondEarliestFYEnd || fyEnd < secondEarliestFYEnd) {
+          secondEarliestFYEnd = fyEnd
+        }
+      }
+    }
+
+    const earliestFundamental = earliestFYEnd?.toISOString().split('T')[0] ?? null
+    const earliestGrowth = secondEarliestFYEnd?.toISOString().split('T')[0] ?? null
+
+    // Technical: first price date + ~200 trading days (~10 months)
+    let earliestTechnical: string | null = null
+    if (priceList.length > 0) {
+      const firstDate = priceList[0].Tradedate
+      if (firstDate) {
+        const techDate = new Date(firstDate)
+        techDate.setMonth(techDate.getMonth() + 10)
+        earliestTechnical = techDate.toISOString().split('T')[0]
+      }
+    }
+
+    // absoluteMin = earliestFundamental (not max of all dates)
+    // Partial scoring is valid — the engine redistributes weights for N/A metrics
+    const result: EarliestScoreableDateResult = {
+      absoluteMin: earliestFundamental,
+      categoryDates: {
+        fundamental: earliestFundamental,
+        growth: earliestGrowth,
+        technical: earliestTechnical,
+      },
+    }
+
+    cachedMinDate = { symbols: firstSymbol, result }
+    return result
+  } catch (err) {
+    console.warn('[computeEarliestScoreableDate] Failed:', err)
+    cachedMinDate = { symbols: firstSymbol, result: EMPTY_RESULT }
+    return EMPTY_RESULT
+  }
 }
 
 /**

@@ -57,8 +57,9 @@ export function StockDetailOverlay({ stockId, onClose }: StockDetailOverlayProps
       }
     }
 
-    // Base price = first period's price
-    const basePrice = stockPerformance?.periods?.[0]?.price ?? null
+    // Base price = the actual first trading day price used for return computation
+    // (NOT periods[0].price, which may be a later sampled date)
+    const basePrice = stockPerformance?.startPrice ?? stockPerformance?.periods?.[0]?.price ?? null
 
     return snapshots.map((snap, i) => {
       const stockScore = snap.stockScores.find(s => s.stockId === stockId)
@@ -338,7 +339,7 @@ function IntervalLevel({
 
             <span className="text-[10px] text-neutral-500 text-right font-mono">
               #{interval.rank}
-              <span className="text-neutral-600">/{interval.totalStocks}</span>
+              <span className="text-neutral-500">/{interval.totalStocks}</span>
             </span>
 
             <div className="text-center">
@@ -355,7 +356,7 @@ function IntervalLevel({
                 <div>
                   <span className="text-[10px] text-neutral-500">Base</span>
                   {interval.priceAtInterval != null && (
-                    <div className="text-[9px] text-neutral-600 font-mono mt-0.5">
+                    <div className="text-[9px] text-neutral-400 font-mono mt-0.5">
                       ₹{formatPrice(interval.priceAtInterval)}
                     </div>
                   )}
@@ -374,13 +375,13 @@ function IntervalLevel({
                     {interval.priceDelta > 0 ? '+' : ''}{interval.priceDelta.toFixed(1)}%
                   </span>
                   {interval.basePrice != null && interval.priceAtInterval != null && (
-                    <div className="text-[9px] text-neutral-600 font-mono mt-0.5">
+                    <div className="text-[9px] text-neutral-400 font-mono mt-0.5">
                       ₹{formatPrice(interval.basePrice)} → ₹{formatPrice(interval.priceAtInterval)}
                     </div>
                   )}
                 </div>
               ) : (
-                <span className="text-[10px] text-neutral-600">—</span>
+                <span className="text-[10px] text-neutral-500">—</span>
               )}
             </div>
           </button>
@@ -432,7 +433,7 @@ function SegmentLevel({
               {snapshot.priceDelta > 0 ? '+' : ''}{snapshot.priceDelta.toFixed(1)}%
             </div>
             {snapshot.basePrice != null && snapshot.priceAtInterval != null && (
-              <div className="text-[9px] text-neutral-600 font-mono mt-0.5">
+              <div className="text-[9px] text-neutral-400 font-mono mt-0.5">
                 ₹{formatPrice(snapshot.basePrice)} → ₹{formatPrice(snapshot.priceAtInterval)}
               </div>
             )}
@@ -459,7 +460,7 @@ function SegmentLevel({
                 <span className="text-[11px] text-neutral-400 group-hover:text-neutral-300 transition-colors">
                   {segment.segmentName}
                 </span>
-                <ChevronRight className="w-3.5 h-3.5 text-neutral-600 group-hover:text-primary-400 transition-colors" />
+                <ChevronRight className="w-3.5 h-3.5 text-neutral-500 group-hover:text-primary-400 transition-colors" />
               </div>
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xl font-bold font-mono" style={{ color: getScoreColor(segment.segmentScore) }}>
@@ -484,7 +485,7 @@ function SegmentLevel({
                   }}
                 />
               </div>
-              <div className="text-[9px] text-neutral-600 mt-1.5">
+              <div className="text-[9px] text-neutral-500 mt-1.5">
                 {segment.metricScores.length} metrics
               </div>
             </button>
@@ -548,10 +549,10 @@ function MetricLevel({ segment }: { segment: SegmentResult }) {
               <div>
                 <span className="text-[11px] text-neutral-300">{metric.metricName}</span>
                 {metric.isExcluded && metric.excludeReason && (
-                  <div className="text-[9px] text-neutral-600 mt-0.5">{metric.excludeReason}</div>
+                  <div className="text-[9px] text-neutral-500 mt-0.5">{metric.excludeReason}</div>
                 )}
                 {metric.evidence && (metric.evidence.startValue != null || metric.evidence.endValue != null) && (
-                  <div className="text-[9px] text-neutral-600 font-mono mt-0.5">
+                  <div className="text-[9px] text-neutral-400 font-mono mt-0.5">
                     {metric.evidence.startValue != null && metric.evidence.endValue != null ? (
                       <span>{formatValue(metric.evidence.startValue)} → {formatValue(metric.evidence.endValue)}</span>
                     ) : metric.evidence.endValue != null ? (
@@ -565,7 +566,7 @@ function MetricLevel({ segment }: { segment: SegmentResult }) {
 
               <span className="text-[11px] text-neutral-400 text-right font-mono">
                 {metric.rawValue != null ? formatValue(metric.rawValue) : (
-                  <NaExplainer label="N/A" reason={metric.excludeReason} className="text-neutral-600" />
+                  <NaExplainer label="N/A" reason={metric.excludeReason} className="text-neutral-500" />
                 )}
               </span>
 
@@ -586,7 +587,7 @@ function MetricLevel({ segment }: { segment: SegmentResult }) {
                     </div>
                   </div>
                 ) : (
-                  <NaExplainer label="—" reason={metric.excludeReason} className="text-[10px] text-neutral-600" />
+                  <NaExplainer label="—" reason={metric.excludeReason} className="text-[10px] text-neutral-500" />
                 )}
               </div>
 
@@ -595,7 +596,7 @@ function MetricLevel({ segment }: { segment: SegmentResult }) {
                   <NaExplainer
                     label={metric.excludeReason === 'No data available' ? 'N/A' : 'Excl.'}
                     reason={metric.excludeReason}
-                    className="text-[9px] text-neutral-600"
+                    className="text-[9px] text-neutral-500"
                   />
                 ) : metric.normalizedScore >= 65 ? (
                   <TrendingUp className="w-3.5 h-3.5 text-success-400 inline" />

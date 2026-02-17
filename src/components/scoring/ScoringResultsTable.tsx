@@ -14,7 +14,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { cn } from '@/lib/utils'
 import { useCombinedResult, useActiveScorecard, useBacktestResult } from '@/store/useScoringStore'
 import type { SegmentResult, MetricScore } from '@/types/scoring'
-import { ChevronRight, TrendingUp, TrendingDown, Minus, Calendar, Layers, ExternalLink } from 'lucide-react'
+import { TrendingUp, TrendingDown, Minus, Calendar, Layers, ExternalLink } from 'lucide-react'
 import { NaExplainer } from './NaExplainer'
 
 interface ScoringResultsTableProps {
@@ -34,7 +34,6 @@ interface StockRow {
   deltaPrice: number | null
   verdict: string
   verdictColor: string
-  segmentResults: SegmentResult[]
   startSegmentResults: SegmentResult[]
   endSegmentResults: SegmentResult[]
 }
@@ -48,7 +47,6 @@ export function ScoringResultsTable({ onSelectStock }: ScoringResultsTableProps)
   const combinedResult = useCombinedResult()
   const backtestResult = useBacktestResult()
   const scorecard = useActiveScorecard()
-  const [expandedStock, setExpandedStock] = useState<string | null>(null)
   const [expandedSegment, setExpandedSegment] = useState<string | null>(null)
   const [scoreDrillDown, setScoreDrillDown] = useState<ScoreDrillDown>(null)
   const [sortField, setSortField] = useState<SortField>('endScore')
@@ -111,7 +109,6 @@ export function ScoringResultsTable({ onSelectStock }: ScoringResultsTableProps)
         deltaPrice: priceMap.get(stock.stockId) ?? null,
         verdict: stock.verdict,
         verdictColor: stock.verdictColor,
-        segmentResults: stock.segmentResults,
         startSegmentResults: start?.segments ?? stock.segmentResults,
         endSegmentResults: end?.segments ?? stock.segmentResults,
       }
@@ -148,12 +145,6 @@ export function ScoringResultsTable({ onSelectStock }: ScoringResultsTableProps)
     }
   }
 
-  const toggleStock = (stockId: string) => {
-    setExpandedStock(prev => prev === stockId ? null : stockId)
-    setExpandedSegment(null)
-    setScoreDrillDown(null)
-  }
-
   const toggleScoreDrillDown = (stockId: string, type: 'start' | 'end') => {
     setScoreDrillDown(prev =>
       prev?.stockId === stockId && prev.type === type ? null : { stockId, type }
@@ -187,7 +178,7 @@ export function ScoringResultsTable({ onSelectStock }: ScoringResultsTableProps)
           {startDate && endDate ? (
             <span>
               <span className="text-white font-medium">{startDate}</span>
-              <span className="text-neutral-600 mx-1">→</span>
+              <span className="text-neutral-500 mx-1">→</span>
               <span className="text-white font-medium">{endDate}</span>
             </span>
           ) : (
@@ -199,7 +190,7 @@ export function ScoringResultsTable({ onSelectStock }: ScoringResultsTableProps)
           <span className="text-white font-medium">{rows.length}</span> stocks
           {scorecard && (
             <>
-              <span className="text-neutral-600 mx-0.5">·</span>
+              <span className="text-neutral-500 mx-0.5">·</span>
               <span className="text-primary-400 font-medium">{scorecard.versionInfo.displayVersion}</span>
             </>
           )}
@@ -233,23 +224,14 @@ export function ScoringResultsTable({ onSelectStock }: ScoringResultsTableProps)
           <div key={row.stockId}>
             {/* Level 1: Stock row */}
             <div
-              className={cn(
-                'grid grid-cols-[1fr_70px_40px_70px_40px_60px_70px] px-4 py-2.5 items-center hover:bg-dark-700/30 transition-colors cursor-pointer',
-                expandedStock === row.stockId && 'bg-dark-700/20',
-              )}
+              className="grid grid-cols-[1fr_70px_40px_70px_40px_60px_70px] px-4 py-2.5 items-center hover:bg-dark-700/30 transition-colors"
             >
-              {/* Stock name + expand toggle + overlay link */}
+              {/* Stock name + overlay link */}
               <div className="flex items-center gap-2">
-                <button onClick={() => toggleStock(row.stockId)} className="flex items-center gap-2 text-left min-w-0">
-                  <ChevronRight className={cn(
-                    'w-3 h-3 text-neutral-500 transition-transform flex-shrink-0',
-                    expandedStock === row.stockId && 'rotate-90',
-                  )} />
-                  <div className="min-w-0">
-                    <div className="text-xs font-medium text-white truncate">{row.stockName}</div>
-                    <div className="text-[10px] text-neutral-500">{row.stockSymbol}</div>
-                  </div>
-                </button>
+                <div className="min-w-0">
+                  <div className="text-xs font-medium text-white truncate">{row.stockName}</div>
+                  <div className="text-[10px] text-neutral-500">{row.stockSymbol}</div>
+                </div>
                 {onSelectStock && (
                   <button
                     onClick={() => onSelectStock(row.stockId)}
@@ -319,7 +301,7 @@ export function ScoringResultsTable({ onSelectStock }: ScoringResultsTableProps)
                     {row.deltaPrice > 0 ? '+' : ''}{row.deltaPrice.toFixed(1)}%
                   </span>
                 ) : (
-                  <span className="text-[10px] text-neutral-600">—</span>
+                  <span className="text-[10px] text-neutral-500">—</span>
                 )}
               </div>
             </div>
@@ -378,60 +360,13 @@ export function ScoringResultsTable({ onSelectStock }: ScoringResultsTableProps)
               )}
             </AnimatePresence>
 
-            {/* Level 2: Segment cards (chevron expansion — current/latest scores) */}
-            <AnimatePresence>
-              {expandedStock === row.stockId && (
-                <motion.div
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: 'auto', opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  transition={{ duration: 0.2 }}
-                  className="overflow-hidden"
-                >
-                  <div className="px-4 pb-3 pt-1">
-                    {/* Verdict badge */}
-                    <div className="flex items-center gap-2 mb-2">
-                      <span className={cn(
-                        'inline-block px-2 py-0.5 rounded-full text-[10px] font-medium',
-                        getVerdictStyle(row.verdict),
-                      )}>
-                        {row.verdict}
-                      </span>
-                      <span className="text-[10px] text-neutral-500">{row.sector}</span>
-                    </div>
-
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-                      {row.segmentResults.map(segment => (
-                        <SegmentCard
-                          key={segment.segmentId}
-                          segment={segment}
-                          isExpanded={expandedSegment === segment.segmentId}
-                          onToggle={() => setExpandedSegment(
-                            prev => prev === segment.segmentId ? null : segment.segmentId
-                          )}
-                        />
-                      ))}
-                    </div>
-
-                    {/* Level 3: Metric detail */}
-                    <AnimatePresence>
-                      {expandedSegment && !expandedSegment.includes('-') && (
-                        <MetricDetail
-                          segment={row.segmentResults.find(s => s.segmentId === expandedSegment)}
-                        />
-                      )}
-                    </AnimatePresence>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
           </div>
         ))}
       </div>
 
       {/* Footer */}
       <div className="px-4 py-2 border-t border-white/5 text-[10px] text-neutral-500">
-        {rows.length} stocks • Click Start/End scores for segment breakdown • Click <ExternalLink className="w-2.5 h-2.5 inline" /> for interval drill-down
+        {rows.length} stocks • Click Start/End scores for segment breakdown at that date • Click <ExternalLink className="w-2.5 h-2.5 inline" /> for interval drill-down
       </div>
     </div>
   )
@@ -519,7 +454,7 @@ function MetricRow({ metric }: { metric: MetricScore }) {
       <span className="text-[11px] text-neutral-300">{metric.metricName}</span>
       <span className="text-[11px] text-neutral-400 text-right font-mono">
         {metric.rawValue != null ? formatValue(metric.rawValue) : (
-          <NaExplainer label="N/A" reason={metric.excludeReason} className="text-neutral-600" />
+          <NaExplainer label="N/A" reason={metric.excludeReason} className="text-neutral-500" />
         )}
       </span>
       <div className="text-right">
@@ -528,7 +463,7 @@ function MetricRow({ metric }: { metric: MetricScore }) {
             {metric.normalizedScore.toFixed(0)}
           </span>
         ) : (
-          <NaExplainer label="—" reason={metric.excludeReason} className="text-[10px] text-neutral-600" />
+          <NaExplainer label="—" reason={metric.excludeReason} className="text-[10px] text-neutral-500" />
         )}
       </div>
       <div className="text-right">
@@ -536,7 +471,7 @@ function MetricRow({ metric }: { metric: MetricScore }) {
           <NaExplainer
             label={metric.excludeReason === 'No data available' ? 'N/A' : 'Excl.'}
             reason={metric.excludeReason}
-            className="text-[9px] text-neutral-600"
+            className="text-[9px] text-neutral-500"
           />
         ) : metric.normalizedScore >= 65 ? (
           <TrendingUp className="w-3 h-3 text-success-400 inline" />
@@ -571,15 +506,6 @@ function getScoreColor(score: number): string {
   if (score >= 50) return '#eab308'
   if (score >= 35) return '#f97316'
   return '#ef4444'
-}
-
-function getVerdictStyle(verdict: string): string {
-  const v = verdict.toUpperCase()
-  if (v.includes('STRONG BUY') || v === 'EXCELLENT') return 'bg-success-500/20 text-success-400'
-  if (v.includes('BUY') || v === 'GOOD') return 'bg-lime-500/20 text-lime-400'
-  if (v.includes('HOLD') || v === 'FAIR') return 'bg-warning-500/20 text-warning-400'
-  if (v.includes('REVIEW') || v === 'WEAK') return 'bg-orange-500/20 text-orange-400'
-  return 'bg-red-500/20 text-red-400'
 }
 
 function getVerdictTextColor(verdict: string): string {

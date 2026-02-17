@@ -1,5 +1,9 @@
 /**
- * DateRangeSelector — Stage 5: Date range and interval selection for backtest
+ * DateRangeSelector — Stage 3: Date range and interval selection for backtest
+ *
+ * Enforces a minimum start date (earliest fundamental data) while allowing
+ * partial scoring for dates before all categories have data. Shows tiered
+ * hints so users understand which categories degrade at which dates.
  */
 
 import { useState, useEffect, useMemo } from 'react'
@@ -7,8 +11,9 @@ import { cn } from '@/lib/utils'
 import { useScoringStore } from '@/store/useScoringStore'
 import { MOCK_OHLCV } from '@/data/mockScoringData'
 import { isMockMode } from '@/services/cmots/client'
+import { computeEarliestScoreableDate, type EarliestScoreableDateResult } from '@/services/scoringService'
 import type { BacktestInterval } from '@/types/scoring'
-import { Calendar, Clock, Info } from 'lucide-react'
+import { Calendar, Clock, Info, AlertTriangle, CheckCircle2, Loader2 } from 'lucide-react'
 
 const INTERVAL_OPTIONS: { value: BacktestInterval; label: string; description: string }[] = [
   { value: 'daily', label: 'Daily', description: 'Score snapshots every trading day' },
@@ -41,14 +46,49 @@ function getMockDataRange(): { minDate: string; maxDate: string } {
 export function DateRangeSelector() {
   const backtestConfig = useScoringStore(s => s.backtestConfig)
   const setBacktestConfig = useScoringStore(s => s.setBacktestConfig)
+  const stockSymbols = useScoringStore(s => s.universeFilter.customSymbols)
 
   // In mock mode, clamp dates to available data range
   const dataRange = useMemo(() => isMockMode() ? getMockDataRange() : null, [])
   const effectiveMaxDate = dataRange?.maxDate ?? getToday()
 
+  // Pre-compute earliest scoreable date from CMOTS data
+  const [minDateInfo, setMinDateInfo] = useState<EarliestScoreableDateResult | null>(null)
+  const [loadingMinDate, setLoadingMinDate] = useState(false)
+
+  useEffect(() => {
+    if (stockSymbols.length === 0) return
+
+    let cancelled = false
+    setLoadingMinDate(true)
+
+    computeEarliestScoreableDate(stockSymbols).then(result => {
+      if (!cancelled) {
+        setMinDateInfo(result)
+        setLoadingMinDate(false)
+      }
+    })
+
+    return () => { cancelled = true }
+  }, [stockSymbols])
+
+  // The effective minimum: max of mock data range min and absoluteMin
+  const effectiveMinDate = useMemo(() => {
+    const candidates = [dataRange?.minDate, minDateInfo?.absoluteMin].filter(Boolean) as string[]
+    if (candidates.length === 0) return undefined
+    return candidates.sort().pop()!
+  }, [dataRange, minDateInfo])
+
   const [fromDate, setFromDate] = useState(backtestConfig?.dateRange.from ?? '')
   const [toDate, setToDate] = useState(backtestConfig?.dateRange.to ?? effectiveMaxDate)
   const [interval, setInterval] = useState<BacktestInterval>(backtestConfig?.interval ?? 'monthly')
+
+  // Auto-clamp fromDate if it's before the computed minimum
+  useEffect(() => {
+    if (effectiveMinDate && fromDate && fromDate < effectiveMinDate) {
+      setFromDate(effectiveMinDate)
+    }
+  }, [effectiveMinDate])
 
   // Sync local state to store
   useEffect(() => {
@@ -65,9 +105,10 @@ export function DateRangeSelector() {
     let fromD = new Date(effectiveMaxDate)
     fromD.setFullYear(fromD.getFullYear() - years)
 
-    // Clamp 'from' to min available date
-    if (dataRange && formatDate(fromD) < dataRange.minDate) {
-      fromD = new Date(dataRange.minDate)
+    // Clamp 'from' to min available/scoreable date
+    const minDate = effectiveMinDate
+    if (minDate && formatDate(fromD) < minDate) {
+      fromD = new Date(minDate)
     }
 
     setFromDate(formatDate(fromD))
@@ -109,7 +150,7 @@ export function DateRangeSelector() {
               type="date"
               value={fromDate}
               onChange={e => setFromDate(e.target.value)}
-              min={dataRange?.minDate}
+              min={effectiveMinDate}
               max={toDate || effectiveMaxDate}
               className="w-full px-3 py-2 bg-dark-700/40 border border-white/5 rounded-lg text-sm text-white focus:outline-none focus:border-primary-500/30 [color-scheme:dark]"
             />
@@ -121,7 +162,7 @@ export function DateRangeSelector() {
               type="date"
               value={toDate}
               onChange={e => setToDate(e.target.value)}
-              min={fromDate || dataRange?.minDate}
+              min={fromDate || effectiveMinDate}
               max={effectiveMaxDate}
               className="w-full px-3 py-2 bg-dark-700/40 border border-white/5 rounded-lg text-sm text-white focus:outline-none focus:border-primary-500/30 [color-scheme:dark]"
             />
@@ -131,6 +172,41 @@ export function DateRangeSelector() {
         {fromDate && toDate && (
           <div className="mt-2 text-[10px] text-neutral-500">
             Period: {daysBetween(fromDate, toDate)} days ({monthsBetween(fromDate, toDate)} months)
+          </div>
+        )}
+
+        {/* Data availability info */}
+        {loadingMinDate && (
+          <div className="mt-2 flex items-center gap-1.5 text-[10px] text-neutral-500">
+            <Loader2 className="w-3 h-3 animate-spin" />
+            <span>Checking data availability...</span>
+          </div>
+        )}
+
+        {!loadingMinDate && minDateInfo?.absoluteMin && (
+          <div className="mt-2 space-y-1">
+            <div className="flex items-center gap-1.5 text-[10px] text-neutral-500">
+              <AlertTriangle className="w-3 h-3 shrink-0 text-amber-400/60" />
+              <span>
+                Earliest start: <span className="font-mono font-medium text-amber-300">{minDateInfo.absoluteMin}</span>
+              </span>
+            </div>
+            {fromDate && minDateInfo.categoryDates.growth && fromDate < minDateInfo.categoryDates.growth && (
+              <div className="flex items-center gap-1.5 text-[10px] text-neutral-500 ml-[18px]">
+                <span>Before {minDateInfo.categoryDates.growth}: Growth metrics (CAGR) unavailable</span>
+              </div>
+            )}
+            {fromDate && minDateInfo.categoryDates.technical && fromDate < minDateInfo.categoryDates.technical && (
+              <div className="flex items-center gap-1.5 text-[10px] text-neutral-500 ml-[18px]">
+                <span>Before {minDateInfo.categoryDates.technical}: Technical (EMA-200) partial</span>
+              </div>
+            )}
+            {fromDate && hasFullCoverage(fromDate, minDateInfo) && (
+              <div className="flex items-center gap-1.5 text-[10px] text-emerald-400/70 ml-[18px]">
+                <CheckCircle2 className="w-3 h-3 shrink-0" />
+                <span>Full data coverage from this date</span>
+              </div>
+            )}
           </div>
         )}
 
@@ -200,4 +276,11 @@ function isPresetActive(from: string, to: string, years: number): boolean {
   if (!from || !to) return false
   const months = monthsBetween(from, to)
   return Math.abs(months - years * 12) <= 1
+}
+
+function hasFullCoverage(from: string, info: EarliestScoreableDateResult): boolean {
+  const { fundamental, growth, technical } = info.categoryDates
+  return (!fundamental || from >= fundamental)
+    && (!growth || from >= growth)
+    && (!technical || from >= technical)
 }

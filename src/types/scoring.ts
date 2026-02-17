@@ -337,6 +337,7 @@ export interface BacktestSnapshot {
 export interface PricePerformance {
   stockId: string
   stockName?: string
+  startPrice: number          // First trading day price (base for cumulative returns)
   periods: {
     date: string
     price: number

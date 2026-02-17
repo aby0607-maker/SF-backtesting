@@ -90,7 +90,7 @@ export function MetricContributionWaterfall() {
                   <span className="text-neutral-500 w-32 truncate">{ms.metricName}</span>
                   <span className="text-neutral-400 font-mono w-12 text-right">
                     {ms.rawValue !== null ? ms.rawValue.toFixed(1) : (
-                      <NaExplainer label="N/A" reason={ms.excludeReason} className="text-neutral-600" />
+                      <NaExplainer label="N/A" reason={ms.excludeReason} className="text-neutral-500" />
                     )}
                   </span>
                   <div className="flex-1 h-1.5 bg-dark-700/40 rounded-full overflow-hidden">

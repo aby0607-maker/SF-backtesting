@@ -108,7 +108,7 @@ export function aggregatePerformance(
   sampleDates?: string[]
 ): PricePerformance {
   if (priceData.length === 0) {
-    return { stockId, stockName, periods: [] }
+    return { stockId, stockName, startPrice: 0, periods: [] }
   }
 
   // Sort by date
@@ -140,7 +140,7 @@ export function aggregatePerformance(
     }
   }
 
-  return { stockId, stockName, periods }
+  return { stockId, stockName, startPrice, periods }
 }
 
 /**
@@ -275,7 +275,7 @@ function computeAveragePerformance(
   id: string,
   performances: PricePerformance[]
 ): PricePerformance {
-  if (performances.length === 0) return { stockId: id, periods: [] }
+  if (performances.length === 0) return { stockId: id, startPrice: 0, periods: [] }
 
   // Use the performance with the most periods as the template
   const maxPeriods = Math.max(...performances.map(p => p.periods.length))
@@ -298,7 +298,7 @@ function computeAveragePerformance(
     }
   })
 
-  return { stockId: id, periods }
+  return { stockId: id, startPrice: 0, periods }
 }
 
 /**
@@ -308,7 +308,7 @@ function computeMedianPerformance(
   id: string,
   performances: PricePerformance[]
 ): PricePerformance {
-  if (performances.length === 0) return { stockId: id, periods: [] }
+  if (performances.length === 0) return { stockId: id, startPrice: 0, periods: [] }
 
   const maxPeriods = Math.max(...performances.map(p => p.periods.length))
   const template = performances.find(p => p.periods.length === maxPeriods)!
@@ -332,7 +332,7 @@ function computeMedianPerformance(
     }
   })
 
-  return { stockId: id, periods }
+  return { stockId: id, startPrice: 0, periods }
 }
 
 // ─────────────────────────────────────────────────
