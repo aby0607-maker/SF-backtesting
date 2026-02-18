@@ -1,13 +1,13 @@
 /**
- * PipelineReviewPanel — Stage 4: Read-only summary of pipeline config (Stages 1-3)
+ * PipelineReviewPanel — Read-only summary of pipeline config
  *
- * In the 5-stage pipeline, this shows in Stage 4 (Review & Run) so users can
- * verify all configuration before triggering the combined scoring + backtest run.
+ * In the 3-stage pipeline, this shows as a collapsible section in Stage 2
+ * (Configure & Run) so users can verify scorecard configuration.
  *
  * Sections:
- *   1. Metrics — selected metrics by segment
- *   2. Scorecard — segment weights, composite formula, verdict thresholds
- *   3. Configuration — stock selection, date range, benchmark
+ *   1. Metrics — selected metrics by segment (→ edit jumps to Stage 1)
+ *   2. Scorecard — segment weights, composite formula, verdict thresholds (→ edit jumps to Stage 1)
+ *   3. Configuration — stock selection, date range, benchmark (stays in Stage 2)
  */
 
 import { useEffect } from 'react'
@@ -51,7 +51,7 @@ export function PipelineReviewPanel() {
         </div>
       </div>
 
-      {/* Stage 1: Metrics */}
+      {/* Metrics (now part of Stage 1: Build Scorecard) */}
       <ReviewSectionCard
         stageNumber={1}
         title="Metrics"
@@ -68,12 +68,12 @@ export function PipelineReviewPanel() {
         </div>
       </ReviewSectionCard>
 
-      {/* Stage 2: Scorecard */}
+      {/* Scorecard Structure (now part of Stage 1: Build Scorecard) */}
       <ReviewSectionCard
-        stageNumber={2}
+        stageNumber={1}
         title="Scorecard Structure"
         summary={`${snapshot.segmentsSummary.totalSegments} segments • ${snapshot.segmentsSummary.compositeFormula}`}
-        onEdit={() => editFromReview(2)}
+        onEdit={() => editFromReview(1)}
       >
         <div className="space-y-2">
           {/* Segments with weights */}
@@ -114,12 +114,12 @@ export function PipelineReviewPanel() {
         </div>
       </ReviewSectionCard>
 
-      {/* Stage 3: Configuration (stocks + dates + benchmark) */}
+      {/* Run Configuration (Stage 2: Configure & Run) */}
       <ReviewSectionCard
-        stageNumber={3}
+        stageNumber={2}
         title="Run Configuration"
         summary={buildConfigSummary(snapshot)}
-        onEdit={() => editFromReview(3)}
+        onEdit={() => editFromReview(2)}
       >
         <div className="space-y-3">
           {/* Stock selection */}
