@@ -24,6 +24,10 @@ interface CMOTSRequestOptions {
  * Fetch an array of items from CMOTS API.
  * Unwraps the { success, data, message } envelope automatically.
  * Returns empty array on error (never throws) and logs the reason.
+ *
+ * NOTE: Cache keys are endpoint-based. For backtesting, TTM/FinData endpoints
+ * always return current data (CMOTS doesn't support historical TTM snapshots).
+ * Historical scoring uses windowed fundamental data, not date-keyed API calls.
  */
 export async function cmotsFetch<T>(options: CMOTSRequestOptions): Promise<T[]> {
   const { endpoint, cacheTTL = 60 * 60 * 1000 } = options

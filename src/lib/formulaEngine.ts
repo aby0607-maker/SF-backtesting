@@ -64,6 +64,7 @@ function applyOperator(operator: FormulaOperator, values: number[]): number | nu
       return Math.min(...values)
 
     default:
+      console.warn(`[FormulaEngine] Unknown operator '${operator}' — returning null`)
       return null
   }
 }

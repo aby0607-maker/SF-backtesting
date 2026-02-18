@@ -132,6 +132,7 @@ function lookupScoreBand(rawValue: number, scoreBands: ScoreBand[]): number {
   if (rawValue > sorted[0].max) return sorted[0].score              // Above highest band
   if (rawValue < sorted[sorted.length - 1].min) return sorted[sorted.length - 1].score  // Below lowest band
 
+  console.warn(`[ScoringEngine] No score band matched for value ${rawValue} across ${scoreBands.length} bands — possible gap in band configuration`)
   return 0
 }
 
@@ -186,9 +187,10 @@ export function scoreMetric(
     }
   }
 
-  // Standard negative handling for non-null values (no context provided)
-  if (allNegativeRules.length > 0 && !context) {
-    const negativeResult = applyNegativeHandling(rawValue, metric.id, allNegativeRules)
+  // Standard negative handling for non-null values
+  // Also applies when context was provided but no context-based rule matched
+  if (allNegativeRules.length > 0) {
+    const negativeResult = applyNegativeHandling(rawValue, metric.id, allNegativeRules, context)
     if (negativeResult) {
       return {
         metricId: metric.id,
@@ -197,6 +199,7 @@ export function scoreMetric(
         normalizedScore: negativeResult.score,
         isExcluded: negativeResult.excluded,
         excludeReason: negativeResult.reason,
+        evidence: context,
       }
     }
   }

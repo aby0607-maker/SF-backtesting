@@ -162,6 +162,13 @@ function updateActiveInList(
   )
 }
 
+/** Cap version history per macro version to prevent localStorage bloat */
+const MAX_VERSIONS_PER_MACRO = 20
+function capVersionHistory(versions: ScorecardVersion[]): ScorecardVersion[] {
+  if (versions.length <= MAX_VERSIONS_PER_MACRO) return versions
+  return versions.slice(versions.length - MAX_VERSIONS_PER_MACRO)
+}
+
 // ─────────────────────────────────────────────────
 // Store
 // ─────────────────────────────────────────────────
@@ -242,7 +249,7 @@ export const useScoringStore = create<ScoringState>()(
           activeScorecardId: id,
           versionHistory: {
             ...state.versionHistory,
-            [macroVersion]: [...(state.versionHistory[macroVersion] || []), scorecard],
+            [macroVersion]: capVersionHistory([...(state.versionHistory[macroVersion] || []), scorecard]),
           },
         }))
 
@@ -276,7 +283,7 @@ export const useScoringStore = create<ScoringState>()(
           activeScorecardId: id,
           versionHistory: {
             ...state.versionHistory,
-            [macro]: [...(state.versionHistory[macro] || []), duplicate],
+            [macro]: capVersionHistory([...(state.versionHistory[macro] || []), duplicate]),
           },
         }))
 
@@ -342,7 +349,7 @@ export const useScoringStore = create<ScoringState>()(
           activeScorecardId: id,
           versionHistory: {
             ...state.versionHistory,
-            [macro]: [...(state.versionHistory[macro] || []), loaded],
+            [macro]: capVersionHistory([...(state.versionHistory[macro] || []), loaded]),
           },
         }))
 
@@ -367,7 +374,7 @@ export const useScoringStore = create<ScoringState>()(
           activeScorecardId: id,
           versionHistory: {
             ...state.versionHistory,
-            [macro]: [...(state.versionHistory[macro] || []), loaded],
+            [macro]: capVersionHistory([...(state.versionHistory[macro] || []), loaded]),
           },
         }))
 
@@ -402,7 +409,7 @@ export const useScoringStore = create<ScoringState>()(
           activeScorecardId: id,
           versionHistory: {
             ...state.versionHistory,
-            [macro]: [...(state.versionHistory[macro] || []), newVersion],
+            [macro]: capVersionHistory([...(state.versionHistory[macro] || []), newVersion]),
           },
         }))
 
@@ -436,7 +443,7 @@ export const useScoringStore = create<ScoringState>()(
           activeScorecardId: id,
           versionHistory: {
             ...state.versionHistory,
-            [macro]: [...(state.versionHistory[macro] || []), reverted],
+            [macro]: capVersionHistory([...(state.versionHistory[macro] || []), reverted]),
           },
         }))
       },
@@ -599,10 +606,12 @@ export const useScoringStore = create<ScoringState>()(
       // ─── Review & Confirm ───
 
       generateReviewSnapshot: () => {
-        const scorecard = getActiveScorecard(get())
+        // Single get() call to avoid stale state if store changes between reads
+        const state = get()
+        const scorecard = getActiveScorecard(state)
         if (!scorecard) return
 
-        const { universeFilter, backtestConfig } = get()
+        const { universeFilter, backtestConfig } = state
 
         // Build metrics summary
         const bySegment = scorecard.segments.map(seg => ({
@@ -751,7 +760,10 @@ export const useScoringStore = create<ScoringState>()(
 
       loadRun: (runId: string) => {
         const run = get().savedRuns.find(r => r.id === runId)
-        if (!run) return
+        if (!run) {
+          console.warn(`[ScoringStore] Saved run '${runId}' not found`)
+          return
+        }
 
         set({
           currentRun: run.run,

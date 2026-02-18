@@ -72,9 +72,9 @@ function windowYearColumns(row: CMOTSStatementRow, asOfDate?: string): string[] 
   const cutoff = new Date(asOfDate)
   return allCols.filter(col => {
     const year = parseInt(col.slice(1, 5))
-    const month = parseInt(col.slice(5, 7))
-    // Fiscal year end: approximate as last day of the month
-    const colDate = new Date(year, month - 1, 28)
+    const month = Math.min(12, Math.max(1, parseInt(col.slice(5, 7))))
+    // Fiscal year end: use actual last day of the month (day 0 of next month)
+    const colDate = new Date(year, month, 0)
     return colDate <= cutoff
   })
 }
@@ -88,8 +88,8 @@ function windowFinData(finData: CMOTSFinancialRecord[], asOfDate?: string): CMOT
   return finData.filter(f => {
     // yrc is YYYYMM (e.g., 202503 → year 2025, month 03)
     const year = Math.floor(f.yrc / 100)
-    const month = f.yrc % 100
-    const fyEndDate = new Date(year, month - 1, 28) // Last-ish day of fiscal year end month
+    const month = Math.min(12, Math.max(1, f.yrc % 100))
+    const fyEndDate = new Date(year, month, 0) // Actual last day of fiscal year end month
     return fyEndDate <= cutoff
   })
 }
@@ -294,8 +294,8 @@ function computeHistoricalValuation(
   const epsCols = epsRow ? windowYearColumns(epsRow, asOfDate) : []
   const epsValue = epsCols.length > 0 && epsRow ? getStatementValue(epsRow, epsCols[0]) : null
 
-  // PE = Price / EPS
-  const pe = epsValue && epsValue > 0 ? priceAtDate / epsValue : null
+  // PE = Price / EPS (only when EPS is positive; zero/negative EPS → PE undefined)
+  const pe = epsValue != null && epsValue > 0 ? priceAtDate / epsValue : null
 
   // Book Value per share = Shareholders Fund / Shares Outstanding
   const shFundRow = findStatementRow(balanceSheet, BS_ROW_SHAREHOLDERS_FUND)
@@ -828,6 +828,9 @@ function resolveOneCustomMetric(
     case 'ttm': {
       if (!ttm) return null
       const value = (ttm as unknown as Record<string, unknown>)[metric.cmots_field]
+      if (value === undefined) {
+        console.warn(`[MetricResolver] TTM field '${metric.cmots_field}' not found for custom metric '${metric.name}'`)
+      }
       return typeof value === 'number' ? value : null
     }
     case 'pnl':
