@@ -142,16 +142,23 @@ export async function getAllFundamentals(symbol: string): Promise<FundamentalsBu
     getShareholdingHistory(symbol),
   ])
 
-  const timeoutPromise = new Promise<never>((_, reject) =>
-    setTimeout(() => reject(new Error(`[Fundamentals] Timeout after ${FUNDAMENTALS_TIMEOUT_MS}ms fetching data for ${symbol}`)), FUNDAMENTALS_TIMEOUT_MS)
-  )
+  let timeoutId: ReturnType<typeof setTimeout>
+  const timeoutPromise = new Promise<never>((_, reject) => {
+    timeoutId = setTimeout(
+      () => reject(new Error(`[Fundamentals] Timeout after ${FUNDAMENTALS_TIMEOUT_MS}ms fetching data for ${symbol}`)),
+      FUNDAMENTALS_TIMEOUT_MS,
+    )
+  })
 
-  const [ttm, finData, pnl, cashFlow, balanceSheet, quarterly, shareholding] = await Promise.race([
-    dataPromise,
-    timeoutPromise,
-  ])
-
-  return { ttm, finData, pnl, cashFlow, balanceSheet, quarterly, shareholding }
+  try {
+    const [ttm, finData, pnl, cashFlow, balanceSheet, quarterly, shareholding] = await Promise.race([
+      dataPromise,
+      timeoutPromise,
+    ])
+    return { ttm, finData, pnl, cashFlow, balanceSheet, quarterly, shareholding }
+  } finally {
+    clearTimeout(timeoutId!)
+  }
 }
 
 // ── Statement row helpers (exported for metricResolver) ──

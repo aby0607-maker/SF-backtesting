@@ -4,7 +4,7 @@
  * Readiness check → triggers scoreAndBacktest() → progress UI → auto-advance to Stage 5.
  */
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { cn } from '@/lib/utils'
 import {
@@ -38,6 +38,11 @@ export function RunCombinedButton() {
 
   const [progress, setProgress] = useState<{ phase: CombinedProgressPhase; current: number; total: number } | null>(null)
   const abortRef = useRef<AbortController | null>(null)
+
+  // Abort any in-flight scoring/backtest when the component unmounts
+  useEffect(() => {
+    return () => { abortRef.current?.abort() }
+  }, [])
 
   const isRunning = status === 'scoring' || status === 'backtesting'
   const isError = status === 'error'
