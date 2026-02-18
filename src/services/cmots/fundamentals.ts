@@ -123,12 +123,16 @@ export interface FundamentalsBundle {
   shareholding: import('@/types/scoring').CMOTSShareholding[]
 }
 
+/** Timeout (ms) for the entire parallel fundamentals fetch */
+const FUNDAMENTALS_TIMEOUT_MS = 30_000
+
 /**
  * Fetch all fundamental data for a stock in one call.
- * All 7 endpoints are fetched in parallel for efficiency.
+ * All 7 endpoints are fetched in parallel with a 30s timeout
+ * to prevent a single slow endpoint from blocking indefinitely.
  */
 export async function getAllFundamentals(symbol: string): Promise<FundamentalsBundle> {
-  const [ttm, finData, pnl, cashFlow, balanceSheet, quarterly, shareholding] = await Promise.all([
+  const dataPromise = Promise.all([
     getTTMData(symbol),
     getFinancialData(symbol),
     getProfitAndLoss(symbol),
@@ -136,6 +140,15 @@ export async function getAllFundamentals(symbol: string): Promise<FundamentalsBu
     getBalanceSheet(symbol),
     getQuarterlyResults(symbol),
     getShareholdingHistory(symbol),
+  ])
+
+  const timeoutPromise = new Promise<never>((_, reject) =>
+    setTimeout(() => reject(new Error(`[Fundamentals] Timeout after ${FUNDAMENTALS_TIMEOUT_MS}ms fetching data for ${symbol}`)), FUNDAMENTALS_TIMEOUT_MS)
+  )
+
+  const [ttm, finData, pnl, cashFlow, balanceSheet, quarterly, shareholding] = await Promise.race([
+    dataPromise,
+    timeoutPromise,
   ])
 
   return { ttm, finData, pnl, cashFlow, balanceSheet, quarterly, shareholding }

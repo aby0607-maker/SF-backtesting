@@ -30,6 +30,14 @@ export function evaluateFormula(
 
 /**
  * Apply an operator to an array of values.
+ *
+ * Multi-input semantics (3+ inputs):
+ *   add:      a + b + c          (commutative sum)
+ *   subtract: a - b - c          (left-to-right, e.g. [10, 3, 2] → 5)
+ *   multiply: a × b × c          (commutative product)
+ *   divide:   a / (b × c)        (first input divided by product of rest, e.g. [10, 2, 5] → 1)
+ *   average:  (a + b + c) / 3    (arithmetic mean)
+ *   max/min:  standard max/min
  */
 function applyOperator(operator: FormulaOperator, values: number[]): number | null {
   if (values.length === 0) return null
@@ -39,12 +47,14 @@ function applyOperator(operator: FormulaOperator, values: number[]): number | nu
       return values.reduce((a, b) => a + b, 0)
 
     case 'subtract':
+      // Left-to-right: [a, b, c] → ((a - b) - c)
       return values.reduce((a, b) => a - b)
 
     case 'multiply':
       return values.reduce((a, b) => a * b, 1)
 
     case 'divide': {
+      // First input / product of remaining: [a, b, c] → a / (b × c)
       if (values.length < 2) return null
       const [numerator, ...denominators] = values
       const denominator = denominators.reduce((a, b) => a * b, 1)

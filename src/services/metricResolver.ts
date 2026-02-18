@@ -543,16 +543,17 @@ function computeRevenueGrowth5Y(
   maxYears?: number,
 ): number | null {
   // Try FinData first (cleaner — has yearly revenue). Use available span (min 2 years).
+  // finData is sorted ascending by yrc (oldest first), so [0]=oldest, [last]=latest.
   if (finData.length >= 2) {
-    // If maxYears specified, limit FinData to last maxYears+1 records
+    // If maxYears specified, keep only the most recent maxYears+1 records
     const limited = maxYears && finData.length > maxYears + 1
       ? finData.slice(finData.length - (maxYears + 1))
       : finData
-    const latest = limited[limited.length - 1]
-    const oldest = limited[0]
+    const oldestRecord = limited[0]                      // First element = oldest (ascending sort)
+    const latestRecord = limited[limited.length - 1]     // Last element = latest (ascending sort)
     // Both same sign → CAGR works; mixed signs or zero → fall back to P&L
-    if (oldest.revenue !== 0 && (oldest.revenue > 0) === (latest.revenue > 0)) {
-      return computeCAGR(oldest.revenue, latest.revenue, limited.length - 1)
+    if (oldestRecord.revenue !== 0 && (oldestRecord.revenue > 0) === (latestRecord.revenue > 0)) {
+      return computeCAGR(oldestRecord.revenue, latestRecord.revenue, limited.length - 1)
     }
   }
 

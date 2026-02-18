@@ -32,7 +32,9 @@ interface CMOTSRequestOptions {
 export async function cmotsFetch<T>(options: CMOTSRequestOptions): Promise<T[]> {
   const { endpoint, cacheTTL = 60 * 60 * 1000 } = options
 
-  const cacheKey = `cmots:${endpoint}`
+  // Use null byte separator to prevent key collisions from string concatenation
+  // (e.g., endpoint "A:B" vs prefix "cmots:A" + "B" would collide without this)
+  const cacheKey = `cmots\0${endpoint}`
   const cached = cache.get<T[]>(cacheKey)
   if (cached !== undefined) return cached
 

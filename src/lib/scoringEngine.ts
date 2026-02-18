@@ -27,6 +27,12 @@ import { computeValuationScore } from './conditionalValuation'
 // Metric Scoring
 // ─────────────────────────────────────────────────
 
+// Negative handling score constants (from SME scoring specification):
+// These represent fixed score assignments when growth metrics have negative values.
+const SCORE_FLOOR = 0         // Worst possible — metric is negative with no improvement
+const SCORE_PARTIAL_CREDIT = 25  // Both periods negative but magnitude is improving (25th percentile)
+const SCORE_CEILING = 100     // Best possible — turnaround from negative to positive
+
 /**
  * Check if a negative handling rule applies and return the overridden score.
  * Returns null if no rule applies (proceed with normal scoring).
@@ -66,33 +72,33 @@ function applyNegativeHandling(
 
     switch (rule.action) {
       case 'zero':
-        return { score: 0, excluded: false, reason: rule.description || `${rule.condition}: score set to 0` }
+        return { score: SCORE_FLOOR, excluded: false, reason: rule.description || `${rule.condition}: score set to 0` }
       case 'max_score':
-        return { score: 100, excluded: false, reason: rule.description || `${rule.condition}: max score applied` }
+        return { score: SCORE_CEILING, excluded: false, reason: rule.description || `${rule.condition}: max score applied` }
       case 'exclude':
-        return { score: 0, excluded: true, reason: rule.description || `${rule.condition}: excluded from scoring` }
+        return { score: SCORE_FLOOR, excluded: true, reason: rule.description || `${rule.condition}: excluded from scoring` }
       case 'improvement_check':
         // Both negative but improving = partial credit
         if (context?.startValue != null && context?.endValue != null) {
           const improved = Math.abs(context.endValue) < Math.abs(context.startValue)
           return {
-            score: improved ? 25 : 0,
+            score: improved ? SCORE_PARTIAL_CREDIT : SCORE_FLOOR,
             excluded: false,
             reason: improved
               ? 'Both negative but improving — partial credit'
               : 'Both negative, no improvement'
           }
         }
-        return { score: 0, excluded: false, reason: 'Improvement check: insufficient data' }
+        return { score: SCORE_FLOOR, excluded: false, reason: 'Improvement check: insufficient data' }
       case 'special_calc':
-        // Special calculations are metric-specific; default to 0 if no custom formula
-        return { score: 0, excluded: false, reason: rule.description || 'Special calculation applied' }
+        // Special calculations are metric-specific; default to floor if no custom formula
+        return { score: SCORE_FLOOR, excluded: false, reason: rule.description || 'Special calculation applied' }
       case 'cap':
         // Cap handled at the band lookup level; signal to proceed but cap result
         return null
       case 'custom':
-        // Custom formula handling — would need formula engine; default to 0
-        return { score: 0, excluded: false, reason: rule.description || 'Custom formula applied' }
+        // Custom formula handling — would need formula engine; default to floor
+        return { score: SCORE_FLOOR, excluded: false, reason: rule.description || 'Custom formula applied' }
     }
   }
 
@@ -439,6 +445,8 @@ export function applyNormalization(
 
 /**
  * Apply custom factors (multipliers, additive, conditional) to a composite score.
+ * Clamps to [0, 100] after each factor to prevent intermediate spikes
+ * from distorting subsequent factor calculations.
  */
 export function applyCustomFactors(
   score: number,
@@ -460,12 +468,16 @@ export function applyCustomFactors(
       case 'conditional':
         // Conditional factors could be complex — basic implementation
         // e.g., if score < 30, apply penalty
-        if (score < 30) result += factor.value
+        if (result < 30) result += factor.value
         break
     }
+
+    // Clamp after each factor to prevent intermediate values outside [0, 100]
+    // from compounding through subsequent factors
+    result = Math.min(100, Math.max(0, result))
   }
 
-  return Math.min(100, Math.max(0, Math.round(result * 100) / 100))
+  return Math.round(result * 100) / 100
 }
 
 // ─────────────────────────────────────────────────
