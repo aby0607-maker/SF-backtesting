@@ -395,6 +395,8 @@ export function applyNormalization(
   scores: number[],
   config: NormalizationConfig
 ): number[] {
+  if (scores.length === 0) return []
+
   switch (config.method) {
     case 'none':
       return scores
@@ -423,6 +425,9 @@ export function applyNormalization(
     }
 
     case 'percentile': {
+      // Cumulative proportion method: percentile = count(v <= x) / n * 100
+      // Max value always gets 100%. Tied values share the same percentile.
+      // For n=1, returns 100%. For the minimum of n, returns (1/n)*100.
       const sorted = [...scores].sort((a, b) => a - b)
       return scores.map(s => {
         const rank = sorted.filter(v => v <= s).length
