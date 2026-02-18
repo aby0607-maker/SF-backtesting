@@ -10,7 +10,7 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
 import { useScoringStore, useActiveScorecard } from '@/store/useScoringStore'
-import { Plus, Trash2, ChevronDown, ChevronRight } from 'lucide-react'
+import { Plus, Trash2, ChevronDown, ChevronRight, AlertCircle } from 'lucide-react'
 
 export function SegmentBuilder() {
   const scorecard = useActiveScorecard()
@@ -20,6 +20,7 @@ export function SegmentBuilder() {
   const updateMetric = useScoringStore(s => s.updateMetric)
   const [expandedId, setExpandedId] = useState<string | null>(null)
   const [newSegName, setNewSegName] = useState('')
+  const [weightError, setWeightError] = useState<string | null>(null)
 
   if (!scorecard) return null
 
@@ -44,13 +45,21 @@ export function SegmentBuilder() {
       {/* Weight sum indicator */}
       <div className="flex items-center justify-between px-1">
         <span className="text-xs font-medium text-neutral-400">Segments</span>
-        <span className={cn(
-          'text-xs font-mono',
-          isValidTotal ? 'text-success-400' : 'text-warning-400',
-        )}>
-          Total: {totalPct}%
-          {!isValidTotal && ' (should be 100%)'}
-        </span>
+        <div className="flex items-center gap-2">
+          {weightError && (
+            <span className="flex items-center gap-1 text-xs text-red-400">
+              <AlertCircle className="w-3 h-3" />
+              {weightError}
+            </span>
+          )}
+          <span className={cn(
+            'text-xs font-mono',
+            isValidTotal ? 'text-success-400' : 'text-warning-400',
+          )}>
+            Total: {totalPct}%
+            {!isValidTotal && ' (should be 100%)'}
+          </span>
+        </div>
       </div>
 
       {scorecard.segments.map(segment => {
@@ -86,15 +95,21 @@ export function SegmentBuilder() {
                   type="number"
                   min={0}
                   max={100}
-                  step={0.5}
-                  value={parseFloat((segment.segmentWeight * 100).toFixed(1))}
+                  step={0.01}
+                  value={parseFloat((segment.segmentWeight * 100).toFixed(2))}
                   onChange={e => {
                     const val = parseFloat(e.target.value)
-                    if (!isNaN(val) && val >= 0 && val <= 100) {
-                      updateSegmentWeight(segment.id, val / 100)
+                    if (isNaN(val) || val < 0 || val > 100) {
+                      setWeightError('Weight must be 0–100%')
+                      return
                     }
+                    setWeightError(null)
+                    updateSegmentWeight(segment.id, val / 100)
                   }}
-                  className="w-16 px-2 py-1 bg-dark-700/60 border border-white/10 rounded text-sm font-mono text-white text-right focus:outline-none focus:border-primary-500/40"
+                  className={cn(
+                    'w-16 px-2 py-1 bg-dark-700/60 border rounded text-sm font-mono text-white text-right focus:outline-none',
+                    weightError ? 'border-red-500/50 focus:border-red-500/70' : 'border-white/10 focus:border-primary-500/40',
+                  )}
                 />
                 <span className="text-xs text-neutral-400">%</span>
               </div>
@@ -131,8 +146,8 @@ export function SegmentBuilder() {
                             type="number"
                             min={0}
                             max={100}
-                            step={0.5}
-                            value={m.weight ? parseFloat((m.weight * 100).toFixed(1)) : 0}
+                            step={0.01}
+                            value={m.weight ? parseFloat((m.weight * 100).toFixed(2)) : 0}
                             onChange={e => {
                               const val = parseFloat(e.target.value)
                               if (!isNaN(val) && val >= 0 && val <= 100) {

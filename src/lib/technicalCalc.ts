@@ -75,6 +75,7 @@ export function rsi(prices: number[], period: number = 14): number | null {
     avgLoss = (avgLoss * (period - 1) + loss) / period
   }
 
+  if (avgGain === 0 && avgLoss === 0) return 50  // Flat prices — neutral RSI
   if (avgLoss === 0) return 100
   const rs = avgGain / avgLoss
   return Math.round((100 - 100 / (1 + rs)) * 100) / 100

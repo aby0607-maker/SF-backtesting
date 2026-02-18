@@ -56,10 +56,10 @@ export interface ParsedSegment {
 export interface ParsedMetric {
   name: string
   id: string
-  /** Raw input values per stock (for band derivation) */
-  inputValues: number[]
-  /** Score values per stock (for band validation) */
-  scoreValues: number[]
+  /** Raw input values per stock (for band derivation); null means no data */
+  inputValues: (number | null)[]
+  /** Score values per stock (for band validation); null means no data */
+  scoreValues: (number | null)[]
   weight?: number
 }
 
@@ -177,7 +177,7 @@ export function parseCSVToScorecard(csvText: string, filename?: string): ParsedC
       lastInputMetric = {
         name: metricName,
         id: toId(metricName),
-        inputValues: values.map(v => v ?? 0),
+        inputValues: values,
         scoreValues: [],
       }
       // Add to current segment or create a default one
@@ -192,7 +192,7 @@ export function parseCSVToScorecard(csvText: string, filename?: string): ParsedC
     if (labelLower.startsWith('score:')) {
       const values = extractNumericValues(row.slice(1))
       if (lastInputMetric) {
-        lastInputMetric.scoreValues = values.map(v => v ?? 0)
+        lastInputMetric.scoreValues = values
       }
       continue
     }
@@ -364,15 +364,17 @@ function toId(name: string): string {
  * Derive score bands from input→score pairs.
  * Groups similar scores and finds input thresholds.
  */
-function deriveBands(inputs: number[], scores: number[]): ScoreBand[] {
+function deriveBands(inputs: (number | null)[], scores: (number | null)[]): ScoreBand[] {
   if (inputs.length === 0 || scores.length === 0 || inputs.length !== scores.length) {
     return []
   }
 
-  // Pair and sort by input value
+  // Pair and sort by input value; filter out null pairs (missing data)
   const pairs = inputs
     .map((input, i) => ({ input, score: scores[i] }))
-    .filter(p => p.input !== 0 || p.score !== 0)  // Filter out zero-zero (likely NM)
+    .filter((p): p is { input: number; score: number } =>
+      p.input != null && p.score != null
+    )
     .sort((a, b) => a.input - b.input)
 
   if (pairs.length === 0) return []
