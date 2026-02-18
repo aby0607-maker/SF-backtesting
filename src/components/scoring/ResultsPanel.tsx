@@ -19,6 +19,7 @@
 import { useState } from 'react'
 import { AnimatePresence } from 'framer-motion'
 import { cn } from '@/lib/utils'
+import { ErrorBoundary } from '@/components/ui/ErrorBoundary'
 import { useCombinedResult, useBacktestResult } from '@/store/useScoringStore'
 import { ScoringResultsTable } from './ScoringResultsTable'
 import { StockDetailOverlay } from './StockDetailOverlay'
@@ -33,6 +34,14 @@ import { MetricContributionWaterfall } from './MetricContributionWaterfall'
 import { ScoreTrajectoryChart } from './ScoreTrajectoryChart'
 import { ExportReportButton } from './ExportReportButton'
 import { BarChart3, TrendingUp, Activity, AlertTriangle, ChevronDown } from 'lucide-react'
+
+/** Lightweight fallback for chart rendering errors */
+const ChartErrorFallback = (
+  <div className="rounded-xl bg-dark-800/40 border border-white/5 p-6 text-center">
+    <AlertTriangle className="w-5 h-5 text-amber-400 mx-auto mb-2" />
+    <p className="text-xs text-neutral-400">Chart failed to render. Try refreshing the page.</p>
+  </div>
+)
 
 type ResultsTab = 'scores' | 'performance' | 'analysis'
 
@@ -129,22 +138,34 @@ export function ResultsPanel() {
       {activeTab === 'performance' && (
         <div className="space-y-4">
           {/* Score vs Return correlation — the key insight chart */}
-          <ScoreReturnCorrelation />
+          <ErrorBoundary fallback={ChartErrorFallback}>
+            <ScoreReturnCorrelation />
+          </ErrorBoundary>
 
           {/* Price delta table with expandable rows */}
-          <PriceDeltaTable
-            onSelectStock={setSelectedStockId}
-            selectedStockId={selectedStockId}
-          />
+          <ErrorBoundary fallback={ChartErrorFallback}>
+            <PriceDeltaTable
+              onSelectStock={setSelectedStockId}
+              selectedStockId={selectedStockId}
+            />
+          </ErrorBoundary>
 
           {/* Equity curves */}
-          {hasBacktest && <PerformanceChart />}
+          {hasBacktest && (
+            <ErrorBoundary fallback={ChartErrorFallback}>
+              <PerformanceChart />
+            </ErrorBoundary>
+          )}
 
           {/* Per-stock deep dive (moved from Analysis) */}
           {hasBacktest && (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-              <MetricContributionWaterfall />
-              <ScoreTrajectoryChart />
+              <ErrorBoundary fallback={ChartErrorFallback}>
+                <MetricContributionWaterfall />
+              </ErrorBoundary>
+              <ErrorBoundary fallback={ChartErrorFallback}>
+                <ScoreTrajectoryChart />
+              </ErrorBoundary>
             </div>
           )}
         </div>
@@ -155,10 +176,16 @@ export function ResultsPanel() {
           {hasBacktest && (
             <>
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                <QuintileAnalysisChart />
-                <RelativePerformanceChart />
+                <ErrorBoundary fallback={ChartErrorFallback}>
+                  <QuintileAnalysisChart />
+                </ErrorBoundary>
+                <ErrorBoundary fallback={ChartErrorFallback}>
+                  <RelativePerformanceChart />
+                </ErrorBoundary>
               </div>
-              <CohortComparisonTable />
+              <ErrorBoundary fallback={ChartErrorFallback}>
+                <CohortComparisonTable />
+              </ErrorBoundary>
             </>
           )}
           {!hasBacktest && (

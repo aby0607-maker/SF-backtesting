@@ -789,6 +789,34 @@ export const useScoringStore = create<ScoringState>()(
     {
       name: 'stockfox-scoring-storage',
       version: 2,
+      storage: {
+        getItem: (name) => {
+          const str = localStorage.getItem(name)
+          return str ? JSON.parse(str) : null
+        },
+        setItem: (name, value) => {
+          try {
+            localStorage.setItem(name, JSON.stringify(value))
+          } catch (e) {
+            // localStorage quota exceeded — prune saved runs and retry
+            if (e instanceof DOMException && e.name === 'QuotaExceededError') {
+              console.warn('[ScoringStore] localStorage quota exceeded — pruning oldest saved runs')
+              try {
+                const parsed = JSON.parse(localStorage.getItem(name) || '{}')
+                if (parsed.state?.savedRuns?.length > 5) {
+                  parsed.state.savedRuns = parsed.state.savedRuns.slice(-5)
+                  localStorage.setItem(name, JSON.stringify(parsed))
+                }
+                // Retry with current value
+                localStorage.setItem(name, JSON.stringify(value))
+              } catch {
+                console.error('[ScoringStore] Failed to recover from quota exceeded')
+              }
+            }
+          }
+        },
+        removeItem: (name) => localStorage.removeItem(name),
+      },
       partialize: state => ({
         scorecards: state.scorecards,
         activeScorecardId: state.activeScorecardId,
@@ -854,8 +882,11 @@ export const useBacktestResult = () =>
 export const useUIMode = () =>
   useScoringStore(state => state.uiMode)
 
+// Stable empty array to avoid creating new references when version history is empty
+const EMPTY_VERSIONS: ScorecardVersion[] = []
+
 export const useVersionHistory = (macroVersion: string) =>
-  useScoringStore(state => state.versionHistory[macroVersion] ?? [])
+  useScoringStore(state => state.versionHistory[macroVersion] ?? EMPTY_VERSIONS)
 
 export const useReviewSnapshot = () =>
   useScoringStore(state => state.reviewSnapshot)
