@@ -86,6 +86,9 @@ export interface CompositeMetric {
   negativeHandling?: NegativeHandling[]
   description?: string
   weight?: number         // Weight within its segment (0-1)
+  /** Number of years for growth CAGR calculation. Only applies to growth metrics.
+   *  undefined = use all available years (current default behavior). */
+  growthPeriod?: 2 | 3 | 5
 }
 
 // ─────────────────────────────────────────────────
@@ -186,6 +189,8 @@ export interface MetricScore {
   normalizedScore: number   // 0-100
   isExcluded: boolean
   excludeReason?: string
+  /** Evidence inputs that produced this metric's raw value (e.g., start/end values for growth) */
+  evidence?: { startValue?: number; endValue?: number }
 }
 
 /** Score result for a segment (group of metrics) */
@@ -196,6 +201,8 @@ export interface SegmentResult {
   segmentScore: number      // 0-100
   verdict?: string
   verdictColor?: string
+  /** Why this segment scored N/A — e.g. "PB > 30 → valuation NA (unreliable)" */
+  naReason?: string
 }
 
 /** Complete score result for a single stock */
@@ -221,6 +228,8 @@ export interface ModelRunResult {
   rankedList: string[]      // Stock IDs in rank order
   runTimestamp: number
   universeSize: number
+  /** Diagnostic warnings — stocks skipped due to missing API data, etc. */
+  warnings?: string[]
 }
 
 // ─────────────────────────────────────────────────
@@ -328,6 +337,7 @@ export interface BacktestSnapshot {
 export interface PricePerformance {
   stockId: string
   stockName?: string
+  startPrice: number          // First trading day price (base for cumulative returns)
   periods: {
     date: string
     price: number
@@ -398,6 +408,10 @@ export interface PriceDeltaRow {
   verdictColor: string
   /** Key: interval label (e.g., "Month 1", "Week 3"), Value: cumulative return % */
   deltas: Record<string, number>
+  /** Base price used for all delta calculations */
+  basePrice?: number
+  /** Key: interval label, Value: price at that interval (evidence for deltas) */
+  prices?: Record<string, number>
 }
 
 /** Combined result from scoring + backtesting in one operation (Stage 4→5) */
@@ -416,6 +430,8 @@ export interface BacktestResult {
   summaryMetrics: SummaryMetrics
   quintileAnalysis?: QuintileResult[]
   runTimestamp: number
+  /** Diagnostic warnings — stocks with missing price/fundamental data */
+  warnings?: string[]
 }
 
 // ─────────────────────────────────────────────────
@@ -555,4 +571,47 @@ export interface MetricCatalogEntry {
   subcategory?: string
   typicalRange?: [number, number]
   higherIsBetter?: boolean
+  /** True if this is a user-created custom metric */
+  isCustom?: boolean
+  /** Full definition if this is a custom metric */
+  customDefinition?: CustomMetricDefinition
+}
+
+// ─────────────────────────────────────────────────
+// Custom Metric Definitions (user-created)
+// ─────────────────────────────────────────────────
+
+/** How to derive a value from statement row data */
+export type MetricDerivation =
+  | 'latest'           // Latest available value from the most recent year column
+  | 'growth_cagr'      // CAGR over available years
+  | 'yoy_change'       // (Latest - Previous) / |Previous| × 100
+  | 'yoy_ratio'        // Latest / Previous
+
+/** A user-defined raw metric mapping to CMOTS data */
+export interface CustomMetricDefinition {
+  id: string                    // Auto-generated, prefixed 'custom_'
+  name: string
+  description: string
+  cmots_source: 'ttm' | 'pnl' | 'balanceSheet' | 'cashFlow' | 'quarterly'
+  cmots_field: string           // TTM field name (e.g., 'pegratio', 'assetturnover_ttm')
+  cmots_rowno?: number          // Statement row number (for pnl/bs/cf/quarterly sources)
+  derivation: MetricDerivation  // How to compute the value from raw data
+  unit: 'percent' | 'ratio' | 'currency' | 'number' | 'times'
+  category: string
+  higherIsBetter?: boolean
+  typicalRange?: [number, number]
+  createdAt: number
+}
+
+// ─────────────────────────────────────────────────
+// Metric Resolution Config (passed through pipeline)
+// ─────────────────────────────────────────────────
+
+/** Bundled configuration for the metric resolver */
+export interface MetricResolutionConfig {
+  /** Per-metric growth period overrides: metricId → maxYears */
+  growthPeriods?: Record<string, number>
+  /** User-defined custom metrics to resolve alongside built-in metrics */
+  customMetrics?: CustomMetricDefinition[]
 }

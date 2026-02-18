@@ -1,26 +1,121 @@
 /**
- * ScoringResultsTable — Stage 5 Tab 1: 3-level progressive disclosure
+ * ScoringResultsTable — Stage 5 Tab 1: Start/End scores with overlay drill-down
  *
- * Level 1 (row): Stock | Sector | Overall Score (color bar) | Verdict (badge)
- * Level 2 (click row → expand): Segment cards — Financial, Valuation, Technical, QMomentum
- * Level 3 (click segment → expand): Metric rows — name | raw value | score (0-100) | band color
+ * Columns: Stock | Start Score | Start Rank | End Score | End Rank | Δ Score | Δ Price
+ *
+ * Start/End scores come from backtest.snapshots[0] and snapshots[last].
+ * Δ Price comes from priceDeltaTable.deltas (last interval).
+ * Click a stock row → opens StockDetailOverlay (parent handles via onSelectStock).
+ * Existing segment expansion still works inline for quick glance.
  */
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { cn } from '@/lib/utils'
-import { useCombinedResult } from '@/store/useScoringStore'
+import { useCombinedResult, useActiveScorecard, useBacktestResult } from '@/store/useScoringStore'
 import type { SegmentResult, MetricScore } from '@/types/scoring'
-import { ChevronRight, TrendingUp, TrendingDown, Minus } from 'lucide-react'
+import { TrendingUp, TrendingDown, Minus, Calendar, Layers, ExternalLink } from 'lucide-react'
+import { NaExplainer } from './NaExplainer'
 
-export function ScoringResultsTable() {
+interface ScoringResultsTableProps {
+  onSelectStock?: (stockId: string) => void
+}
+
+interface StockRow {
+  stockId: string
+  stockName: string
+  stockSymbol: string
+  sector: string
+  startScore: number
+  startRank: number
+  endScore: number
+  endRank: number
+  deltaScore: number
+  deltaPrice: number | null
+  verdict: string
+  verdictColor: string
+  startSegmentResults: SegmentResult[]
+  endSegmentResults: SegmentResult[]
+}
+
+/** Which score cell's drill-down is open */
+type ScoreDrillDown = { stockId: string; type: 'start' | 'end' } | null
+
+type SortField = 'name' | 'startScore' | 'endScore' | 'deltaScore' | 'deltaPrice'
+
+export function ScoringResultsTable({ onSelectStock }: ScoringResultsTableProps) {
   const combinedResult = useCombinedResult()
-  const [expandedStock, setExpandedStock] = useState<string | null>(null)
+  const backtestResult = useBacktestResult()
+  const scorecard = useActiveScorecard()
   const [expandedSegment, setExpandedSegment] = useState<string | null>(null)
-  const [sortField, setSortField] = useState<'score' | 'name'>('score')
+  const [scoreDrillDown, setScoreDrillDown] = useState<ScoreDrillDown>(null)
+  const [sortField, setSortField] = useState<SortField>('endScore')
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc')
 
-  if (!combinedResult?.scoring) {
+  // Build enriched rows with start/end scores from snapshots
+  const rows = useMemo<StockRow[]>(() => {
+    if (!combinedResult?.scoring) return []
+
+    const snapshots = backtestResult?.snapshots ?? []
+    const firstSnapshot = snapshots.length > 0 ? snapshots[0] : null
+    const lastSnapshot = snapshots.length > 1 ? snapshots[snapshots.length - 1] : firstSnapshot
+
+    // Build start score/rank/segments map
+    const startMap = new Map<string, { score: number; rank: number; segments: SegmentResult[] }>()
+    if (firstSnapshot) {
+      const sorted = [...firstSnapshot.stockScores].sort((a, b) => b.normalizedScore - a.normalizedScore)
+      sorted.forEach((s, i) => startMap.set(s.stockId, { score: s.normalizedScore, rank: i + 1, segments: s.segmentResults }))
+    }
+
+    // Build end score/rank/segments map
+    const endMap = new Map<string, { score: number; rank: number; segments: SegmentResult[] }>()
+    if (lastSnapshot) {
+      const sorted = [...lastSnapshot.stockScores].sort((a, b) => b.normalizedScore - a.normalizedScore)
+      sorted.forEach((s, i) => endMap.set(s.stockId, { score: s.normalizedScore, rank: i + 1, segments: s.segmentResults }))
+    }
+
+    // Build price delta map (total return = last interval value)
+    const priceMap = new Map<string, number>()
+    if (combinedResult.priceDeltaTable) {
+      for (const row of combinedResult.priceDeltaTable) {
+        const keys = Object.keys(row.deltas)
+        if (keys.length > 0) {
+          // Sort interval keys by their numeric portion
+          const sortedKeys = keys.sort((a, b) => {
+            const numA = parseInt(a.replace(/\D/g, '')) || 0
+            const numB = parseInt(b.replace(/\D/g, '')) || 0
+            return numA - numB
+          })
+          const lastKey = sortedKeys[sortedKeys.length - 1]
+          priceMap.set(row.stockId, row.deltas[lastKey])
+        }
+      }
+    }
+
+    return combinedResult.scoring.stocks.map(stock => {
+      const start = startMap.get(stock.stockId)
+      const end = endMap.get(stock.stockId)
+
+      return {
+        stockId: stock.stockId,
+        stockName: stock.stockName,
+        stockSymbol: stock.stockSymbol,
+        sector: stock.sector,
+        startScore: start?.score ?? stock.normalizedScore,
+        startRank: start?.rank ?? stock.rank,
+        endScore: end?.score ?? stock.normalizedScore,
+        endRank: end?.rank ?? stock.rank,
+        deltaScore: (end?.score ?? stock.normalizedScore) - (start?.score ?? stock.normalizedScore),
+        deltaPrice: priceMap.get(stock.stockId) ?? null,
+        verdict: stock.verdict,
+        verdictColor: stock.verdictColor,
+        startSegmentResults: start?.segments ?? stock.segmentResults,
+        endSegmentResults: end?.segments ?? stock.segmentResults,
+      }
+    })
+  }, [combinedResult, backtestResult])
+
+  if (rows.length === 0) {
     return (
       <div className="text-center py-8 text-neutral-500 text-sm">
         No scoring results. Run the scoring engine first.
@@ -28,89 +123,192 @@ export function ScoringResultsTable() {
     )
   }
 
-  const stocks = [...combinedResult.scoring.stocks]
-  if (sortField === 'score') {
-    stocks.sort((a, b) => sortDir === 'desc' ? b.normalizedScore - a.normalizedScore : a.normalizedScore - b.normalizedScore)
-  } else {
-    stocks.sort((a, b) => sortDir === 'asc' ? a.stockName.localeCompare(b.stockName) : b.stockName.localeCompare(a.stockName))
-  }
+  // Sort rows
+  const sorted = [...rows].sort((a, b) => {
+    const dir = sortDir === 'desc' ? -1 : 1
+    switch (sortField) {
+      case 'name': return dir * a.stockName.localeCompare(b.stockName)
+      case 'startScore': return dir * (a.startScore - b.startScore)
+      case 'endScore': return dir * (a.endScore - b.endScore)
+      case 'deltaScore': return dir * (a.deltaScore - b.deltaScore)
+      case 'deltaPrice': return dir * ((a.deltaPrice ?? -Infinity) - (b.deltaPrice ?? -Infinity))
+      default: return 0
+    }
+  })
 
-  const toggleSort = (field: 'score' | 'name') => {
+  const toggleSort = (field: SortField) => {
     if (sortField === field) {
       setSortDir(d => d === 'asc' ? 'desc' : 'asc')
     } else {
       setSortField(field)
-      setSortDir(field === 'score' ? 'desc' : 'asc')
+      setSortDir(field === 'name' ? 'asc' : 'desc')
     }
   }
 
-  const toggleStock = (stockId: string) => {
-    setExpandedStock(prev => prev === stockId ? null : stockId)
+  const toggleScoreDrillDown = (stockId: string, type: 'start' | 'end') => {
+    setScoreDrillDown(prev =>
+      prev?.stockId === stockId && prev.type === type ? null : { stockId, type }
+    )
     setExpandedSegment(null)
   }
 
+  const sortIndicator = (field: SortField) =>
+    sortField === field ? (sortDir === 'asc' ? ' ↑' : ' ↓') : ''
+
+  // Date context
+  const snapshots = backtestResult?.snapshots ?? []
+  const startDate = snapshots.length > 0
+    ? formatDate(snapshots[0].date)
+    : null
+  const endDate = snapshots.length > 1
+    ? formatDate(snapshots[snapshots.length - 1].date)
+    : null
+  const scoredAt = combinedResult?.scoring
+    ? new Date(combinedResult.scoring.runTimestamp).toLocaleDateString('en-IN', {
+        day: 'numeric', month: 'short', year: 'numeric',
+      })
+    : null
+
   return (
     <div className="rounded-xl bg-dark-800/40 border border-white/5 overflow-hidden">
-      {/* Header */}
-      <div className="grid grid-cols-[1fr_100px_80px_80px] px-4 py-2.5 border-b border-white/5 text-[10px] text-neutral-500 uppercase tracking-wider">
+      {/* Context header */}
+      <div className="flex items-center gap-4 px-4 py-2.5 border-b border-white/5 bg-dark-800/60">
+        <div className="flex items-center gap-1.5 text-[11px] text-neutral-400">
+          <Calendar className="w-3 h-3 text-primary-400" />
+          {startDate && endDate ? (
+            <span>
+              <span className="text-white font-medium">{startDate}</span>
+              <span className="text-neutral-500 mx-1">→</span>
+              <span className="text-white font-medium">{endDate}</span>
+            </span>
+          ) : (
+            <span>Scored: <span className="text-white font-medium">{scoredAt}</span></span>
+          )}
+        </div>
+        <div className="flex items-center gap-1.5 text-[11px] text-neutral-400 ml-auto">
+          <Layers className="w-3 h-3 text-primary-400" />
+          <span className="text-white font-medium">{rows.length}</span> stocks
+          {scorecard && (
+            <>
+              <span className="text-neutral-500 mx-0.5">·</span>
+              <span className="text-primary-400 font-medium">{scorecard.versionInfo.displayVersion}</span>
+            </>
+          )}
+        </div>
+      </div>
+
+      {/* Column header */}
+      <div className="grid grid-cols-[1fr_70px_40px_70px_40px_60px_70px] px-4 py-2 border-b border-white/5 text-[9px] text-neutral-500 uppercase tracking-wider">
         <button onClick={() => toggleSort('name')} className="text-left hover:text-neutral-300 transition-colors">
-          Stock {sortField === 'name' && (sortDir === 'asc' ? '↑' : '↓')}
+          Stock{sortIndicator('name')}
         </button>
-        <span>Sector</span>
-        <button onClick={() => toggleSort('score')} className="text-right hover:text-neutral-300 transition-colors">
-          Score {sortField === 'score' && (sortDir === 'asc' ? '↑' : '↓')}
+        <button onClick={() => toggleSort('startScore')} className="text-right hover:text-neutral-300 transition-colors">
+          Start{sortIndicator('startScore')}
         </button>
-        <span className="text-right">Verdict</span>
+        <span className="text-right">#</span>
+        <button onClick={() => toggleSort('endScore')} className="text-right hover:text-neutral-300 transition-colors">
+          End{sortIndicator('endScore')}
+        </button>
+        <span className="text-right">#</span>
+        <button onClick={() => toggleSort('deltaScore')} className="text-right hover:text-neutral-300 transition-colors">
+          Δ Score{sortIndicator('deltaScore')}
+        </button>
+        <button onClick={() => toggleSort('deltaPrice')} className="text-right hover:text-neutral-300 transition-colors">
+          Δ Price{sortIndicator('deltaPrice')}
+        </button>
       </div>
 
       {/* Rows */}
       <div className="divide-y divide-white/5">
-        {stocks.map(stock => (
-          <div key={stock.stockId}>
+        {sorted.map(row => (
+          <div key={row.stockId}>
             {/* Level 1: Stock row */}
-            <button
-              onClick={() => toggleStock(stock.stockId)}
-              className={cn(
-                'w-full grid grid-cols-[1fr_100px_80px_80px] px-4 py-2.5 text-left hover:bg-dark-700/30 transition-colors items-center',
-                expandedStock === stock.stockId && 'bg-dark-700/20',
-              )}
+            <div
+              className="grid grid-cols-[1fr_70px_40px_70px_40px_60px_70px] px-4 py-2.5 items-center hover:bg-dark-700/30 transition-colors"
             >
+              {/* Stock name + overlay link */}
               <div className="flex items-center gap-2">
-                <ChevronRight className={cn(
-                  'w-3 h-3 text-neutral-500 transition-transform',
-                  expandedStock === stock.stockId && 'rotate-90',
-                )} />
-                <div>
-                  <div className="text-xs font-medium text-white">{stock.stockName}</div>
-                  <div className="text-[10px] text-neutral-500">{stock.stockSymbol}</div>
+                <div className="min-w-0">
+                  <div className="text-xs font-medium text-white truncate">{row.stockName}</div>
+                  <div className="text-[10px] text-neutral-500">{row.stockSymbol}</div>
                 </div>
+                {onSelectStock && (
+                  <button
+                    onClick={() => onSelectStock(row.stockId)}
+                    className="ml-1 p-1 rounded hover:bg-primary-500/20 transition-colors flex-shrink-0"
+                    title="View interval details"
+                  >
+                    <ExternalLink className="w-3 h-3 text-primary-400" />
+                  </button>
+                )}
               </div>
-              <span className="text-[10px] text-neutral-400 truncate">{stock.sector}</span>
-              <div className="text-right">
-                <div className="text-sm font-semibold text-white">{stock.normalizedScore.toFixed(1)}</div>
-                <div className="w-full h-1 bg-dark-600 rounded-full mt-0.5">
-                  <div
-                    className="h-full rounded-full"
-                    style={{
-                      width: `${stock.normalizedScore}%`,
-                      backgroundColor: getScoreColor(stock.normalizedScore),
-                    }}
-                  />
-                </div>
-              </div>
+
+              {/* Start Score — clickable for segment drill-down */}
+              <button
+                onClick={(e) => { e.stopPropagation(); toggleScoreDrillDown(row.stockId, 'start') }}
+                className={cn(
+                  'text-right rounded px-1 -mx-1 py-0.5 transition-colors',
+                  scoreDrillDown?.stockId === row.stockId && scoreDrillDown.type === 'start'
+                    ? 'bg-primary-500/15 ring-1 ring-primary-500/30'
+                    : 'hover:bg-dark-600/40',
+                )}
+                title="Click to view segment breakdown at start date"
+              >
+                <span className="text-xs font-semibold font-mono" style={{ color: getScoreColor(row.startScore) }}>
+                  {row.startScore.toFixed(1)}
+                </span>
+              </button>
+
+              {/* Start Rank */}
+              <span className="text-[10px] text-neutral-500 text-right font-mono">#{row.startRank}</span>
+
+              {/* End Score — clickable for segment drill-down */}
+              <button
+                onClick={(e) => { e.stopPropagation(); toggleScoreDrillDown(row.stockId, 'end') }}
+                className={cn(
+                  'text-right rounded px-1 -mx-1 py-0.5 transition-colors',
+                  scoreDrillDown?.stockId === row.stockId && scoreDrillDown.type === 'end'
+                    ? 'bg-primary-500/15 ring-1 ring-primary-500/30'
+                    : 'hover:bg-dark-600/40',
+                )}
+                title="Click to view segment breakdown at end date"
+              >
+                <span className="text-xs font-semibold font-mono" style={{ color: getScoreColor(row.endScore) }}>
+                  {row.endScore.toFixed(1)}
+                </span>
+              </button>
+
+              {/* End Rank */}
+              <span className="text-[10px] text-neutral-500 text-right font-mono">#{row.endRank}</span>
+
+              {/* Δ Score */}
               <div className="text-right">
                 <span className={cn(
-                  'inline-block px-2 py-0.5 rounded-full text-[10px] font-medium',
-                  getVerdictStyle(stock.verdict),
+                  'text-[11px] font-medium font-mono',
+                  row.deltaScore > 0 ? 'text-success-400' : row.deltaScore < 0 ? 'text-red-400' : 'text-neutral-500',
                 )}>
-                  {stock.verdict}
+                  {row.deltaScore > 0 ? '+' : ''}{row.deltaScore.toFixed(1)}
                 </span>
               </div>
-            </button>
 
-            {/* Level 2: Segment cards */}
+              {/* Δ Price */}
+              <div className="text-right">
+                {row.deltaPrice != null ? (
+                  <span className={cn(
+                    'text-[11px] font-medium font-mono',
+                    row.deltaPrice > 0 ? 'text-success-400' : row.deltaPrice < 0 ? 'text-red-400' : 'text-neutral-500',
+                  )}>
+                    {row.deltaPrice > 0 ? '+' : ''}{row.deltaPrice.toFixed(1)}%
+                  </span>
+                ) : (
+                  <span className="text-[10px] text-neutral-500">—</span>
+                )}
+              </div>
+            </div>
+
+            {/* Score drill-down: segment breakdown for Start or End date */}
             <AnimatePresence>
-              {expandedStock === stock.stockId && (
+              {scoreDrillDown?.stockId === row.stockId && (
                 <motion.div
                   initial={{ height: 0, opacity: 0 }}
                   animate={{ height: 'auto', opacity: 1 }}
@@ -119,42 +317,62 @@ export function ScoringResultsTable() {
                   className="overflow-hidden"
                 >
                   <div className="px-4 pb-3 pt-1">
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-                      {stock.segmentResults.map(segment => (
-                        <SegmentCard
-                          key={segment.segmentId}
-                          segment={segment}
-                          isExpanded={expandedSegment === segment.segmentId}
-                          onToggle={() => setExpandedSegment(
-                            prev => prev === segment.segmentId ? null : segment.segmentId
-                          )}
-                        />
-                      ))}
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="text-[10px] font-medium text-primary-400">
+                        {scoreDrillDown.type === 'start' ? 'Start' : 'End'} Date Breakdown
+                      </span>
+                      <span className="text-[10px] text-neutral-500">
+                        {scoreDrillDown.type === 'start' ? startDate : endDate}
+                      </span>
                     </div>
 
-                    {/* Level 3: Metric detail */}
-                    <AnimatePresence>
-                      {expandedSegment && (
-                        <MetricDetail
-                          segment={stock.segmentResults.find(s => s.segmentId === expandedSegment)}
-                        />
-                      )}
-                    </AnimatePresence>
+                    {(() => {
+                      const segments = scoreDrillDown.type === 'start'
+                        ? row.startSegmentResults
+                        : row.endSegmentResults
+                      return (
+                        <>
+                          <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                            {segments.map(segment => (
+                              <SegmentCard
+                                key={segment.segmentId}
+                                segment={segment}
+                                isExpanded={expandedSegment === `${scoreDrillDown.type}-${segment.segmentId}`}
+                                onToggle={() => setExpandedSegment(
+                                  prev => prev === `${scoreDrillDown.type}-${segment.segmentId}` ? null : `${scoreDrillDown.type}-${segment.segmentId}`
+                                )}
+                              />
+                            ))}
+                          </div>
+
+                          <AnimatePresence>
+                            {expandedSegment?.startsWith(`${scoreDrillDown.type}-`) && (
+                              <MetricDetail
+                                segment={segments.find(s => `${scoreDrillDown.type}-${s.segmentId}` === expandedSegment)}
+                              />
+                            )}
+                          </AnimatePresence>
+                        </>
+                      )
+                    })()}
                   </div>
                 </motion.div>
               )}
             </AnimatePresence>
+
           </div>
         ))}
       </div>
 
       {/* Footer */}
       <div className="px-4 py-2 border-t border-white/5 text-[10px] text-neutral-500">
-        {stocks.length} stocks scored • Click a row to see segment scores • Click a segment to see metrics
+        {rows.length} stocks • Click Start/End scores for segment breakdown at that date • Click <ExternalLink className="w-2.5 h-2.5 inline" /> for interval drill-down
       </div>
     </div>
   )
 }
+
+// ─── Sub-components ───
 
 function SegmentCard({
   segment,
@@ -181,9 +399,13 @@ function SegmentCard({
           {segment.segmentScore.toFixed(1)}
         </span>
         {segment.verdict && (
-          <span className={cn('text-[9px] font-medium', getVerdictTextColor(segment.verdict))}>
-            {segment.verdict}
-          </span>
+          segment.verdict === 'N/A' ? (
+            <NaExplainer label="N/A" reason={segment.naReason} className="text-[9px] font-medium text-neutral-500" />
+          ) : (
+            <span className={cn('text-[9px] font-medium', getVerdictTextColor(segment.verdict))}>
+              {segment.verdict}
+            </span>
+          )
         )}
       </div>
       <div className="w-full h-1 bg-dark-600 rounded-full mt-1.5">
@@ -231,7 +453,9 @@ function MetricRow({ metric }: { metric: MetricScore }) {
     <div className="grid grid-cols-[1fr_80px_60px_60px] px-3 py-1.5 items-center">
       <span className="text-[11px] text-neutral-300">{metric.metricName}</span>
       <span className="text-[11px] text-neutral-400 text-right font-mono">
-        {metric.rawValue != null ? formatValue(metric.rawValue) : 'N/A'}
+        {metric.rawValue != null ? formatValue(metric.rawValue) : (
+          <NaExplainer label="N/A" reason={metric.excludeReason} className="text-neutral-500" />
+        )}
       </span>
       <div className="text-right">
         {!metric.isExcluded ? (
@@ -239,14 +463,16 @@ function MetricRow({ metric }: { metric: MetricScore }) {
             {metric.normalizedScore.toFixed(0)}
           </span>
         ) : (
-          <span className="text-[10px] text-neutral-600">—</span>
+          <NaExplainer label="—" reason={metric.excludeReason} className="text-[10px] text-neutral-500" />
         )}
       </div>
       <div className="text-right">
         {metric.isExcluded ? (
-          <span className="text-[9px] text-neutral-600" title={metric.excludeReason}>
-            {metric.excludeReason === 'No data available' ? 'N/A' : 'Excl.'}
-          </span>
+          <NaExplainer
+            label={metric.excludeReason === 'No data available' ? 'N/A' : 'Excl.'}
+            reason={metric.excludeReason}
+            className="text-[9px] text-neutral-500"
+          />
         ) : metric.normalizedScore >= 65 ? (
           <TrendingUp className="w-3 h-3 text-success-400 inline" />
         ) : metric.normalizedScore >= 35 ? (
@@ -261,6 +487,11 @@ function MetricRow({ metric }: { metric: MetricScore }) {
 
 // ─── Helpers ───
 
+function formatDate(dateStr: string): string {
+  const d = new Date(dateStr)
+  return d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
+}
+
 function formatValue(value: number): string {
   if (Math.abs(value) >= 1e9) return `${(value / 1e9).toFixed(1)}B`
   if (Math.abs(value) >= 1e6) return `${(value / 1e6).toFixed(1)}M`
@@ -270,20 +501,11 @@ function formatValue(value: number): string {
 }
 
 function getScoreColor(score: number): string {
-  if (score >= 80) return '#22c55e' // green
-  if (score >= 65) return '#84cc16' // lime
-  if (score >= 50) return '#eab308' // yellow
-  if (score >= 35) return '#f97316' // orange
-  return '#ef4444' // red
-}
-
-function getVerdictStyle(verdict: string): string {
-  const v = verdict.toUpperCase()
-  if (v.includes('STRONG BUY') || v === 'EXCELLENT') return 'bg-success-500/20 text-success-400'
-  if (v.includes('BUY') || v === 'GOOD') return 'bg-lime-500/20 text-lime-400'
-  if (v.includes('HOLD') || v === 'FAIR') return 'bg-warning-500/20 text-warning-400'
-  if (v.includes('REVIEW') || v === 'WEAK') return 'bg-orange-500/20 text-orange-400'
-  return 'bg-red-500/20 text-red-400'
+  if (score >= 80) return '#22c55e'
+  if (score >= 65) return '#84cc16'
+  if (score >= 50) return '#eab308'
+  if (score >= 35) return '#f97316'
+  return '#ef4444'
 }
 
 function getVerdictTextColor(verdict: string): string {

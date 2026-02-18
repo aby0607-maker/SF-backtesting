@@ -54,6 +54,7 @@ interface ScoringState {
     mcapTypes: string[]    // e.g. ['Large Cap'] — cohort mode only
     sectors: string[]      // e.g. ['Finance'] — cohort mode only
     customSymbols: string[] // e.g. ['RELIANCE', 'TCS'] — individual mode + cohort additions
+    excludedSymbols: string[] // Stocks manually removed while in cohort/all mode
   }
 
   // Backtest config (date range, interval, benchmark)
@@ -91,6 +92,8 @@ interface ScoringState {
   deleteScorecard: (scorecardId: string) => void
   setActiveScorecard: (scorecardId: string) => void
   loadTemplate: (templateId: string) => string | null
+  /** Load a fully-formed scorecard directly (e.g., from CSV upload) */
+  loadScorecard: (scorecard: ScorecardVersion) => string
 
   // ─── Actions: Version Management ───
   createMicroVersion: (scorecardId: string) => string | null
@@ -174,7 +177,7 @@ export const useScoringStore = create<ScoringState>()(
       activeScorecardId: null,
       versionHistory: {},
 
-      universeFilter: { mode: 'cohort' as const, mcapTypes: ['Large Cap'], sectors: [], customSymbols: [] },
+      universeFilter: { mode: 'cohort' as const, mcapTypes: ['Large Cap'], sectors: [], customSymbols: [], excludedSymbols: [] },
       backtestConfig: null,
       combinedResult: null,
       currentRun: null,
@@ -329,6 +332,31 @@ export const useScoringStore = create<ScoringState>()(
             ...template.versionInfo,
             createdAt: Date.now(),
             parentVersionId: template.id,
+          },
+        }
+
+        const macro = loaded.versionInfo.macroVersion
+
+        set(state => ({
+          scorecards: [...state.scorecards, loaded],
+          activeScorecardId: id,
+          versionHistory: {
+            ...state.versionHistory,
+            [macro]: [...(state.versionHistory[macro] || []), loaded],
+          },
+        }))
+
+        return id
+      },
+
+      loadScorecard: (scorecard: ScorecardVersion) => {
+        const id = generateId()
+        const loaded: ScorecardVersion = {
+          ...structuredClone(scorecard),
+          id,
+          versionInfo: {
+            ...scorecard.versionInfo,
+            createdAt: Date.now(),
           },
         }
 
@@ -614,17 +642,11 @@ export const useScoringStore = create<ScoringState>()(
           },
         }
 
-        // Add stock selection summary from universe filter
-        const stockNames = universeFilter.customSymbols.slice(0, 5)
-        const totalStocks = universeFilter.mode === 'all'
-          ? -1  // Unknown until we fetch
-          : universeFilter.mode === 'individual'
-            ? universeFilter.customSymbols.length
-            : universeFilter.customSymbols.length // cohort mode — symbols resolved by UniverseSelector
+        // Add stock selection summary — all modes now resolve to customSymbols immediately
         snapshot.stockSelectionSummary = {
-          totalStocks,
+          totalStocks: universeFilter.customSymbols.length,
           selectionMode: universeFilter.mode,
-          stockNames,
+          stockNames: universeFilter.customSymbols.slice(0, 8),
         }
 
         // Add date config if available

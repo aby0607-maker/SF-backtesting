@@ -1,11 +1,12 @@
 /**
- * CMOTS Fundamentals — TTM, FinData, P&L, Cash Flow, Quarterly
+ * CMOTS Fundamentals — TTM, FinData, P&L, Cash Flow, Balance Sheet, Quarterly
  *
  * Endpoints:
  *   /TTMData/{co_code}/s         — Current trailing-twelve-month ratios
  *   /FinData/{co_code}/s         — Yearly financial metrics (5 years)
  *   /ProftandLoss/{co_code}/s    — P&L statement rows with year columns
  *   /CashFlow/{co_code}/s        — Cash flow rows with year columns
+ *   /BalanceSheet/{co_code}/s    — Balance sheet rows with year columns
  *   /QuarterlyResults/{co_code}/s — Quarterly result rows with quarter columns
  *
  * Mock mode: converts MOCK_STOCK_METRICS to compatible format
@@ -16,10 +17,12 @@ import type {
   CMOTSTTMRecord,
   CMOTSFinancialRecord,
   CMOTSStatementRow,
+  CMOTSShareholding,
 } from '@/types/scoring'
 import { MOCK_STOCK_METRICS } from '@/data/mockScoringData'
 import { cmotsFetch, cmotsFetchOne, isMockMode } from './client'
 import { getCoCode } from './companyMaster'
+import { getShareholdingHistory } from './shareholding'
 
 const CACHE_TTL = 12 * 60 * 60 * 1000  // 12 hours — fundamentals barely change intra-day
 
@@ -81,6 +84,19 @@ export async function getCashFlow(symbol: string): Promise<CMOTSStatementRow[]> 
   })
 }
 
+/** Get balance sheet rows (row-based with year columns) */
+export async function getBalanceSheet(symbol: string): Promise<CMOTSStatementRow[]> {
+  if (isMockMode()) return []
+
+  const coCode = await getCoCode(symbol)
+  if (!coCode) return []
+
+  return await cmotsFetch<CMOTSStatementRow>({
+    endpoint: `/BalanceSheet/${coCode}/s`,
+    cacheTTL: CACHE_TTL,
+  })
+}
+
 /** Get quarterly results rows (row-based with quarter columns like Y202512) */
 export async function getQuarterlyResults(symbol: string): Promise<CMOTSStatementRow[]> {
   if (isMockMode()) return []
@@ -101,12 +117,14 @@ export interface FundamentalsBundle {
   finData: CMOTSFinancialRecord[]
   pnl: CMOTSStatementRow[]
   cashFlow: CMOTSStatementRow[]
+  balanceSheet: CMOTSStatementRow[]
   quarterly: CMOTSStatementRow[]
+  shareholding: CMOTSShareholding[]
 }
 
 /**
  * Fetch all fundamental data for a stock in one call.
- * All 5 endpoints are fetched in parallel for efficiency.
+ * All 6 endpoints are fetched in parallel for efficiency.
  */
 export async function getAllFundamentals(symbol: string): Promise<FundamentalsBundle> {
   if (isMockMode()) {
@@ -115,19 +133,23 @@ export async function getAllFundamentals(symbol: string): Promise<FundamentalsBu
       finData: [],
       pnl: [],
       cashFlow: [],
+      balanceSheet: [],
       quarterly: [],
+      shareholding: [],
     }
   }
 
-  const [ttm, finData, pnl, cashFlow, quarterly] = await Promise.all([
+  const [ttm, finData, pnl, cashFlow, balanceSheet, quarterly, shareholding] = await Promise.all([
     getTTMData(symbol),
     getFinancialData(symbol),
     getProfitAndLoss(symbol),
     getCashFlow(symbol),
+    getBalanceSheet(symbol),
     getQuarterlyResults(symbol),
+    getShareholdingHistory(symbol),
   ])
 
-  return { ttm, finData, pnl, cashFlow, quarterly }
+  return { ttm, finData, pnl, cashFlow, balanceSheet, quarterly, shareholding }
 }
 
 // ── Statement row helpers (exported for metricResolver) ──

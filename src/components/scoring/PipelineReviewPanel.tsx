@@ -128,7 +128,7 @@ export function PipelineReviewPanel() {
               <div className="text-[10px] text-neutral-500 mb-1">Stock Selection</div>
               <div className="flex items-center gap-2 text-xs">
                 <span className="text-white font-medium">
-                  {snapshot.stockSelectionSummary.totalStocks} stocks
+                  {`${snapshot.stockSelectionSummary.totalStocks} stocks`}
                 </span>
                 <span className="text-neutral-600">•</span>
                 <span className="text-neutral-400 capitalize">
@@ -194,7 +194,8 @@ function buildConfigSummary(snapshot: NonNullable<ReturnType<typeof useReviewSna
   const parts: string[] = []
 
   if (snapshot.stockSelectionSummary) {
-    parts.push(`${snapshot.stockSelectionSummary.totalStocks} stocks`)
+    const count = snapshot.stockSelectionSummary.totalStocks
+    parts.push(count === -1 ? `${snapshot.stockSelectionSummary.selectionMode} filter` : `${count} stocks`)
   }
 
   if (snapshot.dateConfig) {

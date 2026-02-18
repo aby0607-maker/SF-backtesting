@@ -1,12 +1,14 @@
 /**
- * CMOTS Company Master — Company lookup with symbol→co_code resolution
+ * CMOTS Company Master — Company lookup with co_code as canonical identifier
  *
- * The CMOTS API uses `co_code` (integer) as its primary identifier,
- * but the scoring system uses NSE symbols (strings). This module bridges
- * the two by maintaining a cached symbol→company lookup map.
+ * The CMOTS API uses `co_code` (integer) as its primary identifier.
+ * This module maintains a cached lookup map keyed by String(co_code).
+ *
+ * BSE-only: CMOTS is a BSE data provider. The company master is filtered
+ * to only include active BSE-listed companies.
  *
  * Mock mode: returns from MOCK_COMPANIES
- * API mode: fetches from /companymaster, builds lookup cache
+ * API mode: fetches from /companymaster, filters to BSE active, builds cache
  */
 
 import type { CMOTSCompany } from '@/types/scoring'
@@ -15,11 +17,11 @@ import { cmotsFetch, isMockMode } from './client'
 
 const CACHE_TTL = 24 * 60 * 60 * 1000  // 24 hours
 
-// ── Symbol → Company lookup cache ──
+// ── co_code → Company lookup cache ──
 let companyMap: Map<string, CMOTSCompany> | null = null
 let companyMapPromise: Promise<Map<string, CMOTSCompany>> | null = null
 
-/** Build the lookup map (keyed by uppercase NSE symbol) */
+/** Build the lookup map keyed by String(co_code). Also supports lookup by bsecode/nsesymbol. */
 async function ensureCompanyMap(): Promise<Map<string, CMOTSCompany>> {
   if (companyMap) return companyMap
 
@@ -30,13 +32,15 @@ async function ensureCompanyMap(): Promise<Map<string, CMOTSCompany>> {
     const companies = await getCompanyMaster()
     const map = new Map<string, CMOTSCompany>()
     for (const c of companies) {
-      if (c.nsesymbol) {
-        map.set(c.nsesymbol.toUpperCase(), c)
-      }
+      // Primary key: co_code (canonical identifier used by all CMOTS endpoints)
+      map.set(String(c.co_code), c)
+      // Secondary keys for backward compat / search: bsecode, nsesymbol
+      if (c.bsecode) map.set(c.bsecode.toUpperCase(), c)
+      if (c.nsesymbol) map.set(c.nsesymbol.toUpperCase(), c)
     }
     companyMap = map
     companyMapPromise = null
-    console.log(`[CompanyMaster] Loaded ${map.size} NSE-listed companies`)
+    console.log(`[CompanyMaster] Loaded ${companies.length} BSE companies`)
     return map
   })()
 
@@ -45,7 +49,7 @@ async function ensureCompanyMap(): Promise<Map<string, CMOTSCompany>> {
 
 // ── Public API ──
 
-/** Get all companies (the full universe) */
+/** Get all companies (BSE-active universe). CMOTS is a BSE data provider. */
 export async function getCompanyMaster(): Promise<CMOTSCompany[]> {
   if (isMockMode()) {
     return MOCK_COMPANIES.map(mockToCMOTS)
@@ -55,10 +59,12 @@ export async function getCompanyMaster(): Promise<CMOTSCompany[]> {
     endpoint: '/companymaster',
     cacheTTL: CACHE_TTL,
   })
-  return data
+
+  // Filter to BSE-active companies only — CMOTS is a BSE data provider
+  return data.filter(c => c.bselistedflag === 'Y' || c.BSEStatus === 'Active')
 }
 
-/** Resolve an NSE symbol to its co_code. Returns null if not found. */
+/** Resolve a symbol (NSE or BSE) to its co_code. Returns null if not found. */
 export async function getCoCode(symbol: string): Promise<number | null> {
   if (isMockMode()) return null
 
@@ -67,7 +73,7 @@ export async function getCoCode(symbol: string): Promise<number | null> {
   return company?.co_code ?? null
 }
 
-/** Get company details by NSE symbol */
+/** Get company details by symbol (NSE or BSE code) */
 export async function getCompanyBySymbol(symbol: string): Promise<CMOTSCompany | null> {
   if (isMockMode()) {
     const mock = MOCK_COMPANIES.find(c => c.symbol === symbol.toUpperCase())
@@ -96,7 +102,8 @@ export async function searchCompanies(query: string): Promise<CMOTSCompany[]> {
   for (const company of map.values()) {
     if (
       company.companyname.toLowerCase().includes(q) ||
-      company.nsesymbol.toLowerCase().includes(q) ||
+      company.nsesymbol?.toLowerCase().includes(q) ||
+      company.bsecode?.toLowerCase().includes(q) ||
       company.companyshortname?.toLowerCase().includes(q)
     ) {
       results.push(company)

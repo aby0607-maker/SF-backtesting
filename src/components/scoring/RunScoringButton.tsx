@@ -75,16 +75,15 @@ export function RunScoringButton() {
         stockIds = [...universeFilter.customSymbols]
       } else if (universeFilter.mode === 'all') {
         const companies = await getCompanyMaster()
-        stockIds = companies.filter(c => c.nsesymbol).map(c => c.nsesymbol)
+        stockIds = companies.map(c => String(c.co_code))
       } else {
         const companies = await getCompanyMaster()
         const filtered = companies.filter(c => {
-          if (!c.nsesymbol) return false
           if (universeFilter.mcapTypes.length > 0 && !universeFilter.mcapTypes.includes(c.mcaptype)) return false
           if (universeFilter.sectors.length > 0 && !universeFilter.sectors.includes(c.sectorname)) return false
           return true
         })
-        stockIds = filtered.map(c => c.nsesymbol)
+        stockIds = filtered.map(c => String(c.co_code))
 
         if (universeFilter.customSymbols.length > 0) {
           const existing = new Set(stockIds)

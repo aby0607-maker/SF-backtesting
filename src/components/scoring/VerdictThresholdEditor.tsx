@@ -68,7 +68,7 @@ export function VerdictThresholdEditor() {
           return (
             <div
               key={i}
-              className={cn('h-full flex items-center justify-center text-[8px] font-bold text-white/80', vc.color)}
+              className={cn('h-full flex items-center justify-center text-xs font-bold text-white/80', vc.color)}
               style={{ width: `${width}%` }}
             >
               {width >= 15 && (verdictDisplayMode === 'action' ? t.verdict : t.altVerdict ?? t.verdict)}
@@ -91,7 +91,7 @@ export function VerdictThresholdEditor() {
               {/* Score range */}
               <div className="flex items-center gap-1 text-xs">
                 <span className="font-mono text-neutral-400">{threshold.minScore}</span>
-                <span className="text-neutral-600">-</span>
+                <span className="text-neutral-500">-</span>
                 <span className="font-mono text-neutral-400">{threshold.maxScore}</span>
               </div>
 
@@ -118,7 +118,7 @@ export function VerdictThresholdEditor() {
                 value={threshold.description ?? ''}
                 onChange={e => updateThreshold(i, 'description', e.target.value)}
                 placeholder="Description..."
-                className="w-48 px-2 py-0.5 bg-transparent border-none text-[10px] text-neutral-500 focus:outline-none focus:text-neutral-400 placeholder:text-neutral-600"
+                className="w-48 px-2 py-0.5 bg-transparent border-none text-xs text-neutral-400 focus:outline-none focus:text-neutral-300 placeholder:text-neutral-500"
               />
             </div>
           )

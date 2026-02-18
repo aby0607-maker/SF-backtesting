@@ -5,6 +5,7 @@
 import { useState } from 'react'
 import { cn } from '@/lib/utils'
 import { useCurrentScores } from '@/store/useScoringStore'
+import { NaExplainer } from './NaExplainer'
 
 export function MetricContributionWaterfall() {
   const currentRun = useCurrentScores()
@@ -88,7 +89,9 @@ export function MetricContributionWaterfall() {
                 <div key={ms.metricId} className="flex items-center gap-2 text-[10px]">
                   <span className="text-neutral-500 w-32 truncate">{ms.metricName}</span>
                   <span className="text-neutral-400 font-mono w-12 text-right">
-                    {ms.rawValue !== null ? ms.rawValue.toFixed(1) : 'N/A'}
+                    {ms.rawValue !== null ? ms.rawValue.toFixed(1) : (
+                      <NaExplainer label="N/A" reason={ms.excludeReason} className="text-neutral-500" />
+                    )}
                   </span>
                   <div className="flex-1 h-1.5 bg-dark-700/40 rounded-full overflow-hidden">
                     <div

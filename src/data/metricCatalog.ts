@@ -56,6 +56,8 @@ export const METRIC_CATALOG: MetricCatalogEntry[] = [
   { id: 'fii_holding', name: 'FII Holding', description: 'Percentage held by Foreign Institutional Investors', cmots_source: 'shareholding', cmots_field: 'FIIHolding', unit: 'percent', category: 'Ownership', typicalRange: [0, 50] },
   { id: 'dii_holding', name: 'DII Holding', description: 'Percentage held by Domestic Institutional Investors', cmots_source: 'shareholding', cmots_field: 'DIIHolding', unit: 'percent', category: 'Ownership', typicalRange: [0, 50] },
   { id: 'promoter_pledge', name: 'Promoter Pledge', description: 'Percentage of promoter shares pledged', cmots_source: 'shareholding', cmots_field: 'PromoterPledge', unit: 'percent', category: 'Ownership', typicalRange: [0, 100] },
+  { id: 'promoter_holding_change_3m', name: 'Promoter Holding Change (3M)', description: 'Quarter-over-quarter change in promoter holding percentage', cmots_source: 'shareholding', cmots_field: 'PromoterChange3M', unit: 'percent', category: 'Ownership', typicalRange: [-10, 10] },
+  { id: 'fii_holding_change_3m', name: 'FII Holding Change (3M)', description: 'Quarter-over-quarter change in FII holding percentage', cmots_source: 'shareholding', cmots_field: 'FIIChange3M', unit: 'percent', category: 'Ownership', typicalRange: [-10, 10] },
 
   // ─── Cash Flow ───
   { id: 'ocf', name: 'Operating Cash Flow', description: 'Cash generated from operations', cmots_source: 'ttm', cmots_field: 'OCF', unit: 'currency', category: 'Cash Flow', typicalRange: [-10000, 100000], higherIsBetter: true },
