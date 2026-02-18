@@ -1,7 +1,7 @@
 /**
- * Scoring Pipeline Store — Zustand state management for the 5-stage pipeline
+ * Scoring Pipeline Store — Zustand state management for the 3-stage pipeline
  *
- * Pipeline: Metrics → Scorecard → Configure → Review & Run → Results
+ * Pipeline: Build Scorecard → Configure & Run → Results & Iterate
  *
  * Manages: pipeline navigation, scorecard CRUD, version history,
  * universe selection, combined scoring+backtest results, and review snapshots.
@@ -134,6 +134,12 @@ interface ScoringState {
   deleteRun: (runId: string) => void
   loadRun: (runId: string) => void
   resetPipeline: () => void
+
+  // ─── Actions: Iteration (Quick Re-Run & Fork) ───
+  /** Prepare for re-run: stay on Stage 2 with current config, user just clicks Run again */
+  prepareReRun: () => void
+  /** Fork current scorecard + config: duplicate scorecard, jump to Stage 1 for editing */
+  forkRun: () => string | null
 }
 
 // ─────────────────────────────────────────────────
@@ -204,7 +210,7 @@ export const useScoringStore = create<ScoringState>()(
 
       nextStage: () => {
         set(state => ({
-          currentStage: Math.min(5, state.currentStage + 1) as PipelineStage,
+          currentStage: Math.min(3, state.currentStage + 1) as PipelineStage,
         }))
       },
 
@@ -226,6 +232,7 @@ export const useScoringStore = create<ScoringState>()(
 
       createScorecard: (name: string, macroVersion: string) => {
         const id = generateId()
+        const defaultSegmentId = `seg_${Date.now()}`
         const scorecard: ScorecardVersion = {
           id,
           versionInfo: {
@@ -235,8 +242,13 @@ export const useScoringStore = create<ScoringState>()(
             name,
             createdAt: Date.now(),
           },
-          segments: [],
-          compositeFormula: { baseSegments: [], baseWeight: 1.0 },
+          segments: [
+            { id: defaultSegmentId, name: 'Default', metrics: [], segmentWeight: 1.0 },
+          ],
+          compositeFormula: {
+            baseSegments: [{ segmentId: defaultSegmentId, weight: 1.0 }],
+            baseWeight: 1.0,
+          },
           normalization: { method: 'none' },
           verdictThresholds: [],
           customFactors: [],
@@ -791,10 +803,68 @@ export const useScoringStore = create<ScoringState>()(
           errorMessage: null,
         })
       },
+
+      // ─── Iteration ───
+
+      prepareReRun: () => {
+        set({
+          currentStage: 2 as PipelineStage,
+          combinedResult: null,
+          currentRun: null,
+          backtestResult: null,
+          reviewSnapshot: null,
+          status: 'idle' as ScoringStatus,
+          errorMessage: null,
+          // Keep: scorecard, universeFilter, backtestConfig
+        })
+      },
+
+      forkRun: () => {
+        const state = get()
+        const source = getActiveScorecard(state)
+        if (!source) return null
+
+        const id = generateId()
+        const macro = source.versionInfo.macroVersion
+        const existingVersions = state.versionHistory[macro] || []
+        const nextMicro = existingVersions.length + 1
+
+        const fork: ScorecardVersion = {
+          ...structuredClone(source),
+          id,
+          versionInfo: {
+            ...source.versionInfo,
+            microVersion: nextMicro,
+            displayVersion: `${macro}.${nextMicro}`,
+            name: `${source.versionInfo.name} (Fork)`,
+            createdAt: Date.now(),
+            parentVersionId: source.id,
+          },
+        }
+
+        set({
+          scorecards: [...state.scorecards, fork],
+          activeScorecardId: id,
+          versionHistory: {
+            ...state.versionHistory,
+            [macro]: capVersionHistory([...(state.versionHistory[macro] || []), fork]),
+          },
+          currentStage: 1 as PipelineStage,
+          combinedResult: null,
+          currentRun: null,
+          backtestResult: null,
+          reviewSnapshot: null,
+          status: 'idle' as ScoringStatus,
+          errorMessage: null,
+          // Keep: universeFilter, backtestConfig
+        })
+
+        return id
+      },
     }),
     {
       name: 'stockfox-scoring-storage',
-      version: 2,
+      version: 3,
       storage: {
         getItem: (name) => {
           const str = localStorage.getItem(name)
@@ -842,13 +912,19 @@ export const useScoringStore = create<ScoringState>()(
         }
         // v1 → v2: 7-stage → 5-stage pipeline migration
         if (version < 2) {
-          // Clamp currentStage to new max of 5
           const stage = state.currentStage as number
           if (stage > 5) state.currentStage = 3
-          // Clear removed fields
           delete state.cohort
           delete state.currentRun
           delete state.currentRunFilterHash
+        }
+        // v2 → v3: 5-stage → 3-stage pipeline migration
+        if (version < 3) {
+          const stage = state.currentStage as number
+          // Map old stages to new: 1,2→1 (Build), 3,4→2 (Configure & Run), 5→3 (Results)
+          if (stage <= 2) state.currentStage = 1
+          else if (stage <= 4) state.currentStage = 2
+          else state.currentStage = 3
         }
         return state
       },

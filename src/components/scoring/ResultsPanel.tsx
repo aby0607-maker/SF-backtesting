@@ -1,5 +1,5 @@
 /**
- * ResultsPanel — Stage 5: Tab switcher for Scores / Performance / Analysis
+ * ResultsPanel — Stage 3: Tab switcher for Scores / Performance / Analysis
  *
  * Performance tab (restructured):
  *   ├── ScoreReturnCorrelation      ← Score vs Return scatter + correlation timeline
@@ -20,7 +20,7 @@ import { useState } from 'react'
 import { AnimatePresence } from 'framer-motion'
 import { cn } from '@/lib/utils'
 import { ErrorBoundary } from '@/components/ui/ErrorBoundary'
-import { useCombinedResult, useBacktestResult } from '@/store/useScoringStore'
+import { useScoringStore, useCombinedResult, useBacktestResult } from '@/store/useScoringStore'
 import { ScoringResultsTable } from './ScoringResultsTable'
 import { StockDetailOverlay } from './StockDetailOverlay'
 import { PriceDeltaTable } from './PriceDeltaTable'
@@ -33,7 +33,7 @@ import { CohortComparisonTable } from './CohortComparisonTable'
 import { MetricContributionWaterfall } from './MetricContributionWaterfall'
 import { ScoreTrajectoryChart } from './ScoreTrajectoryChart'
 import { ExportReportButton } from './ExportReportButton'
-import { BarChart3, TrendingUp, Activity, AlertTriangle, ChevronDown } from 'lucide-react'
+import { BarChart3, TrendingUp, Activity, AlertTriangle, ChevronDown, RefreshCw, GitFork } from 'lucide-react'
 
 /** Lightweight fallback for chart rendering errors */
 const ChartErrorFallback = (
@@ -61,10 +61,13 @@ export function ResultsPanel() {
   const hasResults = !!combinedResult
   const hasBacktest = !!backtestResult
 
+  const prepareReRun = useScoringStore(s => s.prepareReRun)
+  const forkRun = useScoringStore(s => s.forkRun)
+
   if (!hasResults) {
     return (
       <div className="text-center py-12 text-neutral-500 text-sm">
-        No results available. Complete the scoring run in Stage 4 first.
+        No results available. Run a backtest in Stage 2 first.
       </div>
     )
   }
@@ -124,8 +127,24 @@ export function ResultsPanel() {
           </button>
         )}
 
-        {/* Export button on the right */}
-        <div className="ml-auto">
+        {/* Iteration + Export buttons on the right */}
+        <div className="ml-auto flex items-center gap-2">
+          <button
+            onClick={prepareReRun}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-dark-800/60 border border-white/5 text-neutral-400 hover:text-white hover:border-white/10 transition-colors"
+            title="Go back to Stage 2 with same config and re-run"
+          >
+            <RefreshCw className="w-3.5 h-3.5" />
+            Quick Re-Run
+          </button>
+          <button
+            onClick={forkRun}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-dark-800/60 border border-white/5 text-neutral-400 hover:text-white hover:border-white/10 transition-colors"
+            title="Duplicate scorecard for editing, preserving this run"
+          >
+            <GitFork className="w-3.5 h-3.5" />
+            Fork & Tweak
+          </button>
           <ExportReportButton />
         </div>
       </div>

@@ -1,7 +1,11 @@
 /**
- * Backtest Page — 5-Stage Scorecard Backtesting Pipeline
+ * Backtest Page — 3-Stage Scorecard Backtesting Pipeline
  *
- * Pipeline: Metrics → Scorecard → Configure → Review & Run → Results
+ * Pipeline: Build Scorecard → Configure & Run → Results & Iterate
+ *
+ * Stage 1 merges old Stages 1+2 (metrics + scorecard structure)
+ * Stage 2 merges old Stages 3+4 (configure + review/run)
+ * Stage 3 is old Stage 5 (results) + iteration tools
  *
  * Supports three UI modes:
  * - Wizard: Step-by-step, one stage at a time
@@ -9,53 +13,51 @@
  * - Hybrid: Sidebar with stage list, main area shows selected stage
  */
 
+import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { cn } from '@/lib/utils'
 import { useScoringStore, useCurrentStage, useUIMode, useActiveScorecard } from '@/store/useScoringStore'
 import type { MetricCatalogEntry } from '@/types/scoring'
 import type { PipelineStage } from '@/types/scoring'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { ChevronLeft, ChevronRight, ChevronDown, ChevronUp } from 'lucide-react'
 
 // Cross-stage
 import { PipelineNav } from '@/components/scoring/PipelineNav'
 import { UIModeToggle } from '@/components/scoring/UIModeToggle'
 import { ScorecardSelector } from '@/components/scoring/ScorecardSelector'
 
-// Stage 1: Build Metrics
+// Stage 1: Build Scorecard (merged metrics + scorecard structure)
 import { MetricCatalogBrowser } from '@/components/scoring/MetricCatalogBrowser'
 import { FormulaBuilder } from '@/components/scoring/FormulaBuilder'
 import { SelectedMetricsList } from '@/components/scoring/SelectedMetricsList'
 import { NegativeHandlingEditor } from '@/components/scoring/NegativeHandlingEditor'
 import { CSVUploadParser } from '@/components/scoring/CSVUploadParser'
-
-// Stage 2: Build Scorecard
 import { SegmentBuilder } from '@/components/scoring/SegmentBuilder'
 import { CompositeFormulaEditor } from '@/components/scoring/CompositeFormulaEditor'
 import { NormalizationSelector } from '@/components/scoring/NormalizationSelector'
 import { VerdictThresholdEditor } from '@/components/scoring/VerdictThresholdEditor'
 import { ScorecardTemplateCard } from '@/components/scoring/ScorecardTemplateCard'
 
-// Stage 3: Configure Run
+// Stage 2: Configure & Run
 import { ConfigureRunPanel } from '@/components/scoring/ConfigureRunPanel'
+import { RunCombinedButton } from '@/components/scoring/RunCombinedButton'
+import { PipelineReviewPanel } from '@/components/scoring/PipelineReviewPanel'
+import { VersionInfoEditor } from '@/components/scoring/VersionInfoEditor'
+import { VersionHistoryPanel } from '@/components/scoring/VersionHistoryPanel'
 
-// Stage 4: Review & Run
-import { ReviewAndRunPanel } from '@/components/scoring/ReviewAndRunPanel'
-
-// Stage 5: Results
+// Stage 3: Results & Iterate
 import { ResultsPanel } from '@/components/scoring/ResultsPanel'
 
 import { SCORECARD_TEMPLATES } from '@/data/scorecardTemplates'
 
-// ─── Wired component for Stage 2 template section ───
+// ─── Template Section (shown when no segments/metrics loaded) ───
 
-function Stage2TemplateSection() {
+function TemplateSection() {
   const scorecard = useActiveScorecard()
-  const hasSegments = (scorecard?.segments.length ?? 0) > 0
+  const totalMetrics = scorecard?.segments.reduce((sum, seg) => sum + seg.metrics.length, 0) ?? 0
 
-  // If a scorecard is already loaded with segments, collapse templates
-  if (hasSegments) {
-    return null
-  }
+  // Show templates only when scorecard has no real metrics
+  if (totalMetrics > 0) return null
 
   return (
     <div>
@@ -69,21 +71,23 @@ function Stage2TemplateSection() {
   )
 }
 
-// ─── Wired component for MetricCatalogBrowser ───
+// ─── Wired MetricCatalogBrowser with target segment selector ───
 
 function MetricCatalogBrowserWired() {
   const scorecard = useActiveScorecard()
   const addMetric = useScoringStore(s => s.addMetric)
+  const [targetSegmentId, setTargetSegmentId] = useState<string>('')
+
+  const segments = scorecard?.segments ?? []
+  const effectiveTargetId = targetSegmentId || segments[0]?.id || ''
 
   const selectedIds = new Set(
-    scorecard?.segments.flatMap(seg => seg.metrics.map(m => m.id)) ?? []
+    segments.flatMap(seg => seg.metrics.map(m => m.id))
   )
 
   const handleSelect = (metric: MetricCatalogEntry) => {
-    if (!scorecard || scorecard.segments.length === 0) return
-    // Add to first segment by default
-    const targetSegment = scorecard.segments[0]
-    addMetric(targetSegment.id, {
+    if (!scorecard || segments.length === 0 || !effectiveTargetId) return
+    addMetric(effectiveTargetId, {
       id: metric.id,
       name: metric.name,
       type: 'raw',
@@ -100,7 +104,61 @@ function MetricCatalogBrowserWired() {
     })
   }
 
-  return <MetricCatalogBrowser onSelectMetric={handleSelect} selectedMetricIds={selectedIds} />
+  return (
+    <div className="flex flex-col h-full">
+      {/* Target segment selector */}
+      {segments.length > 1 && (
+        <div className="flex items-center gap-2 mb-2 px-1">
+          <span className="text-[10px] text-neutral-500">Add to:</span>
+          <select
+            value={effectiveTargetId}
+            onChange={e => setTargetSegmentId(e.target.value)}
+            className="flex-1 px-2 py-1 bg-dark-700/60 border border-white/10 rounded text-xs text-white focus:outline-none focus:border-primary-500/30"
+          >
+            {segments.map(seg => (
+              <option key={seg.id} value={seg.id}>{seg.name} ({seg.metrics.length})</option>
+            ))}
+          </select>
+        </div>
+      )}
+      <MetricCatalogBrowser onSelectMetric={handleSelect} selectedMetricIds={selectedIds} />
+    </div>
+  )
+}
+
+// ─── Collapsible Section ───
+
+function CollapsibleSection({
+  title,
+  defaultOpen = true,
+  children,
+}: {
+  title: string
+  defaultOpen?: boolean
+  children: React.ReactNode
+}) {
+  const [isOpen, setIsOpen] = useState(defaultOpen)
+
+  return (
+    <div className="rounded-xl bg-dark-800/30 border border-white/5 overflow-hidden">
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-dark-700/20 transition-colors"
+      >
+        <span className="text-sm font-medium text-neutral-300">{title}</span>
+        {isOpen ? (
+          <ChevronUp className="w-4 h-4 text-neutral-500" />
+        ) : (
+          <ChevronDown className="w-4 h-4 text-neutral-500" />
+        )}
+      </button>
+      {isOpen && (
+        <div className="px-4 pb-4 border-t border-white/5 pt-3">
+          {children}
+        </div>
+      )}
+    </div>
+  )
 }
 
 // ─── Stage Configuration ───
@@ -113,62 +171,79 @@ interface StageConfig {
 
 const STAGE_CONFIGS: Record<PipelineStage, StageConfig> = {
   1: {
-    title: 'Build Metrics',
-    description: 'Select raw metrics or create composite formulas',
+    title: 'Build Scorecard',
+    description: 'Select metrics, create segments, assign weights, set verdicts',
     render: () => (
       <div className="space-y-4">
-        {/* CSV Upload + Catalog */}
+        {/* Templates + CSV Upload */}
         <div className="flex items-center gap-3">
           <CSVUploadParser />
         </div>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <MetricCatalogBrowserWired />
-          <div className="space-y-4">
-            <SelectedMetricsList />
-            <FormulaBuilder />
+        <TemplateSection />
+
+        {/* Segments & Weights */}
+        <CollapsibleSection title="Segments & Weights">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <SegmentBuilder />
+            <CompositeFormulaEditor />
           </div>
-        </div>
-        {/* Negative value handling rules */}
-        <div className="p-4 rounded-xl bg-dark-800/30 backdrop-blur-xl border border-white/5">
+        </CollapsibleSection>
+
+        {/* Metric Selection */}
+        <CollapsibleSection title="Metric Catalog & Selection">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <MetricCatalogBrowserWired />
+            <div className="space-y-4">
+              <SelectedMetricsList />
+              <FormulaBuilder />
+            </div>
+          </div>
+        </CollapsibleSection>
+
+        {/* Verdict & Normalization */}
+        <CollapsibleSection title="Verdict Thresholds & Normalization" defaultOpen={false}>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <VerdictThresholdEditor />
+            <NormalizationSelector />
+          </div>
+        </CollapsibleSection>
+
+        {/* Negative handling */}
+        <CollapsibleSection title="Negative Value Handling" defaultOpen={false}>
           <NegativeHandlingEditor />
-        </div>
+        </CollapsibleSection>
       </div>
     ),
   },
   2: {
-    title: 'Build Scorecard',
-    description: 'Group metrics into segments, assign weights, set verdict thresholds',
+    title: 'Configure & Run',
+    description: 'Select stocks, set date range, review config, and run backtest',
     render: () => (
       <div className="space-y-4">
-        {/* Templates — only shown when no scorecard is loaded */}
-        <Stage2TemplateSection />
+        {/* Stock selection + date range + benchmark */}
+        <ConfigureRunPanel />
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <div className="space-y-4">
-            <SegmentBuilder />
-            <CompositeFormulaEditor />
+        {/* Collapsible review summary */}
+        <CollapsibleSection title="Review Configuration" defaultOpen={false}>
+          <PipelineReviewPanel />
+        </CollapsibleSection>
+
+        {/* Version info + history + run button */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <div className="lg:col-span-2">
+            <RunCombinedButton />
           </div>
           <div className="space-y-4">
-            <VerdictThresholdEditor />
-            <NormalizationSelector />
+            <VersionInfoEditor />
+            <VersionHistoryPanel />
           </div>
         </div>
       </div>
     ),
   },
   3: {
-    title: 'Configure Run',
-    description: 'Select stocks, set date range, and choose benchmark',
-    render: () => <ConfigureRunPanel />,
-  },
-  4: {
-    title: 'Review & Run',
-    description: 'Review all configuration, then run scoring + backtest',
-    render: () => <ReviewAndRunPanel />,
-  },
-  5: {
-    title: 'Results',
-    description: 'Scoring results, price performance, and analysis',
+    title: 'Results & Iterate',
+    description: 'Analyze results, export reports, re-run with tweaks',
     render: () => <ResultsPanel />,
   },
 }
@@ -280,7 +355,7 @@ function WizardMode({
           Back
         </button>
 
-        {currentStage < 5 && (
+        {currentStage < 3 && (
           <button
             onClick={onNext}
             className="flex items-center gap-1 px-4 py-2 rounded-lg text-sm bg-primary-500/20 text-primary-400 hover:bg-primary-500/30 transition-colors"
