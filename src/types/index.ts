@@ -149,15 +149,12 @@ export interface Signal {
   scoreContribution?: string
 }
 
-// Score band for visual display
-export type ScoreBand = 'green' | 'yellow' | 'red'
-
 // Segment Types - Enhanced with sector comparisons
 export interface SegmentScore {
   id: string
   name: string
   score: number
-  scoreBand?: ScoreBand
+  scoreBand?: 'green' | 'yellow' | 'red'
   sectorAvg?: number
   sectorRank?: number
   sectorTotal?: number
