@@ -416,10 +416,10 @@ function ScoreHistory({
 
   return (
     <div className="flex flex-wrap gap-1.5">
-      {history.map((h, i) => {
+      {history.map((h) => {
         const shortDate = new Date(h.date).toLocaleDateString('en-IN', { month: 'short', year: '2-digit' })
         return (
-          <ScoreBadge key={i} score={h.score} label={shortDate} />
+          <ScoreBadge key={h.date} score={h.score} label={shortDate} />
         )
       })}
     </div>
