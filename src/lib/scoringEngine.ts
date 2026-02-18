@@ -397,27 +397,36 @@ export function applyNormalization(
 ): number[] {
   if (scores.length === 0) return []
 
+  // Filter out NaN/Infinity values for computation, but preserve original positions
+  const validIndices = scores.map((s, i) => isFinite(s) ? i : -1).filter(i => i >= 0)
+  const validScores = validIndices.map(i => scores[i])
+
   switch (config.method) {
     case 'none':
       return scores
 
     case 'min-max': {
-      const min = Math.min(...scores)
-      const max = Math.max(...scores)
+      if (validScores.length === 0) return scores.map(() => 50)
+      const min = Math.min(...validScores)
+      const max = Math.max(...validScores)
       if (max === min) return scores.map(() => 50)
       return scores.map(s =>
-        Math.round(((s - min) / (max - min)) * 100 * 100) / 100
+        isFinite(s)
+          ? Math.round(((s - min) / (max - min)) * 100 * 100) / 100
+          : 50  // Neutral score for NaN/Infinity
       )
     }
 
     case 'z-score': {
-      const mean = scores.reduce((a, b) => a + b, 0) / scores.length
+      if (validScores.length === 0) return scores.map(() => 50)
+      const mean = validScores.reduce((a, b) => a + b, 0) / validScores.length
       const stdDev = Math.sqrt(
-        scores.reduce((sum, s) => sum + (s - mean) ** 2, 0) / scores.length
+        validScores.reduce((sum, s) => sum + (s - mean) ** 2, 0) / validScores.length
       )
       if (stdDev === 0) return scores.map(() => 50)
       // Convert z-scores to 0-100 range (assume ±3 std devs)
       return scores.map(s => {
+        if (!isFinite(s)) return 50
         const z = (s - mean) / stdDev
         const normalized = ((z + 3) / 6) * 100
         return Math.min(100, Math.max(0, Math.round(normalized * 100) / 100))
@@ -428,8 +437,10 @@ export function applyNormalization(
       // Cumulative proportion method: percentile = count(v <= x) / n * 100
       // Max value always gets 100%. Tied values share the same percentile.
       // For n=1, returns 100%. For the minimum of n, returns (1/n)*100.
-      const sorted = [...scores].sort((a, b) => a - b)
+      if (validScores.length === 0) return scores.map(() => 50)
+      const sorted = [...validScores].sort((a, b) => a - b)
       return scores.map(s => {
+        if (!isFinite(s)) return 50
         const rank = sorted.filter(v => v <= s).length
         return Math.round((rank / sorted.length) * 100 * 100) / 100
       })

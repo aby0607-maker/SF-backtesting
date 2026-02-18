@@ -65,11 +65,15 @@ export function RunCombinedButton() {
 
   const handleRun = async () => {
     if (!scorecard || !backtestConfig) return
+    // Guard against re-entrant execution (double-click / rapid retry)
+    if (status === 'scoring' || status === 'backtesting') return
 
+    setError(null)  // Clear previous error before retry
     confirmReview()
     setStatus('scoring')
     setProgress(null)
 
+    abortRef.current?.abort()  // Cancel any lingering previous operation
     abortRef.current = new AbortController()
 
     try {

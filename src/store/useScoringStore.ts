@@ -723,7 +723,13 @@ export const useScoringStore = create<ScoringState>()(
       },
 
       setError: (message: string | null) => {
-        set({ errorMessage: message, status: message ? 'error' : 'idle' })
+        if (message) {
+          set({ errorMessage: message, status: 'error' })
+        } else {
+          // Only reset to idle if currently in error state; preserve scoring/backtesting status
+          const current = get().status
+          set({ errorMessage: null, status: current === 'error' ? 'idle' : current })
+        }
       },
 
       // ─── Persistence ───

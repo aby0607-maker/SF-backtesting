@@ -108,7 +108,7 @@ export function aggregatePerformance(
   sampleDates?: string[]
 ): PricePerformance {
   if (priceData.length === 0) {
-    return { stockId, stockName, startPrice: 0, periods: [] }
+    return { stockId, stockName, startPrice: NaN, periods: [] }
   }
 
   // Sort by date
@@ -163,10 +163,9 @@ function sampleAtExactDates(
         break  // sorted, so no need to continue
       }
     }
-    if (closest) {
-      // Use the target date (snapshot date) as the period date, with the closest actual price
-      result.push({ date: target, price: closest.price })
-    }
+    // Always push an entry for every target date to maintain array alignment.
+    // Use NaN when no price is available so downstream code can detect and skip.
+    result.push({ date: target, price: closest ? closest.price : NaN })
   }
 
   return result
@@ -286,7 +285,7 @@ function computeAveragePerformance(
 
   const periods = template.periods.map((period, i) => {
     const returns = performances
-      .filter(p => p.periods.length > i)
+      .filter(p => p.periods.length > i && isFinite(p.periods[i].cumulativeReturn))
       .map(p => p.periods[i].cumulativeReturn)
 
     const avgReturn = returns.length > 0
@@ -318,20 +317,23 @@ function computeMedianPerformance(
 
   const periods = template.periods.map((period, i) => {
     const returns = performances
-      .filter(p => p.periods.length > i)
+      .filter(p => p.periods.length > i && isFinite(p.periods[i].cumulativeReturn))
       .map(p => p.periods[i].cumulativeReturn)
       .sort((a, b) => a - b)
 
-    const mid = Math.floor(returns.length / 2)
-    const medianReturn = returns.length % 2 === 0
-      ? (returns[mid - 1] + returns[mid]) / 2
-      : returns[mid]
+    let medianReturn = 0
+    if (returns.length > 0) {
+      const mid = Math.floor(returns.length / 2)
+      medianReturn = returns.length % 2 === 0
+        ? (returns[mid - 1] + returns[mid]) / 2
+        : returns[mid]
+    }
 
     return {
       date: period.date,
       price: 0,
       returnPct: 0,
-      cumulativeReturn: Math.round((medianReturn || 0) * 100) / 100,
+      cumulativeReturn: Math.round(medianReturn * 100) / 100,
     }
   })
 
@@ -457,7 +459,7 @@ function pearsonCorrelation(x: number[], y: number[]): number {
     (n * sumX2 - sumX * sumX) * (n * sumY2 - sumY * sumY)
   )
 
-  if (denominator === 0) return 0
+  if (Math.abs(denominator) < 1e-10) return 0
   return Math.round((numerator / denominator) * 1000) / 1000
 }
 
@@ -478,37 +480,50 @@ export function computeQuintileAnalysis(
 
   // Sort by score descending
   const sorted = [...scoredStocks].sort((a, b) => b.normalizedScore - a.normalizedScore)
-  const quintileSize = Math.ceil(sorted.length / 5)
+
+  // Distribute stocks evenly across 5 quintiles, spreading remainder across first quintiles
+  const baseSize = Math.floor(sorted.length / 5)
+  const remainder = sorted.length % 5
 
   const quintiles: QuintileResult[] = []
   const labels = ['Top 20%', '20-40%', '40-60%', '60-80%', 'Bottom 20%']
 
+  let offset = 0
   for (let q = 0; q < 5; q++) {
-    const start = q * quintileSize
-    const end = Math.min(start + quintileSize, sorted.length)
-    const stocks = sorted.slice(start, end)
+    const size = baseSize + (q < remainder ? 1 : 0)
+    const stocks = sorted.slice(offset, offset + size)
+    offset += size
 
     if (stocks.length === 0) continue
 
-    // Get final returns for each stock in the quintile
-    const returns = stocks.map(s => {
-      const perf = performances[s.stockId]
-      if (!perf || perf.periods.length === 0) return 0
-      return perf.periods[perf.periods.length - 1].cumulativeReturn
-    })
+    // Get final returns for each stock in the quintile (filter out NaN/missing data)
+    const returns = stocks
+      .map(s => {
+        const perf = performances[s.stockId]
+        if (!perf || perf.periods.length === 0 || !isFinite(perf.startPrice)) return NaN
+        return perf.periods[perf.periods.length - 1].cumulativeReturn
+      })
+      .filter(r => isFinite(r))
 
     const avgScore = stocks.reduce((sum, s) => sum + s.normalizedScore, 0) / stocks.length
-    const avgReturn = returns.reduce((sum, r) => sum + r, 0) / returns.length
+    const avgReturn = returns.length > 0
+      ? returns.reduce((sum, r) => sum + r, 0) / returns.length
+      : 0
 
     // Median return
-    const sortedReturns = [...returns].sort((a, b) => a - b)
-    const mid = Math.floor(sortedReturns.length / 2)
-    const medianReturn = sortedReturns.length % 2 === 0
-      ? (sortedReturns[mid - 1] + sortedReturns[mid]) / 2
-      : sortedReturns[mid]
+    let medianReturn = 0
+    if (returns.length > 0) {
+      const sortedReturns = [...returns].sort((a, b) => a - b)
+      const mid = Math.floor(sortedReturns.length / 2)
+      medianReturn = sortedReturns.length % 2 === 0
+        ? (sortedReturns[mid - 1] + sortedReturns[mid]) / 2
+        : sortedReturns[mid]
+    }
 
     // % beating benchmark (positive return as basic benchmark)
-    const pctBeatBenchmark = (returns.filter(r => r > 0).length / returns.length) * 100
+    const pctBeatBenchmark = returns.length > 0
+      ? (returns.filter(r => r > 0).length / returns.length) * 100
+      : 0
 
     quintiles.push({
       quintile: `Q${q + 1}`,

@@ -172,7 +172,7 @@ export function parseCSVToScorecard(csvText: string, filename?: string): ParsedC
 
     // Detect "Input: <metric>" rows
     if (labelLower.startsWith('input:')) {
-      const metricName = label.replace(/^input:\s*/i, '').trim()
+      const metricName = sanitizeName(label.replace(/^input:\s*/i, '').trim())
       const values = extractNumericValues(row.slice(1))
       lastInputMetric = {
         name: metricName,
@@ -312,13 +312,20 @@ export function parsedResultToScorecard(parsed: ParsedCSVResult): ScorecardVersi
 function parseCSVRows(text: string): string[][] {
   const lines = text.split(/\r?\n/)
   return lines.map(line => {
-    // Handle quoted fields with commas inside
+    // RFC 4180-compliant CSV parsing with escaped quote handling
     const fields: string[] = []
     let current = ''
     let inQuotes = false
-    for (const char of line) {
+    for (let i = 0; i < line.length; i++) {
+      const char = line[i]
       if (char === '"') {
-        inQuotes = !inQuotes
+        if (inQuotes && line[i + 1] === '"') {
+          // Escaped quote ("") inside quoted field
+          current += '"'
+          i++  // Skip next quote
+        } else {
+          inQuotes = !inQuotes
+        }
       } else if (char === ',' && !inQuotes) {
         fields.push(current.trim())
         current = ''
@@ -329,6 +336,17 @@ function parseCSVRows(text: string): string[][] {
     fields.push(current.trim())
     return fields
   })
+}
+
+/** Sanitize user-provided names from CSV to prevent XSS when rendered in UI */
+function sanitizeName(name: string): string {
+  return name
+    .replace(/[<>"'&]/g, c => {
+      const map: Record<string, string> = { '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;', '&': '&amp;' }
+      return map[c] ?? c
+    })
+    .trim()
+    .slice(0, 255)
 }
 
 function extractNumericValues(cells: string[]): (number | null)[] {
@@ -347,10 +365,12 @@ function isSegmentHeader(label: string): boolean {
 }
 
 function cleanSegmentName(label: string): string {
-  return label
-    .replace(/\([\d.]+%?\)/g, '')  // Remove weight annotations
-    .replace(/score$/i, 'Score')    // Normalize casing
-    .trim()
+  return sanitizeName(
+    label
+      .replace(/\([\d.]+%?\)/g, '')  // Remove weight annotations
+      .replace(/score$/i, 'Score')    // Normalize casing
+      .trim()
+  )
 }
 
 function toId(name: string): string {
