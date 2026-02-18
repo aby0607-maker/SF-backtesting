@@ -1,16 +1,17 @@
 /**
- * SegmentBuilder — Stage 2: Group metrics into segments, set weights
+ * SegmentBuilder — Stage 1: Group metrics into segments, set weights
  *
  * Segment weight: text % input (replaces slider).
  * Metric weight within segment: text % input (editable).
  * Validation: segment weights should sum to ~100% (shown visually).
+ * "Distribute Equally" button for quick equal-weight distribution.
  */
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
 import { useScoringStore, useActiveScorecard } from '@/store/useScoringStore'
-import { Plus, Trash2, ChevronDown, ChevronRight, AlertCircle } from 'lucide-react'
+import { Plus, Trash2, ChevronDown, ChevronRight, AlertCircle, Equal } from 'lucide-react'
 
 export function SegmentBuilder() {
   const scorecard = useActiveScorecard()
@@ -51,6 +52,21 @@ export function SegmentBuilder() {
               <AlertCircle className="w-3 h-3" />
               {weightError}
             </span>
+          )}
+          {scorecard.segments.length > 1 && (
+            <button
+              onClick={() => {
+                const count = scorecard.segments.length
+                const equalWeight = 1 / count
+                scorecard.segments.forEach(seg => {
+                  updateSegmentWeight(seg.id, equalWeight)
+                })
+              }}
+              className="flex items-center gap-1 px-2 py-0.5 rounded text-[10px] text-neutral-400 hover:text-primary-400 hover:bg-primary-500/10 transition-colors"
+            >
+              <Equal className="w-3 h-3" />
+              Distribute Equally
+            </button>
           )}
           <span className={cn(
             'text-xs font-mono',

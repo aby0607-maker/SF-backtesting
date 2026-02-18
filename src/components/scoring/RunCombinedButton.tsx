@@ -1,7 +1,7 @@
 /**
- * RunCombinedButton — Stage 4: Combined scoring + backtest trigger
+ * RunCombinedButton — Stage 2: Combined scoring + backtest trigger
  *
- * Readiness check → triggers scoreAndBacktest() → progress UI → auto-advance to Stage 5.
+ * Readiness check → triggers scoreAndBacktest() → progress UI → auto-advance to Stage 3 (Results).
  */
 
 import { useState, useRef, useEffect } from 'react'
