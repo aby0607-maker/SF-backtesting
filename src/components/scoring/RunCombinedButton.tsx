@@ -16,8 +16,6 @@ import {
 import { scoreAndBacktest } from '@/services/scoringService'
 import type { CombinedProgressPhase } from '@/services/scoringService'
 import { getCompanyMaster } from '@/services/cmots/companyMaster'
-import { isMockMode } from '@/services/cmots/client'
-import { getAllStocksForScoring } from '@/data/mockScoringData'
 import { Loader2, Rocket, AlertTriangle, X } from 'lucide-react'
 
 const PHASE_LABELS: Record<CombinedProgressPhase, string> = {
@@ -258,12 +256,7 @@ async function resolveStockIds(
     return filter.customSymbols
   }
 
-  // Mock mode shortcut: return all mock stocks (no company master API)
-  if (isMockMode()) {
-    return getAllStocksForScoring().map(s => s.info.id)
-  }
-
-  // API mode: fetch company master and filter
+  // Fetch company master and filter
   const companies = await getCompanyMaster()
 
   if (filter.mode === 'all') {

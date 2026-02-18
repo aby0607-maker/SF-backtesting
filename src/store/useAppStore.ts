@@ -172,12 +172,18 @@ export const useAppStore = create<AppState>()(
 
       // Actions - Alerts
       markAlertAsRead: (alertId: string) => {
-        set(state => ({
-          alerts: state.alerts.map(alert =>
-            alert.id === alertId ? { ...alert, isRead: true } : alert
-          ),
-          unreadAlertCount: Math.max(0, state.unreadAlertCount - 1),
-        }))
+        set(state => {
+          const alert = state.alerts.find(a => a.id === alertId)
+          const wasUnread = alert && !alert.isRead
+          return {
+            alerts: state.alerts.map(a =>
+              a.id === alertId ? { ...a, isRead: true } : a
+            ),
+            unreadAlertCount: wasUnread
+              ? Math.max(0, state.unreadAlertCount - 1)
+              : state.unreadAlertCount,
+          }
+        })
       },
 
       markAllAlertsAsRead: () => {

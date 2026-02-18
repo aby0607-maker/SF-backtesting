@@ -16,8 +16,6 @@
  */
 
 import type { CMOTSTTMRecord, CMOTSFinancialRecord, CMOTSStatementRow, CMOTSShareholding, MetricResolutionConfig, CustomMetricDefinition } from '@/types/scoring'
-import { getStockDataForScoring } from '@/data/mockScoringData'
-import { isMockMode } from '@/services/cmots/client'
 import type { FundamentalsBundle } from '@/services/cmots/fundamentals'
 import { getAllFundamentals, findStatementRow, getStatementValue, getYearColumns } from '@/services/cmots/fundamentals'
 import { getCompanyBySymbol } from '@/services/cmots/companyMaster'
@@ -74,9 +72,9 @@ function windowYearColumns(row: CMOTSStatementRow, asOfDate?: string): string[] 
   const cutoff = new Date(asOfDate)
   return allCols.filter(col => {
     const year = parseInt(col.slice(1, 5))
-    const month = parseInt(col.slice(5, 7))
-    // Fiscal year end: approximate as last day of the month
-    const colDate = new Date(year, month - 1, 28)
+    const month = Math.min(12, Math.max(1, parseInt(col.slice(5, 7))))
+    // Fiscal year end: use actual last day of the month (day 0 of next month)
+    const colDate = new Date(year, month, 0)
     return colDate <= cutoff
   })
 }
@@ -90,8 +88,8 @@ function windowFinData(finData: CMOTSFinancialRecord[], asOfDate?: string): CMOT
   return finData.filter(f => {
     // yrc is YYYYMM (e.g., 202503 → year 2025, month 03)
     const year = Math.floor(f.yrc / 100)
-    const month = f.yrc % 100
-    const fyEndDate = new Date(year, month - 1, 28) // Last-ish day of fiscal year end month
+    const month = Math.min(12, Math.max(1, f.yrc % 100))
+    const fyEndDate = new Date(year, month, 0) // Actual last day of fiscal year end month
     return fyEndDate <= cutoff
   })
 }
@@ -296,8 +294,8 @@ function computeHistoricalValuation(
   const epsCols = epsRow ? windowYearColumns(epsRow, asOfDate) : []
   const epsValue = epsCols.length > 0 && epsRow ? getStatementValue(epsRow, epsCols[0]) : null
 
-  // PE = Price / EPS
-  const pe = epsValue && epsValue > 0 ? priceAtDate / epsValue : null
+  // PE = Price / EPS (only when EPS is positive; zero/negative EPS → PE undefined)
+  const pe = epsValue != null && epsValue > 0 ? priceAtDate / epsValue : null
 
   // Book Value per share = Shareholders Fund / Shares Outstanding
   const shFundRow = findStatementRow(balanceSheet, BS_ROW_SHAREHOLDERS_FUND)
@@ -545,16 +543,17 @@ function computeRevenueGrowth5Y(
   maxYears?: number,
 ): number | null {
   // Try FinData first (cleaner — has yearly revenue). Use available span (min 2 years).
+  // finData is sorted ascending by yrc (oldest first), so [0]=oldest, [last]=latest.
   if (finData.length >= 2) {
-    // If maxYears specified, limit FinData to last maxYears+1 records
+    // If maxYears specified, keep only the most recent maxYears+1 records
     const limited = maxYears && finData.length > maxYears + 1
       ? finData.slice(finData.length - (maxYears + 1))
       : finData
-    const latest = limited[limited.length - 1]
-    const oldest = limited[0]
+    const oldestRecord = limited[0]                      // First element = oldest (ascending sort)
+    const latestRecord = limited[limited.length - 1]     // Last element = latest (ascending sort)
     // Both same sign → CAGR works; mixed signs or zero → fall back to P&L
-    if (oldest.revenue !== 0 && (oldest.revenue > 0) === (latest.revenue > 0)) {
-      return computeCAGR(oldest.revenue, latest.revenue, limited.length - 1)
+    if (oldestRecord.revenue !== 0 && (oldestRecord.revenue > 0) === (latestRecord.revenue > 0)) {
+      return computeCAGR(oldestRecord.revenue, latestRecord.revenue, limited.length - 1)
     }
   }
 
@@ -830,6 +829,9 @@ function resolveOneCustomMetric(
     case 'ttm': {
       if (!ttm) return null
       const value = (ttm as unknown as Record<string, unknown>)[metric.cmots_field]
+      if (value === undefined) {
+        console.warn(`[MetricResolver] TTM field '${metric.cmots_field}' not found for custom metric '${metric.name}'`)
+      }
       return typeof value === 'number' ? value : null
     }
     case 'pnl':
@@ -897,21 +899,15 @@ function resolveStatementCustomMetric(
  * Resolve all metric values for a stock given its NSE symbol.
  * Returns metric data + context (start/end year values for negative handling).
  *
- * In mock mode: pulls from MOCK_STOCK_METRICS directly.
- * In API mode: fetches from CMOTS services, computes technical indicators,
+ * Fetches from CMOTS services, computes technical indicators,
  * and extracts growth context from P&L rows.
+ * Returns null with a warning if data is unavailable.
  */
 export async function resolveMetricValues(
   stockId: string,
   config?: MetricResolutionConfig,
 ): Promise<ResolvedMetrics | null> {
-  if (isMockMode()) {
-    const stockData = getStockDataForScoring(stockId)
-    if (!stockData) return null
-    return { data: stockData.data, context: stockData.context }
-  }
-
-  // API mode: fetch fundamentals + price data in parallel
+  // Fetch fundamentals + price data in parallel
   const [fundamentals, priceResult] = await Promise.all([
     getAllFundamentals(stockId),
     fetchPriceDataForScoring(stockId),
@@ -987,7 +983,12 @@ export function resolveMetricsAtDate(
   }
 }
 
-/** Find the price on or just before a target date */
+/**
+ * Find the price on or just before a target date.
+ * INVARIANT: priceHistory must be sorted ascending by date.
+ * This is guaranteed by getHistoricalPrices() which sorts on fetch,
+ * and Array.filter() which preserves order.
+ */
 function findClosestPriceValue(
   priceHistory: { date: string; price: number }[],
   targetDate: string,
@@ -997,7 +998,7 @@ function findClosestPriceValue(
     if (p.date <= targetDate) {
       closest = p.price
     } else {
-      break  // Assumes sorted ascending
+      break
     }
   }
   return closest
@@ -1005,6 +1006,7 @@ function findClosestPriceValue(
 
 /**
  * Resolve metric values for multiple stocks (batch).
+ * Uses Promise.allSettled so a single stock failure doesn't crash the entire batch.
  */
 export async function resolveMetricValuesBatch(
   stockIds: string[],
@@ -1012,22 +1014,20 @@ export async function resolveMetricValuesBatch(
 ): Promise<Record<string, ResolvedMetrics>> {
   const result: Record<string, ResolvedMetrics> = {}
 
-  if (isMockMode()) {
-    for (const id of stockIds) {
-      const resolved = await resolveMetricValues(id, config)
-      if (resolved) result[id] = resolved
-    }
-    return result
-  }
-
   const BATCH_SIZE = 10
   for (let i = 0; i < stockIds.length; i += BATCH_SIZE) {
     const batch = stockIds.slice(i, i + BATCH_SIZE)
-    const fetches = batch.map(async id => {
-      const resolved = await resolveMetricValues(id, config)
-      if (resolved) result[id] = resolved
-    })
-    await Promise.all(fetches)
+    const settled = await Promise.allSettled(
+      batch.map(async id => {
+        const resolved = await resolveMetricValues(id, config)
+        if (resolved) result[id] = resolved
+      })
+    )
+    for (let j = 0; j < settled.length; j++) {
+      if (settled[j].status === 'rejected') {
+        console.warn(`[MetricResolver] Failed to resolve metrics for ${batch[j]}:`, (settled[j] as PromiseRejectedResult).reason)
+      }
+    }
   }
   return result
 }
@@ -1042,12 +1042,6 @@ export async function getStockInfo(stockId: string): Promise<{
   sector: string
   marketCap: number
 } | null> {
-  if (isMockMode()) {
-    const stockData = getStockDataForScoring(stockId)
-    if (!stockData) return null
-    return stockData.info
-  }
-
   const company = await getCompanyBySymbol(stockId)
   if (!company) return null
 

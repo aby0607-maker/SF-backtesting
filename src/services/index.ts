@@ -37,7 +37,6 @@ export {
 
 // CMOTS services
 export {
-  isMockMode,
   getCompanyMaster,
   searchCompanies,
   getCompanyBySymbol,

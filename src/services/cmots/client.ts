@@ -1,16 +1,16 @@
 /**
- * CMOTS API Client — HTTP layer with caching and mock fallback
+ * CMOTS API Client — HTTP layer with caching
  *
- * All CMOTS data access goes through this client. In mock mode
- * (VITE_USE_MOCK_DATA=true, the default), callers handle mock data themselves.
+ * All CMOTS data access goes through this client.
  *
  * Real API: All responses are wrapped in { success, data: T[], message }.
  * This client unwraps automatically so callers get clean typed arrays.
+ *
+ * On error, returns empty arrays with console warnings explaining the reason.
  */
 
 import { cache } from '@/services/cache'
 
-const USE_MOCK = import.meta.env.VITE_USE_MOCK_DATA !== 'false'
 const API_BASE = '/api/cmots'
 
 interface CMOTSRequestOptions {
@@ -23,16 +23,20 @@ interface CMOTSRequestOptions {
 /**
  * Fetch an array of items from CMOTS API.
  * Unwraps the { success, data, message } envelope automatically.
- * Returns empty array on error (never throws).
+ * Returns empty array on error (never throws) and logs the reason.
+ *
+ * NOTE: Cache keys are endpoint-based. For backtesting, TTM/FinData endpoints
+ * always return current data (CMOTS doesn't support historical TTM snapshots).
+ * Historical scoring uses windowed fundamental data, not date-keyed API calls.
  */
 export async function cmotsFetch<T>(options: CMOTSRequestOptions): Promise<T[]> {
   const { endpoint, cacheTTL = 60 * 60 * 1000 } = options
 
-  const cacheKey = `cmots:${endpoint}`
+  // Use null byte separator to prevent key collisions from string concatenation
+  // (e.g., endpoint "A:B" vs prefix "cmots:A" + "B" would collide without this)
+  const cacheKey = `cmots\0${endpoint}`
   const cached = cache.get<T[]>(cacheKey)
   if (cached !== undefined) return cached
-
-  if (USE_MOCK) return []
 
   try {
     const url = `${API_BASE}${endpoint}`
@@ -41,21 +45,21 @@ export async function cmotsFetch<T>(options: CMOTSRequestOptions): Promise<T[]> 
     })
 
     if (!response.ok) {
-      console.error(`[CMOTS] ${response.status} for ${endpoint}`)
+      console.warn(`[CMOTS] HTTP ${response.status} for ${endpoint} — data unavailable from API`)
       return []
     }
 
     const json = await response.json() as { success: boolean; data: T[]; message: string }
 
     if (!json.success || !Array.isArray(json.data)) {
-      console.error(`[CMOTS] Unsuccessful response for ${endpoint}:`, json.message)
+      console.warn(`[CMOTS] Unsuccessful response for ${endpoint}: ${json.message}`)
       return []
     }
 
     cache.set(cacheKey, json.data, { ttl: cacheTTL })
     return json.data
   } catch (error) {
-    console.error(`[CMOTS] Fetch failed for ${endpoint}:`, error)
+    console.warn(`[CMOTS] Network error fetching ${endpoint}:`, error instanceof Error ? error.message : error)
     return []
   }
 }
@@ -67,9 +71,4 @@ export async function cmotsFetch<T>(options: CMOTSRequestOptions): Promise<T[]> 
 export async function cmotsFetchOne<T>(options: CMOTSRequestOptions): Promise<T | null> {
   const data = await cmotsFetch<T>(options)
   return data.length > 0 ? data[0] : null
-}
-
-/** Check if we're in mock data mode */
-export function isMockMode(): boolean {
-  return USE_MOCK
 }

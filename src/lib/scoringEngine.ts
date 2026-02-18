@@ -27,6 +27,12 @@ import { computeValuationScore } from './conditionalValuation'
 // Metric Scoring
 // ─────────────────────────────────────────────────
 
+// Negative handling score constants (from SME scoring specification):
+// These represent fixed score assignments when growth metrics have negative values.
+const SCORE_FLOOR = 0         // Worst possible — metric is negative with no improvement
+const SCORE_PARTIAL_CREDIT = 25  // Both periods negative but magnitude is improving (25th percentile)
+const SCORE_CEILING = 100     // Best possible — turnaround from negative to positive
+
 /**
  * Check if a negative handling rule applies and return the overridden score.
  * Returns null if no rule applies (proceed with normal scoring).
@@ -66,33 +72,33 @@ function applyNegativeHandling(
 
     switch (rule.action) {
       case 'zero':
-        return { score: 0, excluded: false, reason: rule.description || `${rule.condition}: score set to 0` }
+        return { score: SCORE_FLOOR, excluded: false, reason: rule.description || `${rule.condition}: score set to 0` }
       case 'max_score':
-        return { score: 100, excluded: false, reason: rule.description || `${rule.condition}: max score applied` }
+        return { score: SCORE_CEILING, excluded: false, reason: rule.description || `${rule.condition}: max score applied` }
       case 'exclude':
-        return { score: 0, excluded: true, reason: rule.description || `${rule.condition}: excluded from scoring` }
+        return { score: SCORE_FLOOR, excluded: true, reason: rule.description || `${rule.condition}: excluded from scoring` }
       case 'improvement_check':
         // Both negative but improving = partial credit
         if (context?.startValue != null && context?.endValue != null) {
           const improved = Math.abs(context.endValue) < Math.abs(context.startValue)
           return {
-            score: improved ? 25 : 0,
+            score: improved ? SCORE_PARTIAL_CREDIT : SCORE_FLOOR,
             excluded: false,
             reason: improved
               ? 'Both negative but improving — partial credit'
               : 'Both negative, no improvement'
           }
         }
-        return { score: 0, excluded: false, reason: 'Improvement check: insufficient data' }
+        return { score: SCORE_FLOOR, excluded: false, reason: 'Improvement check: insufficient data' }
       case 'special_calc':
-        // Special calculations are metric-specific; default to 0 if no custom formula
-        return { score: 0, excluded: false, reason: rule.description || 'Special calculation applied' }
+        // Special calculations are metric-specific; default to floor if no custom formula
+        return { score: SCORE_FLOOR, excluded: false, reason: rule.description || 'Special calculation applied' }
       case 'cap':
         // Cap handled at the band lookup level; signal to proceed but cap result
         return null
       case 'custom':
-        // Custom formula handling — would need formula engine; default to 0
-        return { score: 0, excluded: false, reason: rule.description || 'Custom formula applied' }
+        // Custom formula handling — would need formula engine; default to floor
+        return { score: SCORE_FLOOR, excluded: false, reason: rule.description || 'Custom formula applied' }
     }
   }
 
@@ -103,12 +109,24 @@ function applyNegativeHandling(
  * Look up the score for a raw value in the score bands.
  * Bands should be ordered from highest score to lowest (best to worst).
  */
+// Cache for pre-sorted score bands to avoid re-sorting on every lookup
+const sortedBandsCache = new WeakMap<ScoreBand[], ScoreBand[]>()
+
+function getSortedBands(scoreBands: ScoreBand[]): ScoreBand[] {
+  let sorted = sortedBandsCache.get(scoreBands)
+  if (!sorted) {
+    sorted = [...scoreBands].sort((a, b) => b.score - a.score)
+    sortedBandsCache.set(scoreBands, sorted)
+  }
+  return sorted
+}
+
 function lookupScoreBand(rawValue: number, scoreBands: ScoreBand[]): number {
   // Guard: no bands defined → return 0
   if (!scoreBands || scoreBands.length === 0) return 0
 
-  // Sort bands by score descending for priority
-  const sorted = [...scoreBands].sort((a, b) => b.score - a.score)
+  // Sort bands by score descending for priority (cached)
+  const sorted = getSortedBands(scoreBands)
 
   for (const band of sorted) {
     if (rawValue >= band.min && rawValue <= band.max) {
@@ -120,6 +138,7 @@ function lookupScoreBand(rawValue: number, scoreBands: ScoreBand[]): number {
   if (rawValue > sorted[0].max) return sorted[0].score              // Above highest band
   if (rawValue < sorted[sorted.length - 1].min) return sorted[sorted.length - 1].score  // Below lowest band
 
+  console.warn(`[ScoringEngine] No score band matched for value ${rawValue} across ${scoreBands.length} bands — possible gap in band configuration`)
   return 0
 }
 
@@ -174,9 +193,10 @@ export function scoreMetric(
     }
   }
 
-  // Standard negative handling for non-null values (no context provided)
-  if (allNegativeRules.length > 0 && !context) {
-    const negativeResult = applyNegativeHandling(rawValue, metric.id, allNegativeRules)
+  // Standard negative handling for non-null values
+  // Also applies when context was provided but no context-based rule matched
+  if (allNegativeRules.length > 0) {
+    const negativeResult = applyNegativeHandling(rawValue, metric.id, allNegativeRules, context)
     if (negativeResult) {
       return {
         metricId: metric.id,
@@ -185,6 +205,7 @@ export function scoreMetric(
         normalizedScore: negativeResult.score,
         isExcluded: negativeResult.excluded,
         excludeReason: negativeResult.reason,
+        evidence: context,
       }
     }
   }
@@ -424,6 +445,8 @@ export function applyNormalization(
 
 /**
  * Apply custom factors (multipliers, additive, conditional) to a composite score.
+ * Clamps to [0, 100] after each factor to prevent intermediate spikes
+ * from distorting subsequent factor calculations.
  */
 export function applyCustomFactors(
   score: number,
@@ -445,12 +468,16 @@ export function applyCustomFactors(
       case 'conditional':
         // Conditional factors could be complex — basic implementation
         // e.g., if score < 30, apply penalty
-        if (score < 30) result += factor.value
+        if (result < 30) result += factor.value
         break
     }
+
+    // Clamp after each factor to prevent intermediate values outside [0, 100]
+    // from compounding through subsequent factors
+    result = Math.min(100, Math.max(0, result))
   }
 
-  return Math.min(100, Math.max(0, Math.round(result * 100) / 100))
+  return Math.round(result * 100) / 100
 }
 
 // ─────────────────────────────────────────────────

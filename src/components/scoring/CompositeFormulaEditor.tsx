@@ -39,7 +39,7 @@ export function CompositeFormulaEditor() {
   const parts = allSegmentWeights
     .map(sw => {
       const seg = segments.find(s => s.id === sw.segmentId)
-      return seg ? `${seg.name}(${(sw.weight * 100).toFixed(1)}%)` : null
+      return seg ? `${seg.name}(${(sw.weight * 100).toFixed(2)}%)` : null
     })
     .filter(Boolean)
 
@@ -80,8 +80,8 @@ export function CompositeFormulaEditor() {
                     type="number"
                     min={0}
                     max={100}
-                    step={0.5}
-                    value={parseFloat((sw.weight * 100).toFixed(1))}
+                    step={0.01}
+                    value={parseFloat((sw.weight * 100).toFixed(2))}
                     onChange={e => {
                       const val = parseFloat(e.target.value)
                       if (!isNaN(val) && val >= 0 && val <= 100) {

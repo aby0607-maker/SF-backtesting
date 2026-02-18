@@ -51,7 +51,7 @@ export function computeValuationScore(input: ValuationInput): ValuationResult {
     return { score: 0, weights: { pe: 0, pb: 0, ev: 0 }, condition: 'No valuation metrics available', isNA: true }
   }
 
-  // Condition 1: PB > 30 → Entire valuation NA
+  // Condition 1: PB > 30 → Entire valuation NA (strict inequality: PB=30.0 passes)
   // At extreme PB levels, valuation ratios are unreliable — return NA
   if (hasPB && rawPB! > 30) {
     return { score: 0, weights: { pe: 0, pb: 0, ev: 0 }, condition: 'PB > 30 → valuation NA (unreliable)', isNA: true }

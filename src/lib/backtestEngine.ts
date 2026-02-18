@@ -121,20 +121,20 @@ export function aggregatePerformance(
     : sampleAtInterval(sorted, interval)
 
   const periods = sampled.map(point => {
-    const returnPct = startPrice > 0
+    const cumulativeReturn = startPrice > 0
       ? Math.round(((point.price - startPrice) / startPrice) * 100 * 100) / 100
       : 0
     return {
       date: point.date,
       price: point.price,
-      returnPct: 0,  // Period-over-period return
-      cumulativeReturn: returnPct,
+      returnPct: 0,
+      cumulativeReturn,
     }
   })
 
-  // Calculate period-over-period returns
-  for (let i = 1; i < periods.length; i++) {
-    const prevPrice = periods[i - 1].price
+  // Calculate period-over-period returns (first period uses startPrice as base)
+  for (let i = 0; i < periods.length; i++) {
+    const prevPrice = i === 0 ? startPrice : periods[i - 1].price
     if (prevPrice > 0) {
       periods[i].returnPct = Math.round(((periods[i].price - prevPrice) / prevPrice) * 100 * 100) / 100
     }
@@ -187,9 +187,12 @@ function sampleAtInterval(
 
     case 'weekly':
       return sampleByPeriod(data, (d) => {
+        // ISO week calculation: week starts on Monday
         const date = new Date(d)
-        const yearWeek = `${date.getFullYear()}-W${Math.ceil((date.getDate() + new Date(date.getFullYear(), date.getMonth(), 1).getDay()) / 7)}`
-        return yearWeek
+        const jan4 = new Date(date.getFullYear(), 0, 4)
+        const daysSinceJan4 = Math.floor((date.getTime() - jan4.getTime()) / 86400000)
+        const weekNum = Math.ceil((daysSinceJan4 + jan4.getDay() + 1) / 7)
+        return `${date.getFullYear()}-W${String(weekNum).padStart(2, '0')}`
       })
 
     case 'monthly':
@@ -426,6 +429,9 @@ function computeScoreReturnCorrelation(
   }
 
   if (pairs.length < 3) return 0
+  if (pairs.length < 10) {
+    console.warn(`[Backtest] Score-return correlation based on only ${pairs.length} samples — results may be unreliable (recommend 10+)`)
+  }
 
   return pearsonCorrelation(
     pairs.map(p => p.score),

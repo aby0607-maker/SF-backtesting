@@ -4,8 +4,8 @@
  * Ties together: metric resolution → scoring engine → backtesting.
  * The store calls this service; the service calls engines and data sources.
  *
- * Data access goes through CMOTS services (which handle mock/API mode internally),
- * so switching from mock to live data is just an env variable toggle.
+ * Data access goes through CMOTS services (which fetch from the CMOTS API).
+ * Errors propagate with descriptive reasoning for the UI to display.
  */
 
 import type {
@@ -790,11 +790,14 @@ export async function computeEarliestScoreableDate(
 ): Promise<EarliestScoreableDateResult> {
   if (stockSymbols.length === 0) return EMPTY_RESULT
 
-  const firstSymbol = stockSymbols[0]
+  // Cache key uses sorted symbols to avoid order-dependent misses
+  const symbolsKey = [...stockSymbols].sort().join('\0')
 
-  if (cachedMinDate && cachedMinDate.symbols === firstSymbol) {
+  if (cachedMinDate && cachedMinDate.symbols === symbolsKey) {
     return cachedMinDate.result
   }
+
+  const firstSymbol = stockSymbols[0]
 
   try {
     // Fetch P&L for one stock — FY year columns are the same across stocks
@@ -849,11 +852,11 @@ export async function computeEarliestScoreableDate(
       },
     }
 
-    cachedMinDate = { symbols: firstSymbol, result }
+    cachedMinDate = { symbols: symbolsKey, result }
     return result
   } catch (err) {
     console.warn('[computeEarliestScoreableDate] Failed:', err)
-    cachedMinDate = { symbols: firstSymbol, result: EMPTY_RESULT }
+    cachedMinDate = { symbols: symbolsKey, result: EMPTY_RESULT }
     return EMPTY_RESULT
   }
 }

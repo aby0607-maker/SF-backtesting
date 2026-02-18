@@ -123,8 +123,8 @@ export function ScoringResultsTable({ onSelectStock }: ScoringResultsTableProps)
     )
   }
 
-  // Sort rows
-  const sorted = [...rows].sort((a, b) => {
+  // Sort rows (memoized to avoid re-sorting on every render)
+  const sorted = useMemo(() => [...rows].sort((a, b) => {
     const dir = sortDir === 'desc' ? -1 : 1
     switch (sortField) {
       case 'name': return dir * a.stockName.localeCompare(b.stockName)
@@ -134,7 +134,7 @@ export function ScoringResultsTable({ onSelectStock }: ScoringResultsTableProps)
       case 'deltaPrice': return dir * ((a.deltaPrice ?? -Infinity) - (b.deltaPrice ?? -Infinity))
       default: return 0
     }
-  })
+  }), [rows, sortField, sortDir])
 
   const toggleSort = (field: SortField) => {
     if (sortField === field) {

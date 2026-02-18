@@ -9,18 +9,15 @@
  *   /BalanceSheet/{co_code}/s    — Balance sheet rows with year columns
  *   /QuarterlyResults/{co_code}/s — Quarterly result rows with quarter columns
  *
- * Mock mode: converts MOCK_STOCK_METRICS to compatible format
- * API mode: resolves symbol→co_code, fetches all endpoints in parallel
+ * On error: logs a warning with reasoning and returns null/empty arrays.
  */
 
 import type {
   CMOTSTTMRecord,
   CMOTSFinancialRecord,
   CMOTSStatementRow,
-  CMOTSShareholding,
 } from '@/types/scoring'
-import { MOCK_STOCK_METRICS } from '@/data/mockScoringData'
-import { cmotsFetch, cmotsFetchOne, isMockMode } from './client'
+import { cmotsFetch, cmotsFetchOne } from './client'
 import { getCoCode } from './companyMaster'
 import { getShareholdingHistory } from './shareholding'
 
@@ -30,12 +27,11 @@ const CACHE_TTL = 12 * 60 * 60 * 1000  // 12 hours — fundamentals barely chang
 
 /** Get TTM (Trailing Twelve Month) ratios for a stock */
 export async function getTTMData(symbol: string): Promise<CMOTSTTMRecord | null> {
-  if (isMockMode()) {
-    return buildMockTTM(symbol)
-  }
-
   const coCode = await getCoCode(symbol)
-  if (!coCode) return null
+  if (!coCode) {
+    console.warn(`[Fundamentals] TTM data unavailable for ${symbol}: could not resolve co_code`)
+    return null
+  }
 
   return await cmotsFetchOne<CMOTSTTMRecord>({
     endpoint: `/TTMData/${coCode}/s`,
@@ -45,10 +41,11 @@ export async function getTTMData(symbol: string): Promise<CMOTSTTMRecord | null>
 
 /** Get yearly financial data (FinData) — returns multiple years, sorted oldest first */
 export async function getFinancialData(symbol: string): Promise<CMOTSFinancialRecord[]> {
-  if (isMockMode()) return []
-
   const coCode = await getCoCode(symbol)
-  if (!coCode) return []
+  if (!coCode) {
+    console.warn(`[Fundamentals] FinData unavailable for ${symbol}: could not resolve co_code`)
+    return []
+  }
 
   const data = await cmotsFetch<CMOTSFinancialRecord>({
     endpoint: `/FinData/${coCode}/s`,
@@ -60,10 +57,11 @@ export async function getFinancialData(symbol: string): Promise<CMOTSFinancialRe
 
 /** Get P&L statement rows (row-based with year columns) */
 export async function getProfitAndLoss(symbol: string): Promise<CMOTSStatementRow[]> {
-  if (isMockMode()) return []
-
   const coCode = await getCoCode(symbol)
-  if (!coCode) return []
+  if (!coCode) {
+    console.warn(`[Fundamentals] P&L data unavailable for ${symbol}: could not resolve co_code`)
+    return []
+  }
 
   return await cmotsFetch<CMOTSStatementRow>({
     endpoint: `/ProftandLoss/${coCode}/s`,
@@ -73,10 +71,11 @@ export async function getProfitAndLoss(symbol: string): Promise<CMOTSStatementRo
 
 /** Get cash flow statement rows (row-based with year columns) */
 export async function getCashFlow(symbol: string): Promise<CMOTSStatementRow[]> {
-  if (isMockMode()) return []
-
   const coCode = await getCoCode(symbol)
-  if (!coCode) return []
+  if (!coCode) {
+    console.warn(`[Fundamentals] Cash flow data unavailable for ${symbol}: could not resolve co_code`)
+    return []
+  }
 
   return await cmotsFetch<CMOTSStatementRow>({
     endpoint: `/CashFlow/${coCode}/s`,
@@ -86,10 +85,11 @@ export async function getCashFlow(symbol: string): Promise<CMOTSStatementRow[]> 
 
 /** Get balance sheet rows (row-based with year columns) */
 export async function getBalanceSheet(symbol: string): Promise<CMOTSStatementRow[]> {
-  if (isMockMode()) return []
-
   const coCode = await getCoCode(symbol)
-  if (!coCode) return []
+  if (!coCode) {
+    console.warn(`[Fundamentals] Balance sheet data unavailable for ${symbol}: could not resolve co_code`)
+    return []
+  }
 
   return await cmotsFetch<CMOTSStatementRow>({
     endpoint: `/BalanceSheet/${coCode}/s`,
@@ -99,10 +99,11 @@ export async function getBalanceSheet(symbol: string): Promise<CMOTSStatementRow
 
 /** Get quarterly results rows (row-based with quarter columns like Y202512) */
 export async function getQuarterlyResults(symbol: string): Promise<CMOTSStatementRow[]> {
-  if (isMockMode()) return []
-
   const coCode = await getCoCode(symbol)
-  if (!coCode) return []
+  if (!coCode) {
+    console.warn(`[Fundamentals] Quarterly results unavailable for ${symbol}: could not resolve co_code`)
+    return []
+  }
 
   return await cmotsFetch<CMOTSStatementRow>({
     endpoint: `/QuarterlyResults/${coCode}/s`,
@@ -119,27 +120,19 @@ export interface FundamentalsBundle {
   cashFlow: CMOTSStatementRow[]
   balanceSheet: CMOTSStatementRow[]
   quarterly: CMOTSStatementRow[]
-  shareholding: CMOTSShareholding[]
+  shareholding: import('@/types/scoring').CMOTSShareholding[]
 }
+
+/** Timeout (ms) for the entire parallel fundamentals fetch */
+const FUNDAMENTALS_TIMEOUT_MS = 30_000
 
 /**
  * Fetch all fundamental data for a stock in one call.
- * All 6 endpoints are fetched in parallel for efficiency.
+ * All 7 endpoints are fetched in parallel with a 30s timeout
+ * to prevent a single slow endpoint from blocking indefinitely.
  */
 export async function getAllFundamentals(symbol: string): Promise<FundamentalsBundle> {
-  if (isMockMode()) {
-    return {
-      ttm: buildMockTTM(symbol),
-      finData: [],
-      pnl: [],
-      cashFlow: [],
-      balanceSheet: [],
-      quarterly: [],
-      shareholding: [],
-    }
-  }
-
-  const [ttm, finData, pnl, cashFlow, balanceSheet, quarterly, shareholding] = await Promise.all([
+  const dataPromise = Promise.all([
     getTTMData(symbol),
     getFinancialData(symbol),
     getProfitAndLoss(symbol),
@@ -147,6 +140,15 @@ export async function getAllFundamentals(symbol: string): Promise<FundamentalsBu
     getBalanceSheet(symbol),
     getQuarterlyResults(symbol),
     getShareholdingHistory(symbol),
+  ])
+
+  const timeoutPromise = new Promise<never>((_, reject) =>
+    setTimeout(() => reject(new Error(`[Fundamentals] Timeout after ${FUNDAMENTALS_TIMEOUT_MS}ms fetching data for ${symbol}`)), FUNDAMENTALS_TIMEOUT_MS)
+  )
+
+  const [ttm, finData, pnl, cashFlow, balanceSheet, quarterly, shareholding] = await Promise.race([
+    dataPromise,
+    timeoutPromise,
   ])
 
   return { ttm, finData, pnl, cashFlow, balanceSheet, quarterly, shareholding }
@@ -182,35 +184,4 @@ export function getYearColumns(row: CMOTSStatementRow): string[] {
   return Object.keys(row)
     .filter(k => /^Y\d{6}$/.test(k))
     .sort((a, b) => b.localeCompare(a))  // Newest first
-}
-
-// ── Mock helpers ──
-
-function findMockMetrics(symbol: string) {
-  return MOCK_STOCK_METRICS.find(m => m.stockId === symbol) ?? null
-}
-
-function buildMockTTM(symbol: string): CMOTSTTMRecord | null {
-  const metrics = findMockMetrics(symbol)
-  if (!metrics) return null
-
-  return {
-    co_code: symbol.charCodeAt(0) * 100,
-    pe_ttm: metrics.raw_pe ?? metrics.v2_pe_vs_5y ?? 0,
-    dividendyield: 0,
-    roe_ttm: metrics.v2_roe ?? 0,
-    roce_ttm: metrics.v2_roe ?? 0,  // approximate
-    mcap: 0,
-    pb_ttm: metrics.raw_pb ?? metrics.v2_pb_vs_5y ?? 0,
-    eps_ttm: 0,
-    debttoequity: metrics.v2_debt_ebitda ?? 0,
-    ev_ebitda: metrics.raw_ev ?? metrics.v2_ev_vs_5y ?? 0,
-    currentratio: 0,
-    returnonassets: 0,
-    operatingprofitmargin: 0,
-    netprofitmargin: 0,
-    quickratio: 0,
-    assetturnover_ttm: 0,
-    pegratio: 0,
-  }
 }
