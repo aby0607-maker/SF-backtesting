@@ -21,7 +21,7 @@ import { cmotsFetch, cmotsFetchOne } from './client'
 import { getCoCode } from './companyMaster'
 import { getShareholdingHistory } from './shareholding'
 
-const CACHE_TTL = 12 * 60 * 60 * 1000  // 12 hours — fundamentals barely change intra-day
+const CACHE_TTL = 60 * 60 * 1000  // 1 hour — aligned with price data TTL for consistent backtests
 
 // ── Individual endpoint fetchers ──
 
