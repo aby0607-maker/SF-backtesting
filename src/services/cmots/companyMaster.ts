@@ -7,13 +7,11 @@
  * BSE-only: CMOTS is a BSE data provider. The company master is filtered
  * to only include active BSE-listed companies.
  *
- * Mock mode: returns from MOCK_COMPANIES
- * API mode: fetches from /companymaster, filters to BSE active, builds cache
+ * On error: logs a warning with reasoning and returns null/empty arrays.
  */
 
 import type { CMOTSCompany } from '@/types/scoring'
-import { MOCK_COMPANIES } from '@/data/mockScoringData'
-import { cmotsFetch, isMockMode } from './client'
+import { cmotsFetch } from './client'
 
 const CACHE_TTL = 24 * 60 * 60 * 1000  // 24 hours
 
@@ -29,7 +27,13 @@ async function ensureCompanyMap(): Promise<Map<string, CMOTSCompany>> {
   if (companyMapPromise) return companyMapPromise
 
   companyMapPromise = (async () => {
-    const companies = await getCompanyMaster()
+    // Fetch directly to avoid infinite recursion (getCompanyMaster calls ensureCompanyMap)
+    const data = await cmotsFetch<CMOTSCompany>({
+      endpoint: '/companymaster',
+      cacheTTL: CACHE_TTL,
+    })
+    const companies = data.filter(c => c.bselistedflag === 'Y' || c.BSEStatus === 'Active')
+
     const map = new Map<string, CMOTSCompany>()
     for (const c of companies) {
       // Primary key: co_code (canonical identifier used by all CMOTS endpoints)
@@ -51,10 +55,6 @@ async function ensureCompanyMap(): Promise<Map<string, CMOTSCompany>> {
 
 /** Get all companies (BSE-active universe). CMOTS is a BSE data provider. */
 export async function getCompanyMaster(): Promise<CMOTSCompany[]> {
-  if (isMockMode()) {
-    return MOCK_COMPANIES.map(mockToCMOTS)
-  }
-
   const data = await cmotsFetch<CMOTSCompany>({
     endpoint: '/companymaster',
     cacheTTL: CACHE_TTL,
@@ -66,8 +66,6 @@ export async function getCompanyMaster(): Promise<CMOTSCompany[]> {
 
 /** Resolve a symbol (NSE or BSE) to its co_code. Returns null if not found. */
 export async function getCoCode(symbol: string): Promise<number | null> {
-  if (isMockMode()) return null
-
   const map = await ensureCompanyMap()
   const company = map.get(symbol.toUpperCase())
   return company?.co_code ?? null
@@ -75,11 +73,6 @@ export async function getCoCode(symbol: string): Promise<number | null> {
 
 /** Get company details by symbol (NSE or BSE code) */
 export async function getCompanyBySymbol(symbol: string): Promise<CMOTSCompany | null> {
-  if (isMockMode()) {
-    const mock = MOCK_COMPANIES.find(c => c.symbol === symbol.toUpperCase())
-    return mock ? mockToCMOTS(mock) : null
-  }
-
   const map = await ensureCompanyMap()
   return map.get(symbol.toUpperCase()) ?? null
 }
@@ -87,15 +80,6 @@ export async function getCompanyBySymbol(symbol: string): Promise<CMOTSCompany |
 /** Search companies by name or symbol (client-side filter) */
 export async function searchCompanies(query: string): Promise<CMOTSCompany[]> {
   const q = query.toLowerCase()
-
-  if (isMockMode()) {
-    return MOCK_COMPANIES
-      .filter(c =>
-        c.name.toLowerCase().includes(q) ||
-        c.symbol.toLowerCase().includes(q)
-      )
-      .map(mockToCMOTS)
-  }
 
   const map = await ensureCompanyMap()
   const results: CMOTSCompany[] = []
@@ -117,28 +101,4 @@ export async function searchCompanies(query: string): Promise<CMOTSCompany[]> {
 export function clearCompanyCache(): void {
   companyMap = null
   companyMapPromise = null
-}
-
-// ── Mock helpers ──
-
-function mockToCMOTS(mock: typeof MOCK_COMPANIES[number]): CMOTSCompany {
-  return {
-    co_code: mock.id.charCodeAt(0) * 100 + mock.id.charCodeAt(1),
-    bsecode: '',
-    nsesymbol: mock.symbol,
-    companyname: mock.name,
-    companyshortname: mock.symbol,
-    categoryname: '',
-    isin: '',
-    bsegroup: '',
-    mcaptype: mock.marketCap > 50000 ? 'Large Cap' : mock.marketCap > 10000 ? 'Mid Cap' : 'Small Cap',
-    sectorcode: '',
-    sectorname: mock.sector,
-    industrycode: '',
-    industryname: mock.sector,
-    bselistedflag: 'Y',
-    nselistedflag: 'Y',
-    BSEStatus: 'Active',
-    NSEStatus: 'Active',
-  }
 }

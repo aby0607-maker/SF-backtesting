@@ -103,12 +103,24 @@ function applyNegativeHandling(
  * Look up the score for a raw value in the score bands.
  * Bands should be ordered from highest score to lowest (best to worst).
  */
+// Cache for pre-sorted score bands to avoid re-sorting on every lookup
+const sortedBandsCache = new WeakMap<ScoreBand[], ScoreBand[]>()
+
+function getSortedBands(scoreBands: ScoreBand[]): ScoreBand[] {
+  let sorted = sortedBandsCache.get(scoreBands)
+  if (!sorted) {
+    sorted = [...scoreBands].sort((a, b) => b.score - a.score)
+    sortedBandsCache.set(scoreBands, sorted)
+  }
+  return sorted
+}
+
 function lookupScoreBand(rawValue: number, scoreBands: ScoreBand[]): number {
   // Guard: no bands defined → return 0
   if (!scoreBands || scoreBands.length === 0) return 0
 
-  // Sort bands by score descending for priority
-  const sorted = [...scoreBands].sort((a, b) => b.score - a.score)
+  // Sort bands by score descending for priority (cached)
+  const sorted = getSortedBands(scoreBands)
 
   for (const band of sorted) {
     if (rawValue >= band.min && rawValue <= band.max) {

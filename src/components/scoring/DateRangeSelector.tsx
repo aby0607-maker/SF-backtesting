@@ -9,11 +9,9 @@
 import { useState, useEffect, useMemo } from 'react'
 import { cn } from '@/lib/utils'
 import { useScoringStore } from '@/store/useScoringStore'
-import { MOCK_OHLCV } from '@/data/mockScoringData'
-import { isMockMode } from '@/services/cmots/client'
 import { computeEarliestScoreableDate, type EarliestScoreableDateResult } from '@/services/scoringService'
 import type { BacktestInterval } from '@/types/scoring'
-import { Calendar, Clock, Info, AlertTriangle, CheckCircle2, Loader2 } from 'lucide-react'
+import { Calendar, Clock, AlertTriangle, CheckCircle2, Loader2 } from 'lucide-react'
 
 const INTERVAL_OPTIONS: { value: BacktestInterval; label: string; description: string }[] = [
   { value: 'daily', label: 'Daily', description: 'Score snapshots every trading day' },
@@ -30,27 +28,12 @@ const QUICK_PRESETS = [
   { label: '5Y', years: 5 },
 ]
 
-/** Compute min/max dates available in mock OHLCV data */
-function getMockDataRange(): { minDate: string; maxDate: string } {
-  let minDate = '9999-12-31'
-  let maxDate = '0000-01-01'
-  for (const data of Object.values(MOCK_OHLCV)) {
-    if (data.length > 0) {
-      if (data[0].date < minDate) minDate = data[0].date
-      if (data[data.length - 1].date > maxDate) maxDate = data[data.length - 1].date
-    }
-  }
-  return { minDate, maxDate }
-}
-
 export function DateRangeSelector() {
   const backtestConfig = useScoringStore(s => s.backtestConfig)
   const setBacktestConfig = useScoringStore(s => s.setBacktestConfig)
   const stockSymbols = useScoringStore(s => s.universeFilter.customSymbols)
 
-  // In mock mode, clamp dates to available data range
-  const dataRange = useMemo(() => isMockMode() ? getMockDataRange() : null, [])
-  const effectiveMaxDate = dataRange?.maxDate ?? getToday()
+  const effectiveMaxDate = getToday()
 
   // Pre-compute earliest scoreable date from CMOTS data
   const [minDateInfo, setMinDateInfo] = useState<EarliestScoreableDateResult | null>(null)
@@ -72,12 +55,10 @@ export function DateRangeSelector() {
     return () => { cancelled = true }
   }, [stockSymbols])
 
-  // The effective minimum: max of mock data range min and absoluteMin
+  // The effective minimum: earliest date with scoreable data
   const effectiveMinDate = useMemo(() => {
-    const candidates = [dataRange?.minDate, minDateInfo?.absoluteMin].filter(Boolean) as string[]
-    if (candidates.length === 0) return undefined
-    return candidates.sort().pop()!
-  }, [dataRange, minDateInfo])
+    return minDateInfo?.absoluteMin ?? undefined
+  }, [minDateInfo])
 
   const [fromDate, setFromDate] = useState(backtestConfig?.dateRange.from ?? '')
   const [toDate, setToDate] = useState(backtestConfig?.dateRange.to ?? effectiveMaxDate)
@@ -210,13 +191,6 @@ export function DateRangeSelector() {
           </div>
         )}
 
-        {/* Mock data range info */}
-        {dataRange && (
-          <div className="mt-2 flex items-center gap-1.5 text-[10px] text-neutral-600">
-            <Info className="w-3 h-3" />
-            <span>Mock data available: {dataRange.minDate} — {dataRange.maxDate}</span>
-          </div>
-        )}
       </div>
 
       {/* Interval selector */}

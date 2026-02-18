@@ -86,8 +86,8 @@ export function SegmentBuilder() {
                   type="number"
                   min={0}
                   max={100}
-                  step={0.5}
-                  value={parseFloat((segment.segmentWeight * 100).toFixed(1))}
+                  step={0.01}
+                  value={parseFloat((segment.segmentWeight * 100).toFixed(2))}
                   onChange={e => {
                     const val = parseFloat(e.target.value)
                     if (!isNaN(val) && val >= 0 && val <= 100) {
@@ -131,8 +131,8 @@ export function SegmentBuilder() {
                             type="number"
                             min={0}
                             max={100}
-                            step={0.5}
-                            value={m.weight ? parseFloat((m.weight * 100).toFixed(1)) : 0}
+                            step={0.01}
+                            value={m.weight ? parseFloat((m.weight * 100).toFixed(2)) : 0}
                             onChange={e => {
                               const val = parseFloat(e.target.value)
                               if (!isNaN(val) && val >= 0 && val <= 100) {

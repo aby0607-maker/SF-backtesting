@@ -16,8 +16,6 @@
  */
 
 import type { CMOTSTTMRecord, CMOTSFinancialRecord, CMOTSStatementRow, CMOTSShareholding, MetricResolutionConfig, CustomMetricDefinition } from '@/types/scoring'
-import { getStockDataForScoring } from '@/data/mockScoringData'
-import { isMockMode } from '@/services/cmots/client'
 import type { FundamentalsBundle } from '@/services/cmots/fundamentals'
 import { getAllFundamentals, findStatementRow, getStatementValue, getYearColumns } from '@/services/cmots/fundamentals'
 import { getCompanyBySymbol } from '@/services/cmots/companyMaster'
@@ -897,21 +895,15 @@ function resolveStatementCustomMetric(
  * Resolve all metric values for a stock given its NSE symbol.
  * Returns metric data + context (start/end year values for negative handling).
  *
- * In mock mode: pulls from MOCK_STOCK_METRICS directly.
- * In API mode: fetches from CMOTS services, computes technical indicators,
+ * Fetches from CMOTS services, computes technical indicators,
  * and extracts growth context from P&L rows.
+ * Returns null with a warning if data is unavailable.
  */
 export async function resolveMetricValues(
   stockId: string,
   config?: MetricResolutionConfig,
 ): Promise<ResolvedMetrics | null> {
-  if (isMockMode()) {
-    const stockData = getStockDataForScoring(stockId)
-    if (!stockData) return null
-    return { data: stockData.data, context: stockData.context }
-  }
-
-  // API mode: fetch fundamentals + price data in parallel
+  // Fetch fundamentals + price data in parallel
   const [fundamentals, priceResult] = await Promise.all([
     getAllFundamentals(stockId),
     fetchPriceDataForScoring(stockId),
@@ -987,7 +979,12 @@ export function resolveMetricsAtDate(
   }
 }
 
-/** Find the price on or just before a target date */
+/**
+ * Find the price on or just before a target date.
+ * INVARIANT: priceHistory must be sorted ascending by date.
+ * This is guaranteed by getHistoricalPrices() which sorts on fetch,
+ * and Array.filter() which preserves order.
+ */
 function findClosestPriceValue(
   priceHistory: { date: string; price: number }[],
   targetDate: string,
@@ -997,7 +994,7 @@ function findClosestPriceValue(
     if (p.date <= targetDate) {
       closest = p.price
     } else {
-      break  // Assumes sorted ascending
+      break
     }
   }
   return closest
@@ -1005,6 +1002,7 @@ function findClosestPriceValue(
 
 /**
  * Resolve metric values for multiple stocks (batch).
+ * Uses Promise.allSettled so a single stock failure doesn't crash the entire batch.
  */
 export async function resolveMetricValuesBatch(
   stockIds: string[],
@@ -1012,22 +1010,20 @@ export async function resolveMetricValuesBatch(
 ): Promise<Record<string, ResolvedMetrics>> {
   const result: Record<string, ResolvedMetrics> = {}
 
-  if (isMockMode()) {
-    for (const id of stockIds) {
-      const resolved = await resolveMetricValues(id, config)
-      if (resolved) result[id] = resolved
-    }
-    return result
-  }
-
   const BATCH_SIZE = 10
   for (let i = 0; i < stockIds.length; i += BATCH_SIZE) {
     const batch = stockIds.slice(i, i + BATCH_SIZE)
-    const fetches = batch.map(async id => {
-      const resolved = await resolveMetricValues(id, config)
-      if (resolved) result[id] = resolved
-    })
-    await Promise.all(fetches)
+    const settled = await Promise.allSettled(
+      batch.map(async id => {
+        const resolved = await resolveMetricValues(id, config)
+        if (resolved) result[id] = resolved
+      })
+    )
+    for (let j = 0; j < settled.length; j++) {
+      if (settled[j].status === 'rejected') {
+        console.warn(`[MetricResolver] Failed to resolve metrics for ${batch[j]}:`, (settled[j] as PromiseRejectedResult).reason)
+      }
+    }
   }
   return result
 }
@@ -1042,12 +1038,6 @@ export async function getStockInfo(stockId: string): Promise<{
   sector: string
   marketCap: number
 } | null> {
-  if (isMockMode()) {
-    const stockData = getStockDataForScoring(stockId)
-    if (!stockData) return null
-    return stockData.info
-  }
-
   const company = await getCompanyBySymbol(stockId)
   if (!company) return null
 

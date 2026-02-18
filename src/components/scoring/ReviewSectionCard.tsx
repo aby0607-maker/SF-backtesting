@@ -1,5 +1,5 @@
 /**
- * ReviewSectionCard — Stage 6: Collapsible card showing a stage's summary
+ * ReviewSectionCard — Stage 4: Collapsible card showing a stage's summary
  */
 
 import { useState } from 'react'

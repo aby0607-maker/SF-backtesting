@@ -14,8 +14,6 @@ import { cn } from '@/lib/utils'
 import { useScoringStore, useActiveScorecard, useScoringStatus, useScoringError } from '@/store/useScoringStore'
 import { scoreWithScorecard } from '@/services/scoringService'
 import { getCompanyMaster } from '@/services/cmots/companyMaster'
-import { isMockMode } from '@/services/cmots/client'
-import { getAllStocksForScoring } from '@/data/mockScoringData'
 import { Play, Loader2, Square, RotateCcw, AlertTriangle, X } from 'lucide-react'
 
 /** Hash the universe filter to detect if it changed since last run */
@@ -69,9 +67,7 @@ export function RunScoringButton() {
     try {
       let stockIds: string[]
 
-      if (isMockMode()) {
-        stockIds = getAllStocksForScoring().map(s => s.info.id)
-      } else if (universeFilter.mode === 'individual') {
+      if (universeFilter.mode === 'individual') {
         stockIds = [...universeFilter.customSymbols]
       } else if (universeFilter.mode === 'all') {
         const companies = await getCompanyMaster()

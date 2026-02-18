@@ -2,7 +2,7 @@
  * CMOTS Services — Barrel export
  */
 
-export { cmotsFetch, cmotsFetchOne, isMockMode } from './client'
+export { cmotsFetch, cmotsFetchOne } from './client'
 export { getCompanyMaster, getCompanyBySymbol, getCoCode, searchCompanies, clearCompanyCache } from './companyMaster'
 export { getHistoricalPrices, getLatestPrice, getBatchPrices } from './priceData'
 export {

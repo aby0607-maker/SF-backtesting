@@ -4,8 +4,8 @@
  * Ties together: metric resolution → scoring engine → backtesting.
  * The store calls this service; the service calls engines and data sources.
  *
- * Data access goes through CMOTS services (which handle mock/API mode internally),
- * so switching from mock to live data is just an env variable toggle.
+ * Data access goes through CMOTS services (which fetch from the CMOTS API).
+ * Errors propagate with descriptive reasoning for the UI to display.
  */
 
 import type {
