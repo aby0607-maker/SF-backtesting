@@ -33,6 +33,9 @@ export function ScoreReturnCorrelation() {
     })
   }, [rows])
 
+  // No interval data available — nothing to plot
+  if (intervals.length === 0) return null
+
   const [selectedInterval, setSelectedInterval] = useState(
     // Default to last interval (total period return)
     intervals[intervals.length - 1] ?? intervals[0]
