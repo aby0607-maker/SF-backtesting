@@ -63,11 +63,12 @@ export interface ParsedMetric {
   /** Score values per stock (for band validation); null means no data */
   scoreValues: (number | null)[]
   weight?: number
-  /** Optional CMOTS mapping (from Source:/RowNo:/Derivation: rows) */
+  /** Optional CMOTS mapping (from Source:/RowNo:/Derivation:/Unit: rows) */
   cmots_source?: CustomMetricDefinition['cmots_source']
   cmots_field?: string
   cmots_rowno?: number
   derivation?: MetricDerivation
+  unit?: CustomMetricDefinition['unit']
 }
 
 // ─── Constants ───
@@ -96,9 +97,11 @@ const CMOTS_SOURCE_MAP: Record<string, CustomMetricDefinition['cmots_source']> =
   'income': 'pnl',
   'balancesheet': 'balanceSheet',
   'balance_sheet': 'balanceSheet',
+  'balance-sheet': 'balanceSheet',
   'bs': 'balanceSheet',
   'cashflow': 'cashFlow',
   'cash_flow': 'cashFlow',
+  'cash-flow': 'cashFlow',
   'cf': 'cashFlow',
   'quarterly': 'quarterly',
   'qtr': 'quarterly',
@@ -112,6 +115,21 @@ const DERIVATION_MAP: Record<string, MetricDerivation> = {
   'yoy': 'yoy_change',
   'yoy_ratio': 'yoy_ratio',
   'ratio': 'yoy_ratio',
+}
+
+const UNIT_MAP: Record<string, CustomMetricDefinition['unit']> = {
+  'percent': 'percent',
+  '%': 'percent',
+  'percentage': 'percent',
+  'ratio': 'ratio',
+  'currency': 'currency',
+  '₹': 'currency',
+  '$': 'currency',
+  'inr': 'currency',
+  'number': 'number',
+  'num': 'number',
+  'times': 'times',
+  'x': 'times',
 }
 
 const NEGATIVE_CONDITION_MAP: Record<string, NegativeCondition> = {
@@ -232,7 +250,7 @@ export function parseCSVToScorecard(csvText: string, filename?: string): ParsedC
 
     // Detect CMOTS mapping rows (attach to last Input: metric)
     if (labelLower.startsWith('source:') && lastInputMetric) {
-      const sourceVal = label.replace(/^source:\s*/i, '').trim().toLowerCase().replace(/\s+/g, '')
+      const sourceVal = label.replace(/^source:\s*/i, '').trim().toLowerCase().replace(/[\s_]+/g, '')
       const mapped = CMOTS_SOURCE_MAP[sourceVal]
       if (mapped) lastInputMetric.cmots_source = mapped
       continue
@@ -250,6 +268,12 @@ export function parseCSVToScorecard(csvText: string, filename?: string): ParsedC
       const derVal = label.replace(/^derivation:\s*/i, '').trim().toLowerCase().replace(/\s+/g, '_')
       const mapped = DERIVATION_MAP[derVal]
       if (mapped) lastInputMetric.derivation = mapped
+      continue
+    }
+    if (labelLower.startsWith('unit:') && lastInputMetric) {
+      const unitVal = label.replace(/^unit:\s*/i, '').trim().toLowerCase()
+      const mapped = UNIT_MAP[unitVal]
+      if (mapped) lastInputMetric.unit = mapped
       continue
     }
 
@@ -303,7 +327,7 @@ export function parsedResultToScorecard(parsed: ParsedCSVResult): ScorecardVersi
         name: pm.name,
         cmots_source: pm.cmots_source || 'ttm',
         cmots_field: pm.cmots_field || pm.id,
-        unit: 'number' as const,
+        unit: pm.unit || 'number',
         description: `Parsed from CSV: ${pm.name}`,
       },
       scoreBands: deriveBands(pm.inputValues, pm.scoreValues),
@@ -558,7 +582,7 @@ export function extractCustomDefsFromParsed(parsed: ParsedCSVResult): CustomMetr
         cmots_field: metric.cmots_field || metric.id,
         cmots_rowno: metric.cmots_rowno,
         derivation: metric.derivation || 'latest',
-        unit: 'number',
+        unit: metric.unit || 'number',
         category: segment.name,
         higherIsBetter: true,
         createdAt: Date.now(),

@@ -96,6 +96,7 @@ export function CustomMetricCreator() {
         cmots_field: definition.cmots_field,
         unit: definition.unit,
         description: definition.description,
+        category: definition.category,
       },
       scoreBands: [],
       description: definition.description,
