@@ -1,7 +1,7 @@
 /**
- * Scoring Pipeline Store — Zustand state management for the 3-stage pipeline
+ * Scoring Pipeline Store — Zustand state management for the 5-step pipeline
  *
- * Pipeline: Build Scorecard → Configure & Run → Results & Iterate
+ * Pipeline: Start → Metrics & Segments → Review & Tune → Select Stocks & Run → Results & Iterate
  *
  * Manages: pipeline navigation, scorecard CRUD, version history,
  * universe selection, combined scoring+backtest results, and review snapshots.
@@ -43,7 +43,9 @@ import { SCORECARD_TEMPLATES } from '@/data/scorecardTemplates'
 interface ScoringState {
   // Pipeline navigation
   currentStage: PipelineStage
-  uiMode: UIMode
+  uiMode: UIMode  // Kept for persist migration compat, no longer exposed in UI
+  /** Tracks which steps have been "completed" (have minimum data to proceed) */
+  stageCompletion: Record<PipelineStage, boolean>
 
   // Scorecard management
   scorecards: ScorecardVersion[]
@@ -88,7 +90,9 @@ interface ScoringState {
   nextStage: () => void
   prevStage: () => void
   setUIMode: (mode: UIMode) => void
-  editFromReview: (stageNumber: 1 | 2 | 3) => void
+  editFromReview: (stageNumber: PipelineStage) => void
+  /** Recompute stageCompletion based on current state */
+  recomputeCompletion: () => void
 
   // ─── Actions: Scorecard CRUD ───
   createScorecard: (name: string, macroVersion: string) => string
@@ -195,6 +199,7 @@ export const useScoringStore = create<ScoringState>()(
       // Initial state
       currentStage: 1 as PipelineStage,
       uiMode: 'wizard' as UIMode,
+      stageCompletion: { 1: false, 2: false, 3: false, 4: false, 5: false },
 
       scorecards: [],
       activeScorecardId: null,
@@ -221,7 +226,7 @@ export const useScoringStore = create<ScoringState>()(
 
       nextStage: () => {
         set(state => ({
-          currentStage: Math.min(3, state.currentStage + 1) as PipelineStage,
+          currentStage: Math.min(5, state.currentStage + 1) as PipelineStage,
         }))
       },
 
@@ -235,8 +240,32 @@ export const useScoringStore = create<ScoringState>()(
         set({ uiMode: mode })
       },
 
-      editFromReview: (stageNumber: 1 | 2 | 3) => {
+      editFromReview: (stageNumber: PipelineStage) => {
         set({ currentStage: stageNumber })
+      },
+
+      recomputeCompletion: () => {
+        const state = get()
+        const scorecard = getActiveScorecard(state)
+        const hasScorecard = !!scorecard
+        const hasMetrics = scorecard
+          ? scorecard.segments.some(s => s.metrics.length > 0)
+          : false
+        const hasStocks = state.universeFilter.customSymbols.length > 0
+          || state.universeFilter.mode === 'all'
+          || (state.universeFilter.mode === 'cohort' && (state.universeFilter.mcapTypes.length > 0 || state.universeFilter.sectors.length > 0))
+        const hasDateRange = !!state.backtestConfig?.dateRange?.from && !!state.backtestConfig?.dateRange?.to
+        const hasResults = !!state.combinedResult
+
+        set({
+          stageCompletion: {
+            1: hasScorecard,
+            2: hasScorecard && hasMetrics,
+            3: hasScorecard && hasMetrics, // Always complete if metrics exist (templates have defaults)
+            4: hasStocks && hasDateRange,
+            5: hasResults,
+          },
+        })
       },
 
       // ─── Scorecard CRUD ───
@@ -374,6 +403,9 @@ export const useScoringStore = create<ScoringState>()(
             ...state.versionHistory,
             [macro]: capVersionHistory([...(state.versionHistory[macro] || []), loaded]),
           },
+          // Fast-path: auto-advance to Step 3 (Review & Tune), mark 1-2 complete
+          currentStage: 3 as PipelineStage,
+          stageCompletion: { ...state.stageCompletion, 1: true, 2: true, 3: true },
         }))
 
         return id
@@ -399,6 +431,9 @@ export const useScoringStore = create<ScoringState>()(
             ...state.versionHistory,
             [macro]: capVersionHistory([...(state.versionHistory[macro] || []), loaded]),
           },
+          // Fast-path: auto-advance to Step 3 (Review & Tune)
+          currentStage: 3 as PipelineStage,
+          stageCompletion: { ...state.stageCompletion, 1: true, 2: true, 3: true },
         }))
 
         return id
@@ -848,6 +883,7 @@ export const useScoringStore = create<ScoringState>()(
       resetPipeline: () => {
         set({
           currentStage: 1 as PipelineStage,
+          stageCompletion: { 1: false, 2: false, 3: false, 4: false, 5: false },
           combinedResult: null,
           currentRun: null,
           currentRunFilterHash: null,
@@ -863,7 +899,7 @@ export const useScoringStore = create<ScoringState>()(
 
       prepareReRun: () => {
         set({
-          currentStage: 2 as PipelineStage,
+          currentStage: 4 as PipelineStage,
           combinedResult: null,
           currentRun: null,
           backtestResult: null,
@@ -904,7 +940,8 @@ export const useScoringStore = create<ScoringState>()(
             ...state.versionHistory,
             [macro]: capVersionHistory([...(state.versionHistory[macro] || []), fork]),
           },
-          currentStage: 1 as PipelineStage,
+          currentStage: 3 as PipelineStage,
+          stageCompletion: { ...get().stageCompletion, 1: true, 2: true, 3: true },
           combinedResult: null,
           currentRun: null,
           backtestResult: null,
@@ -919,7 +956,7 @@ export const useScoringStore = create<ScoringState>()(
     }),
     {
       name: 'stockfox-scoring-storage',
-      version: 3,
+      version: 4,
       storage: {
         getItem: (name) => {
           const str = localStorage.getItem(name)
@@ -957,6 +994,7 @@ export const useScoringStore = create<ScoringState>()(
         uiMode: state.uiMode,
         universeFilter: state.universeFilter,
         currentStage: state.currentStage,
+        stageCompletion: state.stageCompletion,
         backtestConfig: state.backtestConfig,
       }),
       migrate: (persisted: unknown, version: number) => {
@@ -981,6 +1019,24 @@ export const useScoringStore = create<ScoringState>()(
           if (stage <= 2) state.currentStage = 1
           else if (stage <= 4) state.currentStage = 2
           else state.currentStage = 3
+        }
+        // v3 → v4: 3-stage → 5-step pipeline migration
+        if (version < 4) {
+          const stage = state.currentStage as number
+          // Map old 3-stage to new 5-step:
+          // Old 1 (Build) → New 1 (Start) if no scorecard, else 3 (Review & Tune)
+          // Old 2 (Configure & Run) → New 4 (Select Stocks & Run)
+          // Old 3 (Results) → New 5 (Results)
+          if (stage === 1) {
+            const hasScorecard = !!(state as Record<string, unknown>).activeScorecardId
+            state.currentStage = hasScorecard ? 3 : 1
+          } else if (stage === 2) {
+            state.currentStage = 4
+          } else {
+            state.currentStage = 5
+          }
+          // Initialize stageCompletion
+          state.stageCompletion = { 1: false, 2: false, 3: false, 4: false, 5: false }
         }
         return state
       },
@@ -1019,6 +1075,9 @@ export const useBacktestResult = () =>
 
 export const useUIMode = () =>
   useScoringStore(state => state.uiMode)
+
+export const useStageCompletion = () =>
+  useScoringStore(state => state.stageCompletion)
 
 export const useCustomMetricDefinitions = () =>
   useScoringStore(state => state.customMetricDefinitions)
