@@ -544,6 +544,14 @@ export const useScoringStore = create<ScoringState>()(
           scorecards: updateActiveInList(state.scorecards, activeScorecardId, sc => ({
             ...sc,
             segments: [...sc.segments, segment],
+            // Also register in compositeFormula so CompositeFormulaEditor shows the new segment
+            compositeFormula: {
+              ...sc.compositeFormula,
+              baseSegments: [
+                ...sc.compositeFormula.baseSegments,
+                { segmentId: segment.id, weight: segment.segmentWeight },
+              ],
+            },
           })),
         }))
       },
@@ -571,6 +579,13 @@ export const useScoringStore = create<ScoringState>()(
             segments: sc.segments.map(seg =>
               seg.id === segmentId ? { ...seg, segmentWeight: weight } : seg
             ),
+            // Keep compositeFormula in sync so CompositeFormulaEditor + review snapshot stay current
+            compositeFormula: {
+              ...sc.compositeFormula,
+              baseSegments: sc.compositeFormula.baseSegments.map(bs =>
+                bs.segmentId === segmentId ? { ...bs, weight } : bs
+              ),
+            },
           })),
         }))
       },
