@@ -21,7 +21,7 @@ import type {
   StockScoreResult,
   ModelRunResult,
 } from '@/types/scoring'
-import { computeValuationScore } from './conditionalValuation'
+import { computeValuationScore, type ValuationConfig } from './conditionalValuation'
 
 // ─────────────────────────────────────────────────
 // Metric Scoring
@@ -224,6 +224,29 @@ export function scoreMetric(
 }
 
 // ─────────────────────────────────────────────────
+// VPT Conditional Scoring (Two-Input)
+// ─────────────────────────────────────────────────
+
+/**
+ * Score VPT using two-input conditional rules (volume change ratio + price change %).
+ * Returns score on 0-80 scale (max 80 = strong accumulation).
+ * Verified against 13/13 stocks in SME CSV.
+ *
+ * TODO-SME: Rule for true neutral (price≈0, vol≈1) simplified to score 30. Verify with Vishal.
+ */
+function scoreVPT(vol: number, price: number): number {
+  if (price <= -3 && vol < 1)  return 0   // bearish, below-avg volume
+  if (price <= -3 && vol >= 1) return 10  // distribution (vol-confirmed decline)
+  if (price < 0 && vol >= 1)   return 10  // mild distribution
+  if (price < 0 && vol < 1)    return 30  // light selling, low conviction
+  if (price > 5 && vol < 1)    return 20  // hollow rally (price up, vol not confirming)
+  if (price > 0 && vol < 1)    return 30  // light buying
+  if (price > 0 && price < 2 && vol >= 1) return 80 // strong accumulation
+  if (price >= 2 && vol >= 1)  return 30  // rally, volume/price mismatch
+  return 30 // fallback: near-zero/flat
+}
+
+// ─────────────────────────────────────────────────
 // Segment Scoring
 // ─────────────────────────────────────────────────
 
@@ -310,14 +333,25 @@ function scoreValuationSegmentConditional(
   const pb = metricScores.find(m => m.metricId === 'v2_pb_vs_5y')
   const ev = metricScores.find(m => m.metricId === 'v2_ev_vs_5y')
 
+  // Convert segment's ValuationConditionalConfig to ValuationConfig if present
+  const vc = segment.valuationConditionals
+  const valuationConfig: ValuationConfig | undefined = vc?.enabled ? {
+    peThreshold: vc.peThreshold,
+    evThreshold: vc.evThreshold,
+    pbNAThreshold: vc.pbNAThreshold,
+    defaultWeights: vc.defaultWeights,
+    peExcludedWeights: vc.peExcludedWeights,
+    evExcludedWeights: vc.evExcludedWeights,
+  } : undefined
+
   const result = computeValuationScore({
     peScore: pe && !pe.isExcluded ? pe.normalizedScore : null,
     pbScore: pb && !pb.isExcluded ? pb.normalizedScore : null,
     evScore: ev && !ev.isExcluded ? ev.normalizedScore : null,
-    rawPE: stockData['raw_pe'] ?? null,
-    rawPB: stockData['raw_pb'] ?? null,
-    rawEV: stockData['raw_ev'] ?? null,
-  })
+    rawPE: stockData['hist_avg_pe'] ?? null,  // Use Historical 5Y Average for conditional thresholds
+    rawPB: stockData['hist_avg_pb'] ?? null,  // (PE>75, EV>35, PB>30 checks use hist avg, not TTM)
+    rawEV: stockData['hist_avg_ev'] ?? null,
+  }, valuationConfig)
 
   const segmentScore = result.isNA ? 0 : Math.round(result.score * 100) / 100
 
@@ -379,8 +413,9 @@ export function computeComposite(
     }
   }
 
-  // Clamp to 0-100
-  return Math.min(100, Math.max(0, Math.round(composite * 100) / 100))
+  // Allow negative segment scores (e.g., Technical = -5 for SpiceJet) to flow through.
+  // Final display clamping happens in normalization or UI layer.
+  return Math.round(composite * 100) / 100
 }
 
 // ─────────────────────────────────────────────────
@@ -488,9 +523,9 @@ export function applyCustomFactors(
         break
     }
 
-    // Clamp after each factor to prevent intermediate values outside [0, 100]
-    // from compounding through subsequent factors
-    result = Math.min(100, Math.max(0, result))
+    // Cap at 100 but allow negative scores to flow through
+    // (e.g., technical segment can produce -5 for deeply bearish stocks)
+    result = Math.min(100, result)
   }
 
   return Math.round(result * 100) / 100
@@ -553,7 +588,16 @@ export function scoreStock(
     const metricScores: MetricScore[] = segment.metrics.map(metric => {
       const rawValue = stockData[metric.id] ?? null
       const context = metricContext?.[metric.id]
-      return scoreMetric(rawValue, metric, scorecard.negativeHandlingRules, context)
+      const result = scoreMetric(rawValue, metric, scorecard.negativeHandlingRules, context)
+
+      // Override score for metrics using conditional VPT scoring (two-input rules)
+      if (metric.scoringMethod === 'conditional_vpt' && !result.isExcluded) {
+        const volChange = stockData['v2_volume_change'] ?? 1
+        const priceChg = stockData['v2_price_change'] ?? 0
+        return { ...result, normalizedScore: scoreVPT(volChange, priceChg) }
+      }
+
+      return result
     })
     // Use PB-anchored conditional weights for valuation segment (V2.2 CSV spec)
     if (segment.id === 'v2_valuation') {

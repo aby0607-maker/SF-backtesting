@@ -88,11 +88,27 @@ export interface CompositeMetric {
   /** Number of years for growth CAGR calculation. Only applies to growth metrics.
    *  undefined = use all available years (current default behavior). */
   growthPeriod?: 2 | 3 | 5
+  /** Scoring method: 'band_lookup' (default) or 'conditional_vpt' (two-input rules) */
+  scoringMethod?: 'band_lookup' | 'conditional_vpt'
+  /** Calculation parameters (e.g., VPT lookback windows, RSI period).
+   *  Keys: vptVolNumeratorDays, vptVolDenominatorDays, vptPriceChangeDays, rsiPeriod, etc. */
+  calculationParams?: Record<string, number | string>
 }
 
 // ─────────────────────────────────────────────────
 // Stage 2: Scorecard Types
 // ─────────────────────────────────────────────────
+
+/** Configuration for valuation conditional weighting (PB-anchored V2.2) */
+export interface ValuationConditionalConfig {
+  enabled: boolean                    // false → use standard weighted avg
+  peThreshold: number                 // Hist avg PE above this → exclude PE (default: 75)
+  evThreshold: number                 // Hist avg EV above this → exclude EV (default: 35)
+  pbNAThreshold: number               // Hist avg PB above this → entire valuation NA (default: 30)
+  defaultWeights: { pe: number; pb: number; ev: number }   // {0.3, 0.5, 0.2}
+  peExcludedWeights: { pb: number; ev: number }             // {0.6, 0.4}
+  evExcludedWeights: { pe: number; pb: number }             // {0.4, 0.6}
+}
 
 /** A segment groups related metrics (e.g., "Financial Score", "Valuation Score") */
 export interface ScorecardSegment {
@@ -102,6 +118,7 @@ export interface ScorecardSegment {
   segmentWeight: number   // Weight in composite formula (0-1)
   description?: string
   verdictThresholds?: VerdictThreshold[]  // Per-segment verdicts
+  valuationConditionals?: ValuationConditionalConfig  // Only for valuation-type segments
 }
 
 /**
