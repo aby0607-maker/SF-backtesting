@@ -1,8 +1,9 @@
 /**
  * Scoring & Backtesting Type Definitions
  *
- * Foundation types for the 3-stage scorecard backtesting pipeline:
- * Stage 1: Build Scorecard → Stage 2: Configure & Run → Stage 3: Results & Iterate
+ * Foundation types for the 5-step scorecard backtesting pipeline:
+ * Step 1: Start → Step 2: Metrics & Segments → Step 3: Review & Tune →
+ * Step 4: Select Stocks & Run → Step 5: Results & Iterate
  */
 
 // ─────────────────────────────────────────────────
@@ -333,9 +334,9 @@ export interface PipelineReviewSnapshot {
   confirmedAt?: number        // Timestamp when user confirmed
 }
 
-/** Request to edit a specific pipeline stage from the review panel */
+/** Request to edit a specific pipeline step from the review panel */
 export interface StageEditRequest {
-  stageNumber: 1 | 2 | 3
+  stageNumber: PipelineStage
   reason?: string
 }
 
@@ -554,7 +555,7 @@ export interface CMOTSShareholding {
 // Store State Types
 // ─────────────────────────────────────────────────
 
-export type PipelineStage = 1 | 2 | 3
+export type PipelineStage = 1 | 2 | 3 | 4 | 5
 
 export type UIMode = 'wizard' | 'dashboard' | 'hybrid'
 
