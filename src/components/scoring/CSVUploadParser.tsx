@@ -8,13 +8,14 @@ import { useState, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { cn } from '@/lib/utils'
 import { useScoringStore } from '@/store/useScoringStore'
-import { parseCSVToScorecard, parsedResultToScorecard } from '@/lib/csvScorecardParser'
+import { parseCSVToScorecard, parsedResultToScorecard, extractCustomDefsFromParsed } from '@/lib/csvScorecardParser'
 import type { ParsedCSVResult } from '@/lib/csvScorecardParser'
 import { Upload, FileSpreadsheet, Check, X, AlertTriangle } from 'lucide-react'
 
 export function CSVUploadParser() {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const loadScorecard = useScoringStore(s => s.loadScorecard)
+  const addCustomMetricDefinition = useScoringStore(s => s.addCustomMetricDefinition)
   const [parsed, setParsed] = useState<ParsedCSVResult | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
@@ -50,6 +51,13 @@ export function CSVUploadParser() {
     if (!parsed) return
     const scorecard = parsedResultToScorecard(parsed)
     loadScorecard(scorecard)
+
+    // Auto-register any custom CMOTS metric definitions from CSV mapping rows
+    const customDefs = extractCustomDefsFromParsed(parsed)
+    for (const def of customDefs) {
+      addCustomMetricDefinition(def)
+    }
+
     setParsed(null)
   }
 

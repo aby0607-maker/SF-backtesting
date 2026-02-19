@@ -31,6 +31,7 @@ import type {
   SavedRun,
   MetricFormula,
   ScoreBand,
+  CustomMetricDefinition,
 } from '@/types/scoring'
 import { SCORECARD_TEMPLATES } from '@/data/scorecardTemplates'
 
@@ -73,6 +74,9 @@ interface ScoringState {
 
   // Saved runs for comparison
   savedRuns: SavedRun[]
+
+  // Custom metric definitions (user-created CMOTS mappings)
+  customMetricDefinitions: CustomMetricDefinition[]
 
   // Status
   status: ScoringStatus
@@ -128,6 +132,10 @@ interface ScoringState {
   setBacktestResult: (result: BacktestResult | null) => void
   setStatus: (status: ScoringStatus) => void
   setError: (message: string | null) => void
+
+  // ─── Actions: Custom Metric Definitions ───
+  addCustomMetricDefinition: (definition: CustomMetricDefinition) => void
+  removeCustomMetricDefinition: (definitionId: string) => void
 
   // ─── Actions: Persistence ───
   saveRun: (name: string) => string | null
@@ -199,6 +207,7 @@ export const useScoringStore = create<ScoringState>()(
       reviewSnapshot: null,
 
       savedRuns: [],
+      customMetricDefinitions: [],
       status: 'idle' as ScoringStatus,
       errorMessage: null,
 
@@ -750,7 +759,30 @@ export const useScoringStore = create<ScoringState>()(
       },
 
       setError: (message: string | null) => {
-        set({ errorMessage: message, status: message ? 'error' : 'idle' })
+        if (message) {
+          set({ errorMessage: message, status: 'error' })
+        } else {
+          // Only reset to idle if currently in error state; preserve scoring/backtesting status
+          const current = get().status
+          set({ errorMessage: null, status: current === 'error' ? 'idle' : current })
+        }
+      },
+
+      // ─── Custom Metric Definitions ───
+
+      addCustomMetricDefinition: (definition: CustomMetricDefinition) => {
+        set(state => ({
+          customMetricDefinitions: [
+            ...state.customMetricDefinitions.filter(d => d.id !== definition.id),
+            definition,
+          ],
+        }))
+      },
+
+      removeCustomMetricDefinition: (definitionId: string) => {
+        set(state => ({
+          customMetricDefinitions: state.customMetricDefinitions.filter(d => d.id !== definitionId),
+        }))
       },
 
       // ─── Persistence ───
@@ -907,6 +939,7 @@ export const useScoringStore = create<ScoringState>()(
         activeScorecardId: state.activeScorecardId,
         versionHistory: state.versionHistory,
         savedRuns: state.savedRuns,
+        customMetricDefinitions: state.customMetricDefinitions,
         uiMode: state.uiMode,
         universeFilter: state.universeFilter,
         currentStage: state.currentStage,
@@ -972,6 +1005,9 @@ export const useBacktestResult = () =>
 
 export const useUIMode = () =>
   useScoringStore(state => state.uiMode)
+
+export const useCustomMetricDefinitions = () =>
+  useScoringStore(state => state.customMetricDefinitions)
 
 // Stable empty array to avoid creating new references when version history is empty
 const EMPTY_VERSIONS: ScorecardVersion[] = []

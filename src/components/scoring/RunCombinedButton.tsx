@@ -12,6 +12,7 @@ import {
   useActiveScorecard,
   useScoringStatus,
   useScoringError,
+  useCustomMetricDefinitions,
 } from '@/store/useScoringStore'
 import { scoreAndBacktest } from '@/services/scoringService'
 import type { CombinedProgressPhase } from '@/services/scoringService'
@@ -28,6 +29,7 @@ export function RunCombinedButton() {
   const scorecard = useActiveScorecard()
   const status = useScoringStatus()
   const errorMessage = useScoringError()
+  const customMetricDefinitions = useCustomMetricDefinitions()
   const universeFilter = useScoringStore(s => s.universeFilter)
   const backtestConfig = useScoringStore(s => s.backtestConfig)
   const confirmReview = useScoringStore(s => s.confirmReview)
@@ -65,11 +67,15 @@ export function RunCombinedButton() {
 
   const handleRun = async () => {
     if (!scorecard || !backtestConfig) return
+    // Guard against re-entrant execution (double-click / rapid retry)
+    if (status === 'scoring' || status === 'backtesting') return
 
+    setError(null)  // Clear previous error before retry
     confirmReview()
     setStatus('scoring')
     setProgress(null)
 
+    abortRef.current?.abort()  // Cancel any lingering previous operation
     abortRef.current = new AbortController()
 
     try {
@@ -87,6 +93,7 @@ export function RunCombinedButton() {
         backtestConfig,
         {
           signal: abortRef.current.signal,
+          customMetrics: customMetricDefinitions.length > 0 ? customMetricDefinitions : undefined,
           onProgress: (phase, current, total) => {
             setProgress({ phase, current, total })
           },

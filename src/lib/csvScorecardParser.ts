@@ -21,6 +21,8 @@ import type {
   NegativeCondition,
   NegativeAction,
   VerdictThreshold,
+  CustomMetricDefinition,
+  MetricDerivation,
 } from '@/types/scoring'
 
 // ─── Types ───
@@ -61,6 +63,12 @@ export interface ParsedMetric {
   /** Score values per stock (for band validation); null means no data */
   scoreValues: (number | null)[]
   weight?: number
+  /** Optional CMOTS mapping (from Source:/RowNo:/Derivation:/Unit: rows) */
+  cmots_source?: CustomMetricDefinition['cmots_source']
+  cmots_field?: string
+  cmots_rowno?: number
+  derivation?: MetricDerivation
+  unit?: CustomMetricDefinition['unit']
 }
 
 // ─── Constants ───
@@ -80,6 +88,49 @@ const COMPOSITE_MARKERS = [
   'overall score',
   'total score',
 ]
+
+/** Map CSV source labels to CustomMetricDefinition.cmots_source values */
+const CMOTS_SOURCE_MAP: Record<string, CustomMetricDefinition['cmots_source']> = {
+  'ttm': 'ttm',
+  'pnl': 'pnl',
+  'p&l': 'pnl',
+  'income': 'pnl',
+  'balancesheet': 'balanceSheet',
+  'balance_sheet': 'balanceSheet',
+  'balance-sheet': 'balanceSheet',
+  'bs': 'balanceSheet',
+  'cashflow': 'cashFlow',
+  'cash_flow': 'cashFlow',
+  'cash-flow': 'cashFlow',
+  'cf': 'cashFlow',
+  'quarterly': 'quarterly',
+  'qtr': 'quarterly',
+}
+
+const DERIVATION_MAP: Record<string, MetricDerivation> = {
+  'latest': 'latest',
+  'growth_cagr': 'growth_cagr',
+  'cagr': 'growth_cagr',
+  'yoy_change': 'yoy_change',
+  'yoy': 'yoy_change',
+  'yoy_ratio': 'yoy_ratio',
+  'ratio': 'yoy_ratio',
+}
+
+const UNIT_MAP: Record<string, CustomMetricDefinition['unit']> = {
+  'percent': 'percent',
+  '%': 'percent',
+  'percentage': 'percent',
+  'ratio': 'ratio',
+  'currency': 'currency',
+  '₹': 'currency',
+  '$': 'currency',
+  'inr': 'currency',
+  'number': 'number',
+  'num': 'number',
+  'times': 'times',
+  'x': 'times',
+}
 
 const NEGATIVE_CONDITION_MAP: Record<string, NegativeCondition> = {
   'start year negative': 'start_negative',
@@ -172,7 +223,7 @@ export function parseCSVToScorecard(csvText: string, filename?: string): ParsedC
 
     // Detect "Input: <metric>" rows
     if (labelLower.startsWith('input:')) {
-      const metricName = label.replace(/^input:\s*/i, '').trim()
+      const metricName = sanitizeName(label.replace(/^input:\s*/i, '').trim())
       const values = extractNumericValues(row.slice(1))
       lastInputMetric = {
         name: metricName,
@@ -194,6 +245,35 @@ export function parseCSVToScorecard(csvText: string, filename?: string): ParsedC
       if (lastInputMetric) {
         lastInputMetric.scoreValues = values
       }
+      continue
+    }
+
+    // Detect CMOTS mapping rows (attach to last Input: metric)
+    if (labelLower.startsWith('source:') && lastInputMetric) {
+      const sourceVal = label.replace(/^source:\s*/i, '').trim().toLowerCase().replace(/[\s_]+/g, '')
+      const mapped = CMOTS_SOURCE_MAP[sourceVal]
+      if (mapped) lastInputMetric.cmots_source = mapped
+      continue
+    }
+    if (labelLower.startsWith('field:') && lastInputMetric) {
+      lastInputMetric.cmots_field = label.replace(/^field:\s*/i, '').trim()
+      continue
+    }
+    if (labelLower.startsWith('rowno:') && lastInputMetric) {
+      const num = parseInt(label.replace(/^rowno:\s*/i, '').trim(), 10)
+      if (!isNaN(num)) lastInputMetric.cmots_rowno = num
+      continue
+    }
+    if (labelLower.startsWith('derivation:') && lastInputMetric) {
+      const derVal = label.replace(/^derivation:\s*/i, '').trim().toLowerCase().replace(/\s+/g, '_')
+      const mapped = DERIVATION_MAP[derVal]
+      if (mapped) lastInputMetric.derivation = mapped
+      continue
+    }
+    if (labelLower.startsWith('unit:') && lastInputMetric) {
+      const unitVal = label.replace(/^unit:\s*/i, '').trim().toLowerCase()
+      const mapped = UNIT_MAP[unitVal]
+      if (mapped) lastInputMetric.unit = mapped
       continue
     }
 
@@ -245,9 +325,9 @@ export function parsedResultToScorecard(parsed: ParsedCSVResult): ScorecardVersi
       rawMetric: {
         id: pm.id,
         name: pm.name,
-        cmots_source: 'ttm',
-        cmots_field: pm.id,
-        unit: 'number' as const,
+        cmots_source: pm.cmots_source || 'ttm',
+        cmots_field: pm.cmots_field || pm.id,
+        unit: pm.unit || 'number',
         description: `Parsed from CSV: ${pm.name}`,
       },
       scoreBands: deriveBands(pm.inputValues, pm.scoreValues),
@@ -312,13 +392,20 @@ export function parsedResultToScorecard(parsed: ParsedCSVResult): ScorecardVersi
 function parseCSVRows(text: string): string[][] {
   const lines = text.split(/\r?\n/)
   return lines.map(line => {
-    // Handle quoted fields with commas inside
+    // RFC 4180-compliant CSV parsing with escaped quote handling
     const fields: string[] = []
     let current = ''
     let inQuotes = false
-    for (const char of line) {
+    for (let i = 0; i < line.length; i++) {
+      const char = line[i]
       if (char === '"') {
-        inQuotes = !inQuotes
+        if (inQuotes && line[i + 1] === '"') {
+          // Escaped quote ("") inside quoted field
+          current += '"'
+          i++  // Skip next quote
+        } else {
+          inQuotes = !inQuotes
+        }
       } else if (char === ',' && !inQuotes) {
         fields.push(current.trim())
         current = ''
@@ -329,6 +416,11 @@ function parseCSVRows(text: string): string[][] {
     fields.push(current.trim())
     return fields
   })
+}
+
+/** Sanitize user-provided names from CSV — strip HTML tags, trim, cap length */
+function sanitizeName(name: string): string {
+  return name.replace(/<[^>]*>/g, '').trim().slice(0, 255)
 }
 
 function extractNumericValues(cells: string[]): (number | null)[] {
@@ -347,10 +439,12 @@ function isSegmentHeader(label: string): boolean {
 }
 
 function cleanSegmentName(label: string): string {
-  return label
-    .replace(/\([\d.]+%?\)/g, '')  // Remove weight annotations
-    .replace(/score$/i, 'Score')    // Normalize casing
-    .trim()
+  return sanitizeName(
+    label
+      .replace(/\([\d.]+%?\)/g, '')  // Remove weight annotations
+      .replace(/score$/i, 'Score')    // Normalize casing
+      .trim()
+  )
 }
 
 function toId(name: string): string {
@@ -459,6 +553,38 @@ function parseNegativeHandlingSection(rows: string[][], startIndex: number): Neg
   }
 
   return rules
+}
+
+/**
+ * Extract CustomMetricDefinitions from parsed CSV for non-TTM metrics
+ * (or any metric with explicit CMOTS mapping rows).
+ * These should be registered in the store so the metric resolver can use them.
+ */
+export function extractCustomDefsFromParsed(parsed: ParsedCSVResult): CustomMetricDefinition[] {
+  const defs: CustomMetricDefinition[] = []
+
+  for (const segment of parsed.segments) {
+    for (const metric of segment.metrics) {
+      // Only create a custom def if the CSV explicitly specified a CMOTS source
+      if (!metric.cmots_source) continue
+
+      defs.push({
+        id: `custom_csv_${metric.id}`,
+        name: metric.name,
+        description: `Imported from CSV: ${metric.name}`,
+        cmots_source: metric.cmots_source,
+        cmots_field: metric.cmots_field || metric.id,
+        cmots_rowno: metric.cmots_rowno,
+        derivation: metric.derivation || 'latest',
+        unit: metric.unit || 'number',
+        category: segment.name,
+        higherIsBetter: true,
+        createdAt: Date.now(),
+      })
+    }
+  }
+
+  return defs
 }
 
 function emptyResult(filename?: string): ParsedCSVResult {

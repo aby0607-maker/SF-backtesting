@@ -13,13 +13,13 @@
  * - Hybrid: Sidebar with stage list, main area shows selected stage
  */
 
-import { useState } from 'react'
+import { lazy, Suspense, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { cn } from '@/lib/utils'
 import { useScoringStore, useCurrentStage, useUIMode, useActiveScorecard } from '@/store/useScoringStore'
 import type { MetricCatalogEntry } from '@/types/scoring'
 import type { PipelineStage } from '@/types/scoring'
-import { ChevronLeft, ChevronRight, ChevronDown, ChevronUp } from 'lucide-react'
+import { ChevronLeft, ChevronRight, ChevronDown, ChevronUp, Loader2 } from 'lucide-react'
 
 // Cross-stage
 import { PipelineNav } from '@/components/scoring/PipelineNav'
@@ -29,6 +29,7 @@ import { ScorecardSelector } from '@/components/scoring/ScorecardSelector'
 // Stage 1: Build Scorecard (merged metrics + scorecard structure)
 import { MetricCatalogBrowser } from '@/components/scoring/MetricCatalogBrowser'
 import { FormulaBuilder } from '@/components/scoring/FormulaBuilder'
+import { CustomMetricCreator } from '@/components/scoring/CustomMetricCreator'
 import { SelectedMetricsList } from '@/components/scoring/SelectedMetricsList'
 import { NegativeHandlingEditor } from '@/components/scoring/NegativeHandlingEditor'
 import { CSVUploadParser } from '@/components/scoring/CSVUploadParser'
@@ -45,10 +46,20 @@ import { PipelineReviewPanel } from '@/components/scoring/PipelineReviewPanel'
 import { VersionInfoEditor } from '@/components/scoring/VersionInfoEditor'
 import { VersionHistoryPanel } from '@/components/scoring/VersionHistoryPanel'
 
-// Stage 3: Results & Iterate
-import { ResultsPanel } from '@/components/scoring/ResultsPanel'
+// Stage 3: Results & Iterate (lazy-loaded — heavy with chart libraries)
+const ResultsPanel = lazy(() => import('@/components/scoring/ResultsPanel').then(m => ({ default: m.ResultsPanel })))
 
 import { SCORECARD_TEMPLATES } from '@/data/scorecardTemplates'
+
+/** Loading fallback for lazy-loaded stage panels */
+function StageSkeleton() {
+  return (
+    <div className="flex items-center justify-center py-12">
+      <Loader2 className="w-5 h-5 animate-spin text-primary-400" />
+      <span className="ml-2 text-sm text-neutral-400">Loading...</span>
+    </div>
+  )
+}
 
 // ─── Template Section (shown when no segments/metrics loaded) ───
 
@@ -196,6 +207,7 @@ const STAGE_CONFIGS: Record<PipelineStage, StageConfig> = {
             <div className="space-y-4">
               <SelectedMetricsList />
               <FormulaBuilder />
+              <CustomMetricCreator />
             </div>
           </div>
         </CollapsibleSection>
@@ -244,7 +256,11 @@ const STAGE_CONFIGS: Record<PipelineStage, StageConfig> = {
   3: {
     title: 'Results & Iterate',
     description: 'Analyze results, export reports, re-run with tweaks',
-    render: () => <ResultsPanel />,
+    render: () => (
+      <Suspense fallback={<StageSkeleton />}>
+        <ResultsPanel />
+      </Suspense>
+    ),
   },
 }
 

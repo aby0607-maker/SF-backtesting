@@ -98,7 +98,7 @@ export async function scoreAndBacktest(
 
   // Phase 2: Run backtest (returns pre-fetched prices + interval dates for reuse)
   options?.onProgress?.('backtest', 0, 1)
-  const { result: backtest, batchPrices, intervalDates } = await backtestScorecard(config, scorecard, stockIds)
+  const { result: backtest, batchPrices, intervalDates } = await backtestScorecard(config, scorecard, stockIds, options?.signal, options?.customMetrics)
   options?.onProgress?.('backtest', 1, 1)
 
   if (options?.signal?.aborted) {
@@ -472,7 +472,9 @@ function buildReviewSnapshot(
 export async function backtestScorecard(
   config: BacktestConfig,
   scorecard: ScorecardVersion,
-  cohortStockIds?: string[]
+  cohortStockIds?: string[],
+  signal?: AbortSignal,
+  customMetrics?: CustomMetricDefinition[]
 ): Promise<{ result: BacktestResult; batchPrices: Record<string, CMOTSOHLCVRecord[]>; intervalDates: string[] }> {
   const targetStockIds = cohortStockIds && cohortStockIds.length > 0
     ? cohortStockIds
@@ -534,14 +536,24 @@ export async function backtestScorecard(
     }
   }
 
-  await Promise.all(targetStockIds.map(async (stockId) => {
+  const settled = await Promise.allSettled(targetStockIds.map(async (stockId) => {
     const [fundamentals, info] = await Promise.all([
       getAllFundamentals(stockId),
       getStockInfo(stockId),
     ])
+    return { stockId, fundamentals, info }
+  }))
+
+  for (const result of settled) {
+    if (result.status === 'rejected') {
+      const reason = result.reason instanceof Error ? result.reason.message : String(result.reason)
+      backtestWarnings.push(`Stock data fetch failed: ${reason}`)
+      continue
+    }
+    const { stockId, fundamentals, info } = result.value
     if (!info) {
       backtestWarnings.push(`Stock ${stockId}: Company not found in BSE master`)
-      return
+      continue
     }
     if (noPriceStocks.includes(stockId)) {
       backtestWarnings.push(`${info.name}: No price data from API for ${config.dateRange.from} → ${config.dateRange.to}`)
@@ -550,7 +562,7 @@ export async function backtestScorecard(
       backtestWarnings.push(`${info.name}: No fundamental data (TTM/P&L) from API`)
     }
     stockData.push({ stockId, fundamentals, info })
-  }))
+  }
 
   // ── Data Coverage Check ──
   // Detect if the backtest start date is before the earliest scoreable date.
@@ -571,7 +583,7 @@ export async function backtestScorecard(
 
   // ── Phase 3: Score at each interval (CPU-only, no network) ──
 
-  const resConfig = extractResolutionConfig(scorecard)
+  const resConfig = extractResolutionConfig(scorecard, customMetrics)
 
   const scoreAtDate = (asOfDate: string): StockScoreResult[] => {
     const stocks: StockScoreResult[] = []
@@ -600,6 +612,9 @@ export async function backtestScorecard(
 
   // Interval snapshots — re-score at each date with windowed fundamentals + prices
   for (const date of intervalDates) {
+    if (signal?.aborted) {
+      throw new Error('Operation cancelled')
+    }
     snapshots.push({
       date,
       stockScores: scoreAtDate(date),
@@ -664,7 +679,7 @@ function computeDataCoverage(
     for (const col of yearCols) {
       const year = parseInt(col.slice(1, 5))
       const month = parseInt(col.slice(5, 7))
-      const fyEnd = new Date(year, month - 1, 28)
+      const fyEnd = new Date(year, month, 0)  // Last day of the month (day 0 of next month)
 
       if (!earliestFYEnd || fyEnd < earliestFYEnd) {
         secondEarliestFYEnd = earliestFYEnd
@@ -816,7 +831,7 @@ export async function computeEarliestScoreableDate(
       for (const col of yearCols) {
         const year = parseInt(col.slice(1, 5))
         const month = parseInt(col.slice(5, 7))
-        const fyEnd = new Date(year, month - 1, 28)
+        const fyEnd = new Date(year, month, 0)  // Last day of the month (day 0 of next month)
 
         if (!earliestFYEnd || fyEnd < earliestFYEnd) {
           secondEarliestFYEnd = earliestFYEnd
