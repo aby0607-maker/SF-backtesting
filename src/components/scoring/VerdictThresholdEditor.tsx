@@ -88,11 +88,29 @@ export function VerdictThresholdEditor() {
             >
               <div className={cn('w-2 h-2 rounded-full shrink-0', vc.color)} />
 
-              {/* Score range */}
+              {/* Score range — editable */}
               <div className="flex items-center gap-1 text-xs">
-                <span className="font-mono text-neutral-400">{threshold.minScore}</span>
+                <input
+                  type="number"
+                  min={0}
+                  max={100}
+                  value={threshold.minScore}
+                  onChange={e => updateThreshold(i, 'minScore', Number(e.target.value))}
+                  className="w-12 px-1 py-0.5 bg-dark-800 border border-white/10 rounded text-xs font-mono text-neutral-300 text-right focus:outline-none focus:border-primary-500/40"
+                />
                 <span className="text-neutral-500">-</span>
-                <span className="font-mono text-neutral-400">{threshold.maxScore}</span>
+                <input
+                  type="number"
+                  min={0}
+                  max={100}
+                  value={threshold.maxScore}
+                  onChange={e => updateThreshold(i, 'maxScore', Number(e.target.value))}
+                  className="w-12 px-1 py-0.5 bg-dark-800 border border-white/10 rounded text-xs font-mono text-neutral-300 text-right focus:outline-none focus:border-primary-500/40"
+                />
+                {/* Gap/overlap warning */}
+                {i < verdictThresholds.length - 1 && threshold.minScore !== verdictThresholds[i + 1]?.maxScore + 1 && (
+                  <span className="text-warning-400 text-[10px]" title="Gap or overlap with adjacent band">!</span>
+                )}
               </div>
 
               {/* Verdict label */}

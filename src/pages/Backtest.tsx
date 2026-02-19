@@ -37,6 +37,7 @@ import { SegmentBuilder } from '@/components/scoring/SegmentBuilder'
 import { CompositeFormulaEditor } from '@/components/scoring/CompositeFormulaEditor'
 import { NormalizationSelector } from '@/components/scoring/NormalizationSelector'
 import { VerdictThresholdEditor } from '@/components/scoring/VerdictThresholdEditor'
+import { ValuationConditionalsEditor } from '@/components/scoring/ValuationConditionalsEditor'
 import { ScorecardTemplateCard } from '@/components/scoring/ScorecardTemplateCard'
 
 // Stage 2: Configure & Run
@@ -197,6 +198,9 @@ const STAGE_CONFIGS: Record<PipelineStage, StageConfig> = {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             <SegmentBuilder />
             <CompositeFormulaEditor />
+          </div>
+          <div className="mt-4">
+            <ValuationConditionalsEditor />
           </div>
         </CollapsibleSection>
 
