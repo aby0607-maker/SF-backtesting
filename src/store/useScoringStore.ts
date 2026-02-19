@@ -745,7 +745,10 @@ export const useScoringStore = create<ScoringState>()(
 
       addCustomMetricDefinition: (definition: CustomMetricDefinition) => {
         set(state => ({
-          customMetricDefinitions: [...state.customMetricDefinitions, definition],
+          customMetricDefinitions: [
+            ...state.customMetricDefinitions.filter(d => d.id !== definition.id),
+            definition,
+          ],
         }))
       },
 

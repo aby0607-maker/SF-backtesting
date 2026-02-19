@@ -18,9 +18,10 @@ export async function getHistoricalPrices(
   symbol: string,
   from: string,
   to: string,
-  exchange: 'bse' | 'nse' = 'bse'
+  exchange: 'bse' | 'nse' = 'bse',
+  resolvedCoCode?: number,
 ): Promise<CMOTSOHLCVRecord[]> {
-  const coCode = await getCoCode(symbol)
+  const coCode = resolvedCoCode ?? await getCoCode(symbol)
   if (!coCode) {
     console.warn(`[PriceData] Price history unavailable for ${symbol}: could not resolve co_code`)
     return []

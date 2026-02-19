@@ -9,12 +9,13 @@
  * - Hybrid: Sidebar with stage list, main area shows selected stage
  */
 
+import { lazy, Suspense } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { cn } from '@/lib/utils'
 import { useScoringStore, useCurrentStage, useUIMode, useActiveScorecard } from '@/store/useScoringStore'
 import type { MetricCatalogEntry } from '@/types/scoring'
 import type { PipelineStage } from '@/types/scoring'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Loader2 } from 'lucide-react'
 
 // Cross-stage
 import { PipelineNav } from '@/components/scoring/PipelineNav'
@@ -39,13 +40,21 @@ import { ScorecardTemplateCard } from '@/components/scoring/ScorecardTemplateCar
 // Stage 3: Configure Run
 import { ConfigureRunPanel } from '@/components/scoring/ConfigureRunPanel'
 
-// Stage 4: Review & Run
-import { ReviewAndRunPanel } from '@/components/scoring/ReviewAndRunPanel'
-
-// Stage 5: Results
-import { ResultsPanel } from '@/components/scoring/ResultsPanel'
+// Stage 4+5: Lazy-loaded (heavy components only needed after configuration)
+const ReviewAndRunPanel = lazy(() => import('@/components/scoring/ReviewAndRunPanel').then(m => ({ default: m.ReviewAndRunPanel })))
+const ResultsPanel = lazy(() => import('@/components/scoring/ResultsPanel').then(m => ({ default: m.ResultsPanel })))
 
 import { SCORECARD_TEMPLATES } from '@/data/scorecardTemplates'
+
+/** Loading fallback for lazy-loaded stage panels */
+function StageSkeleton() {
+  return (
+    <div className="flex items-center justify-center py-12">
+      <Loader2 className="w-5 h-5 animate-spin text-primary-400" />
+      <span className="ml-2 text-sm text-neutral-400">Loading...</span>
+    </div>
+  )
+}
 
 // ─── Wired component for Stage 2 template section ───
 
@@ -166,12 +175,20 @@ const STAGE_CONFIGS: Record<PipelineStage, StageConfig> = {
   4: {
     title: 'Review & Run',
     description: 'Review all configuration, then run scoring + backtest',
-    render: () => <ReviewAndRunPanel />,
+    render: () => (
+      <Suspense fallback={<StageSkeleton />}>
+        <ReviewAndRunPanel />
+      </Suspense>
+    ),
   },
   5: {
     title: 'Results',
     description: 'Scoring results, price performance, and analysis',
-    render: () => <ResultsPanel />,
+    render: () => (
+      <Suspense fallback={<StageSkeleton />}>
+        <ResultsPanel />
+      </Suspense>
+    ),
   },
 }
 
