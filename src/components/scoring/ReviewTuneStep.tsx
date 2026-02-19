@@ -13,7 +13,7 @@ import { CompositeFormulaEditor } from './CompositeFormulaEditor'
 import { VerdictThresholdEditor } from './VerdictThresholdEditor'
 import { NormalizationSelector } from './NormalizationSelector'
 import { ValuationConditionalsEditor } from './ValuationConditionalsEditor'
-import { Equal, ChevronDown, ChevronUp, Sliders, Scale, BarChart3 } from 'lucide-react'
+import { Equal, ChevronDown, ChevronUp, Sliders, Scale } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 export function ReviewTuneStep() {
