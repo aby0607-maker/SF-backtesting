@@ -38,7 +38,7 @@ export function StartingPointStep() {
         <button
           onClick={() => {
             createScorecard('New Scorecard', 'V1')
-            setStage(2 as PipelineStage)
+            setStage(2)
           }}
           className="flex items-center gap-2 px-4 py-2 rounded-lg bg-dark-800/60 border border-white/5 text-sm text-neutral-300 hover:bg-dark-700/60 hover:border-white/10 transition-colors"
         >
