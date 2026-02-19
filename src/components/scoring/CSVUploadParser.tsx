@@ -27,6 +27,14 @@ export function CSVUploadParser() {
     setError(null)
     setIsLoading(true)
 
+    // Security: reject oversized files to prevent browser memory exhaustion
+    const MAX_CSV_SIZE = 5 * 1024 * 1024 // 5MB
+    if (file.size > MAX_CSV_SIZE) {
+      setError('CSV file too large. Maximum 5MB.')
+      setIsLoading(false)
+      return
+    }
+
     try {
       const text = await file.text()
       const result = parseCSVToScorecard(text, file.name)

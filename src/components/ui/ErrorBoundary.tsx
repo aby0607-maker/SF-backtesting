@@ -56,7 +56,7 @@ export class ErrorBoundary extends Component<Props, State> {
               We encountered an unexpected error. This has been logged and we'll look into it.
             </p>
 
-            {this.state.error && (
+            {import.meta.env.DEV && this.state.error && (
               <div className="mb-6 p-4 rounded-xl bg-dark-700 border border-white/5 text-left">
                 <p className="text-xs font-mono text-destructive-400 break-all">
                   {this.state.error.message}

@@ -45,21 +45,27 @@ export async function cmotsFetch<T>(options: CMOTSRequestOptions): Promise<T[]> 
     })
 
     if (!response.ok) {
-      console.warn(`[CMOTS] HTTP ${response.status} for ${endpoint} — data unavailable from API`)
+      if (import.meta.env.DEV) {
+        console.warn(`[CMOTS] HTTP ${response.status} for ${endpoint} — data unavailable from API`)
+      }
       return []
     }
 
     const json = await response.json() as { success: boolean; data: T[]; message: string }
 
     if (!json.success || !Array.isArray(json.data)) {
-      console.warn(`[CMOTS] Unsuccessful response for ${endpoint}: ${json.message}`)
+      if (import.meta.env.DEV) {
+        console.warn(`[CMOTS] Unsuccessful response for ${endpoint}: ${json.message}`)
+      }
       return []
     }
 
     cache.set(cacheKey, json.data, { ttl: cacheTTL })
     return json.data
   } catch (error) {
-    console.warn(`[CMOTS] Network error fetching ${endpoint}:`, error instanceof Error ? error.message : error)
+    if (import.meta.env.DEV) {
+      console.warn(`[CMOTS] Network error fetching ${endpoint}:`, error instanceof Error ? error.message : error)
+    }
     return []
   }
 }
