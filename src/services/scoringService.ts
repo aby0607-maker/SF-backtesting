@@ -98,7 +98,7 @@ export async function scoreAndBacktest(
 
   // Phase 2: Run backtest (returns pre-fetched prices + interval dates for reuse)
   options?.onProgress?.('backtest', 0, 1)
-  const { result: backtest, batchPrices, intervalDates } = await backtestScorecard(config, scorecard, stockIds, options?.signal)
+  const { result: backtest, batchPrices, intervalDates } = await backtestScorecard(config, scorecard, stockIds, options?.signal, options?.customMetrics)
   options?.onProgress?.('backtest', 1, 1)
 
   if (options?.signal?.aborted) {
@@ -473,7 +473,8 @@ export async function backtestScorecard(
   config: BacktestConfig,
   scorecard: ScorecardVersion,
   cohortStockIds?: string[],
-  signal?: AbortSignal
+  signal?: AbortSignal,
+  customMetrics?: CustomMetricDefinition[]
 ): Promise<{ result: BacktestResult; batchPrices: Record<string, CMOTSOHLCVRecord[]>; intervalDates: string[] }> {
   const targetStockIds = cohortStockIds && cohortStockIds.length > 0
     ? cohortStockIds
@@ -582,7 +583,7 @@ export async function backtestScorecard(
 
   // ── Phase 3: Score at each interval (CPU-only, no network) ──
 
-  const resConfig = extractResolutionConfig(scorecard)
+  const resConfig = extractResolutionConfig(scorecard, customMetrics)
 
   const scoreAtDate = (asOfDate: string): StockScoreResult[] => {
     const stocks: StockScoreResult[] = []

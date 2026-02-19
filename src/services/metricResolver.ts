@@ -57,26 +57,59 @@ const QR_ROW_REVENUE = 1    // "Gross Sales/Income from operations"
 const QR_ROW_OP_PROFIT = 14 // "Profit from operations before other income..."
 
 // ─────────────────────────────────────────────────
-// Year/Quarter Column Windowing
+// Year/Quarter Column Windowing (with memoization)
 // ─────────────────────────────────────────────────
+
+/** Cache getYearColumns() results per row object to avoid repeated regex + sort */
+const yearColumnsCache = new WeakMap<CMOTSStatementRow, string[]>()
+
+function getCachedYearColumns(row: CMOTSStatementRow): string[] {
+  let cached = yearColumnsCache.get(row)
+  if (cached) return cached
+  cached = getYearColumns(row)
+  yearColumnsCache.set(row, cached)
+  return cached
+}
+
+/** Cache windowYearColumns() results per (row, asOfDate) pair */
+const windowCache = new WeakMap<CMOTSStatementRow, Map<string, string[]>>()
 
 /**
  * Filter year columns to only include those whose fiscal year end is ≤ asOfDate.
  * Year columns: Y202503 → fiscal year ending March 2025.
  * Returns newest first (same order as getYearColumns).
+ *
+ * Results are memoized per (row, asOfDate) pair since the same row is
+ * queried many times during backtest interval scoring.
  */
 function windowYearColumns(row: CMOTSStatementRow, asOfDate?: string): string[] {
-  const allCols = getYearColumns(row)  // Newest first
+  const allCols = getCachedYearColumns(row)  // Newest first (cached)
   if (!asOfDate) return allCols
 
+  // Check memoization cache
+  let dateMap = windowCache.get(row)
+  if (dateMap) {
+    const cached = dateMap.get(asOfDate)
+    if (cached) return cached
+  }
+
   const cutoff = new Date(asOfDate)
-  return allCols.filter(col => {
+  const result = allCols.filter(col => {
     const year = parseInt(col.slice(1, 5))
     const month = Math.min(12, Math.max(1, parseInt(col.slice(5, 7))))
     // Fiscal year end: use actual last day of the month (day 0 of next month)
     const colDate = new Date(year, month, 0)
     return colDate <= cutoff
   })
+
+  // Store in cache
+  if (!dateMap) {
+    dateMap = new Map()
+    windowCache.set(row, dateMap)
+  }
+  dateMap.set(asOfDate, result)
+
+  return result
 }
 
 /** Filter FinData records to those where fiscal year end ≤ asOfDate.
@@ -984,24 +1017,40 @@ export function resolveMetricsAtDate(
 }
 
 /**
- * Find the price on or just before a target date.
+ * Find the price on or just before a target date using binary search.
  * INVARIANT: priceHistory must be sorted ascending by date.
  * This is guaranteed by getHistoricalPrices() which sorts on fetch,
  * and Array.filter() which preserves order.
+ *
+ * O(log n) instead of O(n) — significant for large price histories
+ * queried multiple times per stock during backtesting.
  */
 function findClosestPriceValue(
   priceHistory: { date: string; price: number }[],
   targetDate: string,
 ): number | null {
-  let closest: number | null = null
-  for (const p of priceHistory) {
-    if (p.date <= targetDate) {
-      closest = p.price
+  if (priceHistory.length === 0) return null
+
+  // Binary search for the rightmost entry with date <= targetDate
+  let lo = 0
+  let hi = priceHistory.length - 1
+
+  // Quick bounds check: if all dates are after target, no match
+  if (priceHistory[0].date > targetDate) return null
+  // If last date is <= target, it's the answer
+  if (priceHistory[hi].date <= targetDate) return priceHistory[hi].price
+
+  // Binary search: find largest index where date <= targetDate
+  while (lo < hi) {
+    const mid = (lo + hi + 1) >> 1  // Ceiling division to avoid infinite loop
+    if (priceHistory[mid].date <= targetDate) {
+      lo = mid
     } else {
-      break
+      hi = mid - 1
     }
   }
-  return closest
+
+  return priceHistory[lo].date <= targetDate ? priceHistory[lo].price : null
 }
 
 /**

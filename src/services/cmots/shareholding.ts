@@ -13,8 +13,8 @@ import { getCoCode } from './companyMaster'
 const CACHE_TTL = 60 * 60 * 1000  // 1 hour
 
 /** Get shareholding pattern for a stock (latest quarter) */
-export async function getShareholdingPattern(symbol: string): Promise<CMOTSShareholding | null> {
-  const coCode = await getCoCode(symbol)
+export async function getShareholdingPattern(symbol: string, resolvedCoCode?: number): Promise<CMOTSShareholding | null> {
+  const coCode = resolvedCoCode ?? await getCoCode(symbol)
   if (!coCode) {
     console.warn(`[Shareholding] Shareholding data unavailable for ${symbol}: could not resolve co_code`)
     return null
@@ -34,8 +34,8 @@ export async function getShareholdingPattern(symbol: string): Promise<CMOTSShare
 }
 
 /** Get shareholding history (multiple quarters, sorted YRC descending) for trend calculation */
-export async function getShareholdingHistory(symbol: string): Promise<CMOTSShareholding[]> {
-  const coCode = await getCoCode(symbol)
+export async function getShareholdingHistory(symbol: string, resolvedCoCode?: number): Promise<CMOTSShareholding[]> {
+  const coCode = resolvedCoCode ?? await getCoCode(symbol)
   if (!coCode) {
     console.warn(`[Shareholding] Shareholding history unavailable for ${symbol}: could not resolve co_code`)
     return []

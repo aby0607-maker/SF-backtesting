@@ -24,10 +24,12 @@ import { getShareholdingHistory } from './shareholding'
 const CACHE_TTL = 60 * 60 * 1000  // 1 hour — aligned with price data TTL for consistent backtests
 
 // ── Individual endpoint fetchers ──
+// Each accepts an optional pre-resolved coCode to avoid redundant lookups
+// when called from getAllFundamentals().
 
 /** Get TTM (Trailing Twelve Month) ratios for a stock */
-export async function getTTMData(symbol: string): Promise<CMOTSTTMRecord | null> {
-  const coCode = await getCoCode(symbol)
+export async function getTTMData(symbol: string, resolvedCoCode?: number): Promise<CMOTSTTMRecord | null> {
+  const coCode = resolvedCoCode ?? await getCoCode(symbol)
   if (!coCode) {
     console.warn(`[Fundamentals] TTM data unavailable for ${symbol}: could not resolve co_code`)
     return null
@@ -40,8 +42,8 @@ export async function getTTMData(symbol: string): Promise<CMOTSTTMRecord | null>
 }
 
 /** Get yearly financial data (FinData) — returns multiple years, sorted oldest first */
-export async function getFinancialData(symbol: string): Promise<CMOTSFinancialRecord[]> {
-  const coCode = await getCoCode(symbol)
+export async function getFinancialData(symbol: string, resolvedCoCode?: number): Promise<CMOTSFinancialRecord[]> {
+  const coCode = resolvedCoCode ?? await getCoCode(symbol)
   if (!coCode) {
     console.warn(`[Fundamentals] FinData unavailable for ${symbol}: could not resolve co_code`)
     return []
@@ -56,8 +58,8 @@ export async function getFinancialData(symbol: string): Promise<CMOTSFinancialRe
 }
 
 /** Get P&L statement rows (row-based with year columns) */
-export async function getProfitAndLoss(symbol: string): Promise<CMOTSStatementRow[]> {
-  const coCode = await getCoCode(symbol)
+export async function getProfitAndLoss(symbol: string, resolvedCoCode?: number): Promise<CMOTSStatementRow[]> {
+  const coCode = resolvedCoCode ?? await getCoCode(symbol)
   if (!coCode) {
     console.warn(`[Fundamentals] P&L data unavailable for ${symbol}: could not resolve co_code`)
     return []
@@ -70,8 +72,8 @@ export async function getProfitAndLoss(symbol: string): Promise<CMOTSStatementRo
 }
 
 /** Get cash flow statement rows (row-based with year columns) */
-export async function getCashFlow(symbol: string): Promise<CMOTSStatementRow[]> {
-  const coCode = await getCoCode(symbol)
+export async function getCashFlow(symbol: string, resolvedCoCode?: number): Promise<CMOTSStatementRow[]> {
+  const coCode = resolvedCoCode ?? await getCoCode(symbol)
   if (!coCode) {
     console.warn(`[Fundamentals] Cash flow data unavailable for ${symbol}: could not resolve co_code`)
     return []
@@ -84,8 +86,8 @@ export async function getCashFlow(symbol: string): Promise<CMOTSStatementRow[]> 
 }
 
 /** Get balance sheet rows (row-based with year columns) */
-export async function getBalanceSheet(symbol: string): Promise<CMOTSStatementRow[]> {
-  const coCode = await getCoCode(symbol)
+export async function getBalanceSheet(symbol: string, resolvedCoCode?: number): Promise<CMOTSStatementRow[]> {
+  const coCode = resolvedCoCode ?? await getCoCode(symbol)
   if (!coCode) {
     console.warn(`[Fundamentals] Balance sheet data unavailable for ${symbol}: could not resolve co_code`)
     return []
@@ -98,8 +100,8 @@ export async function getBalanceSheet(symbol: string): Promise<CMOTSStatementRow
 }
 
 /** Get quarterly results rows (row-based with quarter columns like Y202512) */
-export async function getQuarterlyResults(symbol: string): Promise<CMOTSStatementRow[]> {
-  const coCode = await getCoCode(symbol)
+export async function getQuarterlyResults(symbol: string, resolvedCoCode?: number): Promise<CMOTSStatementRow[]> {
+  const coCode = resolvedCoCode ?? await getCoCode(symbol)
   if (!coCode) {
     console.warn(`[Fundamentals] Quarterly results unavailable for ${symbol}: could not resolve co_code`)
     return []
@@ -128,18 +130,33 @@ const FUNDAMENTALS_TIMEOUT_MS = 30_000
 
 /**
  * Fetch all fundamental data for a stock in one call.
- * All 7 endpoints are fetched in parallel with a 30s timeout
- * to prevent a single slow endpoint from blocking indefinitely.
+ * Resolves co_code once, then passes it to all 7 endpoints fetched
+ * in parallel with a 30s timeout.
  */
 export async function getAllFundamentals(symbol: string): Promise<FundamentalsBundle> {
+  // Resolve co_code once for all endpoints
+  const coCode = await getCoCode(symbol)
+  if (!coCode) {
+    console.warn(`[Fundamentals] Could not resolve co_code for ${symbol} — returning empty bundle`)
+    return {
+      ttm: null,
+      finData: [],
+      pnl: [],
+      cashFlow: [],
+      balanceSheet: [],
+      quarterly: [],
+      shareholding: [],
+    }
+  }
+
   const dataPromise = Promise.all([
-    getTTMData(symbol),
-    getFinancialData(symbol),
-    getProfitAndLoss(symbol),
-    getCashFlow(symbol),
-    getBalanceSheet(symbol),
-    getQuarterlyResults(symbol),
-    getShareholdingHistory(symbol),
+    getTTMData(symbol, coCode),
+    getFinancialData(symbol, coCode),
+    getProfitAndLoss(symbol, coCode),
+    getCashFlow(symbol, coCode),
+    getBalanceSheet(symbol, coCode),
+    getQuarterlyResults(symbol, coCode),
+    getShareholdingHistory(symbol, coCode),
   ])
 
   let timeoutId: ReturnType<typeof setTimeout>
