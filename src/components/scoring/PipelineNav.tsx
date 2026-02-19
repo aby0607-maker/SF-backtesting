@@ -1,7 +1,7 @@
 /**
- * PipelineNav — Horizontal step indicator for the 5-stage pipeline
+ * PipelineNav — Horizontal step indicator for the 3-stage pipeline
  *
- * Shows: 1→2→3→4→5 with current stage highlighted.
+ * Shows: 1→2→3 with current stage highlighted.
  * Clickable in hybrid/dashboard mode; linear-only in wizard mode.
  */
 
@@ -9,16 +9,12 @@ import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
 import { useScoringStore, useCurrentStage, useUIMode } from '@/store/useScoringStore'
 import type { PipelineStage } from '@/types/scoring'
-import {
-  BarChart3, Layers, Settings, Rocket, LineChart,
-} from 'lucide-react'
+import { Layers, Rocket, LineChart } from 'lucide-react'
 
-const STAGES: { stage: PipelineStage; label: string; icon: typeof BarChart3 }[] = [
-  { stage: 1, label: 'Metrics', icon: BarChart3 },
-  { stage: 2, label: 'Scorecard', icon: Layers },
-  { stage: 3, label: 'Configure', icon: Settings },
-  { stage: 4, label: 'Run', icon: Rocket },
-  { stage: 5, label: 'Results', icon: LineChart },
+const STAGES: { stage: PipelineStage; label: string; icon: typeof Layers }[] = [
+  { stage: 1, label: 'Build Scorecard', icon: Layers },
+  { stage: 2, label: 'Configure & Run', icon: Rocket },
+  { stage: 3, label: 'Results', icon: LineChart },
 ]
 
 export function PipelineNav() {
@@ -33,7 +29,6 @@ export function PipelineNav() {
       {STAGES.map(({ stage, label, icon: Icon }, index) => {
         const isActive = stage === currentStage
         const isComplete = stage < currentStage
-        const isRun = stage === 4
 
         return (
           <div key={stage} className="flex items-center">
@@ -54,7 +49,6 @@ export function PipelineNav() {
                 isActive && 'bg-primary-500/20 border-primary-500/40 text-primary-400',
                 isComplete && !isActive && 'bg-dark-700/60 border-white/10 text-neutral-300',
                 !isActive && !isComplete && 'bg-dark-800/40 border-white/5 text-neutral-500',
-                isRun && isActive && 'bg-warning-500/20 border-warning-500/40 text-warning-400',
                 canClick && !isActive && 'cursor-pointer hover:bg-dark-700/80 hover:border-white/15',
                 !canClick && 'cursor-default',
               )}

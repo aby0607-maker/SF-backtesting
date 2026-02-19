@@ -1,18 +1,16 @@
 /**
- * CompositeFormulaEditor — Stage 2: Visual weight editor for composite formula
+ * CompositeFormulaEditor — Stage 1: Read-only formula preview
  *
- * Flat weights only — no base/overlay distinction.
- * All segments use text % inputs (no sliders).
- * Live formula preview shows segment contributions.
+ * Shows the composite formula derived from segment weights (managed by SegmentBuilder).
+ * Weight editing is intentionally removed to avoid duplication — all weight
+ * management happens in SegmentBuilder as the single source of truth.
  */
 
-import { useScoringStore, useActiveScorecard } from '@/store/useScoringStore'
+import { useActiveScorecard } from '@/store/useScoringStore'
 import { cn } from '@/lib/utils'
-import type { CompositeFormula } from '@/types/scoring'
 
 export function CompositeFormulaEditor() {
   const scorecard = useActiveScorecard()
-  const updateCompositeFormula = useScoringStore(s => s.updateCompositeFormula)
 
   if (!scorecard) return null
 
@@ -24,22 +22,11 @@ export function CompositeFormulaEditor() {
     ...(compositeFormula.overlaySegments ?? []),
   ]
 
-  const updateSegmentFormulaWeight = (segmentId: string, weightPct: number) => {
-    const weight = weightPct / 100
-    const formula: CompositeFormula = {
-      baseSegments: allSegmentWeights.map(s =>
-        s.segmentId === segmentId ? { ...s, weight } : s
-      ),
-      baseWeight: 1.0,  // Always flat weights
-    }
-    updateCompositeFormula(formula)
-  }
-
   // Build formula preview string
   const parts = allSegmentWeights
     .map(sw => {
       const seg = segments.find(s => s.id === sw.segmentId)
-      return seg ? `${seg.name}(${(sw.weight * 100).toFixed(2)}%)` : null
+      return seg ? `${seg.name}(${(sw.weight * 100).toFixed(1)}%)` : null
     })
     .filter(Boolean)
 
@@ -50,7 +37,7 @@ export function CompositeFormulaEditor() {
   const isValid = totalPct >= 99 && totalPct <= 101
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       {/* Formula preview */}
       <div className="px-3 py-2.5 bg-dark-800/80 border border-white/5 rounded-lg">
         <div className="flex items-center justify-between mb-1">
@@ -65,7 +52,7 @@ export function CompositeFormulaEditor() {
         <div className="text-sm font-mono text-primary-400">{formulaStr || 'No segments configured'}</div>
       </div>
 
-      {/* Segment weights — flat list */}
+      {/* Read-only segment weight display */}
       <div>
         <div className="text-xs font-medium text-neutral-400 mb-2">Segment Weights</div>
         <div className="space-y-1.5">
@@ -75,27 +62,25 @@ export function CompositeFormulaEditor() {
             return (
               <div key={sw.segmentId} className="flex items-center gap-3 px-3 py-2 rounded-lg bg-dark-800/40">
                 <span className="text-sm text-neutral-300 flex-1">{seg.name}</span>
-                <div className="flex items-center gap-1">
-                  <input
-                    type="number"
-                    min={0}
-                    max={100}
-                    step={0.01}
-                    value={parseFloat((sw.weight * 100).toFixed(2))}
-                    onChange={e => {
-                      const val = parseFloat(e.target.value)
-                      if (!isNaN(val) && val >= 0 && val <= 100) {
-                        updateSegmentFormulaWeight(sw.segmentId, val)
-                      }
-                    }}
-                    className="w-16 px-2 py-1 bg-dark-700/60 border border-white/10 rounded text-sm font-mono text-white text-right focus:outline-none focus:border-primary-500/40"
-                  />
-                  <span className="text-xs text-neutral-400">%</span>
+                <div className="flex items-center gap-2">
+                  {/* Visual weight bar */}
+                  <div className="w-20 h-1.5 bg-dark-600 rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-primary-500 rounded-full"
+                      style={{ width: `${sw.weight * 100}%` }}
+                    />
+                  </div>
+                  <span className="text-xs font-mono text-neutral-400 w-10 text-right">
+                    {(sw.weight * 100).toFixed(1)}%
+                  </span>
                 </div>
               </div>
             )
           })}
         </div>
+        <p className="text-[10px] text-neutral-500 mt-2">
+          Weights are managed in the Segments section above.
+        </p>
       </div>
     </div>
   )
