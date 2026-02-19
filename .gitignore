@@ -58,3 +58,6 @@ lerna-debug.log*
 coverage/
 .vercel
 .env*.local
+
+# Claude Code
+.claude/
