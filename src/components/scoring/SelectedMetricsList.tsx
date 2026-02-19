@@ -13,6 +13,7 @@ export function SelectedMetricsList() {
   const scorecard = useActiveScorecard()
   const removeMetric = useScoringStore(s => s.removeMetric)
   const addMetric = useScoringStore(s => s.addMetric)
+  const updateMetric = useScoringStore(s => s.updateMetric)
 
   if (!scorecard) {
     return (
@@ -92,6 +93,25 @@ export function SelectedMetricsList() {
                   </span>
                 )}
               </div>
+            </div>
+
+            {/* Metric weight input */}
+            <div className="flex items-center gap-0.5 ml-1">
+              <input
+                type="number"
+                min={0}
+                max={100}
+                step={0.01}
+                value={metric.weight ? parseFloat((metric.weight * 100).toFixed(2)) : 0}
+                onChange={e => {
+                  const val = parseFloat(e.target.value)
+                  if (!isNaN(val) && val >= 0 && val <= 100) {
+                    updateMetric(metric.segmentId, metric.id, { weight: val / 100 })
+                  }
+                }}
+                className="w-14 px-1.5 py-0.5 bg-dark-700/60 border border-white/10 rounded text-xs font-mono text-white text-right focus:outline-none focus:border-primary-500/40"
+              />
+              <span className="text-[10px] text-neutral-500">%</span>
             </div>
 
             <button
