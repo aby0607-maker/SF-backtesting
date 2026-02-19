@@ -11,7 +11,6 @@ import { ScorecardTemplateCard } from './ScorecardTemplateCard'
 import { CSVUploadParser } from './CSVUploadParser'
 import { ScorecardSelector } from './ScorecardSelector'
 import { SCORECARD_TEMPLATES } from '@/data/scorecardTemplates'
-import type { PipelineStage } from '@/types/scoring'
 import { Plus, FolderOpen, ChevronDown, ChevronUp } from 'lucide-react'
 
 export function StartingPointStep() {

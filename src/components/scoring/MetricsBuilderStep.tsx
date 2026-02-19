@@ -11,7 +11,7 @@ import { useScoringStore, useActiveScorecard } from '@/store/useScoringStore'
 import { MetricCatalogBrowser } from './MetricCatalogBrowser'
 import { FormulaBuilder } from './FormulaBuilder'
 import { CustomMetricCreator } from './CustomMetricCreator'
-import type { MetricCatalogEntry, PipelineStage } from '@/types/scoring'
+import type { MetricCatalogEntry } from '@/types/scoring'
 import { Plus, Trash2, ChevronDown, ChevronUp, Wrench } from 'lucide-react'
 
 export function MetricsBuilderStep() {
