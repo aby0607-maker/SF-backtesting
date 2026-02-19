@@ -418,9 +418,13 @@ function parseCSVRows(text: string): string[][] {
   })
 }
 
-/** Sanitize user-provided names from CSV — strip HTML tags, trim, cap length */
+/** Sanitize user-provided names from CSV — strip HTML tags, formula injection chars, trim, cap length */
 function sanitizeName(name: string): string {
-  return name.replace(/<[^>]*>/g, '').trim().slice(0, 255)
+  return name
+    .replace(/<[^>]*>/g, '')         // Strip HTML tags
+    .replace(/^[=+\-@\t\r]+/, '')    // Strip formula injection prefixes (Excel/Sheets)
+    .trim()
+    .slice(0, 255)
 }
 
 function extractNumericValues(cells: string[]): (number | null)[] {
