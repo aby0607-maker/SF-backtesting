@@ -24,6 +24,7 @@ import { ScorecardSelector } from '@/components/scoring/ScorecardSelector'
 // Stage 1: Build Metrics
 import { MetricCatalogBrowser } from '@/components/scoring/MetricCatalogBrowser'
 import { FormulaBuilder } from '@/components/scoring/FormulaBuilder'
+import { CustomMetricCreator } from '@/components/scoring/CustomMetricCreator'
 import { SelectedMetricsList } from '@/components/scoring/SelectedMetricsList'
 import { NegativeHandlingEditor } from '@/components/scoring/NegativeHandlingEditor'
 import { CSVUploadParser } from '@/components/scoring/CSVUploadParser'
@@ -126,6 +127,7 @@ const STAGE_CONFIGS: Record<PipelineStage, StageConfig> = {
           <div className="space-y-4">
             <SelectedMetricsList />
             <FormulaBuilder />
+            <CustomMetricCreator />
           </div>
         </div>
         {/* Negative value handling rules */}

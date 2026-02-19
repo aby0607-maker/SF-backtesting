@@ -2,12 +2,30 @@
  * MetricCatalogBrowser — Stage 1: Browse, search, and select metrics
  */
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { cn } from '@/lib/utils'
-import { METRIC_CATALOG, getCategories, searchMetrics } from '@/data/metricCatalog'
-import type { MetricCatalogEntry } from '@/types/scoring'
+import { METRIC_CATALOG, getCategories } from '@/data/metricCatalog'
+import type { MetricCatalogEntry, CustomMetricDefinition } from '@/types/scoring'
+import { useCustomMetricDefinitions } from '@/store/useScoringStore'
 import { Search, Plus, ChevronDown, ChevronRight, ArrowUpDown } from 'lucide-react'
+
+/** Convert a CustomMetricDefinition to a MetricCatalogEntry for display */
+function toMetricCatalogEntry(def: CustomMetricDefinition): MetricCatalogEntry {
+  return {
+    id: def.id,
+    name: def.name,
+    description: def.description,
+    cmots_source: def.cmots_source,
+    cmots_field: def.cmots_field,
+    unit: def.unit,
+    category: def.category || 'Custom',
+    typicalRange: def.typicalRange,
+    higherIsBetter: def.higherIsBetter,
+    isCustom: true,
+    customDefinition: def,
+  }
+}
 
 interface MetricCatalogBrowserProps {
   onSelectMetric: (metric: MetricCatalogEntry) => void
@@ -16,12 +34,42 @@ interface MetricCatalogBrowserProps {
 
 export function MetricCatalogBrowser({ onSelectMetric, selectedMetricIds = new Set() }: MetricCatalogBrowserProps) {
   const [searchQuery, setSearchQuery] = useState('')
+  const customDefs = useCustomMetricDefinitions()
+
+  // Merge built-in catalog with user-defined custom metrics
+  const allMetrics = useMemo(() => {
+    const customEntries = customDefs.map(toMetricCatalogEntry)
+    // Deduplicate by id (custom overrides built-in if same id)
+    const ids = new Set(customEntries.map(e => e.id))
+    return [...METRIC_CATALOG.filter(m => !ids.has(m.id)), ...customEntries]
+  }, [customDefs])
+
+  const allCategories = useMemo(() => {
+    const cats = new Set(getCategories())
+    for (const m of allMetrics) cats.add(m.category)
+    return cats
+  }, [allMetrics])
+
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set(getCategories()))
 
+  // Auto-expand new categories from custom metrics
+  useEffect(() => {
+    setExpandedCategories(prev => {
+      const next = new Set(prev)
+      for (const cat of allCategories) next.add(cat)
+      return next
+    })
+  }, [allCategories])
+
   const filteredMetrics = useMemo(() => {
-    if (!searchQuery.trim()) return METRIC_CATALOG
-    return searchMetrics(searchQuery)
-  }, [searchQuery])
+    if (!searchQuery.trim()) return allMetrics
+    const q = searchQuery.toLowerCase()
+    return allMetrics.filter(m =>
+      m.name.toLowerCase().includes(q) ||
+      m.description.toLowerCase().includes(q) ||
+      m.category.toLowerCase().includes(q)
+    )
+  }, [searchQuery, allMetrics])
 
   const groupedMetrics = useMemo(() => {
     const groups: Record<string, MetricCatalogEntry[]> = {}
@@ -96,7 +144,12 @@ export function MetricCatalogBrowser({ onSelectMetric, selectedMetricIds = new S
                           )}
                         >
                           <div className="min-w-0 flex-1">
-                            <div className="truncate font-medium">{metric.name}</div>
+                            <div className="truncate font-medium flex items-center gap-1.5">
+                              {metric.name}
+                              {metric.isCustom && (
+                                <span className="text-[10px] px-1.5 py-0.5 rounded bg-amber-500/15 text-amber-400 font-normal">Custom</span>
+                              )}
+                            </div>
                             <div className="text-xs text-neutral-400 truncate">{metric.description}</div>
                           </div>
                           <div className="flex items-center gap-2 ml-2 shrink-0">
