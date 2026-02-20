@@ -45,13 +45,37 @@ export function UniverseSelector() {
   // Full company list from API (cached)
   const [allCompanies, setAllCompanies] = useState<CMOTSCompany[]>([])
   const [loading, setLoading] = useState(false)
+  const [loadError, setLoadError] = useState(false)
 
   // ── Load company master on mount ──
   useEffect(() => {
     setLoading(true)
+    setLoadError(false)
     getCompanyMaster().then(companies => {
       setAllCompanies(companies)  // Already BSE-filtered by getCompanyMaster()
       setLoading(false)
+      setLoadError(companies.length === 0)
+
+      // Auto-resolve cohort filters into customSymbols on initial load.
+      // Without this, the default state (mcapTypes: ['Large Cap'], customSymbols: [])
+      // shows "0 stocks" until the user manually clicks a filter button.
+      const uf = useScoringStore.getState().universeFilter
+      if (
+        companies.length > 0 &&
+        uf.mode === 'cohort' &&
+        (uf.mcapTypes.length > 0 || uf.sectors.length > 0) &&
+        uf.customSymbols.length === 0
+      ) {
+        const filtered = companies.filter(c => {
+          if (uf.mcapTypes.length > 0 && !uf.mcapTypes.includes(c.mcaptype)) return false
+          if (uf.sectors.length > 0 && !uf.sectors.includes(c.sectorname)) return false
+          return true
+        })
+        const currentExcluded = new Set(uf.excludedSymbols ?? [])
+        useScoringStore.getState().setUniverseFilter({
+          customSymbols: filtered.map(getStockId).filter(s => !currentExcluded.has(s)),
+        })
+      }
     })
   }, [])
 
@@ -180,6 +204,19 @@ export function UniverseSelector() {
           )
         })}
       </div>
+
+      {/* API error banner */}
+      {loadError && !loading && (
+        <div className="rounded-lg bg-red-500/10 border border-red-500/20 p-3 space-y-1">
+          <div className="flex items-center gap-2">
+            <AlertTriangle className="w-3.5 h-3.5 text-red-400" />
+            <span className="text-xs font-medium text-red-400">Failed to load stock data</span>
+          </div>
+          <p className="text-[11px] text-neutral-400 leading-relaxed">
+            The CMOTS company master API returned no data. Check that CMOTS_API_TOKEN is set in your environment.
+          </p>
+        </div>
+      )}
 
       {/* Mode-specific content */}
       {(universeFilter.mode === 'individual' || universeFilter.mode === 'cohort') && (

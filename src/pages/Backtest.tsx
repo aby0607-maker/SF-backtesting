@@ -1,11 +1,13 @@
 /**
- * Backtest Page — 3-Stage Scorecard Backtesting Pipeline
+ * Backtest Page — 5-Stage Scorecard Backtesting Pipeline
  *
- * Pipeline: Build Scorecard → Configure & Run → Results & Iterate
+ * Pipeline: Start → Metrics & Segments → Review & Tune → Select Stocks & Run → Results & Iterate
  *
- * Stage 1 merges old Stages 1+2 (metrics + scorecard structure)
- * Stage 2 merges old Stages 3+4 (configure + review/run)
- * Stage 3 is old Stage 5 (results) + iteration tools
+ * Stage 1: Start — template selection, CSV upload
+ * Stage 2: Metrics & Segments — build scorecard structure, select metrics
+ * Stage 3: Review & Tune — verdict thresholds, normalization, review config
+ * Stage 4: Select Stocks & Run — universe selection, date range, run backtest
+ * Stage 5: Results & Iterate — analyze results, export, re-run
  *
  * Supports three UI modes:
  * - Wizard: Step-by-step, one stage at a time
@@ -26,7 +28,7 @@ import { PipelineNav } from '@/components/scoring/PipelineNav'
 import { UIModeToggle } from '@/components/scoring/UIModeToggle'
 import { ScorecardSelector } from '@/components/scoring/ScorecardSelector'
 
-// Stage 1: Build Scorecard (merged metrics + scorecard structure)
+// Stage 1: Start + Stage 2: Metrics & Segments
 import { MetricCatalogBrowser } from '@/components/scoring/MetricCatalogBrowser'
 import { FormulaBuilder } from '@/components/scoring/FormulaBuilder'
 import { CustomMetricCreator } from '@/components/scoring/CustomMetricCreator'
@@ -40,14 +42,14 @@ import { VerdictThresholdEditor } from '@/components/scoring/VerdictThresholdEdi
 import { ValuationConditionalsEditor } from '@/components/scoring/ValuationConditionalsEditor'
 import { ScorecardTemplateCard } from '@/components/scoring/ScorecardTemplateCard'
 
-// Stage 2: Configure & Run
+// Stage 3: Review & Tune + Stage 4: Select Stocks & Run
 import { ConfigureRunPanel } from '@/components/scoring/ConfigureRunPanel'
 import { RunCombinedButton } from '@/components/scoring/RunCombinedButton'
 import { PipelineReviewPanel } from '@/components/scoring/PipelineReviewPanel'
 import { VersionInfoEditor } from '@/components/scoring/VersionInfoEditor'
 import { VersionHistoryPanel } from '@/components/scoring/VersionHistoryPanel'
 
-// Stage 3: Results & Iterate (lazy-loaded — heavy with chart libraries)
+// Stage 5: Results & Iterate (lazy-loaded — heavy with chart libraries)
 const ResultsPanel = lazy(() => import('@/components/scoring/ResultsPanel').then(m => ({ default: m.ResultsPanel })))
 
 import { SCORECARD_TEMPLATES } from '@/data/scorecardTemplates'
@@ -165,7 +167,7 @@ function CollapsibleSection({
         )}
       </button>
       {isOpen && (
-        <div className="px-4 pb-4 border-t border-white/5 pt-3">
+        <div className="px-4 pb-4 border-t border-white/5 pt-3 space-y-4">
           {children}
         </div>
       )}
@@ -183,19 +185,25 @@ interface StageConfig {
 
 const STAGE_CONFIGS: Record<PipelineStage, StageConfig> = {
   1: {
-    title: 'Build Scorecard',
-    description: 'Select metrics, create segments, assign weights, set verdicts',
+    title: 'Start',
+    description: 'Upload a CSV scorecard or pick a quick-start template',
     render: () => (
       <div className="space-y-4">
-        {/* Templates + CSV Upload */}
         <div className="flex items-center gap-3">
           <CSVUploadParser />
         </div>
         <TemplateSection />
-
+      </div>
+    ),
+  },
+  2: {
+    title: 'Metrics & Segments',
+    description: 'Create segments, select metrics, assign weights',
+    render: () => (
+      <div className="space-y-4">
         {/* Segments & Weights */}
         <CollapsibleSection title="Segments & Weights">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
             <SegmentBuilder />
             <CompositeFormulaEditor />
           </div>
@@ -204,7 +212,7 @@ const STAGE_CONFIGS: Record<PipelineStage, StageConfig> = {
 
         {/* Metric Selection */}
         <CollapsibleSection title="Metric Catalog & Selection">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
             <MetricCatalogBrowserWired />
             <div className="space-y-4">
               <SelectedMetricsList />
@@ -213,37 +221,44 @@ const STAGE_CONFIGS: Record<PipelineStage, StageConfig> = {
             </div>
           </div>
         </CollapsibleSection>
-
+      </div>
+    ),
+  },
+  3: {
+    title: 'Review & Tune',
+    description: 'Set verdict thresholds, normalization, and review configuration',
+    render: () => (
+      <div className="space-y-4">
         {/* Verdict & Normalization */}
-        <CollapsibleSection title="Verdict Thresholds & Normalization" defaultOpen={false}>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <CollapsibleSection title="Verdict Thresholds & Normalization">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
             <VerdictThresholdEditor />
             <NormalizationSelector />
           </div>
         </CollapsibleSection>
 
         {/* Negative handling */}
-        <CollapsibleSection title="Negative Value Handling" defaultOpen={false}>
+        <CollapsibleSection title="Negative Value Handling">
           <NegativeHandlingEditor />
+        </CollapsibleSection>
+
+        {/* Review summary */}
+        <CollapsibleSection title="Review Configuration">
+          <PipelineReviewPanel />
         </CollapsibleSection>
       </div>
     ),
   },
-  2: {
-    title: 'Configure & Run',
-    description: 'Select stocks, set date range, review config, and run backtest',
+  4: {
+    title: 'Select Stocks & Run',
+    description: 'Select stocks, set date range, and run backtest',
     render: () => (
       <div className="space-y-4">
         {/* Stock selection + date range + benchmark */}
         <ConfigureRunPanel />
 
-        {/* Collapsible review summary */}
-        <CollapsibleSection title="Review Configuration" defaultOpen={false}>
-          <PipelineReviewPanel />
-        </CollapsibleSection>
-
         {/* Version info + history + run button */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-start">
           <div className="lg:col-span-2">
             <RunCombinedButton />
           </div>
@@ -255,33 +270,9 @@ const STAGE_CONFIGS: Record<PipelineStage, StageConfig> = {
       </div>
     ),
   },
-  3: {
+  5: {
     title: 'Results & Iterate',
     description: 'Analyze results, export reports, re-run with tweaks',
-    render: () => (
-      <Suspense fallback={<StageSkeleton />}>
-        <ResultsPanel />
-      </Suspense>
-    ),
-  },
-  // Stages 4-5 exist for backward compat with 5-stage store logic (StepperNav).
-  // PipelineNav only shows 3 stages, but prepareReRun can set currentStage=4.
-  4: {
-    title: 'Run',
-    description: 'Configure and execute backtest run',
-    render: () => (
-      <div className="space-y-4">
-        <ConfigureRunPanel />
-        <CollapsibleSection title="Review Configuration" defaultOpen={false}>
-          <PipelineReviewPanel />
-        </CollapsibleSection>
-        <RunCombinedButton />
-      </div>
-    ),
-  },
-  5: {
-    title: 'Results',
-    description: 'View backtest results and performance report',
     render: () => (
       <Suspense fallback={<StageSkeleton />}>
         <ResultsPanel />
@@ -301,7 +292,7 @@ export function Backtest() {
 
   return (
     <motion.div
-      className="space-y-4"
+      className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-4"
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
@@ -397,7 +388,7 @@ function WizardMode({
           Back
         </button>
 
-        {currentStage < 3 && (
+        {currentStage < 5 && (
           <button
             onClick={onNext}
             className="flex items-center gap-1 px-4 py-2 rounded-lg text-sm bg-primary-500/20 text-primary-400 hover:bg-primary-500/30 transition-colors"

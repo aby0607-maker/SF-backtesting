@@ -31,6 +31,7 @@ const ALLOWED_PREFIXES = [
   '/QuarterlyResults',
   '/AdjustedPriceChart',
   '/Aggregate-Share-Holding',
+  '/BSEDelayedPriceFeed',
 ]
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {

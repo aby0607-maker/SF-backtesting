@@ -499,6 +499,24 @@ export interface CMOTSOHLCVRecord {
   DMCAP: number
 }
 
+/** /BSEDelayedPriceFeed — bulk real-time/delayed prices for all BSE stocks */
+export interface CMOTSDelayedPrice {
+  sc_code: string
+  co_code: number
+  CO_NAME: string
+  lname: string
+  isin: string
+  price: number         // Last traded price
+  Open: number
+  High: number
+  Low: number
+  Price_diff: number    // Absolute change from previous close
+  change: number        // % change from previous close
+  Volume: number
+  Value: number         // Total traded value
+  Tr_Date: string       // ISO datetime "2026-02-20T00:00:00"
+}
+
 /** /TTMData/{co_code}/{type} */
 export interface CMOTSTTMRecord {
   co_code: number

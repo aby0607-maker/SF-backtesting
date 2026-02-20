@@ -67,7 +67,7 @@ export function ResultsPanel() {
   if (!hasResults) {
     return (
       <div className="text-center py-12 text-neutral-500 text-sm">
-        No results available. Run a backtest in Stage 2 first.
+        No results available. Select stocks and run a backtest in Stage 4 first.
       </div>
     )
   }
