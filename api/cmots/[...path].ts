@@ -21,6 +21,14 @@ const ALLOWED_ORIGINS = [
   'http://localhost:4173',
 ]
 
+/** Check if an origin is allowed — supports exact matches and Vercel preview URLs */
+function isAllowedOrigin(origin: string): boolean {
+  if (ALLOWED_ORIGINS.includes(origin)) return true
+  // Allow Vercel preview deployments for this project (e.g. sf-backtesting-abc123.vercel.app)
+  if (/^https:\/\/sf-backtesting[a-z0-9-]*\.vercel\.app$/.test(origin)) return true
+  return false
+}
+
 // Allowed CMOTS endpoint prefixes (whitelist for security)
 const ALLOWED_PREFIXES = [
   '/companymaster',
@@ -87,7 +95,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     // CORS: restrict to allowed origins only
     const origin = req.headers?.origin ?? ''
-    if (ALLOWED_ORIGINS.includes(origin)) {
+    if (isAllowedOrigin(origin)) {
       res.setHeader('Access-Control-Allow-Origin', origin)
     }
     res.setHeader('Access-Control-Allow-Methods', 'GET')
