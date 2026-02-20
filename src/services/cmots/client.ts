@@ -3,8 +3,10 @@
  *
  * All CMOTS data access goes through this client.
  *
- * Real API: All responses are wrapped in { success, data: T[], message }.
- * This client unwraps automatically so callers get clean typed arrays.
+ * Handles both response formats from the CMOTS API:
+ *   - Raw array: [{...}, {...}]
+ *   - Envelope:  { success: boolean, data: T[], message: string }
+ * This client normalizes automatically so callers get clean typed arrays.
  *
  * On error, returns empty arrays with console warnings explaining the reason.
  */
@@ -22,7 +24,7 @@ interface CMOTSRequestOptions {
 
 /**
  * Fetch an array of items from CMOTS API.
- * Unwraps the { success, data, message } envelope automatically.
+ * Handles both raw array and { success, data, message } envelope formats.
  * Returns empty array on error (never throws) and logs the reason.
  *
  * NOTE: Cache keys are endpoint-based. For backtesting, TTM/FinData endpoints
@@ -49,15 +51,23 @@ export async function cmotsFetch<T>(options: CMOTSRequestOptions): Promise<T[]> 
       return []
     }
 
-    const json = await response.json() as { success: boolean; data: T[]; message: string }
+    const json = await response.json()
 
-    if (!json.success || !Array.isArray(json.data)) {
-      console.warn(`[CMOTS] Unsuccessful response for ${endpoint}: ${json.message}`)
+    // Normalize response: CMOTS may return a raw array or an envelope
+    let data: T[]
+    if (Array.isArray(json)) {
+      // Raw array response: [{...}, {...}]
+      data = json
+    } else if (json && typeof json === 'object' && Array.isArray(json.data)) {
+      // Envelope response: { success, data: [...], message }
+      data = json.data
+    } else {
+      console.warn(`[CMOTS] Unexpected response shape for ${endpoint}:`, typeof json)
       return []
     }
 
-    cache.set(cacheKey, json.data, { ttl: cacheTTL })
-    return json.data
+    cache.set(cacheKey, data, { ttl: cacheTTL })
+    return data
   } catch (error) {
     console.warn(`[CMOTS] Network error fetching ${endpoint}:`, error instanceof Error ? error.message : error)
     return []

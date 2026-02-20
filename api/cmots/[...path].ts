@@ -2,7 +2,7 @@
  * Vercel Serverless Function — CMOTS API Proxy
  *
  * Proxies requests from /api/cmots/* to https://deltastockzapis.cmots.com/api/*
- * Adds Bearer auth token from environment variable.
+ * Adds apikey query parameter from environment variable.
  *
  * This replaces the Vite dev proxy for production deployments.
  * The frontend client always calls /api/cmots/... — in dev the Vite proxy
@@ -24,14 +24,22 @@ const ALLOWED_ORIGINS = [
 // Allowed CMOTS endpoint prefixes (whitelist for security)
 const ALLOWED_PREFIXES = [
   '/companymaster',
+  '/CompanyProfile',
+  '/CompanyBackground',
   '/TTMData',
   '/FinData',
   '/ProftandLoss',
+  '/BalanceSheet',
   '/CashFlow',
   '/QuarterlyResults',
   '/AdjustedPriceChart',
   '/Aggregate-Share-Holding',
+  '/ShareHoldingPatternDetailed',
+  '/ShareholdingMorethanOnePercent',
   '/BSEDelayedPriceFeed',
+  '/BSEAnnouncement',
+  '/NSEAnnouncement',
+  '/Exchange-Holidays',
 ]
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -61,15 +69,20 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(403).json({ error: 'Endpoint not allowed' })
   }
 
-  const targetUrl = `${CMOTS_BASE}${cmotPath}`
+  // CMOTS uses query-parameter authentication (?apikey=TOKEN)
+  // See: https://www.apidatafeed.com/faq — "append your API key to the call"
+  const sep = cmotPath.includes('?') ? '&' : '?'
+  const targetUrl = `${CMOTS_BASE}${cmotPath}${sep}apikey=${encodeURIComponent(token)}`
 
   try {
+    console.log(`[CMOTS Proxy] ${cmotPath} → fetching`)
     const upstream = await fetch(targetUrl, {
       headers: {
-        'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
     })
+
+    console.log(`[CMOTS Proxy] ${cmotPath} → ${upstream.status}`)
 
     const contentType = upstream.headers.get('content-type') || 'application/json'
     const body = await upstream.text()
@@ -93,7 +106,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     return res.status(upstream.status).send(body)
   } catch (error) {
-    console.error(`[CMOTS Proxy] Failed to fetch ${targetUrl}:`, error)
+    console.error(`[CMOTS Proxy] Failed to fetch ${cmotPath}:`, error)
     return res.status(502).json({ error: 'Upstream API error' })
   }
 }
