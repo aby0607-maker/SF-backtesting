@@ -51,6 +51,14 @@ export async function cmotsFetch<T>(options: CMOTSRequestOptions): Promise<T[]> 
       return []
     }
 
+    // Detect SPA fallback: if serverless function isn't deployed, Vercel returns
+    // index.html (text/html) with status 200 — parsing it as JSON would throw
+    const contentType = response.headers.get('content-type') || ''
+    if (contentType.includes('text/html')) {
+      console.warn(`[CMOTS] API returned HTML for ${endpoint} — serverless function may not be deployed. Check /api/health`)
+      return []
+    }
+
     const json = await response.json()
 
     // Normalize response: CMOTS may return a raw array or an envelope
