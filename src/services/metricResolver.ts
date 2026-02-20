@@ -742,11 +742,12 @@ type TechnicalResult = {
 
 /**
  * Compute technical metrics from an array of price records.
- * When asOfDate is provided, only uses prices up to that date.
+ * Accepts optional technicalParams to override RSI period and VPT window sizes.
  */
 function computeTechnicalFromPriceArray(
   closes: number[],
   volumes: number[],
+  technicalParams?: MetricResolutionConfig['technicalParams'],
 ): TechnicalResult | null {
   if (closes.length < 200) return null
 
@@ -762,23 +763,27 @@ function computeTechnicalFromPriceArray(
 
   if (latestEma20 == null || latestEma50 == null || latestEma200 == null) return null
 
-  const rsiValue = rsi(closes, 14)
+  const rsiPeriod = technicalParams?.rsiPeriod ?? 14
+  const rsiValue = rsi(closes, rsiPeriod)
   const vptValue = volumePriceTrend(closes, volumes)
 
-  // VPT two-input conditional: volume_change = avg(5D vol) / avg(50D vol)
+  // VPT two-input conditional: configurable window sizes
+  const volNumDays = technicalParams?.vptVolNumeratorDays ?? 5
+  const volDenDays = technicalParams?.vptVolDenominatorDays ?? 50
+  const priceChangeDays = technicalParams?.vptPriceChangeDays ?? 5
+
   let volumeChange: number | null = null
   let priceChange: number | null = null
-  if (closes.length >= 50 && volumes.length >= 50) {
-    const recent5Vol = volumes.slice(-5)
-    const recent50Vol = volumes.slice(-50)
-    const avg5Vol = recent5Vol.reduce((a, b) => a + b, 0) / recent5Vol.length
-    const avg50Vol = recent50Vol.reduce((a, b) => a + b, 0) / recent50Vol.length
-    volumeChange = avg50Vol > 0 ? avg5Vol / avg50Vol : null
+  if (closes.length >= volDenDays && volumes.length >= volDenDays) {
+    const recentNumVol = volumes.slice(-volNumDays)
+    const recentDenVol = volumes.slice(-volDenDays)
+    const avgNumVol = recentNumVol.reduce((a, b) => a + b, 0) / recentNumVol.length
+    const avgDenVol = recentDenVol.reduce((a, b) => a + b, 0) / recentDenVol.length
+    volumeChange = avgDenVol > 0 ? avgNumVol / avgDenVol : null
 
-    // 5D price change %
-    const price5DAgo = closes[closes.length - 6] // 5 trading days ago
-    if (price5DAgo != null && price5DAgo > 0) {
-      priceChange = ((currentPrice - price5DAgo) / price5DAgo) * 100
+    const priceNDAgo = closes[closes.length - 1 - priceChangeDays]
+    if (priceNDAgo != null && priceNDAgo > 0) {
+      priceChange = ((currentPrice - priceNDAgo) / priceNDAgo) * 100
     }
   }
 
@@ -813,7 +818,7 @@ async function fetchPriceDataForScoring(
 
     const closes = prices.map(p => p.Dayclose)
     const volumes = prices.map(p => p.TotalVolume)
-    const technicalData = closes.length >= 200 ? computeTechnicalFromPriceArray(closes, volumes) : null
+    const technicalData = closes.length >= 200 ? computeTechnicalFromPriceArray(closes, volumes) : null  // Note: no config available in fetchPriceDataForScoring — uses defaults
 
     const priceHistory = prices.map(p => ({
       date: p.Tradedate.split('T')[0],
@@ -1039,7 +1044,7 @@ export function resolveMetricsAtDate(
   if (windowedPrices.length >= 200) {
     const closes = windowedPrices.map(p => p.price)
     const volumes = windowedPrices.map(p => p.volume ?? 1000000)
-    technicalData = computeTechnicalFromPriceArray(closes, volumes) ?? undefined
+    technicalData = computeTechnicalFromPriceArray(closes, volumes, config?.technicalParams) ?? undefined
   }
 
   const data = mapCMOTSToMetricIds(

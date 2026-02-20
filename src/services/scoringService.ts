@@ -41,17 +41,33 @@ export type CombinedProgressPhase = 'scoring' | 'backtest' | 'building_table'
 
 /**
  * Extract MetricResolutionConfig from a scorecard.
- * Scans all segments for growthPeriod overrides and collects custom metric IDs.
+ * Scans all segments for growthPeriod overrides, technical calculationParams,
+ * and collects custom metric definitions.
  */
 function extractResolutionConfig(
   scorecard: ScorecardVersion,
   customMetrics?: CustomMetricDefinition[],
 ): MetricResolutionConfig | undefined {
   const growthPeriods: Record<string, number> = {}
+  let technicalParams: MetricResolutionConfig['technicalParams'] | undefined
+
   for (const seg of scorecard.segments) {
     for (const m of seg.metrics) {
       if (m.growthPeriod) {
         growthPeriods[m.id] = m.growthPeriod
+      }
+      // Extract technical calculationParams (RSI period, VPT windows)
+      if (m.calculationParams) {
+        const p = m.calculationParams
+        if (p.rsiPeriod || p.vptVolNumeratorDays || p.vptVolDenominatorDays || p.vptPriceChangeDays) {
+          technicalParams = {
+            ...technicalParams,
+            ...(p.rsiPeriod != null && { rsiPeriod: Number(p.rsiPeriod) }),
+            ...(p.vptVolNumeratorDays != null && { vptVolNumeratorDays: Number(p.vptVolNumeratorDays) }),
+            ...(p.vptVolDenominatorDays != null && { vptVolDenominatorDays: Number(p.vptVolDenominatorDays) }),
+            ...(p.vptPriceChangeDays != null && { vptPriceChangeDays: Number(p.vptPriceChangeDays) }),
+          }
+        }
       }
     }
   }
@@ -59,11 +75,12 @@ function extractResolutionConfig(
   const hasGrowthPeriods = Object.keys(growthPeriods).length > 0
   const hasCustomMetrics = customMetrics && customMetrics.length > 0
 
-  if (!hasGrowthPeriods && !hasCustomMetrics) return undefined
+  if (!hasGrowthPeriods && !hasCustomMetrics && !technicalParams) return undefined
 
   return {
     growthPeriods: hasGrowthPeriods ? growthPeriods : undefined,
     customMetrics: hasCustomMetrics ? customMetrics : undefined,
+    technicalParams,
   }
 }
 
