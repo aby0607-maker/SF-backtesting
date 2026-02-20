@@ -123,8 +123,8 @@ interface ScoringState {
   updateCompositeFormula: (formula: CompositeFormula) => void
   updateNormalization: (config: NormalizationConfig) => void
   updateVerdictThresholds: (thresholds: VerdictThreshold[]) => void
-  updateValuationConditionals: (segmentId: string, config: ValuationConditionalConfig) => void
   setVerdictDisplayMode: (mode: VerdictDisplayMode) => void
+  updateValuationConditionals: (segmentId: string, config: ValuationConditionalConfig) => void
 
   // ─── Actions: Review & Confirm ───
   generateReviewSnapshot: () => void

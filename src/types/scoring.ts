@@ -1,9 +1,8 @@
 /**
  * Scoring & Backtesting Type Definitions
  *
- * Foundation types for the 5-step scorecard backtesting pipeline:
- * Step 1: Start → Step 2: Metrics & Segments → Step 3: Review & Tune →
- * Step 4: Select Stocks & Run → Step 5: Results & Iterate
+ * Foundation types for the 3-stage scorecard backtesting pipeline:
+ * Stage 1: Build Scorecard → Stage 2: Configure & Run → Stage 3: Results & Iterate
  */
 
 // ─────────────────────────────────────────────────
@@ -89,10 +88,12 @@ export interface CompositeMetric {
   /** Number of years for growth CAGR calculation. Only applies to growth metrics.
    *  undefined = use all available years (current default behavior). */
   growthPeriod?: 2 | 3 | 5
-  /** Scoring method: 'band_lookup' (default) or 'conditional_vpt' (two-input rules) */
+  /** Scoring method: 'band_lookup' (default) uses scoreBands to map raw→score.
+   *  'conditional_vpt' uses two-input conditional logic (volume_change + price_change). */
   scoringMethod?: 'band_lookup' | 'conditional_vpt'
-  /** Calculation parameters (e.g., VPT lookback windows, RSI period).
-   *  Keys: vptVolNumeratorDays, vptVolDenominatorDays, vptPriceChangeDays, rsiPeriod, etc. */
+  /** General calculation parameters per metric.
+   *  Keys: growthYears, vptVolNumeratorDays, vptVolDenominatorDays, vptPriceChangeDays,
+   *  rsiPeriod, lookbackMethod, valuationBasis. Supersedes growthPeriod when present. */
   calculationParams?: Record<string, number | string>
 }
 
@@ -100,7 +101,8 @@ export interface CompositeMetric {
 // Stage 2: Scorecard Types
 // ─────────────────────────────────────────────────
 
-/** Configuration for valuation conditional weighting (PB-anchored V2.2) */
+/** Configuration for PB-anchored conditional valuation logic.
+ *  When enabled, thresholds determine weight redistribution rules. */
 export interface ValuationConditionalConfig {
   enabled: boolean                    // false → use standard weighted avg
   peThreshold: number                 // Hist avg PE above this → exclude PE (default: 75)
@@ -108,7 +110,7 @@ export interface ValuationConditionalConfig {
   pbNAThreshold: number               // Hist avg PB above this → entire valuation NA (default: 30)
   defaultWeights: { pe: number; pb: number; ev: number }   // {0.3, 0.5, 0.2}
   peExcludedWeights: { pb: number; ev: number }             // {0.6, 0.4}
-  evExcludedWeights: { pe: number; pb: number }             // {0.4, 0.6}
+  evExcludedWeights: { pe: number; pb: number }             // {0.6, 0.4}
 }
 
 /** A segment groups related metrics (e.g., "Financial Score", "Valuation Score") */
@@ -334,9 +336,9 @@ export interface PipelineReviewSnapshot {
   confirmedAt?: number        // Timestamp when user confirmed
 }
 
-/** Request to edit a specific pipeline step from the review panel */
+/** Request to edit a specific pipeline stage from the review panel */
 export interface StageEditRequest {
-  stageNumber: PipelineStage
+  stageNumber: 1 | 2 | 3
   reason?: string
 }
 

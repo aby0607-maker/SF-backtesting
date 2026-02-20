@@ -96,7 +96,7 @@ export function VerdictThresholdEditor() {
                   max={100}
                   value={threshold.minScore}
                   onChange={e => updateThreshold(i, 'minScore', Number(e.target.value))}
-                  className="w-12 px-1 py-0.5 bg-dark-800 border border-white/10 rounded text-xs font-mono text-neutral-300 text-right focus:outline-none focus:border-primary-500/40"
+                  className="w-12 px-1 py-0.5 bg-dark-800 border border-white/10 rounded text-xs font-mono text-white text-right"
                 />
                 <span className="text-neutral-500">-</span>
                 <input
@@ -105,11 +105,11 @@ export function VerdictThresholdEditor() {
                   max={100}
                   value={threshold.maxScore}
                   onChange={e => updateThreshold(i, 'maxScore', Number(e.target.value))}
-                  className="w-12 px-1 py-0.5 bg-dark-800 border border-white/10 rounded text-xs font-mono text-neutral-300 text-right focus:outline-none focus:border-primary-500/40"
+                  className="w-12 px-1 py-0.5 bg-dark-800 border border-white/10 rounded text-xs font-mono text-white text-right"
                 />
                 {/* Gap/overlap warning */}
                 {i < verdictThresholds.length - 1 && threshold.minScore !== verdictThresholds[i + 1]?.maxScore + 1 && (
-                  <span className="text-warning-400 text-[10px]" title="Gap or overlap with adjacent band">!</span>
+                  <span className="text-warning-400 text-[10px]" title="Gap or overlap with next band">!</span>
                 )}
               </div>
 

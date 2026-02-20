@@ -123,7 +123,7 @@ const evVs5YBands: ScoreBand[] = [
   { min: 1.5, max: Infinity, score: 40, label: 'Overvalued', color: 'text-destructive-400' },
 ]
 
-// Technical bands: Price vs EMA deviation (%) — CSV-verified against all 39 EMA data points (13 stocks × 3 EMAs)
+// Technical bands: Price vs EMA deviation (%) — CSV V2.2 verified against 39 data points
 // Uses 10x scale (-10 to 100) for compatibility with weighted average math
 const priceVsEmaBands: ScoreBand[] = [
   { min: 5.01, max: Infinity, score: 100, label: 'Strongly Above EMA', color: 'text-success-400' },
@@ -133,7 +133,8 @@ const priceVsEmaBands: ScoreBand[] = [
   { min: -Infinity, max: -5.01, score: -10, label: 'Deeply Below EMA', color: 'text-destructive-400' },
 ]
 
-// RSI bands — CSV-verified against all 13 RSI data points. Optimal zone is 50-60, NOT 60-70.
+// RSI bands — CSV V2.2 verified against 13 data points
+// Optimal zone is 50-60 (NOT 60-70). 10x scale for weighted average math.
 const rsiBands: ScoreBand[] = [
   { min: 50, max: 59.99, score: 100, label: 'Optimal Momentum', color: 'text-success-400' },
   { min: 60, max: 69.99, score: 70, label: 'Bullish Extended', color: 'text-success-400' },
@@ -299,6 +300,15 @@ const v2ValuationSegment: ScorecardSegment = {
   name: 'Valuation Score',
   segmentWeight: 0.6,
   description: 'Valuation relative to 5-year historical averages. PB-anchored: PE=30%, PB=50%, EV/EBITDA=20% (conditional)',
+  valuationConditionals: {
+    enabled: true,
+    peThreshold: 75,
+    evThreshold: 35,
+    pbNAThreshold: 30,
+    defaultWeights: { pe: 0.3, pb: 0.5, ev: 0.2 },
+    peExcludedWeights: { pb: 0.6, ev: 0.4 },
+    evExcludedWeights: { pe: 0.4, pb: 0.6 },
+  },
   metrics: [
     {
       id: 'v2_pe_vs_5y', name: 'PE vs 5Y Average', type: 'raw',
@@ -324,15 +334,6 @@ const v2ValuationSegment: ScorecardSegment = {
     { minScore: 55, maxScore: 64, verdict: 'Moderately Expensive', altVerdict: 'Caution', color: 'text-warning-400', description: 'Limited upside from valuation' },
     { minScore: 0, maxScore: 54, verdict: 'Expensive', altVerdict: 'Expensive', color: 'text-destructive-400', description: 'Valuation risk at CMP' },
   ],
-  valuationConditionals: {
-    enabled: true,
-    peThreshold: 75,
-    evThreshold: 35,
-    pbNAThreshold: 30,
-    defaultWeights: { pe: 0.3, pb: 0.5, ev: 0.2 },
-    peExcludedWeights: { pb: 0.6, ev: 0.4 },
-    evExcludedWeights: { pe: 0.4, pb: 0.6 },
-  },
 }
 
 const v2TechnicalSegment: ScorecardSegment = {
@@ -344,29 +345,33 @@ const v2TechnicalSegment: ScorecardSegment = {
     {
       id: 'v2_price_ema20', name: 'Price vs 20D EMA', type: 'raw',
       rawMetric: { id: 'v2_price_ema20', name: 'Price vs 20D EMA', cmots_source: 'ohlcv', cmots_field: 'PriceVsEMA20', unit: 'percent', description: 'Price deviation from 20-day EMA' },
-      scoreBands: priceVsEmaBands, weight: 0.20,  // CSV: 20% (was 15%)
+      scoreBands: priceVsEmaBands, weight: 0.20,
     },
     {
       id: 'v2_price_ema50', name: 'Price vs 50D EMA', type: 'raw',
       rawMetric: { id: 'v2_price_ema50', name: 'Price vs 50D EMA', cmots_source: 'ohlcv', cmots_field: 'PriceVsEMA50', unit: 'percent', description: 'Price deviation from 50-day EMA' },
-      scoreBands: priceVsEmaBands, weight: 0.15,  // CSV: 15% (was 20%)
+      scoreBands: priceVsEmaBands, weight: 0.15,
     },
     {
       id: 'v2_price_ema200', name: 'Price vs 200D EMA', type: 'raw',
       rawMetric: { id: 'v2_price_ema200', name: 'Price vs 200D EMA', cmots_source: 'ohlcv', cmots_field: 'PriceVsEMA200', unit: 'percent', description: 'Price deviation from 200-day EMA' },
-      scoreBands: priceVsEmaBands, weight: 0.35,  // CSV: 35% (was 25%)
+      scoreBands: priceVsEmaBands, weight: 0.35,
     },
     {
       id: 'v2_rsi', name: 'RSI (14)', type: 'raw',
       rawMetric: { id: 'v2_rsi', name: 'RSI', cmots_source: 'ohlcv', cmots_field: 'RSI14', unit: 'number', description: 'Relative Strength Index (14-period)' },
-      scoreBands: rsiBands, weight: 0.10,  // CSV: 10% (was 20%)
+      scoreBands: rsiBands, weight: 0.10,
     },
     {
       id: 'v2_vpt', name: 'Volume-Price Trend', type: 'raw',
       rawMetric: { id: 'v2_vpt', name: 'VPT', cmots_source: 'ohlcv', cmots_field: 'VPT', unit: 'number', description: 'Volume-Price Trend indicator' },
       scoreBands: vptBands, weight: 0.20,
       scoringMethod: 'conditional_vpt',
-      calculationParams: { vptVolNumeratorDays: 5, vptVolDenominatorDays: 50, vptPriceChangeDays: 5 },
+      calculationParams: {
+        vptVolNumeratorDays: 5,
+        vptVolDenominatorDays: 50,
+        vptPriceChangeDays: 5,
+      },
     },
   ],
   // CSV Technical Score Thresholds (new Mild Bearish band, lower Bullish threshold)
