@@ -90,7 +90,7 @@ export function CompositeFormulaEditor() {
   return (
     <div className="space-y-3">
       {/* Formula preview */}
-      <div className="px-3 py-2.5 bg-dark-800/80 border border-white/5 rounded-lg">
+      <div className="px-3 py-2.5 bg-dark-800/60 border border-white/5 rounded-xl">
         <div className="flex items-center justify-between mb-1">
           <span className="text-xs uppercase tracking-wider text-neutral-400">Composite Formula</span>
           <span className={cn(
@@ -105,7 +105,7 @@ export function CompositeFormulaEditor() {
 
       {/* Base weight slider */}
       {(compositeFormula.overlaySegments ?? []).length > 0 && (
-        <div className="px-3 py-2 bg-dark-800/40 border border-white/5 rounded-lg">
+        <div className="px-3 py-2 bg-dark-800/60 border border-white/5 rounded-xl">
           <div className="flex items-center justify-between mb-1.5">
             <span className="text-xs text-neutral-400">Base Group Weight</span>
             <span className="text-xs font-mono text-white">{(compositeFormula.baseWeight * 100).toFixed(0)}%</span>
@@ -131,7 +131,7 @@ export function CompositeFormulaEditor() {
             if (!seg) return null
             const inBase = isBaseSegment(sw.segmentId)
             return (
-              <div key={sw.segmentId} className="flex items-center gap-2 px-3 py-2 rounded-lg bg-dark-800/40">
+              <div key={sw.segmentId} className="flex items-center gap-2 px-3 py-2 rounded-lg bg-dark-800/40 border border-white/5">
                 {/* Base/Overlay toggle pill */}
                 <button
                   onClick={() => toggleSegmentGroup(sw.segmentId)}
