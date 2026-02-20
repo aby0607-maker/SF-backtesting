@@ -42,7 +42,7 @@ export function SegmentBuilder() {
   const isValidTotal = totalPct >= 99 && totalPct <= 101  // Allow ±1% rounding
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-3">
       {/* Weight sum indicator */}
       <div className="flex items-center justify-between px-1">
         <span className="text-xs font-medium text-neutral-400">Segments</span>

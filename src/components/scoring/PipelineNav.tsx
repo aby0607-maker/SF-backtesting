@@ -1,7 +1,7 @@
 /**
- * PipelineNav — Horizontal step indicator for the 3-stage pipeline
+ * PipelineNav — Horizontal step indicator for the 5-stage pipeline
  *
- * Shows: 1→2→3 with current stage highlighted.
+ * Shows: 1→2→3→4→5 with current stage highlighted.
  * Clickable in hybrid/dashboard mode; linear-only in wizard mode.
  */
 
@@ -9,12 +9,14 @@ import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
 import { useScoringStore, useCurrentStage, useUIMode } from '@/store/useScoringStore'
 import type { PipelineStage } from '@/types/scoring'
-import { Layers, Rocket, LineChart } from 'lucide-react'
+import { Layers, Database, SlidersHorizontal, Rocket, LineChart } from 'lucide-react'
 
 const STAGES: { stage: PipelineStage; label: string; icon: typeof Layers }[] = [
-  { stage: 1, label: 'Build Scorecard', icon: Layers },
-  { stage: 2, label: 'Configure & Run', icon: Rocket },
-  { stage: 3, label: 'Results', icon: LineChart },
+  { stage: 1, label: 'Start',                icon: Layers },
+  { stage: 2, label: 'Metrics & Segments',   icon: Database },
+  { stage: 3, label: 'Review & Tune',        icon: SlidersHorizontal },
+  { stage: 4, label: 'Select Stocks & Run',  icon: Rocket },
+  { stage: 5, label: 'Results & Iterate',    icon: LineChart },
 ]
 
 export function PipelineNav() {
