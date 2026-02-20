@@ -40,6 +40,7 @@ const BAND_COLORS = [
 
 export function ScoreBandEditor({ bands, onChange, metricName, scoringMethod }: ScoreBandEditorProps) {
   const [editingIndex, setEditingIndex] = useState<number | null>(null)
+  const [testValue, setTestValue] = useState<string>('')
 
   // VPT uses two-input conditional scoring, not band lookup
   if (scoringMethod === 'conditional_vpt') {
@@ -167,6 +168,35 @@ export function ScoreBandEditor({ bands, onChange, metricName, scoringMethod }: 
           )
         })}
       </div>
+
+      {/* Test a value */}
+      {bands.length > 0 && (
+        <div className="flex items-center gap-2 pt-1">
+          <span className="text-[10px] text-neutral-500">Test:</span>
+          <input
+            type="number"
+            value={testValue}
+            onChange={e => setTestValue(e.target.value)}
+            placeholder="Enter a raw value"
+            className="w-28 px-1.5 py-0.5 bg-dark-800 border border-white/10 rounded text-xs text-white placeholder:text-neutral-600"
+          />
+          {testValue !== '' && (() => {
+            const val = Number(testValue)
+            if (isNaN(val)) return <span className="text-[10px] text-neutral-600">invalid</span>
+            const sorted = [...bands].sort((a, b) => b.score - a.score)
+            const matched = sorted.find(b => val >= b.min && val <= b.max)
+            if (!matched) return <span className="text-[10px] text-neutral-600">no match</span>
+            const colorInfo = BAND_COLORS.find(c => c.score <= matched.score) ?? BAND_COLORS[BAND_COLORS.length - 1]
+            return (
+              <span className="flex items-center gap-1.5 text-[10px]">
+                <span className="text-neutral-500">=</span>
+                <span className={cn('font-mono font-bold', colorInfo.textColor)}>{matched.score}</span>
+                <span className="text-neutral-500">({matched.label})</span>
+              </span>
+            )
+          })()}
+        </div>
+      )}
     </div>
   )
 }
