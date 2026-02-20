@@ -12,7 +12,20 @@ interface ScoreBandEditorProps {
   bands: ScoreBand[]
   onChange: (bands: ScoreBand[]) => void
   metricName?: string
+  scoringMethod?: 'band_lookup' | 'conditional_vpt'
 }
+
+const VPT_RULES = [
+  { condition: 'price ≤ -3% AND vol < 1×', score: 0, label: 'Bearish, below-avg volume' },
+  { condition: 'price ≤ -3% AND vol ≥ 1×', score: 10, label: 'Distribution (vol-confirmed decline)' },
+  { condition: 'price < 0% AND vol ≥ 1×', score: 10, label: 'Mild distribution' },
+  { condition: 'price < 0% AND vol < 1×', score: 30, label: 'Light selling, low conviction' },
+  { condition: 'price > 5% AND vol < 1×', score: 20, label: 'Hollow rally (unconfirmed)' },
+  { condition: '0% < price < 2% AND vol ≥ 1×', score: 80, label: 'Strong accumulation' },
+  { condition: 'price ≥ 2% AND vol ≥ 1×', score: 30, label: 'Rally, vol/price mismatch' },
+  { condition: 'price > 0% AND vol < 1×', score: 30, label: 'Light buying' },
+  { condition: 'Fallback (flat)', score: 30, label: 'Near-zero / neutral' },
+]
 
 const BAND_COLORS = [
   { score: 100, label: 'Excellent', color: 'bg-success-500', textColor: 'text-success-400' },
@@ -22,10 +35,40 @@ const BAND_COLORS = [
   { score: 35, label: 'Below Avg', color: 'bg-warning-500/70', textColor: 'text-warning-400' },
   { score: 20, label: 'Weak', color: 'bg-destructive-500/70', textColor: 'text-destructive-400' },
   { score: 0, label: 'Poor', color: 'bg-destructive-500', textColor: 'text-destructive-400' },
+  { score: -Infinity, label: 'Negative', color: 'bg-destructive-600', textColor: 'text-destructive-400' },
 ]
 
-export function ScoreBandEditor({ bands, onChange, metricName }: ScoreBandEditorProps) {
+export function ScoreBandEditor({ bands, onChange, metricName, scoringMethod }: ScoreBandEditorProps) {
   const [editingIndex, setEditingIndex] = useState<number | null>(null)
+
+  // VPT uses two-input conditional scoring, not band lookup
+  if (scoringMethod === 'conditional_vpt') {
+    return (
+      <div className="space-y-3">
+        {metricName && (
+          <div className="text-xs font-medium text-neutral-400">
+            Score rules for <span className="text-white">{metricName}</span>
+          </div>
+        )}
+        <div className="text-xs text-neutral-500 mb-1">
+          VPT uses two-input conditional scoring (volume change ratio + price change %)
+        </div>
+        <div className="space-y-0.5">
+          {VPT_RULES.map((rule, i) => {
+            const colorInfo = BAND_COLORS.find(c => c.score <= rule.score) ?? BAND_COLORS[BAND_COLORS.length - 1]
+            return (
+              <div key={i} className="flex items-center gap-2 px-2 py-1.5 bg-dark-900/30 rounded text-xs">
+                <div className={cn('w-2 h-2 rounded-full shrink-0', colorInfo.color)} />
+                <span className="text-neutral-300 flex-1">{rule.condition}</span>
+                <span className={cn('font-mono font-medium', colorInfo.textColor)}>→ {rule.score}</span>
+                <span className="text-neutral-500 text-[10px] hidden sm:inline">{rule.label}</span>
+              </div>
+            )
+          })}
+        </div>
+      </div>
+    )
+  }
 
   const updateBand = (index: number, field: keyof ScoreBand, value: string | number) => {
     const updated = [...bands]
@@ -33,8 +76,11 @@ export function ScoreBandEditor({ bands, onChange, metricName }: ScoreBandEditor
     onChange(updated)
   }
 
-  // Visual band bar
-  const maxScore = Math.max(...bands.map(b => b.score), 100)
+  // Visual band bar — handle negative scores using absolute range
+  const scores = bands.map(b => b.score)
+  const minScore = Math.min(...scores, 0)
+  const maxScoreVal = Math.max(...scores, 100)
+  const range = maxScoreVal - minScore || 1
 
   return (
     <div className="space-y-3">
@@ -47,7 +93,7 @@ export function ScoreBandEditor({ bands, onChange, metricName }: ScoreBandEditor
       {/* Visual bar */}
       <div className="flex h-3 rounded-full overflow-hidden gap-px">
         {bands.map((band, i) => {
-          const width = (band.score / maxScore) * 100
+          const width = ((band.score - minScore) / range) * 100
           const colorInfo = BAND_COLORS.find(c => c.score <= band.score) ?? BAND_COLORS[BAND_COLORS.length - 1]
           return (
             <div

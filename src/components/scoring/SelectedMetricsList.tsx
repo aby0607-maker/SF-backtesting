@@ -9,6 +9,10 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useScoringStore, useActiveScorecard } from '@/store/useScoringStore'
 import { X, GripVertical, Calculator, Database, ShieldAlert } from 'lucide-react'
 
+function isGrowthMetric(metric: { id: string; rawMetric?: { cmots_field?: string } }) {
+  return metric.id.includes('growth') || metric.rawMetric?.cmots_field?.includes('Growth')
+}
+
 export function SelectedMetricsList() {
   const scorecard = useActiveScorecard()
   const removeMetric = useScoringStore(s => s.removeMetric)
@@ -94,6 +98,32 @@ export function SelectedMetricsList() {
                 )}
               </div>
             </div>
+
+            {/* Growth period selector — for growth metrics */}
+            {isGrowthMetric(metric) && (
+              <select
+                value={metric.growthPeriod ?? ''}
+                onChange={e => updateMetric(metric.segmentId, metric.id, {
+                  growthPeriod: e.target.value ? Number(e.target.value) as 2 | 3 | 5 : undefined,
+                })}
+                className="w-14 px-1 py-0.5 bg-dark-700/60 border border-white/10 rounded text-[10px] text-white"
+              >
+                <option value="">All</option>
+                <option value="2">2Y</option>
+                <option value="3">3Y</option>
+                <option value="5">5Y</option>
+              </select>
+            )}
+
+            {/* Calculation params indicator */}
+            {metric.calculationParams && Object.keys(metric.calculationParams).length > 0 && (
+              <span
+                className="px-1.5 py-0.5 rounded bg-dark-700/60 text-[10px] text-neutral-400 cursor-default"
+                title={Object.entries(metric.calculationParams).map(([k, v]) => `${k}: ${v}`).join(', ')}
+              >
+                {Object.keys(metric.calculationParams).length} params
+              </span>
+            )}
 
             {/* Metric weight input */}
             <div className="flex items-center gap-0.5 ml-1">

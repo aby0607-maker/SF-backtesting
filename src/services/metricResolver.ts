@@ -154,7 +154,7 @@ function mapCMOTSToMetricIds(
   cashFlow: CMOTSStatementRow[],
   balanceSheet: CMOTSStatementRow[],
   quarterly: CMOTSStatementRow[],
-  technicalData?: { ema20Dev: number; ema50Dev: number; ema200Dev: number; rsi: number; vpt: number },
+  technicalData?: TechnicalResult,
   asOfDate?: string,
   priceAtDate?: number,
   config?: MetricResolutionConfig,
@@ -222,10 +222,17 @@ function mapCMOTSToMetricIds(
         ? current.pb / avg.avgPB : null
       metrics['v2_ev_vs_5y'] = current.evEbitda != null && avg.avgEV != null && avg.avgEV > 0
         ? current.evEbitda / avg.avgEV : null
+      // Historical 5Y averages — used by conditional valuation thresholds (PE>75, EV>35, PB>30)
+      metrics['hist_avg_pe'] = avg.avgPE
+      metrics['hist_avg_pb'] = avg.avgPB
+      metrics['hist_avg_ev'] = avg.avgEV
     } else {
       metrics['v2_pe_vs_5y'] = null
       metrics['v2_pb_vs_5y'] = null
       metrics['v2_ev_vs_5y'] = null
+      metrics['hist_avg_pe'] = null
+      metrics['hist_avg_pb'] = null
+      metrics['hist_avg_ev'] = null
     }
   } else if (asOfDate) {
     // Backtest mode but NO price at this date — valuation not possible.
@@ -236,6 +243,9 @@ function mapCMOTSToMetricIds(
     metrics['raw_pe'] = null
     metrics['raw_pb'] = null
     metrics['raw_ev'] = null
+    metrics['hist_avg_pe'] = null
+    metrics['hist_avg_pb'] = null
+    metrics['hist_avg_ev'] = null
   } else {
     // Current scoring (no backtest) — compute ratios from TTM + 5Y average
     const currentPE = ttm?.pe_ttm ?? null
@@ -253,11 +263,18 @@ function mapCMOTSToMetricIds(
         ? currentPB / avg.avgPB : null
       metrics['v2_ev_vs_5y'] = currentEV != null && avg.avgEV != null && avg.avgEV > 0
         ? currentEV / avg.avgEV : null
+      // Historical 5Y averages — used by conditional valuation thresholds (PE>75, EV>35, PB>30)
+      metrics['hist_avg_pe'] = avg.avgPE
+      metrics['hist_avg_pb'] = avg.avgPB
+      metrics['hist_avg_ev'] = avg.avgEV
     } else {
       // No price history — cannot compute ratios
       metrics['v2_pe_vs_5y'] = null
       metrics['v2_pb_vs_5y'] = null
       metrics['v2_ev_vs_5y'] = null
+      metrics['hist_avg_pe'] = null
+      metrics['hist_avg_pb'] = null
+      metrics['hist_avg_ev'] = null
     }
   }
 
@@ -273,12 +290,17 @@ function mapCMOTSToMetricIds(
     metrics['v2_price_ema200'] = technicalData.ema200Dev
     metrics['v2_rsi'] = technicalData.rsi
     metrics['v2_vpt'] = technicalData.vpt
+    // VPT two-input conditional scoring inputs
+    metrics['v2_volume_change'] = technicalData.volumeChange
+    metrics['v2_price_change'] = technicalData.priceChange
   } else {
     metrics['v2_price_ema20'] = null
     metrics['v2_price_ema50'] = null
     metrics['v2_price_ema200'] = null
     metrics['v2_rsi'] = null
     metrics['v2_vpt'] = null
+    metrics['v2_volume_change'] = null
+    metrics['v2_price_change'] = null
   }
 
   // ── Ownership Metrics (from shareholding pattern) ──
@@ -710,7 +732,13 @@ function extractGrowthContext(
 // Technical Metrics from OHLCV Price Data
 // ─────────────────────────────────────────────────
 
-type TechnicalResult = { ema20Dev: number; ema50Dev: number; ema200Dev: number; rsi: number; vpt: number }
+type TechnicalResult = {
+  ema20Dev: number; ema50Dev: number; ema200Dev: number; rsi: number; vpt: number
+  /** VPT two-input conditional: avg(5D vol) / avg(50D vol) */
+  volumeChange: number | null
+  /** VPT two-input conditional: 5D price change % */
+  priceChange: number | null
+}
 
 /**
  * Compute technical metrics from an array of price records.
@@ -737,12 +765,31 @@ function computeTechnicalFromPriceArray(
   const rsiValue = rsi(closes, 14)
   const vptValue = volumePriceTrend(closes, volumes)
 
+  // VPT two-input conditional: volume_change = avg(5D vol) / avg(50D vol)
+  let volumeChange: number | null = null
+  let priceChange: number | null = null
+  if (closes.length >= 50 && volumes.length >= 50) {
+    const recent5Vol = volumes.slice(-5)
+    const recent50Vol = volumes.slice(-50)
+    const avg5Vol = recent5Vol.reduce((a, b) => a + b, 0) / recent5Vol.length
+    const avg50Vol = recent50Vol.reduce((a, b) => a + b, 0) / recent50Vol.length
+    volumeChange = avg50Vol > 0 ? avg5Vol / avg50Vol : null
+
+    // 5D price change %
+    const price5DAgo = closes[closes.length - 6] // 5 trading days ago
+    if (price5DAgo != null && price5DAgo > 0) {
+      priceChange = ((currentPrice - price5DAgo) / price5DAgo) * 100
+    }
+  }
+
   return {
     ema20Dev: priceVsEMA(currentPrice, latestEma20),
     ema50Dev: priceVsEMA(currentPrice, latestEma50),
     ema200Dev: priceVsEMA(currentPrice, latestEma200),
     rsi: rsiValue ?? 50,
     vpt: vptValue ?? 0,
+    volumeChange,
+    priceChange,
   }
 }
 

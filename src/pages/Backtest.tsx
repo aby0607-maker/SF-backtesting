@@ -37,6 +37,7 @@ import { SegmentBuilder } from '@/components/scoring/SegmentBuilder'
 import { CompositeFormulaEditor } from '@/components/scoring/CompositeFormulaEditor'
 import { NormalizationSelector } from '@/components/scoring/NormalizationSelector'
 import { VerdictThresholdEditor } from '@/components/scoring/VerdictThresholdEditor'
+import { ValuationConditionalsEditor } from '@/components/scoring/ValuationConditionalsEditor'
 import { ScorecardTemplateCard } from '@/components/scoring/ScorecardTemplateCard'
 
 // Stage 2: Configure & Run
@@ -198,6 +199,7 @@ const STAGE_CONFIGS: Record<PipelineStage, StageConfig> = {
             <SegmentBuilder />
             <CompositeFormulaEditor />
           </div>
+          <ValuationConditionalsEditor />
         </CollapsibleSection>
 
         {/* Metric Selection */}

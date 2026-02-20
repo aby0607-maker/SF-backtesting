@@ -32,6 +32,7 @@ import type {
   MetricFormula,
   ScoreBand,
   CustomMetricDefinition,
+  ValuationConditionalConfig,
 } from '@/types/scoring'
 import { SCORECARD_TEMPLATES } from '@/data/scorecardTemplates'
 
@@ -119,6 +120,7 @@ interface ScoringState {
   updateNormalization: (config: NormalizationConfig) => void
   updateVerdictThresholds: (thresholds: VerdictThreshold[]) => void
   setVerdictDisplayMode: (mode: VerdictDisplayMode) => void
+  updateValuationConditionals: (segmentId: string, config: ValuationConditionalConfig) => void
 
   // ─── Actions: Review & Confirm ───
   generateReviewSnapshot: () => void
@@ -635,6 +637,18 @@ export const useScoringStore = create<ScoringState>()(
           scorecards: updateActiveInList(state.scorecards, activeScorecardId, sc => ({
             ...sc,
             verdictDisplayMode: mode,
+          })),
+        }))
+      },
+
+      updateValuationConditionals: (segmentId: string, config: ValuationConditionalConfig) => {
+        const { activeScorecardId } = get()
+        set(state => ({
+          scorecards: updateActiveInList(state.scorecards, activeScorecardId, sc => ({
+            ...sc,
+            segments: sc.segments.map(seg =>
+              seg.id === segmentId ? { ...seg, valuationConditionals: config } : seg
+            ),
           })),
         }))
       },

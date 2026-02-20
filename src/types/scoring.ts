@@ -88,11 +88,30 @@ export interface CompositeMetric {
   /** Number of years for growth CAGR calculation. Only applies to growth metrics.
    *  undefined = use all available years (current default behavior). */
   growthPeriod?: 2 | 3 | 5
+  /** Scoring method: 'band_lookup' (default) uses scoreBands to map raw→score.
+   *  'conditional_vpt' uses two-input conditional logic (volume_change + price_change). */
+  scoringMethod?: 'band_lookup' | 'conditional_vpt'
+  /** General calculation parameters per metric.
+   *  Keys: growthYears, vptVolNumeratorDays, vptVolDenominatorDays, vptPriceChangeDays,
+   *  rsiPeriod, lookbackMethod, valuationBasis. Supersedes growthPeriod when present. */
+  calculationParams?: Record<string, number | string>
 }
 
 // ─────────────────────────────────────────────────
 // Stage 2: Scorecard Types
 // ─────────────────────────────────────────────────
+
+/** Configuration for PB-anchored conditional valuation logic.
+ *  When enabled, thresholds determine weight redistribution rules. */
+export interface ValuationConditionalConfig {
+  enabled: boolean                    // false → use standard weighted avg
+  peThreshold: number                 // Hist avg PE above this → exclude PE (default: 75)
+  evThreshold: number                 // Hist avg EV above this → exclude EV (default: 35)
+  pbNAThreshold: number               // Hist avg PB above this → entire valuation NA (default: 30)
+  defaultWeights: { pe: number; pb: number; ev: number }   // {0.3, 0.5, 0.2}
+  peExcludedWeights: { pb: number; ev: number }             // {0.6, 0.4}
+  evExcludedWeights: { pe: number; pb: number }             // {0.6, 0.4}
+}
 
 /** A segment groups related metrics (e.g., "Financial Score", "Valuation Score") */
 export interface ScorecardSegment {
@@ -102,6 +121,7 @@ export interface ScorecardSegment {
   segmentWeight: number   // Weight in composite formula (0-1)
   description?: string
   verdictThresholds?: VerdictThreshold[]  // Per-segment verdicts
+  valuationConditionals?: ValuationConditionalConfig  // Only for valuation-type segments
 }
 
 /**

@@ -123,26 +123,25 @@ const evVs5YBands: ScoreBand[] = [
   { min: 1.5, max: Infinity, score: 40, label: 'Overvalued', color: 'text-destructive-400' },
 ]
 
-// Technical bands: Price vs EMA deviation (%) — positive = above EMA = bullish
+// Technical bands: Price vs EMA deviation (%) — CSV V2.2 verified against 39 data points
+// Uses 10x scale (-10 to 100) for compatibility with weighted average math
 const priceVsEmaBands: ScoreBand[] = [
-  { min: 10, max: Infinity, score: 100, label: 'Strongly Above EMA', color: 'text-success-400' },
-  { min: 5, max: 9.99, score: 80, label: 'Above EMA', color: 'text-success-400' },
-  { min: 2, max: 4.99, score: 65, label: 'Slightly Above', color: 'text-teal-400' },
-  { min: -2, max: 1.99, score: 50, label: 'Near EMA', color: 'text-warning-400' },
-  { min: -5, max: -2.01, score: 30, label: 'Below EMA', color: 'text-warning-400' },
-  { min: -10, max: -5.01, score: 15, label: 'Well Below EMA', color: 'text-destructive-400' },
-  { min: -Infinity, max: -10.01, score: 0, label: 'Deeply Below EMA', color: 'text-destructive-400' },
+  { min: 5.01, max: Infinity, score: 100, label: 'Strongly Above EMA', color: 'text-success-400' },
+  { min: 1.01, max: 5, score: 70, label: 'Above EMA', color: 'text-success-400' },
+  { min: -1, max: 1, score: 30, label: 'Near EMA', color: 'text-warning-400' },
+  { min: -5, max: -1.01, score: 20, label: 'Below EMA', color: 'text-warning-400' },
+  { min: -Infinity, max: -5.01, score: -10, label: 'Deeply Below EMA', color: 'text-destructive-400' },
 ]
 
-// RSI bands (0-100 range): 50 is neutral
+// RSI bands — CSV V2.2 verified against 13 data points
+// Optimal zone is 50-60 (NOT 60-70). 10x scale for weighted average math.
 const rsiBands: ScoreBand[] = [
-  { min: 60, max: 70, score: 100, label: 'Strong Momentum', color: 'text-success-400' },
-  { min: 50, max: 59.99, score: 80, label: 'Positive Momentum', color: 'text-success-400' },
-  { min: 70.01, max: 80, score: 65, label: 'Overbought (Mild)', color: 'text-teal-400' },
-  { min: 40, max: 49.99, score: 50, label: 'Neutral', color: 'text-warning-400' },
+  { min: 50, max: 59.99, score: 100, label: 'Optimal Momentum', color: 'text-success-400' },
+  { min: 60, max: 69.99, score: 70, label: 'Bullish Extended', color: 'text-success-400' },
+  { min: 40, max: 49.99, score: 70, label: 'Healthy Pullback', color: 'text-teal-400' },
   { min: 30, max: 39.99, score: 30, label: 'Weak Momentum', color: 'text-warning-400' },
-  { min: 80.01, max: Infinity, score: 20, label: 'Overbought', color: 'text-destructive-400' },
-  { min: -Infinity, max: 29.99, score: 10, label: 'Oversold', color: 'text-destructive-400' },
+  { min: -Infinity, max: 29.99, score: 20, label: 'Oversold', color: 'text-destructive-400' },
+  { min: 70, max: Infinity, score: 20, label: 'Overbought', color: 'text-destructive-400' },
 ]
 
 // Volume-Price Trend (VPT): positive = accumulation, negative = distribution
@@ -301,6 +300,15 @@ const v2ValuationSegment: ScorecardSegment = {
   name: 'Valuation Score',
   segmentWeight: 0.6,
   description: 'Valuation relative to 5-year historical averages. PB-anchored: PE=30%, PB=50%, EV/EBITDA=20% (conditional)',
+  valuationConditionals: {
+    enabled: true,
+    peThreshold: 75,
+    evThreshold: 35,
+    pbNAThreshold: 30,
+    defaultWeights: { pe: 0.3, pb: 0.5, ev: 0.2 },
+    peExcludedWeights: { pb: 0.6, ev: 0.4 },
+    evExcludedWeights: { pe: 0.4, pb: 0.6 },
+  },
   metrics: [
     {
       id: 'v2_pe_vs_5y', name: 'PE vs 5Y Average', type: 'raw',
@@ -337,27 +345,33 @@ const v2TechnicalSegment: ScorecardSegment = {
     {
       id: 'v2_price_ema20', name: 'Price vs 20D EMA', type: 'raw',
       rawMetric: { id: 'v2_price_ema20', name: 'Price vs 20D EMA', cmots_source: 'ohlcv', cmots_field: 'PriceVsEMA20', unit: 'percent', description: 'Price deviation from 20-day EMA' },
-      scoreBands: priceVsEmaBands, weight: 0.15,
+      scoreBands: priceVsEmaBands, weight: 0.20,
     },
     {
       id: 'v2_price_ema50', name: 'Price vs 50D EMA', type: 'raw',
       rawMetric: { id: 'v2_price_ema50', name: 'Price vs 50D EMA', cmots_source: 'ohlcv', cmots_field: 'PriceVsEMA50', unit: 'percent', description: 'Price deviation from 50-day EMA' },
-      scoreBands: priceVsEmaBands, weight: 0.20,
+      scoreBands: priceVsEmaBands, weight: 0.15,
     },
     {
       id: 'v2_price_ema200', name: 'Price vs 200D EMA', type: 'raw',
       rawMetric: { id: 'v2_price_ema200', name: 'Price vs 200D EMA', cmots_source: 'ohlcv', cmots_field: 'PriceVsEMA200', unit: 'percent', description: 'Price deviation from 200-day EMA' },
-      scoreBands: priceVsEmaBands, weight: 0.25,
+      scoreBands: priceVsEmaBands, weight: 0.35,
     },
     {
       id: 'v2_rsi', name: 'RSI (14)', type: 'raw',
       rawMetric: { id: 'v2_rsi', name: 'RSI', cmots_source: 'ohlcv', cmots_field: 'RSI14', unit: 'number', description: 'Relative Strength Index (14-period)' },
-      scoreBands: rsiBands, weight: 0.20,
+      scoreBands: rsiBands, weight: 0.10,
     },
     {
       id: 'v2_vpt', name: 'Volume-Price Trend', type: 'raw',
       rawMetric: { id: 'v2_vpt', name: 'VPT', cmots_source: 'ohlcv', cmots_field: 'VPT', unit: 'number', description: 'Volume-Price Trend indicator' },
       scoreBands: vptBands, weight: 0.20,
+      scoringMethod: 'conditional_vpt',
+      calculationParams: {
+        vptVolNumeratorDays: 5,
+        vptVolDenominatorDays: 50,
+        vptPriceChangeDays: 5,
+      },
     },
   ],
   // CSV Technical Score Thresholds (new Mild Bearish band, lower Bullish threshold)
