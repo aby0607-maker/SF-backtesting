@@ -2,8 +2,10 @@ import { lazy, Suspense } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { ErrorBoundary } from '@/components/ui'
 
+// Lazy loaded pages
 const Backtest = lazy(() => import('@/pages/Backtest').then(m => ({ default: m.Backtest })))
 
+// Loading fallback component
 function PageLoader() {
   return (
     <div className="flex items-center justify-center min-h-[400px]">
@@ -15,6 +17,7 @@ function PageLoader() {
   )
 }
 
+// Wrapper for lazy components with error boundary
 function LazyPage({ children }: { children: React.ReactNode }) {
   return (
     <ErrorBoundary>
@@ -28,8 +31,24 @@ function LazyPage({ children }: { children: React.ReactNode }) {
 export function AppRoutes() {
   return (
     <Routes>
-      <Route path="/" element={<LazyPage><Backtest /></LazyPage>} />
-      <Route path="/backtest" element={<LazyPage><Backtest /></LazyPage>} />
+      <Route
+        path="/"
+        element={
+          <LazyPage>
+            <Backtest />
+          </LazyPage>
+        }
+      />
+      <Route
+        path="/backtest"
+        element={
+          <LazyPage>
+            <Backtest />
+          </LazyPage>
+        }
+      />
+
+      {/* Fallback → backtest */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   )
