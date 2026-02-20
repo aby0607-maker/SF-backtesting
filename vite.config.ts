@@ -19,13 +19,11 @@ export default defineConfig(({ mode }) => {
         '/api/cmots': {
           target: 'https://deltastockzapis.cmots.com',
           changeOrigin: true,
-          rewrite: (p) => {
-            const rewritten = p.replace(/^\/api\/cmots/, '/api')
-            // CMOTS uses query-parameter authentication (?apikey=TOKEN)
-            const sep = rewritten.includes('?') ? '&' : '?'
-            return `${rewritten}${sep}apikey=${encodeURIComponent(env.CMOTS_API_TOKEN || '')}`
-          },
+          rewrite: (p) => p.replace(/^\/api\/cmots/, '/api'),
           secure: true,
+          headers: {
+            Authorization: `Bearer ${env.CMOTS_API_TOKEN || ''}`,
+          },
         },
       },
     },
