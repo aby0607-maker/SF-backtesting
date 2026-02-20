@@ -6,7 +6,7 @@
  * Manages: pipeline navigation, scorecard CRUD, version history,
  * universe selection, combined scoring+backtest results, and review snapshots.
  *
- * Pattern: Follows useAppStore.ts — Zustand v5 + persist + selector hooks
+ * Pattern: Zustand v5 + persist + selector hooks
  */
 
 import { create } from 'zustand'

@@ -633,4 +633,11 @@ export interface MetricResolutionConfig {
   growthPeriods?: Record<string, number>
   /** User-defined custom metrics to resolve alongside built-in metrics */
   customMetrics?: CustomMetricDefinition[]
+  /** Technical indicator calculation overrides */
+  technicalParams?: {
+    rsiPeriod?: number           // default: 14
+    vptVolNumeratorDays?: number // default: 5
+    vptVolDenominatorDays?: number // default: 50
+    vptPriceChangeDays?: number  // default: 5
+  }
 }
