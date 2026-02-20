@@ -647,6 +647,53 @@ export function scoreStock(
 }
 
 // ─────────────────────────────────────────────────
+// Live Preview Scoring (no network, instant)
+// ─────────────────────────────────────────────────
+
+/**
+ * Preview the score impact of scorecard changes for a single stock.
+ * Uses the same pipeline as scoreStock() but returns a flatter shape
+ * optimized for live UI updates (e.g., when editing bands/weights).
+ *
+ * No network calls — all data must be pre-provided in stockData.
+ */
+export function previewScore(
+  stockData: Record<string, number | null>,
+  scorecard: ScorecardVersion,
+  stockInfo: { id: string; name: string; symbol: string; sector: string; marketCap: number },
+  metricContext?: Record<string, { startValue?: number; endValue?: number }>
+): {
+  composite: number
+  verdict: string
+  verdictColor: string
+  segments: { id: string; name: string; score: number; verdict?: string }[]
+  metricScores: { id: string; name: string; rawValue: number | null; score: number; excluded: boolean }[]
+} {
+  const result = scoreStock(stockData, scorecard, stockInfo, metricContext)
+
+  return {
+    composite: result.normalizedScore,
+    verdict: result.verdict,
+    verdictColor: result.verdictColor,
+    segments: result.segmentResults.map(seg => ({
+      id: seg.segmentId,
+      name: seg.segmentName,
+      score: seg.segmentScore,
+      verdict: seg.verdict,
+    })),
+    metricScores: result.segmentResults.flatMap(seg =>
+      seg.metricScores.map(ms => ({
+        id: ms.metricId,
+        name: ms.metricName,
+        rawValue: ms.rawValue,
+        score: ms.normalizedScore,
+        excluded: ms.isExcluded,
+      }))
+    ),
+  }
+}
+
+// ─────────────────────────────────────────────────
 // Universe-Level Scoring
 // ─────────────────────────────────────────────────
 

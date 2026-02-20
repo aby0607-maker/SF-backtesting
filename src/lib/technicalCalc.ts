@@ -119,6 +119,19 @@ export function priceVsEMA(currentPrice: number, emaValue: number): number {
 // ─────────────────────────────────────────────────
 // Per-Metric Scoring (0-10)
 // ─────────────────────────────────────────────────
+//
+// ⚠️  DEPRECATED — The scoring functions below (scoreTechnicalMetric,
+// scoreEMADeviation, scoreRSI, scoreVPT, computeTechnicalComposite,
+// analyzeTechnical) use hardcoded thresholds and stale weights
+// (15/20/25/20/20). The V2 Expert Model now uses configurable score
+// bands defined in src/data/scorecardTemplates.ts (actual weights:
+// 20/15/35/10/20) and scored via the generic scoreMetric() pipeline
+// in src/lib/scoringEngine.ts.
+//
+// The raw calculation functions above (ema, rsi, volumePriceTrend,
+// priceVsEMA) are still actively used by metricResolver.ts and
+// should NOT be removed.
+// ─────────────────────────────────────────────────
 
 /** Technical metric names as used in the V2 model */
 export type TechnicalMetricName =
@@ -131,10 +144,9 @@ export type TechnicalMetricName =
 /**
  * Score a single technical metric on a 0-10 scale.
  *
- * Scoring logic (from V2 Expert Model):
- * - EMA metrics: distance above/below EMA → 0-10
- * - RSI: 30-70 neutral zone, extremes penalized
- * - VPT: positive trend = higher score
+ * @deprecated Use scoreMetric() from scoringEngine.ts with configurable
+ * score bands from scorecardTemplates.ts instead. This function uses
+ * hardcoded thresholds that may not match the active scorecard.
  */
 export function scoreTechnicalMetric(
   metricName: TechnicalMetricName,
@@ -217,7 +229,10 @@ function scoreVPT(vptValue: number): number {
 // Technical Composite Score
 // ─────────────────────────────────────────────────
 
-/** Default weights for technical metrics in V2 model */
+/**
+ * @deprecated Stale weights (15/20/25/20/20). Active weights are in
+ * scorecardTemplates.ts v2TechnicalSegment (20/15/35/10/20).
+ */
 const DEFAULT_TECHNICAL_WEIGHTS: Record<TechnicalMetricName, number> = {
   price_vs_ema20: 0.15,
   price_vs_ema50: 0.20,
@@ -228,7 +243,9 @@ const DEFAULT_TECHNICAL_WEIGHTS: Record<TechnicalMetricName, number> = {
 
 /**
  * Compute composite technical score from individual metric scores.
- * Individual scores are 0-10, composite is 0-100.
+ *
+ * @deprecated Use scoreSegment() from scoringEngine.ts with configurable
+ * scorecard weights instead. This function uses stale DEFAULT_TECHNICAL_WEIGHTS.
  */
 export function computeTechnicalComposite(
   metricScores: Partial<Record<TechnicalMetricName, number>>,
@@ -252,7 +269,10 @@ export function computeTechnicalComposite(
 
 /**
  * Full technical analysis from raw price/volume data.
- * Convenience function that runs all calculations and returns the composite.
+ *
+ * @deprecated Uses hardcoded scoring thresholds and stale weights.
+ * For production scoring, feed raw values through metricResolver.ts
+ * into the scorecard pipeline (scoringEngine.ts + scorecardTemplates.ts).
  */
 export function analyzeTechnical(
   prices: number[],

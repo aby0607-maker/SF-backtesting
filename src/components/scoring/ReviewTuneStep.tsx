@@ -2,10 +2,11 @@
  * ReviewTuneStep — Step 3: Review & Tune
  *
  * Segments: Summary Header, Segment Cards (with inline MetricDetailPanel),
- * Composite Formula (condensed + advanced), Output Configuration (collapsed).
+ * Composite Formula (condensed + advanced), Output Configuration (collapsed),
+ * Preview Impact (live scoring against CSV reference stocks).
  */
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { useActiveScorecard, useScoringStore } from '@/store/useScoringStore'
 import { ScorecardSummaryHeader } from './ScorecardSummaryHeader'
 import { SegmentCard } from './SegmentCard'
@@ -13,14 +14,17 @@ import { CompositeFormulaEditor } from './CompositeFormulaEditor'
 import { VerdictThresholdEditor } from './VerdictThresholdEditor'
 import { NormalizationSelector } from './NormalizationSelector'
 import { ValuationConditionalsEditor } from './ValuationConditionalsEditor'
-import { Equal, ChevronDown, ChevronUp, Sliders, Scale } from 'lucide-react'
+import { Equal, ChevronDown, ChevronUp, Sliders, Scale, FlaskConical } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { previewScore } from '@/lib/scoringEngine'
+import { CSV_REFERENCE_STOCKS } from '@/data/csvReferenceData'
 
 export function ReviewTuneStep() {
   const scorecard = useActiveScorecard()
   const updateSegmentWeight = useScoringStore(s => s.updateSegmentWeight)
   const [showAdvancedComposite, setShowAdvancedComposite] = useState(false)
   const [showOutputConfig, setShowOutputConfig] = useState(false)
+  const [showPreview, setShowPreview] = useState(false)
 
   if (!scorecard) {
     return (
@@ -39,6 +43,25 @@ export function ReviewTuneStep() {
   const valuationSegment = scorecard.segments.find(s =>
     s.name.toLowerCase().includes('valuation')
   )
+
+  // Live preview: score CSV reference stocks against current scorecard (updates on every edit)
+  const previewResults = useMemo(() => {
+    if (!showPreview) return []
+    return CSV_REFERENCE_STOCKS.map(stock => {
+      const result = previewScore(
+        stock.rawMetrics,
+        scorecard,
+        { id: stock.id, name: stock.name, symbol: stock.symbol, sector: stock.sector, marketCap: stock.marketCap }
+      )
+      return {
+        stock,
+        live: result,
+        delta: stock.expectedScores.overall != null
+          ? Math.round((result.composite - stock.expectedScores.overall) * 100) / 100
+          : null,
+      }
+    })
+  }, [showPreview, scorecard])
 
   return (
     <div className="space-y-4">
@@ -172,6 +195,83 @@ export function ReviewTuneStep() {
                 <ValuationConditionalsEditor />
               </div>
             )}
+          </div>
+        )}
+      </div>
+
+      {/* Segment E: Preview Impact (live scoring against CSV reference stocks) */}
+      <div className="rounded-xl bg-dark-800/30 border border-white/5 overflow-hidden">
+        <button
+          onClick={() => setShowPreview(!showPreview)}
+          className="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-dark-700/20 transition-colors"
+        >
+          <span className="flex items-center gap-2 text-xs text-neutral-400">
+            <FlaskConical className="w-3.5 h-3.5" />
+            Preview Impact — Score CSV reference stocks with current model
+          </span>
+          {showPreview ? (
+            <ChevronUp className="w-4 h-4 text-neutral-500" />
+          ) : (
+            <ChevronDown className="w-4 h-4 text-neutral-500" />
+          )}
+        </button>
+        {showPreview && (
+          <div className="px-4 pb-4 border-t border-white/5 pt-3">
+            <p className="text-[10px] text-neutral-500 mb-3">
+              Live scores using your current scorecard configuration vs SME expected scores.
+              Tweak bands, weights, or formulas above and see the impact instantly.
+            </p>
+            <div className="overflow-x-auto">
+              <table className="w-full text-xs">
+                <thead>
+                  <tr className="text-[10px] uppercase tracking-wider text-neutral-500 border-b border-white/5">
+                    <th className="text-left py-1.5 pr-2">Stock</th>
+                    {scorecard.segments.map(seg => (
+                      <th key={seg.id} className="text-right py-1.5 px-2 whitespace-nowrap">{seg.name.replace(' Score', '')}</th>
+                    ))}
+                    <th className="text-right py-1.5 px-2">Overall</th>
+                    <th className="text-right py-1.5 px-2">CSV</th>
+                    <th className="text-right py-1.5 px-2">Delta</th>
+                    <th className="text-left py-1.5 pl-2">Verdict</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {previewResults.map(({ stock, live, delta }) => (
+                    <tr key={stock.id} className="border-b border-white/5 last:border-0 hover:bg-dark-700/20">
+                      <td className="py-1.5 pr-2 text-neutral-300 font-medium whitespace-nowrap">{stock.name}</td>
+                      {live.segments.map(seg => (
+                        <td key={seg.id} className="text-right py-1.5 px-2 font-mono text-neutral-400">
+                          {seg.score > 0 ? seg.score.toFixed(1) : <span className="text-neutral-600">N/A</span>}
+                        </td>
+                      ))}
+                      <td className="text-right py-1.5 px-2 font-mono font-medium text-neutral-200">
+                        {live.composite.toFixed(1)}
+                      </td>
+                      <td className="text-right py-1.5 px-2 font-mono text-neutral-500">
+                        {stock.expectedScores.overall != null ? stock.expectedScores.overall.toFixed(1) : 'N/A'}
+                      </td>
+                      <td className={cn(
+                        'text-right py-1.5 px-2 font-mono text-[10px]',
+                        delta == null ? 'text-neutral-600' :
+                        Math.abs(delta) <= 2 ? 'text-success-400' :
+                        Math.abs(delta) <= 5 ? 'text-warning-400' :
+                        'text-destructive-400'
+                      )}>
+                        {delta != null ? (delta >= 0 ? '+' : '') + delta.toFixed(1) : '—'}
+                      </td>
+                      <td className={cn('py-1.5 pl-2 text-[10px] font-medium', live.verdictColor)}>
+                        {live.verdict}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <div className="flex gap-4 mt-2 text-[10px] text-neutral-600">
+              <span><span className="text-success-400">Green</span> = within 2 pts</span>
+              <span><span className="text-warning-400">Yellow</span> = 2-5 pts</span>
+              <span><span className="text-destructive-400">Red</span> = &gt;5 pts</span>
+            </div>
           </div>
         )}
       </div>

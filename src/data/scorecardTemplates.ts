@@ -94,18 +94,19 @@ const peVs5YBands: ScoreBand[] = [
   { min: 0.95, max: 1.1, score: 70, label: 'Near Fair Value', color: 'text-teal-400' },
   { min: 1.1, max: 1.3, score: 55, label: 'Slightly Overvalued', color: 'text-warning-400' },
   { min: 1.3, max: 1.5, score: 50, label: 'Moderately Overvalued', color: 'text-warning-400' },
-  { min: 1.5, max: Infinity, score: 40, label: 'Overvalued', color: 'text-destructive-400' },
+  { min: 1.5, max: Infinity, score: 50, label: 'Overvalued', color: 'text-destructive-400' },  // was 40, raised to 50 per CSV (Adani Power 1.687 → 50)
 ]
 
 // PB vs 5Y Avg: PB is the anchor metric (most weight)
 // CSV calibration: 0.997 → 80, 1.066 → 80, 1.41 → 65, 1.58 → 60
+// Boundary fix: shifted 80/75 from 1.05 to 1.10 so HUL (1.066) correctly scores 80
 const pbVs5YBands: ScoreBand[] = [
   { min: -Infinity, max: 0.5, score: 100, label: 'Deeply Undervalued', color: 'text-success-400' },
   { min: 0.5, max: 0.7, score: 95, label: 'Significantly Undervalued', color: 'text-success-400' },
   { min: 0.7, max: 0.85, score: 90, label: 'Undervalued', color: 'text-success-400' },
-  { min: 0.85, max: 1.05, score: 80, label: 'Attractive', color: 'text-teal-400' },
-  { min: 1.05, max: 1.15, score: 75, label: 'Near Fair Value', color: 'text-teal-400' },
-  { min: 1.15, max: 1.4, score: 65, label: 'Slightly Overvalued', color: 'text-warning-400' },
+  { min: 0.85, max: 1.10, score: 80, label: 'Attractive', color: 'text-teal-400' },
+  { min: 1.10, max: 1.20, score: 75, label: 'Near Fair Value', color: 'text-teal-400' },
+  { min: 1.20, max: 1.4, score: 65, label: 'Slightly Overvalued', color: 'text-warning-400' },
   { min: 1.4, max: 1.6, score: 60, label: 'Moderately Overvalued', color: 'text-warning-400' },
   { min: 1.6, max: Infinity, score: 50, label: 'Overvalued', color: 'text-destructive-400' },
 ]
