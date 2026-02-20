@@ -1,13 +1,13 @@
 /**
  * PipelineReviewPanel — Read-only summary of pipeline config
  *
- * In the 3-stage pipeline, this shows as a collapsible section in Stage 2
- * (Configure & Run) so users can verify scorecard configuration.
+ * In the 5-step pipeline, this shows as a collapsible section in Step 4
+ * (Select Stocks & Run) so users can verify scorecard configuration.
  *
  * Sections:
- *   1. Metrics — selected metrics by segment (→ edit jumps to Stage 1)
- *   2. Scorecard — segment weights, composite formula, verdict thresholds (→ edit jumps to Stage 1)
- *   3. Configuration — stock selection, date range, benchmark (stays in Stage 2)
+ *   1. Metrics — selected metrics by segment (→ edit jumps to Step 2)
+ *   2. Scorecard — segment weights, composite formula, verdict thresholds (→ edit jumps to Step 3)
+ *   3. Configuration — stock selection, date range, benchmark (stays in Step 4)
  */
 
 import { useEffect } from 'react'
@@ -51,12 +51,12 @@ export function PipelineReviewPanel() {
         </div>
       </div>
 
-      {/* Metrics (now part of Stage 1: Build Scorecard) */}
+      {/* Metrics (Step 2: Metrics & Segments) */}
       <ReviewSectionCard
-        stageNumber={1}
+        stageNumber={2}
         title="Metrics"
         summary={`${snapshot.selectedMetricsSummary.totalMetrics} metrics across ${snapshot.selectedMetricsSummary.bySegment.length} segments`}
-        onEdit={() => editFromReview(1)}
+        onEdit={() => editFromReview(2)}
       >
         <div className="space-y-1.5">
           {snapshot.selectedMetricsSummary.bySegment.map(seg => (
@@ -68,12 +68,12 @@ export function PipelineReviewPanel() {
         </div>
       </ReviewSectionCard>
 
-      {/* Scorecard Structure (now part of Stage 1: Build Scorecard) */}
+      {/* Scorecard Structure (Step 3: Review & Tune) */}
       <ReviewSectionCard
-        stageNumber={1}
+        stageNumber={3}
         title="Scorecard Structure"
         summary={`${snapshot.segmentsSummary.totalSegments} segments • ${snapshot.segmentsSummary.compositeFormula}`}
-        onEdit={() => editFromReview(1)}
+        onEdit={() => editFromReview(3)}
       >
         <div className="space-y-2">
           {/* Segments with weights */}
@@ -114,12 +114,12 @@ export function PipelineReviewPanel() {
         </div>
       </ReviewSectionCard>
 
-      {/* Run Configuration (Stage 2: Configure & Run) */}
+      {/* Run Configuration (Step 4: Select Stocks & Run) */}
       <ReviewSectionCard
-        stageNumber={2}
+        stageNumber={4}
         title="Run Configuration"
         summary={buildConfigSummary(snapshot)}
-        onEdit={() => editFromReview(2)}
+        onEdit={() => editFromReview(4)}
       >
         <div className="space-y-3">
           {/* Stock selection */}

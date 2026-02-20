@@ -13,6 +13,14 @@ import type { VercelRequest, VercelResponse } from '@vercel/node'
 
 const CMOTS_BASE = 'https://deltastockzapis.cmots.com/api'
 
+// Allowed origins for CORS (restrict API proxy access)
+const ALLOWED_ORIGINS = [
+  'https://stockfox.vercel.app',
+  'https://sf-backtesting.vercel.app',
+  'http://localhost:5173',
+  'http://localhost:4173',
+]
+
 // Allowed CMOTS endpoint prefixes (whitelist for security)
 const ALLOWED_PREFIXES = [
   '/companymaster',
@@ -65,10 +73,17 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const contentType = upstream.headers.get('content-type') || 'application/json'
     const body = await upstream.text()
 
-    // Set CORS headers
-    res.setHeader('Access-Control-Allow-Origin', '*')
+    // CORS: restrict to allowed origins only
+    const origin = req.headers?.origin ?? ''
+    if (ALLOWED_ORIGINS.includes(origin)) {
+      res.setHeader('Access-Control-Allow-Origin', origin)
+    }
     res.setHeader('Access-Control-Allow-Methods', 'GET')
     res.setHeader('Content-Type', contentType)
+
+    // Security headers
+    res.setHeader('X-Frame-Options', 'SAMEORIGIN')
+    res.setHeader('X-Content-Type-Options', 'nosniff')
 
     // Cache successful responses for 5 minutes at CDN level
     if (upstream.ok) {

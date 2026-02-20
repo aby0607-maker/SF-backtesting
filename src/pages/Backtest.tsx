@@ -264,6 +264,30 @@ const STAGE_CONFIGS: Record<PipelineStage, StageConfig> = {
       </Suspense>
     ),
   },
+  // Stages 4-5 exist for backward compat with 5-stage store logic (StepperNav).
+  // PipelineNav only shows 3 stages, but prepareReRun can set currentStage=4.
+  4: {
+    title: 'Run',
+    description: 'Configure and execute backtest run',
+    render: () => (
+      <div className="space-y-4">
+        <ConfigureRunPanel />
+        <CollapsibleSection title="Review Configuration" defaultOpen={false}>
+          <PipelineReviewPanel />
+        </CollapsibleSection>
+        <RunCombinedButton />
+      </div>
+    ),
+  },
+  5: {
+    title: 'Results',
+    description: 'View backtest results and performance report',
+    render: () => (
+      <Suspense fallback={<StageSkeleton />}>
+        <ResultsPanel />
+      </Suspense>
+    ),
+  },
 }
 
 // ─── Main Page Component ───

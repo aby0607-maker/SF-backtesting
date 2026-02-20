@@ -557,7 +557,7 @@ export interface CMOTSShareholding {
 // Store State Types
 // ─────────────────────────────────────────────────
 
-export type PipelineStage = 1 | 2 | 3
+export type PipelineStage = 1 | 2 | 3 | 4 | 5
 
 export type UIMode = 'wizard' | 'dashboard' | 'hybrid'
 

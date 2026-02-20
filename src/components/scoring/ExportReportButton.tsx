@@ -89,9 +89,13 @@ export function ExportReportButton() {
       '',
     ].join('\n')
 
+    // Sanitize filename to prevent special character issues
+    const safeVersion = (scorecard?.versionInfo.displayVersion ?? 'export')
+      .replace(/[^a-z0-9._-]/gi, '_').substring(0, 50)
+
     downloadFile(
       meta + csvContent,
-      `stockfox-backtest-${scorecard?.versionInfo.displayVersion ?? 'export'}-${today()}.csv`,
+      `stockfox-backtest-${safeVersion}-${today()}.csv`,
       'text/csv;charset=utf-8;'
     )
   }
@@ -298,7 +302,9 @@ export function ExportReportButton() {
       )
     }
 
-    doc.save(`stockfox-backtest-${scorecard?.versionInfo.displayVersion ?? 'report'}-${today()}.pdf`)
+    const safePdfVersion = (scorecard?.versionInfo.displayVersion ?? 'report')
+      .replace(/[^a-z0-9._-]/gi, '_').substring(0, 50)
+    doc.save(`stockfox-backtest-${safePdfVersion}-${today()}.pdf`)
   }
 
   if (!canExport) return null
