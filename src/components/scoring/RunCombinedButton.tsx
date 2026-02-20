@@ -261,34 +261,36 @@ export function RunCombinedButton() {
 
 /** Resolve universe filter into concrete stock ID list */
 async function resolveStockIds(
-  filter: { mode: string; mcapTypes: string[]; sectors: string[]; customSymbols: string[] }
+  filter: { mode: string; mcapTypes: string[]; sectors: string[]; customSymbols: string[]; excludedSymbols?: string[] }
 ): Promise<string[]> {
+  const excluded = new Set(filter.excludedSymbols ?? [])
+
   // Individual mode: symbols already specified
   if (filter.mode === 'individual') {
     return filter.customSymbols
   }
 
-  // Fetch company master and filter
+  // If customSymbols were already resolved by UniverseSelector (non-empty),
+  // use them directly — they already respect exclusions.
+  if (filter.customSymbols.length > 0) {
+    return filter.customSymbols
+  }
+
+  // Fallback: re-resolve from company master (e.g., first run before UI auto-resolve)
   const companies = await getCompanyMaster()
 
   if (filter.mode === 'all') {
-    return companies.map(c => String(c.co_code))
+    return companies.map(c => String(c.co_code)).filter(id => !excluded.has(id))
   }
 
-  // Cohort mode: apply mcap + sector filters
+  // Cohort mode: apply mcap + sector filters, respecting exclusions
   const filtered = companies.filter(c => {
     if (filter.mcapTypes.length > 0 && !filter.mcapTypes.includes(c.mcaptype)) return false
     if (filter.sectors.length > 0 && !filter.sectors.includes(c.sectorname)) return false
     return true
   })
 
-  // Include any custom additions on top of cohort filters
-  const ids = new Set(filtered.map(c => String(c.co_code)))
-  for (const sym of filter.customSymbols) {
-    ids.add(sym)
-  }
-
-  return [...ids]
+  return filtered.map(c => String(c.co_code)).filter(id => !excluded.has(id))
 }
 
 function CheckItem({ label, done, detail }: { label: string; done: boolean; detail?: string }) {

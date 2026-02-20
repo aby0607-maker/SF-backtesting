@@ -1,19 +1,85 @@
 /**
- * CMOTS Price Data — Historical OHLCV via /AdjustedPriceChart
+ * CMOTS Price Data — Historical OHLCV + Real-time Delayed Prices
  *
- * Endpoint: /AdjustedPriceChart/{exchange}/{co_code}/{from}/{to}
- * Exchange: 'bse' or 'nse'
+ * Two endpoints:
+ *   /AdjustedPriceChart/{exchange}/{co_code}/{from}/{to} — historical OHLCV
+ *   /BSEDelayedPriceFeed — bulk real-time/delayed prices for all BSE stocks
+ *
+ * When a backtest's "to" date is today or in the future, getBatchPrices
+ * automatically supplements historical data with the delayed price feed
+ * so the most current price is always available.
  *
  * On error: logs a warning with reasoning and returns empty arrays.
  */
 
-import type { CMOTSOHLCVRecord } from '@/types/scoring'
+import type { CMOTSOHLCVRecord, CMOTSDelayedPrice } from '@/types/scoring'
 import { cmotsFetch } from './client'
 import { getCoCode } from './companyMaster'
 
-const CACHE_TTL = 60 * 60 * 1000  // 1 hour
+const CACHE_TTL = 60 * 60 * 1000          // 1 hour (historical)
+const DELAYED_CACHE_TTL = 5 * 60 * 1000   // 5 minutes (real-time feed)
 
-/** Get historical prices for a stock by NSE symbol */
+// ─── Delayed Price Feed (bulk, all BSE stocks) ───
+
+/** Singleton promise to deduplicate concurrent calls */
+let delayedPriceFeedPromise: Promise<Map<string, CMOTSDelayedPrice>> | null = null
+
+/**
+ * Fetch delayed/real-time prices for all BSE stocks (bulk endpoint).
+ * Returns a Map keyed by String(co_code) for O(1) lookup.
+ * Cached for 5 minutes. Safe to call frequently — deduplicates concurrent requests.
+ */
+export async function getDelayedPriceFeed(): Promise<Map<string, CMOTSDelayedPrice>> {
+  if (delayedPriceFeedPromise) return delayedPriceFeedPromise
+
+  delayedPriceFeedPromise = (async () => {
+    const data = await cmotsFetch<CMOTSDelayedPrice>({
+      endpoint: '/BSEDelayedPriceFeed',
+      cacheTTL: DELAYED_CACHE_TTL,
+    })
+    const map = new Map<string, CMOTSDelayedPrice>()
+    for (const rec of data) {
+      map.set(String(Math.round(rec.co_code)), rec)
+    }
+    delayedPriceFeedPromise = null
+    console.log(`[PriceData] Delayed feed loaded: ${map.size} stocks`)
+    return map
+  })()
+
+  return delayedPriceFeedPromise
+}
+
+/**
+ * Get delayed price for a single stock by co_code (string).
+ * Returns null if not found in the feed.
+ */
+export async function getDelayedPrice(coCodeStr: string): Promise<CMOTSDelayedPrice | null> {
+  const feed = await getDelayedPriceFeed()
+  return feed.get(coCodeStr) ?? null
+}
+
+/**
+ * Convert a CMOTSDelayedPrice into a CMOTSOHLCVRecord so it can be
+ * appended to historical price arrays seamlessly.
+ */
+function delayedToOHLCV(dp: CMOTSDelayedPrice): CMOTSOHLCVRecord {
+  return {
+    CO_CODE: Math.round(dp.co_code),
+    companyname: dp.lname || dp.CO_NAME,
+    Tradedate: dp.Tr_Date,
+    DayOpen: dp.Open,
+    DayHigh: dp.High,
+    Daylow: dp.Low,
+    Dayclose: dp.price,
+    TotalVolume: dp.Volume,
+    TotalValue: dp.Value,
+    DMCAP: 0,
+  }
+}
+
+// ─── Historical Price Data ───
+
+/** Get historical prices for a stock by co_code (string) or NSE symbol */
 export async function getHistoricalPrices(
   symbol: string,
   from: string,
@@ -39,6 +105,11 @@ export async function getHistoricalPrices(
 
 /** Get latest price for a stock (fetches last 7 days, returns most recent) */
 export async function getLatestPrice(symbol: string): Promise<CMOTSOHLCVRecord | null> {
+  // Try delayed feed first (faster, more current)
+  const delayed = await getDelayedPrice(symbol)
+  if (delayed) return delayedToOHLCV(delayed)
+
+  // Fallback to historical
   const to = new Date().toISOString().split('T')[0]
   const from = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
   const prices = await getHistoricalPrices(symbol, from, to)
@@ -52,12 +123,49 @@ export async function getBatchPrices(
   to: string
 ): Promise<Record<string, CMOTSOHLCVRecord[]>> {
   const result: Record<string, CMOTSOHLCVRecord[]> = {}
+  const today = new Date().toISOString().split('T')[0]
 
-  // Fetch all in parallel
-  const fetches = symbols.map(async symbol => {
-    const data = await getHistoricalPrices(symbol, from, to)
-    result[symbol] = data
-  })
-  await Promise.all(fetches)
+  // Check if the "to" date is recent enough to benefit from real-time data.
+  // If "to" is today or within the last 2 trading days, supplement with delayed feed.
+  const toDate = new Date(to)
+  const diffDays = Math.floor((Date.now() - toDate.getTime()) / (24 * 60 * 60 * 1000))
+  const needsRealtime = diffDays <= 2
+
+  // Fetch historical + optionally real-time in parallel
+  const [_, delayedFeed] = await Promise.all([
+    // Historical fetch for all symbols
+    Promise.all(symbols.map(async symbol => {
+      const data = await getHistoricalPrices(symbol, from, to)
+      result[symbol] = data
+    })),
+    // Delayed feed (only if needed)
+    needsRealtime ? getDelayedPriceFeed() : Promise.resolve(null),
+  ])
+
+  // Supplement historical data with delayed prices where the latest
+  // historical record is older than the delayed feed date
+  if (delayedFeed) {
+    for (const symbol of symbols) {
+      const dp = delayedFeed.get(symbol)
+      if (!dp) continue
+
+      const records = result[symbol] ?? []
+      const dpDate = dp.Tr_Date.split('T')[0]
+
+      // Only append if the delayed price date is within the requested range
+      if (dpDate < from || dpDate > (to >= today ? today : to)) continue
+
+      // Skip if we already have a record for this date
+      const lastRecord = records.length > 0 ? records[records.length - 1] : null
+      const lastDate = lastRecord?.Tradedate.split('T')[0]
+      if (lastDate === dpDate) continue
+
+      // Append the real-time record
+      records.push(delayedToOHLCV(dp))
+      records.sort((a, b) => a.Tradedate.localeCompare(b.Tradedate))
+      result[symbol] = records
+    }
+  }
+
   return result
 }
