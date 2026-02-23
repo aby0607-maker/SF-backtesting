@@ -47,7 +47,8 @@ export async function cmotsFetch<T>(options: CMOTSRequestOptions): Promise<T[]> 
     })
 
     if (!response.ok) {
-      console.warn(`[CMOTS] HTTP ${response.status} for ${endpoint} — data unavailable from API`)
+      const body = await response.text().catch(() => '(unreadable)')
+      console.error(`[CMOTS] HTTP ${response.status} for ${endpoint}`, body.slice(0, 200))
       return []
     }
 
@@ -55,7 +56,7 @@ export async function cmotsFetch<T>(options: CMOTSRequestOptions): Promise<T[]> 
     // index.html (text/html) with status 200 — parsing it as JSON would throw
     const contentType = response.headers.get('content-type') || ''
     if (contentType.includes('text/html')) {
-      console.warn(`[CMOTS] API returned HTML for ${endpoint} — serverless function may not be deployed. Check /api/health`)
+      console.error(`[CMOTS] API returned HTML for ${endpoint} — serverless function may not be deployed. Check /api/health`)
       return []
     }
 
@@ -70,14 +71,20 @@ export async function cmotsFetch<T>(options: CMOTSRequestOptions): Promise<T[]> 
       // Envelope response: { success, data: [...], message }
       data = json.data
     } else {
-      console.warn(`[CMOTS] Unexpected response shape for ${endpoint}:`, typeof json)
+      console.error(`[CMOTS] Unexpected response shape for ${endpoint}:`, JSON.stringify(json).slice(0, 300))
       return []
+    }
+
+    if (data.length === 0) {
+      console.warn(`[CMOTS] ${endpoint} returned 0 records`)
+    } else {
+      console.log(`[CMOTS] ${endpoint} → ${data.length} records`)
     }
 
     cache.set(cacheKey, data, { ttl: cacheTTL })
     return data
   } catch (error) {
-    console.warn(`[CMOTS] Network error fetching ${endpoint}:`, error instanceof Error ? error.message : error)
+    console.error(`[CMOTS] Network error fetching ${endpoint}:`, error instanceof Error ? error.message : error)
     return []
   }
 }

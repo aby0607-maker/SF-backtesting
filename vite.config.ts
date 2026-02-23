@@ -15,6 +15,7 @@ export default defineConfig(({ mode }) => {
       },
     },
     server: {
+      host: true,
       proxy: {
         '/api/cmots': {
           target: 'https://deltastockzapis.cmots.com',
