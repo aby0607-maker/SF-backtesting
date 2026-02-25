@@ -1,5 +1,5 @@
 /**
- * ResultsPanel — Stage 3: Tab switcher for Scores / Performance / Analysis
+ * ResultsPanel — Stage 5: Tab switcher for Scores / Performance / Analysis / Insights
  *
  * Performance tab (restructured):
  *   ├── ScoreReturnCorrelation      ← Score vs Return scatter + correlation timeline
@@ -12,6 +12,10 @@
  *   ├── QuintileAnalysisChart
  *   ├── RelativePerformanceChart
  *   └── CohortComparisonTable
+ *
+ * Insights tab (narrative report):
+ *   └── ScorecardInsights           ← Accuracy grade, verdict accuracy, interval accuracy,
+ *                                      wins/misses, score vs price trajectory
  *
  * Selected stock state lives here, passed to children.
  */
@@ -33,7 +37,8 @@ import { CohortComparisonTable } from './CohortComparisonTable'
 import { MetricContributionWaterfall } from './MetricContributionWaterfall'
 import { ScoreTrajectoryChart } from './ScoreTrajectoryChart'
 import { ExportReportButton } from './ExportReportButton'
-import { BarChart3, TrendingUp, Activity, AlertTriangle, ChevronDown, RefreshCw, GitFork } from 'lucide-react'
+import { ScorecardInsights } from './ScorecardInsights'
+import { BarChart3, TrendingUp, Activity, AlertTriangle, ChevronDown, RefreshCw, GitFork, FileText } from 'lucide-react'
 
 /** Lightweight fallback for chart rendering errors */
 const ChartErrorFallback = (
@@ -43,12 +48,13 @@ const ChartErrorFallback = (
   </div>
 )
 
-type ResultsTab = 'scores' | 'performance' | 'analysis'
+type ResultsTab = 'scores' | 'performance' | 'analysis' | 'insights'
 
 const TABS: { id: ResultsTab; label: string; icon: typeof BarChart3 }[] = [
   { id: 'scores', label: 'Scores', icon: BarChart3 },
   { id: 'performance', label: 'Performance', icon: TrendingUp },
   { id: 'analysis', label: 'Analysis', icon: Activity },
+  { id: 'insights', label: 'Insights', icon: FileText },
 ]
 
 export function ResultsPanel() {
@@ -214,6 +220,12 @@ export function ResultsPanel() {
           )}
         </div>
       )}
+      {activeTab === 'insights' && (
+        <ErrorBoundary fallback={ChartErrorFallback}>
+          <ScorecardInsights />
+        </ErrorBoundary>
+      )}
+
       {/* Stock detail overlay */}
       <AnimatePresence>
         {overlayStockId && (

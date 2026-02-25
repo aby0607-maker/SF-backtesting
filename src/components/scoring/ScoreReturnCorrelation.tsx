@@ -13,6 +13,7 @@ import {
 import { cn } from '@/lib/utils'
 import { useCombinedResult } from '@/store/useScoringStore'
 import { TrendingUp, Activity } from 'lucide-react'
+import { InfoTooltip } from '@/components/ui/InfoTooltip'
 
 export function ScoreReturnCorrelation() {
   const combinedResult = useCombinedResult()
@@ -118,7 +119,10 @@ export function ScoreReturnCorrelation() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 lg:divide-x lg:divide-white/5">
         {/* Left: Scatter plot */}
         <div className="p-4">
-          <div className="text-[10px] text-neutral-500 mb-2">Score → Return at {selectedInterval}</div>
+          <div className="flex items-center gap-1 text-[10px] text-neutral-500 mb-2">
+            Score → Return at {selectedInterval}
+            <InfoTooltip text="Each dot is a stock. X = score, Y = return. Dashed line = best-fit. Tighter upward clustering = more predictive" position="bottom" />
+          </div>
           <ResponsiveContainer width="100%" height={250}>
             <ScatterChart margin={{ top: 5, right: 10, bottom: 20, left: 10 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
@@ -170,6 +174,7 @@ export function ScoreReturnCorrelation() {
           <div className="flex items-center gap-1.5 text-[10px] text-neutral-500 mb-2">
             <Activity className="w-3 h-3" />
             Correlation over time — does scoring predict better over longer periods?
+            <InfoTooltip text="How correlation changes at each interval. Rising line = scorecard predicts better over longer periods" position="bottom" />
           </div>
           <ResponsiveContainer width="100%" height={250}>
             <LineChart data={correlationTimeline} margin={{ top: 5, right: 10, bottom: 20, left: 10 }}>

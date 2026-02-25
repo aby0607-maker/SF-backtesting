@@ -5,6 +5,7 @@
 import { useState, useMemo } from 'react'
 import { cn } from '@/lib/utils'
 import { useBacktestResult } from '@/store/useScoringStore'
+import { InfoTooltip } from '@/components/ui/InfoTooltip'
 import {
   LineChart,
   Line,
@@ -55,7 +56,10 @@ export function ScoreTrajectoryChart() {
       <div className="flex items-center justify-between mb-3">
         <div>
           <div className="text-sm font-medium text-white">Score Trajectory</div>
-          <div className="text-[10px] text-neutral-500">Score over time with verdict zones</div>
+          <div className="flex items-center gap-1 text-[10px] text-neutral-500">
+            Score over time with verdict zones
+            <InfoTooltip text="How the stock's score changed over time. Colored bands = verdict zones. Stable scores preceding price moves are more trustworthy" position="bottom" />
+          </div>
         </div>
 
         <select
