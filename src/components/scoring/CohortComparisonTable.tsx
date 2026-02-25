@@ -6,6 +6,7 @@ import { useState, useMemo } from 'react'
 import { cn } from '@/lib/utils'
 import { useBacktestResult } from '@/store/useScoringStore'
 import { ChevronUp, ChevronDown } from 'lucide-react'
+import { InfoTooltip } from '@/components/ui/InfoTooltip'
 
 type SortField = 'name' | 'score' | 'return' | 'alpha'
 type SortDir = 'asc' | 'desc'
@@ -81,13 +82,19 @@ export function CohortComparisonTable() {
         </button>
         <button onClick={() => toggleSort('score')} className="w-14 flex items-center gap-0.5 justify-end">
           Score <SortIcon field="score" />
+          <InfoTooltip text="Overall scorecard score (0-100) at backtest start" position="bottom" iconSize="w-2.5 h-2.5" />
         </button>
-        <div className="w-20 text-right">Verdict</div>
+        <div className="w-20 flex items-center gap-0.5 justify-end">
+          Verdict
+          <InfoTooltip text="Label from score thresholds (Strong Buy, Buy, Hold, etc.)" position="bottom" iconSize="w-2.5 h-2.5" />
+        </div>
         <button onClick={() => toggleSort('return')} className="w-16 flex items-center gap-0.5 justify-end">
           Return <SortIcon field="return" />
+          <InfoTooltip text="Cumulative price change from backtest start to end" position="bottom" iconSize="w-2.5 h-2.5" />
         </button>
         <button onClick={() => toggleSort('alpha')} className="w-16 flex items-center gap-0.5 justify-end">
           Alpha <SortIcon field="alpha" />
+          <InfoTooltip text="Return minus cohort average. Positive = outperformed peers" position="bottom" iconSize="w-2.5 h-2.5" />
         </button>
       </div>
 

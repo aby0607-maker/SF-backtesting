@@ -15,6 +15,7 @@ import {
   ResponsiveContainer,
   Cell,
 } from 'recharts'
+import { InfoTooltip } from '@/components/ui/InfoTooltip'
 
 export function RelativePerformanceChart() {
   const result = useBacktestResult()
@@ -34,7 +35,10 @@ export function RelativePerformanceChart() {
 
   return (
     <div className="rounded-xl bg-dark-800/60 border border-white/5 p-4">
-      <div className="text-sm font-medium text-white mb-3">Relative Performance (Alpha vs Cohort Avg)</div>
+      <div className="flex items-center gap-1.5 text-sm font-medium text-white mb-3">
+        Relative Performance (Alpha vs Cohort Avg)
+        <InfoTooltip text="Each bar = how much a stock outperformed (+) or underperformed (-) the cohort average" position="right" />
+      </div>
 
       <ResponsiveContainer width="100%" height={Math.max(200, chartData.length * 30)}>
         <BarChart data={chartData} layout="vertical" margin={{ top: 5, right: 20, left: 60, bottom: 5 }}>

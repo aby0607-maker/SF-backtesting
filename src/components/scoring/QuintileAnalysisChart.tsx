@@ -17,6 +17,7 @@ import {
   ResponsiveContainer,
   Cell,
 } from 'recharts'
+import { InfoTooltip } from '@/components/ui/InfoTooltip'
 
 const QUINTILE_COLORS = [
   '#22c55e', // Q1 — green
@@ -57,8 +58,9 @@ export function QuintileAnalysisChart() {
       <div className="flex items-center justify-between mb-3">
         <div>
           <div className="text-sm font-medium text-white">Quintile Analysis</div>
-          <div className="text-[10px] text-neutral-500">
+          <div className="flex items-center gap-1 text-[10px] text-neutral-500">
             Average return by score quintile (Q1 = top 20% scorers)
+            <InfoTooltip text="Stocks sorted into 5 buckets by score. Q1 = top 20%. Descending staircase (Q1 > Q2 > ... > Q5) = scorecard predicts returns" position="bottom" />
           </div>
         </div>
         {isStaircase && (
