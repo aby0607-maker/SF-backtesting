@@ -163,7 +163,9 @@ const sortedBandsCache = new WeakMap<ScoreBand[], ScoreBand[]>()
 function getSortedBands(scoreBands: ScoreBand[]): ScoreBand[] {
   let sorted = sortedBandsCache.get(scoreBands)
   if (!sorted) {
-    sorted = [...scoreBands].sort((a, b) => b.score - a.score)
+    // Sort by min descending — first match on `rawValue >= band.min` wins
+    // This eliminates gaps between adjacent bands (same pattern as getVerdict)
+    sorted = [...scoreBands].sort((a, b) => b.min - a.min)
     sortedBandsCache.set(scoreBands, sorted)
   }
   return sorted
@@ -173,21 +175,17 @@ function lookupScoreBand(rawValue: number, scoreBands: ScoreBand[]): number {
   // Guard: no bands defined → return 0
   if (!scoreBands || scoreBands.length === 0) return 0
 
-  // Sort bands by score descending for priority (cached)
+  // Sort bands by min descending (cached) — first match wins, no gaps
   const sorted = getSortedBands(scoreBands)
 
   for (const band of sorted) {
-    if (rawValue >= band.min && rawValue <= band.max) {
+    if (rawValue >= band.min) {
       return band.score
     }
   }
 
-  // If no band matches, find the nearest band
-  if (rawValue > sorted[0].max) return sorted[0].score              // Above highest band
-  if (rawValue < sorted[sorted.length - 1].min) return sorted[sorted.length - 1].score  // Below lowest band
-
-  console.warn(`[ScoringEngine] No score band matched for value ${rawValue} across ${scoreBands.length} bands — possible gap in band configuration`)
-  return 0
+  // Below all bands → lowest band's score
+  return sorted[sorted.length - 1].score
 }
 
 /**

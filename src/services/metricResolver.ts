@@ -313,8 +313,14 @@ function mapCMOTSToMetricIds(
   // Financial metrics (aliased from V2 where identical)
   metrics['v4_revenue_growth'] = metrics['v2_revenue_growth']
   metrics['v4_ebitda_growth'] = metrics['v2_ebitda_growth']
-  metrics['v4_roe'] = metrics['v2_roe']
-  metrics['v4_gross_block'] = metrics['v2_gross_block']
+  // V4 ROE = PAT / Avg Equity (not single-year equity like V2). CSV: "ROE = PAT ÷ Avg Equity"
+  metrics['v4_roe'] = (pnl.length > 0 && balanceSheet.length > 0)
+    ? computeAvgROEv4(pnl, balanceSheet, asOfDate)
+    : metrics['v2_roe']  // fallback if no statements
+  // V4 Gross Block = YoY growth (not CAGR like V2). CSV: (FY5-FY4)/FY4 × 100
+  metrics['v4_gross_block'] = balanceSheet.length > 0
+    ? computeStatementYoYGrowth(balanceSheet, BS_ROW_FIXED_ASSETS, asOfDate)
+    : metrics['v2_gross_block']  // fallback to FinData CAGR if no balance sheet
   metrics['v4_debt_ebitda'] = metrics['v2_debt_ebitda']  // Bands differ but raw value is same
 
   // NEW: Earnings = PBT minus Other Income, 5Y CAGR
@@ -548,7 +554,8 @@ function compute5YAvgValuation(
 // Historical ROE & Debt/EBITDA
 // ─────────────────────────────────────────────────
 
-/** ROE = PAT / Shareholders Fund, averaged across available fiscal years (5Y avg) */
+/** ROE = PAT / Shareholders Fund (single-year equity), averaged across available FYs.
+ *  Used by V2 scorecard. */
 function computeAvgROE(
   pnl: CMOTSStatementRow[],
   balanceSheet: CMOTSStatementRow[],
@@ -570,6 +577,52 @@ function computeAvgROE(
     if (pat != null && shFund != null && shFund !== 0) {
       roeValues.push((pat / shFund) * 100)
     }
+  }
+
+  if (roeValues.length === 0) return null
+  return roeValues.reduce((a, b) => a + b, 0) / roeValues.length
+}
+
+/** V4 ROE = PAT / Avg Equity, averaged across available FYs.
+ *  Avg Equity = (ShFund_thisYear + ShFund_priorYear) / 2.
+ *  CSV definition: "ROE = PAT ÷ Avg Equity" */
+function computeAvgROEv4(
+  pnl: CMOTSStatementRow[],
+  balanceSheet: CMOTSStatementRow[],
+  asOfDate?: string,
+): number | null {
+  const patRow = findStatementRow(pnl, PNL_ROW_PAT)
+  const shFundRow = findStatementRow(balanceSheet, BS_ROW_SHAREHOLDERS_FUND)
+  if (!patRow || !shFundRow) return null
+
+  const patCols = windowYearColumns(patRow, asOfDate)     // Newest first
+  const shFundCols = windowYearColumns(shFundRow, asOfDate) // Newest first
+  if (patCols.length === 0 || shFundCols.length === 0) return null
+
+  const roeValues: number[] = []
+  for (let i = 0; i < patCols.length; i++) {
+    const col = patCols[i]
+    const colIdx = shFundCols.indexOf(col)
+    if (colIdx < 0) continue  // Column not in BS
+
+    const pat = getStatementValue(patRow, col)
+    const shFundCurrent = getStatementValue(shFundRow, col)
+    if (pat == null || shFundCurrent == null) continue
+
+    // Try to get prior year ShFund for average equity
+    const priorCol = shFundCols[colIdx + 1]  // Next in array = prior year (newest first)
+    const shFundPrior = priorCol ? getStatementValue(shFundRow, priorCol) : null
+
+    let avgEquity: number
+    if (shFundPrior != null) {
+      avgEquity = (shFundCurrent + shFundPrior) / 2
+    } else {
+      // First available year — fall back to single-year equity
+      avgEquity = shFundCurrent
+    }
+
+    if (avgEquity === 0) continue
+    roeValues.push((pat / avgEquity) * 100)
   }
 
   if (roeValues.length === 0) return null
@@ -747,6 +800,25 @@ function computeStatementGrowth(
   if (latest == null || oldest == null || oldest <= 0) return null
 
   return computeCAGR(oldest, latest, yearCols.length - 1)
+}
+
+/** Compute YoY growth of a statement row: (Latest - PriorYear) / PriorYear × 100
+ *  CSV example for Gross Block: (234451 - 229406.5) / 229406.5 = 2.2% */
+function computeStatementYoYGrowth(
+  rows: CMOTSStatementRow[],
+  rowno: number,
+  asOfDate?: string,
+): number | null {
+  const row = findStatementRow(rows, rowno)
+  if (!row) return null
+  const yearCols = windowYearColumns(row, asOfDate)  // Newest first
+  if (yearCols.length < 2) return null
+
+  const latest = getStatementValue(row, yearCols[0])
+  const priorYear = getStatementValue(row, yearCols[1])
+  if (latest == null || priorYear == null || priorYear === 0) return null
+
+  return ((latest - priorYear) / Math.abs(priorYear)) * 100
 }
 
 // ─────────────────────────────────────────────────

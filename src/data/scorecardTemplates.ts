@@ -826,7 +826,7 @@ export const V1_COMPREHENSIVE_SCORECARD: ScorecardVersion = {
 // Key differences from V2:
 //   - 10-11 bands per metric (vs V2's 5-8) — much more granular
 //   - Zero-NA handling: missing metrics contribute 0, denominator stays 100
-//   - Flat composite: F×32.5% + V×50% + T×7.5% + QM×10%
+//   - Flat composite: F×30% + V×45% + QM×18% + T×7%
 //   - Weighted financial metrics (not equal 1/7)
 //   - Earnings = PBT minus Other Income (CAGR)
 //   - OCF/EBITDA = 5Y CAGR of the ratio (not ratio level)
@@ -919,16 +919,16 @@ const v4ValuationBands: ScoreBand[] = [
 // <1 = recent growth below long-term trend (decelerating)
 // Boundary: lower-inclusive, upper-exclusive — Updated to match latest CSV (Feb 2026)
 const v4MultiplierBands: ScoreBand[] = [
-  { min: 2.0, max: Infinity, score: 100, label: 'Explosive', color: 'text-success-400' },
-  { min: 1.75, max: 1.99, score: 90, label: 'Exceptional', color: 'text-success-400' },
-  { min: 1.25, max: 1.74, score: 80, label: 'Very Strong', color: 'text-success-400' },
-  { min: 1.10, max: 1.24, score: 70, label: 'Strong', color: 'text-teal-400' },
+  { min: 1.50, max: Infinity, score: 100, label: 'Explosive', color: 'text-success-400' },
+  { min: 1.30, max: 1.49, score: 90, label: 'Exceptional', color: 'text-success-400' },
+  { min: 1.20, max: 1.29, score: 80, label: 'Very Strong', color: 'text-success-400' },
+  { min: 1.10, max: 1.19, score: 70, label: 'Strong', color: 'text-teal-400' },
   { min: 0.95, max: 1.09, score: 65, label: 'Near Trend', color: 'text-teal-400' },
   { min: 0.75, max: 0.94, score: 60, label: 'Above Average', color: 'text-teal-400' },
-  { min: 0.5, max: 0.74, score: 50, label: 'Average', color: 'text-warning-400' },
-  { min: 0.4, max: 0.49, score: 40, label: 'Below Average', color: 'text-warning-400' },
-  { min: 0.3, max: 0.39, score: 30, label: 'Low', color: 'text-warning-400' },
-  { min: 0.2, max: 0.29, score: 20, label: 'Very Low', color: 'text-destructive-400' },
+  { min: 0.50, max: 0.74, score: 50, label: 'Average', color: 'text-warning-400' },
+  { min: 0.40, max: 0.49, score: 40, label: 'Below Average', color: 'text-warning-400' },
+  { min: 0.30, max: 0.39, score: 30, label: 'Low', color: 'text-warning-400' },
+  { min: 0.20, max: 0.29, score: 20, label: 'Very Low', color: 'text-destructive-400' },
   { min: 0, max: 0.19, score: 10, label: 'Near-Zero', color: 'text-destructive-400' },
   { min: -Infinity, max: -0.01, score: 10, label: 'Negative', color: 'text-destructive-400' },
 ]
@@ -1005,7 +1005,7 @@ const v4NegativeHandlingRules: NegativeHandling[] = [
 const v4FinancialSegment: ScorecardSegment = {
   id: 'v4_financial',
   name: 'Financial Score',
-  segmentWeight: 0.325,
+  segmentWeight: 0.30,
   description: 'Fundamental financial health with weighted metrics. Earnings (20%) > Growth/ROE/Cash (15%) > Investment/Debt (10%)',
   metrics: [
     {
@@ -1080,7 +1080,7 @@ const v4FinancialSegment: ScorecardSegment = {
 const v4ValuationSegment: ScorecardSegment = {
   id: 'v4_valuation',
   name: 'Valuation Score',
-  segmentWeight: 0.50,
+  segmentWeight: 0.45,
   description: 'PB-anchored conditional valuation using Historical 5Y averages. PE=30%, PB=50%, EV=20%. Input as percentage (44 = 44% of avg).',
   metrics: [
     {
@@ -1112,8 +1112,8 @@ const v4ValuationSegment: ScorecardSegment = {
     evExcludedWeights: { pe: 0.40, pb: 0.60 },
   },
   verdictThresholds: [
-    { minScore: 80, maxScore: 100, verdict: 'Deeply Undervalued', altVerdict: 'Excellent', color: 'text-success-400', description: 'Cheap compared to historical averages' },
-    { minScore: 75, maxScore: 79, verdict: 'Undervalued', altVerdict: 'Good', color: 'text-success-400', description: 'Attractively priced at CMP' },
+    { minScore: 85, maxScore: 100, verdict: 'Undervalued', altVerdict: 'Excellent', color: 'text-success-400', description: 'Cheap compared to historical averages' },
+    { minScore: 75, maxScore: 84, verdict: 'Attractive', altVerdict: 'Good', color: 'text-success-400', description: 'Attractively priced at CMP' },
     { minScore: 65, maxScore: 74, verdict: 'Fairly Valued', altVerdict: 'Fair', color: 'text-warning-400', description: 'Priced near long-term averages' },
     { minScore: 55, maxScore: 64, verdict: 'Moderately Expensive', altVerdict: 'Caution', color: 'text-warning-400', description: 'Limited upside from valuation' },
     { minScore: 0, maxScore: 54, verdict: 'Expensive', altVerdict: 'Expensive', color: 'text-destructive-400', description: 'Valuation risk at CMP' },
@@ -1123,7 +1123,7 @@ const v4ValuationSegment: ScorecardSegment = {
 const v4TechnicalSegment: ScorecardSegment = {
   id: 'v4_technical',
   name: 'Technical Score',
-  segmentWeight: 0.075,
+  segmentWeight: 0.07,
   description: 'Price trend & momentum. Weights: 200-DMA (35%) > 20-DMA (20%) = VPT (20%) > 50-DMA (15%) > RSI (10%)',
   metrics: [
     {
@@ -1167,7 +1167,7 @@ const v4TechnicalSegment: ScorecardSegment = {
 const v4QuarterlyMomentumSegment: ScorecardSegment = {
   id: 'v4_quarterly_momentum',
   name: 'Quarterly Momentum',
-  segmentWeight: 0.10,
+  segmentWeight: 0.18,
   naHandling: 'exclude',  // QM uses exclude mode: avg of valid multiplier scores (CSV: COUNT-based divisor)
   description: 'Growth acceleration: Avg(latest 2Q YoY growth) ÷ 5Y CAGR. >1 = accelerating, <1 = decelerating.',
   metrics: [
@@ -1210,13 +1210,13 @@ export const V4_NONBANKING_SCORECARD: ScorecardVersion = {
   },
   segments: [v4FinancialSegment, v4ValuationSegment, v4TechnicalSegment, v4QuarterlyMomentumSegment],
   compositeFormula: {
-    // Flat composite: F×32.5% + V×50% + T×7.5% + QM×10% = 100%
+    // Flat composite: F×30% + V×45% + QM×18% + T×7% = 100% (CSV formula cell B53)
     // All segments in baseSegments with baseWeight=1.0 (no nested overlays)
     baseSegments: [
-      { segmentId: 'v4_financial', weight: 0.325 },
-      { segmentId: 'v4_valuation', weight: 0.50 },
-      { segmentId: 'v4_technical', weight: 0.075 },
-      { segmentId: 'v4_quarterly_momentum', weight: 0.10 },
+      { segmentId: 'v4_financial', weight: 0.30 },
+      { segmentId: 'v4_valuation', weight: 0.45 },
+      { segmentId: 'v4_technical', weight: 0.07 },
+      { segmentId: 'v4_quarterly_momentum', weight: 0.18 },
     ],
     baseWeight: 1.0,
   },
