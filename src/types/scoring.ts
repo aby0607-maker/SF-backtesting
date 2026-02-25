@@ -89,8 +89,9 @@ export interface CompositeMetric {
    *  undefined = use all available years (current default behavior). */
   growthPeriod?: 2 | 3 | 5
   /** Scoring method: 'band_lookup' (default) uses scoreBands to map raw→score.
-   *  'conditional_vpt' uses two-input conditional logic (volume_change + price_change). */
-  scoringMethod?: 'band_lookup' | 'conditional_vpt'
+   *  'conditional_vpt' uses V2 two-input conditional logic (volume_change + price_change).
+   *  'conditional_vpt_v4' uses V4 VPT rules (cleaner structure, 0-100 scale). */
+  scoringMethod?: 'band_lookup' | 'conditional_vpt' | 'conditional_vpt_v4'
   /** General calculation parameters per metric.
    *  Keys: growthYears, vptVolNumeratorDays, vptVolDenominatorDays, vptPriceChangeDays,
    *  rsiPeriod, lookbackMethod, valuationBasis. Supersedes growthPeriod when present. */
@@ -194,6 +195,10 @@ export interface ScorecardVersion {
   customFactors: CustomFactor[]
   negativeHandlingRules: NegativeHandling[]
   verdictDisplayMode: VerdictDisplayMode
+  /** NA metric handling strategy within segments.
+   *  'exclude' (default): excluded metrics' weights are redistributed to active metrics.
+   *  'zero': excluded metrics contribute 0 but denominator stays at total weight (penalizes missing data). */
+  naHandling?: 'exclude' | 'zero'
 }
 
 // ─────────────────────────────────────────────────
