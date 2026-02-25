@@ -32,6 +32,7 @@ import { getBatchPrices } from '@/services/cmots/priceData'
 import type { CMOTSOHLCVRecord } from '@/types/scoring'
 import { getAllFundamentals, getYearColumns } from '@/services/cmots/fundamentals'
 import type { FundamentalsBundle } from '@/services/cmots/fundamentals'
+import { pMapSettled } from '@/services/batchQueue'
 
 // ─────────────────────────────────────────────────
 // Combined Scoring + Backtest (new 5-stage pipeline)
@@ -553,13 +554,15 @@ export async function backtestScorecard(
     }
   }
 
-  const settled = await Promise.allSettled(targetStockIds.map(async (stockId) => {
+  // Concurrency-limited: each stock fires ~8 parallel endpoints (7 fundamentals + 1 info),
+  // so 8 concurrent stocks ≈ 64 logical requests — keeps pipeline full without flooding
+  const settled = await pMapSettled(targetStockIds, async (stockId) => {
     const [fundamentals, info] = await Promise.all([
       getAllFundamentals(stockId),
       getStockInfo(stockId),
     ])
     return { stockId, fundamentals, info }
-  }))
+  }, 8)
 
   for (const result of settled) {
     if (result.status === 'rejected') {

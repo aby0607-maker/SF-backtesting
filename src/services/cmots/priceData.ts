@@ -15,6 +15,7 @@
 import type { CMOTSOHLCVRecord, CMOTSDelayedPrice } from '@/types/scoring'
 import { cmotsFetch } from './client'
 import { getCoCode } from './companyMaster'
+import { pMap } from '@/services/batchQueue'
 
 const CACHE_TTL = 60 * 60 * 1000          // 1 hour (historical)
 const DELAYED_CACHE_TTL = 5 * 60 * 1000   // 5 minutes (real-time feed)
@@ -132,12 +133,13 @@ export async function getBatchPrices(
   const needsRealtime = diffDays <= 2
 
   // Fetch historical + optionally real-time in parallel
+  // Historical fetches are concurrency-limited to avoid flooding the browser connection pool
   const [_, delayedFeed] = await Promise.all([
-    // Historical fetch for all symbols
-    Promise.all(symbols.map(async symbol => {
+    // Historical fetch for all symbols (max 10 concurrent)
+    pMap(symbols, async (symbol) => {
       const data = await getHistoricalPrices(symbol, from, to)
       result[symbol] = data
-    })),
+    }, 10),
     // Delayed feed (only if needed)
     needsRealtime ? getDelayedPriceFeed() : Promise.resolve(null),
   ])
