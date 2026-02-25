@@ -757,6 +757,17 @@ export async function backtestScorecard(
     })
   }
 
+  // Ensure the user's end date is always the final snapshot (not just the last interval boundary)
+  const lastSnapshotDate = snapshots[snapshots.length - 1]?.date
+  const endTradeDates = allTradeDates.filter(d => d <= config.dateRange.to)
+  const closestEndDate = endTradeDates[endTradeDates.length - 1]
+  if (closestEndDate && closestEndDate !== lastSnapshotDate) {
+    snapshots.push({
+      date: closestEndDate,
+      stockScores: scoreAtDate(closestEndDate),
+    })
+  }
+
   const reviewSnapshot = buildReviewSnapshot(scorecard, startStocks)
 
   // Filter batchPrices to user's date range for delta table (exclude extended lookback period)
