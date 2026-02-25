@@ -978,10 +978,10 @@ const v4NegativeHandlingRules: NegativeHandling[] = [
   { metricId: 'v4_roe', condition: 'end_negative', action: 'exclude', description: 'Negative ROE end year → exclude' },
 
   // OCF/EBITDA CAGR: if ratio anchor year has EBITDA ≤ 0, exclude
-  { metricId: 'v4_ocf_ebitda_cagr', condition: 'start_negative', action: 'exclude', description: 'EBITDA ≤ 0 in anchor year → ratio meaningless' },
-  { metricId: 'v4_ocf_ebitda_cagr', condition: 'end_negative', action: 'exclude', description: 'EBITDA ≤ 0 in anchor year → ratio meaningless' },
-  { metricId: 'v4_ocf_ebitda_cagr', condition: 'both_negative', action: 'exclude', description: 'Both years EBITDA ≤ 0' },
-  { metricId: 'v4_ocf_ebitda_cagr', condition: 'any_negative', action: 'exclude', description: 'Any year EBITDA ≤ 0' },
+  // OCF/EBITDA CAGR: only exclude when anchor-year EBITDA ≤ 0 (ratio undefined).
+  // Negative CAGR (declining cash conversion) is still valid and scores through growth bands.
+  { metricId: 'v4_ocf_ebitda_cagr', condition: 'start_negative', action: 'exclude', description: 'EBITDA ≤ 0 in oldest anchor year → ratio meaningless' },
+  { metricId: 'v4_ocf_ebitda_cagr', condition: 'end_negative', action: 'exclude', description: 'EBITDA ≤ 0 in latest anchor year → ratio meaningless' },
 
   // Gross Block: negative → exclude (asset write-offs)
   { metricId: 'v4_gross_block', condition: 'start_negative', action: 'exclude', description: 'Negative gross block → asset write-off' },

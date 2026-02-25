@@ -609,9 +609,10 @@ function computeAvgROEv4(
     const shFundCurrent = getStatementValue(shFundRow, col)
     if (pat == null || shFundCurrent == null) continue
 
-    // Try to get prior year ShFund for average equity
-    const priorCol = shFundCols[colIdx + 1]  // Next in array = prior year (newest first)
-    const shFundPrior = priorCol ? getStatementValue(shFundRow, priorCol) : null
+    // Prior fiscal year = next in PAT array, then look up in BS
+    const priorCol = patCols[i + 1]  // Prior FY from PAT perspective (newest-first)
+    const shFundPrior = (priorCol && shFundCols.includes(priorCol))
+      ? getStatementValue(shFundRow, priorCol) : null
 
     let avgEquity: number
     if (shFundPrior != null) {
