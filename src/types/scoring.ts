@@ -123,6 +123,7 @@ export interface ScorecardSegment {
   description?: string
   verdictThresholds?: VerdictThreshold[]  // Per-segment verdicts
   valuationConditionals?: ValuationConditionalConfig  // Only for valuation-type segments
+  naHandling?: 'exclude' | 'zero'  // Per-segment override; falls back to ScorecardVersion.naHandling
 }
 
 /**

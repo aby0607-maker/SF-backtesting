@@ -917,18 +917,19 @@ const v4ValuationBands: ScoreBand[] = [
 // Multiplier = Avg(latest 2Q YoY growth) / 5Y Revenue or EBITDA CAGR
 // >1 = recent growth exceeding long-term trend (accelerating)
 // <1 = recent growth below long-term trend (decelerating)
-// Boundary: lower-inclusive, upper-exclusive
+// Boundary: lower-inclusive, upper-exclusive — Updated to match latest CSV (Feb 2026)
 const v4MultiplierBands: ScoreBand[] = [
-  { min: 3.0, max: Infinity, score: 100, label: 'Explosive', color: 'text-success-400' },
-  { min: 2.0, max: 2.99, score: 90, label: 'Exceptional', color: 'text-success-400' },
-  { min: 1.5, max: 1.99, score: 80, label: 'Very Strong', color: 'text-success-400' },
-  { min: 1.0, max: 1.49, score: 70, label: 'Strong', color: 'text-teal-400' },
-  { min: 0.75, max: 0.99, score: 60, label: 'Above Average', color: 'text-teal-400' },
+  { min: 2.0, max: Infinity, score: 100, label: 'Explosive', color: 'text-success-400' },
+  { min: 1.75, max: 1.99, score: 90, label: 'Exceptional', color: 'text-success-400' },
+  { min: 1.25, max: 1.74, score: 80, label: 'Very Strong', color: 'text-success-400' },
+  { min: 1.10, max: 1.24, score: 70, label: 'Strong', color: 'text-teal-400' },
+  { min: 0.95, max: 1.09, score: 65, label: 'Near Trend', color: 'text-teal-400' },
+  { min: 0.75, max: 0.94, score: 60, label: 'Above Average', color: 'text-teal-400' },
   { min: 0.5, max: 0.74, score: 50, label: 'Average', color: 'text-warning-400' },
   { min: 0.4, max: 0.49, score: 40, label: 'Below Average', color: 'text-warning-400' },
   { min: 0.3, max: 0.39, score: 30, label: 'Low', color: 'text-warning-400' },
   { min: 0.2, max: 0.29, score: 20, label: 'Very Low', color: 'text-destructive-400' },
-  { min: 0, max: 0.19, score: 15, label: 'Near-Zero', color: 'text-destructive-400' },
+  { min: 0, max: 0.19, score: 10, label: 'Near-Zero', color: 'text-destructive-400' },
   { min: -Infinity, max: -0.01, score: 10, label: 'Negative', color: 'text-destructive-400' },
 ]
 
@@ -1167,6 +1168,7 @@ const v4QuarterlyMomentumSegment: ScorecardSegment = {
   id: 'v4_quarterly_momentum',
   name: 'Quarterly Momentum',
   segmentWeight: 0.10,
+  naHandling: 'exclude',  // QM uses exclude mode: avg of valid multiplier scores (CSV: COUNT-based divisor)
   description: 'Growth acceleration: Avg(latest 2Q YoY growth) ÷ 5Y CAGR. >1 = accelerating, <1 = decelerating.',
   metrics: [
     {

@@ -613,7 +613,9 @@ export function getVerdict(
   const sorted = [...thresholds].sort((a, b) => b.minScore - a.minScore)
 
   for (const t of sorted) {
-    if (score >= t.minScore && score <= t.maxScore) {
+    // Use >= only (first match wins, sorted descending). This avoids gaps
+    // between integer maxScore boundaries when scores are fractional (e.g. 64.17).
+    if (score >= t.minScore) {
       return {
         verdict: t.verdict,
         altVerdict: t.altVerdict,
@@ -720,7 +722,7 @@ export function scoreStock(
       return scoreValuationSegmentConditional(metricScores, segment, stockData)
     }
 
-    return scoreSegment(metricScores, segment, scorecard.naHandling)
+    return scoreSegment(metricScores, segment, segment.naHandling ?? scorecard.naHandling)
   })
 
   // Compute composite (with adaptive re-normalization for V4 zero-NA mode)
