@@ -343,6 +343,9 @@ export async function scoreWithScorecard(
   const total = stockIds.length
   const resConfig = extractResolutionConfig(scorecard, options?.customMetrics)
 
+  // Track stocks that failed due to network/fetch errors for automatic retry
+  const failedStockIds: { stockId: string; name: string }[] = []
+
   for (let i = 0; i < stockIds.length; i++) {
     if (options?.signal?.aborted) {
       console.log(`[Scoring] Cancelled after ${i}/${total} stocks`)
@@ -361,13 +364,12 @@ export async function scoreWithScorecard(
     try {
       resolved = await resolveMetricValues(stockId, resConfig)
     } catch (err) {
-      const msg = err instanceof Error ? err.message : String(err)
-      warnings.push(`${info.name} (${stockId}): Data fetch failed — ${msg}`)
+      failedStockIds.push({ stockId, name: info.name })
       options?.onProgress?.(i + 1, total)
       continue
     }
     if (!resolved) {
-      warnings.push(`${info.name} (${stockId}): No fundamental data from API`)
+      failedStockIds.push({ stockId, name: info.name })
       options?.onProgress?.(i + 1, total)
       continue
     }
@@ -376,6 +378,35 @@ export async function scoreWithScorecard(
     stocks.push({ ...scored, rank: 0 })
 
     options?.onProgress?.(i + 1, total)
+  }
+
+  // ── Automatic retry pass for failed stocks ──
+  if (failedStockIds.length > 0 && !options?.signal?.aborted) {
+    console.log(`[Scoring] Retrying ${failedStockIds.length} failed stocks...`)
+    let recovered = 0
+    for (const { stockId, name } of failedStockIds) {
+      if (options?.signal?.aborted) break
+      try {
+        const info = await getStockInfo(stockId)
+        if (!info) continue
+        const resolved = await resolveMetricValues(stockId, resConfig)
+        if (!resolved) {
+          warnings.push(`${name} (${stockId}): No fundamental data from API (after retry)`)
+          continue
+        }
+        const scored = scoreStock(resolved.data, scorecard, info, resolved.context)
+        stocks.push({ ...scored, rank: 0 })
+        recovered++
+      } catch {
+        warnings.push(`${name} (${stockId}): Data fetch failed after retry`)
+      }
+    }
+    if (recovered > 0) {
+      console.log(`[Scoring] Recovered ${recovered}/${failedStockIds.length} stocks on retry`)
+    }
+    if (failedStockIds.length - recovered > 0) {
+      console.warn(`[Scoring] ${failedStockIds.length - recovered} stocks could not be recovered`)
+    }
   }
 
   stocks.sort((a, b) => b.normalizedScore - a.normalizedScore)
@@ -564,32 +595,59 @@ export async function backtestScorecard(
 
   // Concurrency-limited: each stock fires ~8 parallel endpoints (7 fundamentals + 1 info),
   // so 4 concurrent stocks ≈ 32 logical requests — keeps pipeline full without flooding
-  const settled = await pMapSettled(targetStockIds, async (stockId) => {
-    const [fundamentals, info] = await Promise.all([
-      getAllFundamentals(stockId),
-      getStockInfo(stockId),
-    ])
-    return { stockId, fundamentals, info }
-  }, 4)
+  const fetchStockData = async (ids: string[]) =>
+    pMapSettled(ids, async (stockId) => {
+      const [fundamentals, info] = await Promise.all([
+        getAllFundamentals(stockId),
+        getStockInfo(stockId),
+      ])
+      return { stockId, fundamentals, info }
+    }, 4)
 
-  for (const result of settled) {
-    if (result.status === 'rejected') {
-      const reason = result.reason instanceof Error ? result.reason.message : String(result.reason)
-      backtestWarnings.push(`Stock data fetch failed: ${reason}`)
-      continue
+  const settled = await fetchStockData(targetStockIds)
+
+  // Process results, tracking failed IDs for retry
+  const failedIds: string[] = []
+  const processResults = (results: typeof settled) => {
+    for (const result of results) {
+      if (result.status === 'rejected') {
+        failedIds.push('unknown') // ID lost on rejection — tracked by count
+        continue
+      }
+      const { stockId, fundamentals, info } = result.value
+      if (!info) {
+        backtestWarnings.push(`Stock ${stockId}: Company not found in BSE master`)
+        continue
+      }
+      if (noPriceStocks.includes(stockId)) {
+        backtestWarnings.push(`${info.name}: No price data from API for ${config.dateRange.from} → ${config.dateRange.to}`)
+      }
+      if (!fundamentals.ttm && fundamentals.pnl.length === 0) {
+        backtestWarnings.push(`${info.name}: No fundamental data (TTM/P&L) from API`)
+      }
+      stockData.push({ stockId, fundamentals, info })
     }
-    const { stockId, fundamentals, info } = result.value
-    if (!info) {
-      backtestWarnings.push(`Stock ${stockId}: Company not found in BSE master`)
-      continue
+  }
+
+  processResults(settled)
+
+  // ── Automatic retry for stocks that failed on first pass ──
+  // Identify which stock IDs didn't make it into stockData
+  const succeededIds = new Set(stockData.map(d => d.stockId))
+  const retryIds = targetStockIds.filter(id => !succeededIds.has(id))
+  if (retryIds.length > 0 && !signal?.aborted) {
+    console.log(`[Backtest] Retrying ${retryIds.length} failed stock data fetches...`)
+    const retrySettled = await fetchStockData(retryIds)
+    const beforeCount = stockData.length
+    processResults(retrySettled)
+    const recovered = stockData.length - beforeCount
+    if (recovered > 0) {
+      console.log(`[Backtest] Recovered ${recovered}/${retryIds.length} stocks on retry`)
     }
-    if (noPriceStocks.includes(stockId)) {
-      backtestWarnings.push(`${info.name}: No price data from API for ${config.dateRange.from} → ${config.dateRange.to}`)
+    const stillFailed = retryIds.length - recovered
+    if (stillFailed > 0) {
+      backtestWarnings.push(`${stillFailed} stocks failed data fetch even after retry`)
     }
-    if (!fundamentals.ttm && fundamentals.pnl.length === 0) {
-      backtestWarnings.push(`${info.name}: No fundamental data (TTM/P&L) from API`)
-    }
-    stockData.push({ stockId, fundamentals, info })
   }
 
   // ── Data Coverage Check ──
