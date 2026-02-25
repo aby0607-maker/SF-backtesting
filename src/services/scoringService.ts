@@ -35,6 +35,33 @@ import type { FundamentalsBundle } from '@/services/cmots/fundamentals'
 import { pMapSettled } from '@/services/batchQueue'
 
 // ─────────────────────────────────────────────────
+// Stock Data Cache — survives across runs for crash recovery & re-runs
+// ─────────────────────────────────────────────────
+
+type CachedStockData = {
+  stockId: string
+  fundamentals: FundamentalsBundle
+  info: { id: string; name: string; symbol: string; sector: string; marketCap: number }
+}
+
+/** In-memory cache for fetched stock data (fundamentals + info).
+ *  Survives across runs within the same browser session.
+ *  Key: stock ID → Value: { fundamentals, info }
+ *  Prices are NOT cached here (date-range-dependent). */
+const stockDataCache = new Map<string, CachedStockData>()
+
+/** Clear all cached stock data (e.g., when user wants a fresh fetch) */
+export function clearStockDataCache(): void {
+  stockDataCache.clear()
+  console.log('[Cache] Stock data cache cleared')
+}
+
+/** Get cache stats for UI display */
+export function getStockDataCacheStats(): { size: number; stockIds: string[] } {
+  return { size: stockDataCache.size, stockIds: [...stockDataCache.keys()] }
+}
+
+// ─────────────────────────────────────────────────
 // Combined Scoring + Backtest (new 5-stage pipeline)
 // ─────────────────────────────────────────────────
 
@@ -503,7 +530,7 @@ function buildReviewSnapshot(
         weight: seg.segmentWeight,
         metricCount: seg.metrics.length,
       })),
-      compositeFormula: scorecard.compositeFormula.baseSegments
+      compositeFormula: (scorecard.compositeFormula.baseSegments ?? [])
         .map(bs => {
           const seg = scorecard.segments.find(s => s.id === bs.segmentId)
           return seg ? `${seg.name}(${(bs.weight * 100).toFixed(0)}%)` : ''
@@ -576,12 +603,8 @@ export async function backtestScorecard(
     }
   }
 
-  // Fetch fundamentals + stock info for each stock (parallel)
-  const stockData: {
-    stockId: string
-    fundamentals: FundamentalsBundle
-    info: { id: string; name: string; symbol: string; sector: string; marketCap: number }
-  }[] = []
+  // Fetch fundamentals + stock info for each stock (with cache + retry)
+  const stockData: CachedStockData[] = []
   const backtestWarnings: string[] = []
 
   // Track which stocks had no price data from the API
@@ -591,6 +614,21 @@ export async function backtestScorecard(
     if (!records || records.length === 0) {
       noPriceStocks.push(stockId)
     }
+  }
+
+  // ── Separate cached vs uncached stocks ──
+  const uncachedIds: string[] = []
+  for (const stockId of targetStockIds) {
+    const cached = stockDataCache.get(stockId)
+    if (cached) {
+      stockData.push(cached)
+    } else {
+      uncachedIds.push(stockId)
+    }
+  }
+  if (stockDataCache.size > 0 && uncachedIds.length < targetStockIds.length) {
+    const hitCount = targetStockIds.length - uncachedIds.length
+    console.log(`[Backtest] Cache hit: ${hitCount}/${targetStockIds.length} stocks (${uncachedIds.length} to fetch)`)
   }
 
   // Concurrency-limited: each stock fires ~8 parallel endpoints (7 fundamentals + 1 info),
@@ -604,14 +642,9 @@ export async function backtestScorecard(
       return { stockId, fundamentals, info }
     }, 4)
 
-  const settled = await fetchStockData(targetStockIds)
-
-  // Process results, tracking failed IDs for retry
-  const failedIds: string[] = []
-  const processResults = (results: typeof settled) => {
+  const processResults = (results: Awaited<ReturnType<typeof fetchStockData>>) => {
     for (const result of results) {
       if (result.status === 'rejected') {
-        failedIds.push('unknown') // ID lost on rejection — tracked by count
         continue
       }
       const { stockId, fundamentals, info } = result.value
@@ -625,28 +658,32 @@ export async function backtestScorecard(
       if (!fundamentals.ttm && fundamentals.pnl.length === 0) {
         backtestWarnings.push(`${info.name}: No fundamental data (TTM/P&L) from API`)
       }
-      stockData.push({ stockId, fundamentals, info })
+      const entry: CachedStockData = { stockId, fundamentals, info }
+      stockData.push(entry)
+      stockDataCache.set(stockId, entry) // Cache for future runs
     }
   }
 
-  processResults(settled)
+  if (uncachedIds.length > 0) {
+    const settled = await fetchStockData(uncachedIds)
+    processResults(settled)
 
-  // ── Automatic retry for stocks that failed on first pass ──
-  // Identify which stock IDs didn't make it into stockData
-  const succeededIds = new Set(stockData.map(d => d.stockId))
-  const retryIds = targetStockIds.filter(id => !succeededIds.has(id))
-  if (retryIds.length > 0 && !signal?.aborted) {
-    console.log(`[Backtest] Retrying ${retryIds.length} failed stock data fetches...`)
-    const retrySettled = await fetchStockData(retryIds)
-    const beforeCount = stockData.length
-    processResults(retrySettled)
-    const recovered = stockData.length - beforeCount
-    if (recovered > 0) {
-      console.log(`[Backtest] Recovered ${recovered}/${retryIds.length} stocks on retry`)
-    }
-    const stillFailed = retryIds.length - recovered
-    if (stillFailed > 0) {
-      backtestWarnings.push(`${stillFailed} stocks failed data fetch even after retry`)
+    // ── Automatic retry for stocks that failed on first pass ──
+    const succeededIds = new Set(stockData.map(d => d.stockId))
+    const retryIds = uncachedIds.filter(id => !succeededIds.has(id))
+    if (retryIds.length > 0 && !signal?.aborted) {
+      console.log(`[Backtest] Retrying ${retryIds.length} failed stock data fetches...`)
+      const retrySettled = await fetchStockData(retryIds)
+      const beforeCount = stockData.length
+      processResults(retrySettled)
+      const recovered = stockData.length - beforeCount
+      if (recovered > 0) {
+        console.log(`[Backtest] Recovered ${recovered}/${retryIds.length} stocks on retry`)
+      }
+      const stillFailed = retryIds.length - recovered
+      if (stillFailed > 0) {
+        backtestWarnings.push(`${stillFailed} stocks failed data fetch even after retry`)
+      }
     }
   }
 
@@ -671,6 +708,9 @@ export async function backtestScorecard(
 
   const resConfig = extractResolutionConfig(scorecard, customMetrics)
 
+  // Track stocks that crash during scoring computation (not network — deterministic bugs)
+  const scoringCrashIds = new Set<string>()
+
   const scoreAtDate = (asOfDate: string): StockScoreResult[] => {
     const stocks: StockScoreResult[] = []
 
@@ -678,9 +718,19 @@ export async function backtestScorecard(
       const prices = priceHistoryWithVolume[stockId]
       if (!prices || prices.length === 0) continue
 
-      const resolved = resolveMetricsAtDate(fundamentals, prices, asOfDate, resConfig)
-      const scored = scoreStock(resolved.data, scorecard, info, resolved.context)
-      stocks.push({ ...scored, rank: 0 })
+      try {
+        const resolved = resolveMetricsAtDate(fundamentals, prices, asOfDate, resConfig)
+        const scored = scoreStock(resolved.data, scorecard, info, resolved.context)
+        stocks.push({ ...scored, rank: 0 })
+      } catch (err) {
+        // Log once per stock (not per interval) to avoid spam
+        if (!scoringCrashIds.has(stockId)) {
+          scoringCrashIds.add(stockId)
+          const msg = err instanceof Error ? err.message : String(err)
+          backtestWarnings.push(`${info.name} (${stockId}): Scoring crashed at ${asOfDate} — ${msg}`)
+          console.error(`[Backtest] scoreAtDate crash for ${info.name} (${stockId}) at ${asOfDate}:`, err)
+        }
+      }
     }
 
     // Rank by score descending
