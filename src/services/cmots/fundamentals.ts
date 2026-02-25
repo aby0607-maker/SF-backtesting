@@ -125,31 +125,27 @@ export interface FundamentalsBundle {
   shareholding: import('@/types/scoring').CMOTSShareholding[]
 }
 
-/** Timeout (ms) for the entire parallel fundamentals fetch */
-const FUNDAMENTALS_TIMEOUT_MS = 30_000
-
 /**
  * Fetch all fundamental data for a stock in one call.
- * Resolves co_code once, then passes it to all 7 endpoints fetched
- * in parallel with a 30s timeout.
+ * Resolves co_code once, then fetches all 7 endpoints in parallel.
+ * Uses Promise.allSettled so individual endpoint failures return defaults
+ * (null/[]) instead of killing all 7 fetches.
+ * Each individual fetch has its own 20s timeout (via fetchWithRetry in client.ts).
  */
 export async function getAllFundamentals(symbol: string): Promise<FundamentalsBundle> {
+  const emptyBundle: FundamentalsBundle = {
+    ttm: null, finData: [], pnl: [], cashFlow: [],
+    balanceSheet: [], quarterly: [], shareholding: [],
+  }
+
   // Resolve co_code once for all endpoints
   const coCode = await getCoCode(symbol)
   if (!coCode) {
     console.warn(`[Fundamentals] Could not resolve co_code for ${symbol} — returning empty bundle`)
-    return {
-      ttm: null,
-      finData: [],
-      pnl: [],
-      cashFlow: [],
-      balanceSheet: [],
-      quarterly: [],
-      shareholding: [],
-    }
+    return emptyBundle
   }
 
-  const dataPromise = Promise.all([
+  const results = await Promise.allSettled([
     getTTMData(symbol, coCode),
     getFinancialData(symbol, coCode),
     getProfitAndLoss(symbol, coCode),
@@ -159,22 +155,23 @@ export async function getAllFundamentals(symbol: string): Promise<FundamentalsBu
     getShareholdingHistory(symbol, coCode),
   ])
 
-  let timeoutId: ReturnType<typeof setTimeout>
-  const timeoutPromise = new Promise<never>((_, reject) => {
-    timeoutId = setTimeout(
-      () => reject(new Error(`[Fundamentals] Timeout after ${FUNDAMENTALS_TIMEOUT_MS}ms fetching data for ${symbol}`)),
-      FUNDAMENTALS_TIMEOUT_MS,
-    )
-  })
+  // Log any endpoint failures (non-fatal — we return defaults for failed endpoints)
+  const failedCount = results.filter(r => r.status === 'rejected').length
+  if (failedCount > 0) {
+    console.warn(`[Fundamentals] ${failedCount}/7 endpoints failed for ${symbol}`)
+  }
 
-  try {
-    const [ttm, finData, pnl, cashFlow, balanceSheet, quarterly, shareholding] = await Promise.race([
-      dataPromise,
-      timeoutPromise,
-    ])
-    return { ttm, finData, pnl, cashFlow, balanceSheet, quarterly, shareholding }
-  } finally {
-    clearTimeout(timeoutId!)
+  const val = <T,>(r: PromiseSettledResult<T>, fallback: T): T =>
+    r.status === 'fulfilled' ? r.value : fallback
+
+  return {
+    ttm: val(results[0], null),
+    finData: val(results[1], []),
+    pnl: val(results[2], []),
+    cashFlow: val(results[3], []),
+    balanceSheet: val(results[4], []),
+    quarterly: val(results[5], []),
+    shareholding: val(results[6], []),
   }
 }
 

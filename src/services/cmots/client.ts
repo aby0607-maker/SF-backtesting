@@ -18,6 +18,7 @@ import { cache } from '@/services/cache'
 
 const API_BASE = '/api/cmots'
 const DEFAULT_MAX_RETRIES = 3
+const PER_REQUEST_TIMEOUT_MS = 20_000  // 20s — below Vercel's 30s serverless limit
 
 interface CMOTSRequestOptions {
   /** Path segment after /api/cmots, e.g. '/TTMData/476/s' */
@@ -59,8 +60,11 @@ async function fetchWithRetry(
 ): Promise<Response> {
   let lastError: unknown
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), PER_REQUEST_TIMEOUT_MS)
     try {
-      const response = await fetch(url, init)
+      const response = await fetch(url, { ...init, signal: controller.signal })
+      clearTimeout(timeoutId)
       if (isRetryableStatus(response.status) && attempt < maxRetries) {
         const delay = getBackoffDelay(attempt)
         console.warn(
@@ -71,11 +75,12 @@ async function fetchWithRetry(
       }
       return response
     } catch (error) {
+      clearTimeout(timeoutId)
       lastError = error
       if (attempt < maxRetries) {
         const delay = getBackoffDelay(attempt)
         console.warn(
-          `[CMOTS] Network error for ${endpoint} — retry ${attempt + 1}/${maxRetries} in ${delay}ms`,
+          `[CMOTS] ${error instanceof DOMException ? 'Timeout' : 'Network error'} for ${endpoint} — retry ${attempt + 1}/${maxRetries} in ${delay}ms`,
         )
         await sleep(delay)
         continue

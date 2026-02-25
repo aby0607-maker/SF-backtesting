@@ -357,7 +357,15 @@ export async function scoreWithScorecard(
       continue
     }
 
-    const resolved = await resolveMetricValues(stockId, resConfig)
+    let resolved: Awaited<ReturnType<typeof resolveMetricValues>>
+    try {
+      resolved = await resolveMetricValues(stockId, resConfig)
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err)
+      warnings.push(`${info.name} (${stockId}): Data fetch failed — ${msg}`)
+      options?.onProgress?.(i + 1, total)
+      continue
+    }
     if (!resolved) {
       warnings.push(`${info.name} (${stockId}): No fundamental data from API`)
       options?.onProgress?.(i + 1, total)
@@ -555,14 +563,14 @@ export async function backtestScorecard(
   }
 
   // Concurrency-limited: each stock fires ~8 parallel endpoints (7 fundamentals + 1 info),
-  // so 8 concurrent stocks ≈ 64 logical requests — keeps pipeline full without flooding
+  // so 4 concurrent stocks ≈ 32 logical requests — keeps pipeline full without flooding
   const settled = await pMapSettled(targetStockIds, async (stockId) => {
     const [fundamentals, info] = await Promise.all([
       getAllFundamentals(stockId),
       getStockInfo(stockId),
     ])
     return { stockId, fundamentals, info }
-  }, 8)
+  }, 4)
 
   for (const result of settled) {
     if (result.status === 'rejected') {
