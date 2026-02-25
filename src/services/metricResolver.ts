@@ -781,9 +781,11 @@ function computeTechnicalFromPriceArray(
     const avgDenVol = recentDenVol.reduce((a, b) => a + b, 0) / recentDenVol.length
     volumeChange = avgDenVol > 0 ? avgNumVol / avgDenVol : null
 
-    const priceNDAgo = closes[closes.length - 1 - priceChangeDays]
-    if (priceNDAgo != null && priceNDAgo > 0) {
-      priceChange = ((currentPrice - priceNDAgo) / priceNDAgo) * 100
+    if (closes.length > priceChangeDays) {
+      const priceNDAgo = closes[closes.length - 1 - priceChangeDays]
+      if (priceNDAgo != null && priceNDAgo > 0) {
+        priceChange = ((currentPrice - priceNDAgo) / priceNDAgo) * 100
+      }
     }
   }
 
