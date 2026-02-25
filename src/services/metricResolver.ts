@@ -993,10 +993,17 @@ export async function resolveMetricValues(
   config?: MetricResolutionConfig,
 ): Promise<ResolvedMetrics | null> {
   // Fetch fundamentals + price data in parallel
-  const [fundamentals, priceResult] = await Promise.all([
-    getAllFundamentals(stockId),
-    fetchPriceDataForScoring(stockId),
-  ])
+  let fundamentals: Awaited<ReturnType<typeof getAllFundamentals>>
+  let priceResult: Awaited<ReturnType<typeof fetchPriceDataForScoring>>
+  try {
+    [fundamentals, priceResult] = await Promise.all([
+      getAllFundamentals(stockId),
+      fetchPriceDataForScoring(stockId),
+    ])
+  } catch (err) {
+    console.warn(`[MetricResolver] Failed to fetch data for ${stockId}:`, err instanceof Error ? err.message : err)
+    return null
+  }
   const technicalData = priceResult.technicalData
 
   const { ttm, finData, pnl, cashFlow, balanceSheet, quarterly, shareholding } = fundamentals

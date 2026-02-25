@@ -135,11 +135,11 @@ export async function getBatchPrices(
   // Fetch historical + optionally real-time in parallel
   // Historical fetches are concurrency-limited to avoid flooding the browser connection pool
   const [_, delayedFeed] = await Promise.all([
-    // Historical fetch for all symbols (max 10 concurrent)
+    // Historical fetch for all symbols (max 6 concurrent — matches browser connection limit)
     pMap(symbols, async (symbol) => {
       const data = await getHistoricalPrices(symbol, from, to)
       result[symbol] = data
-    }, 10),
+    }, 6),
     // Delayed feed (only if needed)
     needsRealtime ? getDelayedPriceFeed() : Promise.resolve(null),
   ])
