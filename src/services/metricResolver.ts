@@ -50,7 +50,9 @@ const CF_ROW_OCF = 68       // "Net Cash Generated from (Used In) Operations"
 const BS_ROW_FIXED_ASSETS = 2     // "Fixed Assets" (Gross Block)
 const BS_ROW_CASH = 29            // "Cash and Cash Equivalents"
 const BS_ROW_ST_BORROWINGS = 44   // "Short term Borrowings"
+const BS_ROW_LEASE_CURRENT = 45   // "Lease Liabilities (Current)"
 const BS_ROW_LT_BORROWINGS = 58   // "Long term Borrowings"
+const BS_ROW_LEASE_NC = 62        // "Lease Liabilities (Non Current)"
 const BS_ROW_SHAREHOLDERS_FUND = 80 // "Total Shareholder's Fund"
 const BS_ROW_SHARES_OUTSTANDING = 91 // "Susbcribed & fully Paid up Shares"
 
@@ -543,8 +545,15 @@ function compute5YAvgValuation(
 
   const avg = (arr: number[]) => arr.length > 0 ? arr.reduce((a, b) => a + b, 0) / arr.length : null
 
+  // PE uses harmonic mean (≥2 positive-PE years required)
+  const harmonicMean = (arr: number[]) => {
+    if (arr.length < 2) return null
+    const reciprocalSum = arr.reduce((sum, v) => sum + 1 / v, 0)
+    return arr.length / reciprocalSum
+  }
+
   return {
-    avgPE: avg(peValues),
+    avgPE: harmonicMean(peValues),
     avgPB: avg(pbValues),
     avgEV: avg(evValues),
   }
@@ -630,7 +639,7 @@ function computeAvgROEv4(
   return roeValues.reduce((a, b) => a + b, 0) / roeValues.length
 }
 
-/** Debt/EBITDA = (LT Borrowings + ST Borrowings) / EBITDA */
+/** Net Debt/EBITDA = (LT + ST Borrowings + Lease Liabilities - Cash) / EBITDA */
 function computeHistoricalDebtEBITDA(
   pnl: CMOTSStatementRow[],
   balanceSheet: CMOTSStatementRow[],
@@ -644,14 +653,21 @@ function computeHistoricalDebtEBITDA(
   const ebitdaVal = getStatementValue(ebitdaRow, ebitdaCols[0])
   if (!ebitdaVal || ebitdaVal === 0) return null
 
-  const ltRow = findStatementRow(balanceSheet, BS_ROW_LT_BORROWINGS)
-  const stRow = findStatementRow(balanceSheet, BS_ROW_ST_BORROWINGS)
-  const ltCols = ltRow ? windowYearColumns(ltRow, asOfDate) : []
-  const stCols = stRow ? windowYearColumns(stRow, asOfDate) : []
-  const ltDebt = ltCols.length > 0 && ltRow ? (getStatementValue(ltRow, ltCols[0]) ?? 0) : 0
-  const stDebt = stCols.length > 0 && stRow ? (getStatementValue(stRow, stCols[0]) ?? 0) : 0
+  const getLatestVal = (rowNo: number) => {
+    const row = findStatementRow(balanceSheet, rowNo)
+    if (!row) return 0
+    const cols = windowYearColumns(row, asOfDate)
+    return cols.length > 0 ? (getStatementValue(row, cols[0]) ?? 0) : 0
+  }
 
-  return (ltDebt + stDebt) / ebitdaVal
+  const ltDebt = getLatestVal(BS_ROW_LT_BORROWINGS)
+  const stDebt = getLatestVal(BS_ROW_ST_BORROWINGS)
+  const leaseCurrent = getLatestVal(BS_ROW_LEASE_CURRENT)
+  const leaseNC = getLatestVal(BS_ROW_LEASE_NC)
+  const cash = getLatestVal(BS_ROW_CASH)
+
+  const netDebt = ltDebt + stDebt + leaseCurrent + leaseNC - cash
+  return netDebt / ebitdaVal
 }
 
 // ─────────────────────────────────────────────────
