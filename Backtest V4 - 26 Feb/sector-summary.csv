@@ -1,0 +1,83 @@
+sector,stock_count,avg_score,avg_return_pct,median_return_pct,correlation,best_stock,best_return,worst_stock,worst_return
+"Trading",312,50.37,29.42,-28.28,-0.13,"Swadeshi Industries & Leasing Ltd",4122.6,"Spright Agro Ltd",-96.22
+"Textiles",228,51.53,-13.98,-28.21,-0.138,"Surbhi Industries Ltd",394.55,"Sybly Industries Ltd",-74.2
+"IT - Software",192,55.95,-6.89,-33.83,-0.194,"Colab Platforms Ltd",922.25,"R S Software (India) Ltd",-81.42
+"Finance",179,43.39,21.34,-25.92,0.08,"Stellant Securities (India) Ltd",2311.22,"Money Masters Leasing & Finance Ltd",-90.45
+"Pharmaceuticals",167,54.65,-12.55,-23.22,0.041,"Shukra Pharmaceuticals Ltd",248.22,"Remedium Lifecare Ltd",-75
+"Chemicals",161,58.45,-18.88,-26.81,0.063,"Indokem Ltd",403.67,"Sadhana Nitro Chem Ltd",-82.7
+"Realty",147,50.88,-11.37,-28.34,-0.094,"Emrock Corporation Limited",1320.37,"Zodiac Ventures Ltd",-84.66
+"Miscellaneous",123,53.26,-7.07,-21.44,0.048,"Trade-Wings Ltd",1110.21,"AGS Transact Technologies Ltd",-94.59
+"FMCG",120,57.22,1.21,-15.03,-0.034,"Apis India Ltd",460.11,"NHC Foods Ltd",-75.54
+"Steel",99,54.64,47.29,-21.27,-0.036,"Steelco Gujarat Ltd",4354.55,"Alliance Integrated Metaliks Ltd",-84.5
+"Capital Goods-Non Electrical Equipment",97,56.45,21.94,-26.9,0.14,"Axis Solutions Ltd",4405.54,"Rajoo Engineers Ltd",-75.4
+"Auto Ancillaries",96,61.1,1.83,-7.29,0.263,"Lumax Auto Technologies Ltd",173.63,"Containe Technologies Ltd",-85.73
+"Infrastructure Developers & Operators",84,53.75,-31.27,-39.12,0.077,"Brahmaputra Infrastructure Ltd",226.66,"Gensol Engineering Ltd",-96.62
+"Packaging",65,55.99,-23.31,-24.9,0.002,"Commercial Syn Bags Ltd",77.08,"Rajeshwari Cans Ltd",-92.93
+"Hotels & Restaurants",61,54.02,-12.47,-21.35,0.09,"Spice Islands Industries Ltd",500.93,"Phoenix Township Ltd",-66.08
+"Entertainment",60,52.68,-17.07,-30.32,-0.131,"Bluegod Entertainment Ltd",271.28,"Dish TV India Ltd",-71.79
+"Plastic products",60,57.59,-19.44,-29.67,-0.28,"Jauss Polymers Ltd",298.14,"OK Play India Ltd",-71.02
+"Consumer Durables",60,55.41,12.14,-30.87,-0.282,"Glittek Granites Ltd",1364.19,"Cosmo Ferrites Ltd",-59.06
+"Healthcare",58,57.2,6.37,-6.55,-0.449,"Genesis IBRC India Ltd",326.85,"Deccan Health Care Ltd",-56.37
+"Capital Goods - Electrical Equipment",57,54.12,-19.82,-35.07,0.157,"Dhanashree Electronics Ltd",199.21,"Epic Energy Ltd",-73.39
+"Diamond, Gems and Jewellery",53,56.3,32.18,-21.28,-0.174,"Vega Jewellers Ltd",2127.18,"Sovereign Diamonds Ltd",-69.67
+"Retail",50,54.99,-11.3,-32.87,0.035,"Vaxfab Enterprises Ltd",393.74,"Retro Green Revolution Ltd",-83.98
+"Construction",45,50.46,-20,-16.86,-0.039,"Neo Infracon Ltd",64.35,"SKIL Infrastructure Ltd",-78.12
+"Castings, Forgings & Fastners",41,60.09,-5.69,-7.55,0.132,"Taparia Tools Ltd",104.46,"Hilton Metal Forging Ltd",-78.69
+"Logistics",39,57.97,-25.83,-34.3,0.219,"Cargotrans Maritime Ltd",72.39,"Lancer Containers Lines Ltd",-72.82
+"Paper",34,60.14,-15.15,-30.29,-0.254,"S. V. J. Enterprises Ltd",263.65,"Astron Paper & Board Mill Ltd",-81.18
+"Sugar",34,54.63,37.57,-35.23,-0.446,"Oswal Overseas Ltd",2396.11,"Kesar Enterprises Ltd",-63.43
+"Stock/ Commodity Brokers",34,44.18,-22.43,-36.4,0.108,"Relic Technologies Ltd",224.56,"KBS India Ltd",-86.36
+"Diversified",32,52.96,62.01,-31.78,0.1,"Arunis Abode Ltd",2524.04,"Indrayani Biotech Ltd",-77.37
+"Power Generation & Distribution",32,49.84,-11.59,-20.13,0.458,"Ujaas Energy Ltd",71.2,"Indowind Energy Ltd",-60.42
+"Plantation & Plantation Products",31,49.63,-8.29,-30.05,-0.145,"Norben Tea & Exports Ltd",377.39,"Indong Tea Company  Ltd",-71.26
+"Cement",30,57.38,-11.05,-13.32,0.259,"J K Cements Ltd",24.13,"Orient Cement Ltd",-54.06
+"Non Ferrous Metals",27,54.65,35.47,-9.3,-0.12,"Synthiko Foils Ltd",800.82,"Sprayking Ltd",-70.64
+"Aerospace & Defence",27,55.73,172.4,2.17,-0.015,"RRP Defense Ltd",4233.59,"Nibe Ordnance & Maritime Ltd",-67.93
+"Agro Chemicals",24,57.33,-15.07,-23.94,0.258,"NACL Industries Ltd",136.91,"Shivalik Rasayan Ltd",-64.33
+"E-Commerce/App based Aggregator",21,55.93,28.64,-31.73,-0.391,"Citizen Infoline Ltd",891.93,"Pace E-Commerce Ventures Ltd",-54.23
+"Alcoholic Beverages",20,56.84,-16.85,-24.12,0.437,"IFB Agro Industries Ltd",55.9,"Tahmar Enterprises Ltd",-69.54
+"Mining & Mineral products",20,51.98,-4.82,-7.7,0.222,"Gujarat Mineral Development Corporation Ltd",71.34,"Southern Magnesium & Chemicals Ltd",-73.5
+"Automobile",19,60.54,28.78,15.06,0.081,"Force Motors Ltd",278.71,"Wardwizard Innovations & Mobility Ltd",-82.31
+"Leather",19,56.68,-9.97,-29.55,-0.326,"Mayur Leather Products Ltd",235.22,"AKI India Ltd",-63.49
+"Fertilizers",17,53.25,-3.1,-8.92,0.819,"Mangalore Chemicals & Fertilizers Ltd",97.69,"Basant Agro Tech (India) Ltd",-40.45
+"Education",17,48.07,-27.45,-42.64,0.226,"Ascensive Educare Ltd",48.5,"Vantage Knowledge Academy Ltd",-98.48
+"Cables",17,57,-17.34,-24.71,0.024,"Sterlite Technologies Ltd",99.76,"Relicab Cable Manufacturing Ltd",-62.33
+"Edible Oil",17,49.47,-15.75,-27.85,-0.142,"CIAN Agro Industries & Infrastructure Ltd",147.13,"Ambo Agritec Ltd",-69.78
+"Media - Print/Television/Radio",16,55.59,-26.84,-33.13,0.116,"Sharpline Broadcast Ltd",15.73,"Network 18 Media & Investments Ltd",-53.73
+"Readymade Garments/ Apparells",15,55.13,-29.93,-39.13,-0.422,"Pearl Global Industries Ltd",10.05,"Vedant Fashions Ltd",-68.22
+"Engineering",13,54.37,-16.7,-14.14,0.447,"Mewar Hi-Tech Engineering Ltd",16.88,"Affordable Robotic & Automation Ltd",-71.16
+"Telecom Equipment & Infra Services",12,55.41,-11.89,-31.61,-0.043,"Valiant Communications Ltd",180.9,"Tejas Networks Ltd",-74.04
+"Printing & Stationery",12,54.14,-32.62,-33.76,0.605,"Navneet Education Ltd",8.55,"Gala Global Products Ltd",-57.06
+"Plywood Boards/Laminates",12,58.69,-23.96,-24.92,-0.072,"Ambition Mica Ltd",0,"Rushil Decor Ltd",-44.63
+"Telecom-Service",12,51.67,-27.08,-31.79,-0.188,"Vodafone Idea Ltd",43.64,"Nettlinx Ltd",-76.58
+"Bearings",10,60.61,-18.63,-13.94,0.356,"Schaeffler India Ltd",28.23,"Galaxy Bearings Ltd",-54.38
+"Petrochemicals",10,56.88,-29.44,-34.03,-0.094,"Tamil Nadu Petro Products Ltd",13.62,"Agarwal Industrial Corporation Ltd",-57.58
+"Electronics",9,51.99,5.62,-15.4,0.513,"CWD Ltd",89,"Danlaw Technologies India Ltd",-60.81
+"Tyres",9,64.11,-2.58,-10.16,0.606,"JK Tyre & Industries Ltd",39.95,"Tirupati Innovar Limited",-50.18
+"Shipping",9,47.04,-25.34,-32.2,0.195,"Great Eastern Shipping Company Ltd",39.03,"Seacoast Shipping Services Ltd",-75.85
+"Glass & Glass Products",8,60.17,-17.62,-20.59,-0.096,"Asahi India Glass Ltd",25.02,"Haldyn Glass Ltd",-40.17
+"Refractories",8,57.14,-12.49,-14.37,0.413,"Vesuvius India Ltd",7.68,"Orient Ceratech Ltd",-24.34
+"Ferro Alloys",8,47.98,-14.03,-14.59,0.358,"Indian Metals & Ferro Alloys Ltd",45.83,"Shyam Century Ferrous Ltd",-61.64
+"Paints/Varnish",7,74.67,-10.73,-11.21,0.364,"Sirca Paints India Ltd",38.51,"Shalimar Paints Ltd",-57.09
+"Gas Distribution",7,67.05,-13.71,-14.8,0.549,"Mahanagar Gas Ltd",-3.71,"Gujarat Gas Ltd",-19.71
+"Refineries",7,67.03,17.54,30.55,0.372,"Chennai Petroleum Corporation Ltd",54.07,"Resgen Ltd",-48.59
+"IT - Hardware",7,55.87,-23.25,-25.33,0.206,"TVS Electronics Ltd",-3.85,"Cerebra Integrated Technologies Ltd",-49.14
+"Quick Service Restaurant",7,65.32,-23.47,-26.63,-0.415,"Coffee Day Enterprises Ltd",27.07,"United Foodbrands Ltd",-47.42
+"Crude Oil & Natural Gas",7,56.63,48.63,-18.31,-0.724,"Gujarat Natural Resources Ltd",438.2,"Deep Industries Ltd",-39.93
+"Ceramic Products",7,59.84,-20.14,-15.54,-0.641,"Asian Granito India Ltd",7.95,"Murudeshwar Ceramics Ltd",-39.12
+"Tobacco Products",7,53.32,64.78,-28.1,-0.46,"Elitecon International Ltd",559.11,"The Indian Wood Products Company Ltd",-41.25
+"Cement - Products",7,51.96,-33.74,-39.38,-0.007,"Ramco Industries Ltd",7.98,"Kanoria Energy & Infrastructure Ltd",-51.83
+"Ship Building",6,47.86,12635.32,-4.69,-0.258,"Swan Defence and Heavy Industries Ltd",75842.73,"VMS Industries Ltd",-37.81
+"Computer Education",6,52.2,-42.08,-43.07,0.146,"Jetking Infotrain Ltd",-16.86,"NIIT Ltd",-60.49
+"Infrastructure Investment Trusts",5,59.74,6.55,5.58,-0.15,"National Highways Infra Trust",15.05,"Energy Infrastructure Trust",-6.07
+"Financial Services",4,60.44,1.32,-27.71,0,"Multi Commodity Exchange of India Ltd",93.04,"KFin Technologies Ltd",-32.33
+"Air Transport Service",4,50.14,-38.09,-38.41,0,"TAAL Tech Ltd",-0.86,"SpiceJet Ltd",-74.69
+"Credit Rating Agencies",3,66.52,-2.84,-8.34,0,"CARE Ratings Ltd",20.5,"CRISIL Ltd",-20.68
+"Real Estate Investment Trusts",3,65.46,23.41,23.67,0,"Mindspace Business Parks REIT",32.09,"Embassy Office Parks REIT",14.46
+"Insurance",3,55.78,22.92,18.12,0,"SBI Life Insurance Company Ltd",49.51,"ICICI Prudential Life Insurance Company Ltd",1.13
+"Dry cells",3,51.31,-30.57,-36.03,0,"Eveready Industries India Ltd",-18.01,"Indo National Ltd",-37.66
+"Oil Drill/Allied",2,51.9,-25.93,-25.93,0,"Duke Offshore Ltd",-12.19,"Jindal Drilling & Industries Ltd",-39.67
+"Marine Port & Services",2,52.04,14.16,14.16,0,"Adani Ports & Special Economic Zone Ltd",29.25,"Gujarat Pipavav Port Ltd",-0.94
+"Railways",1,63.45,-23.26,-23.26,0,"Indian Railway Catering & Tourism Corporation Ltd",-23.26,"Indian Railway Catering & Tourism Corporation Ltd",-23.26
+"Power Infrastructure",1,54.34,-35.45,-35.45,0,"Waaree Renewable Technologies Ltd",-35.45,"Waaree Renewable Technologies Ltd",-35.45
+"Telecom-Handsets/Mobile",1,30.83,0,0,0,"Prabhat Technologies (India) Ltd",0,"Prabhat Technologies (India) Ltd",0
