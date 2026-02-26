@@ -48,7 +48,9 @@ const CF_ROW_OCF = 68       // "Net Cash Generated from (Used In) Operations"
 
 // Balance Sheet rows
 const BS_ROW_FIXED_ASSETS = 2     // "Fixed Assets" (Gross Block)
+const BS_ROW_CURRENT_INVESTMENTS = 27 // "Current Investments"
 const BS_ROW_CASH = 29            // "Cash and Cash Equivalents"
+const BS_ROW_BANK_BALANCES = 30   // "Bank Balances Other Than Cash and Cash Equivalents"
 const BS_ROW_ST_BORROWINGS = 44   // "Short term Borrowings"
 const BS_ROW_LEASE_CURRENT = 45   // "Lease Liabilities (Current)"
 const BS_ROW_LT_BORROWINGS = 58   // "Long term Borrowings"
@@ -322,7 +324,7 @@ function mapCMOTSToMetricIds(
   // V4 Gross Block = YoY growth (not CAGR like V2). CSV: (FY5-FY4)/FY4 × 100
   metrics['v4_gross_block'] = balanceSheet.length > 0
     ? computeStatementYoYGrowth(balanceSheet, BS_ROW_FIXED_ASSETS, asOfDate)
-    : metrics['v2_gross_block']  // fallback to FinData CAGR if no balance sheet
+    : null  // No fallback — BS required per SME
   metrics['v4_debt_ebitda'] = metrics['v2_debt_ebitda']  // Bands differ but raw value is same
 
   // NEW: Earnings = PBT minus Other Income, 5Y CAGR
@@ -433,19 +435,31 @@ function computeHistoricalValuation(
       // MCap in crores: (price × sharesCount) / 1e7
       const mcapCr = (priceAtDate * sharesCount) / 10000000
 
-      // Debt = LT Borrowings + ST Borrowings (in crores)
+      // Debt = LT Borrowings + ST Borrowings + Lease Liabilities (in crores)
       const ltDebtRow = findStatementRow(balanceSheet, BS_ROW_LT_BORROWINGS)
       const stDebtRow = findStatementRow(balanceSheet, BS_ROW_ST_BORROWINGS)
+      const leaseCurrentRow = findStatementRow(balanceSheet, BS_ROW_LEASE_CURRENT)
+      const leaseNCRow = findStatementRow(balanceSheet, BS_ROW_LEASE_NC)
       const ltCols = ltDebtRow ? windowYearColumns(ltDebtRow, asOfDate) : []
       const stCols = stDebtRow ? windowYearColumns(stDebtRow, asOfDate) : []
       const ltDebt = ltCols.length > 0 && ltDebtRow ? (getStatementValue(ltDebtRow, ltCols[0]) ?? 0) : 0
       const stDebt = stCols.length > 0 && stDebtRow ? (getStatementValue(stDebtRow, stCols[0]) ?? 0) : 0
-      const totalDebt = ltDebt + stDebt
+      const leaseCurCols = leaseCurrentRow ? windowYearColumns(leaseCurrentRow, asOfDate) : []
+      const leaseNCCols = leaseNCRow ? windowYearColumns(leaseNCRow, asOfDate) : []
+      const leaseCur = leaseCurCols.length > 0 && leaseCurrentRow ? (getStatementValue(leaseCurrentRow, leaseCurCols[0]) ?? 0) : 0
+      const leaseNC = leaseNCCols.length > 0 && leaseNCRow ? (getStatementValue(leaseNCRow, leaseNCCols[0]) ?? 0) : 0
+      const totalDebt = ltDebt + stDebt + leaseCur + leaseNC
 
-      // Cash (in crores)
+      // Cash + Bank Balances + Current Investments (in crores)
       const cashRow = findStatementRow(balanceSheet, BS_ROW_CASH)
+      const bankBalRow = findStatementRow(balanceSheet, BS_ROW_BANK_BALANCES)
+      const curInvRow = findStatementRow(balanceSheet, BS_ROW_CURRENT_INVESTMENTS)
       const cashCols = cashRow ? windowYearColumns(cashRow, asOfDate) : []
-      const cash = cashCols.length > 0 && cashRow ? (getStatementValue(cashRow, cashCols[0]) ?? 0) : 0
+      const bankBalCols = bankBalRow ? windowYearColumns(bankBalRow, asOfDate) : []
+      const curInvCols = curInvRow ? windowYearColumns(curInvRow, asOfDate) : []
+      const cash = (cashCols.length > 0 && cashRow ? (getStatementValue(cashRow, cashCols[0]) ?? 0) : 0)
+        + (bankBalCols.length > 0 && bankBalRow ? (getStatementValue(bankBalRow, bankBalCols[0]) ?? 0) : 0)
+        + (curInvCols.length > 0 && curInvRow ? (getStatementValue(curInvRow, curInvCols[0]) ?? 0) : 0)
 
       const ev = mcapCr + totalDebt - cash
       evEbitda = ev / ebitdaVal
@@ -482,7 +496,11 @@ function compute5YAvgValuation(
   const sharesRow = findStatementRow(balanceSheet, BS_ROW_SHARES_OUTSTANDING)
   const ltDebtRow = findStatementRow(balanceSheet, BS_ROW_LT_BORROWINGS)
   const stDebtRow = findStatementRow(balanceSheet, BS_ROW_ST_BORROWINGS)
+  const leaseCurrentRow = findStatementRow(balanceSheet, BS_ROW_LEASE_CURRENT)
+  const leaseNCRow = findStatementRow(balanceSheet, BS_ROW_LEASE_NC)
   const cashRow = findStatementRow(balanceSheet, BS_ROW_CASH)
+  const bankBalRow = findStatementRow(balanceSheet, BS_ROW_BANK_BALANCES)
+  const curInvRow = findStatementRow(balanceSheet, BS_ROW_CURRENT_INVESTMENTS)
 
   // Use any available row to determine year columns
   const referenceRow = epsRow || ebitdaRow || shFundRow
@@ -526,7 +544,7 @@ function compute5YAvgValuation(
       }
     }
 
-    // EV/EBITDA = (MCap + Debt - Cash) / EBITDA at this FY-end
+    // EV/EBITDA = (MCap + Debt + Leases - Cash) / EBITDA at this FY-end
     if (ebitdaRow && sharesRow) {
       const ebitda = getStatementValue(ebitdaRow, col)
       const shares = getStatementValue(sharesRow, col)
@@ -534,8 +552,12 @@ function compute5YAvgValuation(
         const mcapCr = (fyPrice * shares) / 10000000
         const ltDebt = ltDebtRow ? (getStatementValue(ltDebtRow, col) ?? 0) : 0
         const stDebt = stDebtRow ? (getStatementValue(stDebtRow, col) ?? 0) : 0
-        const cash = cashRow ? (getStatementValue(cashRow, col) ?? 0) : 0
-        const ev = mcapCr + ltDebt + stDebt - cash
+        const leaseCur = leaseCurrentRow ? (getStatementValue(leaseCurrentRow, col) ?? 0) : 0
+        const leaseNC = leaseNCRow ? (getStatementValue(leaseNCRow, col) ?? 0) : 0
+        const cash = (cashRow ? (getStatementValue(cashRow, col) ?? 0) : 0)
+          + (bankBalRow ? (getStatementValue(bankBalRow, col) ?? 0) : 0)
+          + (curInvRow ? (getStatementValue(curInvRow, col) ?? 0) : 0)
+        const ev = mcapCr + ltDebt + stDebt + leaseCur + leaseNC - cash
         if (ev > 0) {
           evValues.push(ev / ebitda)
         }
@@ -543,9 +565,7 @@ function compute5YAvgValuation(
     }
   }
 
-  const avg = (arr: number[]) => arr.length > 0 ? arr.reduce((a, b) => a + b, 0) / arr.length : null
-
-  // PE uses harmonic mean (≥2 positive-PE years required)
+  // All valuation averages use harmonic mean (≥2 positive years required)
   const harmonicMean = (arr: number[]) => {
     if (arr.length < 2) return null
     const reciprocalSum = arr.reduce((sum, v) => sum + 1 / v, 0)
@@ -554,8 +574,8 @@ function compute5YAvgValuation(
 
   return {
     avgPE: harmonicMean(peValues),
-    avgPB: avg(pbValues),
-    avgEV: avg(evValues),
+    avgPB: harmonicMean(pbValues),
+    avgEV: harmonicMean(evValues),
   }
 }
 
@@ -632,6 +652,7 @@ function computeAvgROEv4(
     }
 
     if (avgEquity === 0) continue
+    if (pat <= 0) continue  // Exclude negative-PAT years from ROE average per SME
     roeValues.push((pat / avgEquity) * 100)
   }
 
@@ -664,7 +685,7 @@ function computeHistoricalDebtEBITDA(
   const stDebt = getLatestVal(BS_ROW_ST_BORROWINGS)
   const leaseCurrent = getLatestVal(BS_ROW_LEASE_CURRENT)
   const leaseNC = getLatestVal(BS_ROW_LEASE_NC)
-  const cash = getLatestVal(BS_ROW_CASH)
+  const cash = getLatestVal(BS_ROW_CASH) + getLatestVal(BS_ROW_BANK_BALANCES) + getLatestVal(BS_ROW_CURRENT_INVESTMENTS)
 
   const netDebt = ltDebt + stDebt + leaseCurrent + leaseNC - cash
   return netDebt / ebitdaVal
