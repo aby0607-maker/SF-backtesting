@@ -1,6 +1,6 @@
-verdict,stock_count,avg_score,avg_return_pct,median_return_pct,hit_rate_positive,pct_of_universe
-STRONG BUY,37,82.41,-13.66,-15.59,32.43,1.09
-BUY,533,70.12,-1.34,-20.29,27.39,15.69
-HOLD,1550,57.32,-5.22,-26.94,22.58,45.64
-REVIEW,1133,43.64,73.8,-25.92,25.24,33.36
-SELL,143,32.79,23.78,-26.87,23.78,4.21
+verdict,stock_count,avg_score,avg_return_pct,winsorized_avg_return_pct,median_return_pct,hit_rate_positive,pct_of_universe
+STRONG BUY,37,82.41,-13.66,-13.66,-15.59,32.43,1.09
+BUY,533,70.12,-1.34,-11.33,-20.29,27.39,15.69
+HOLD,1550,57.32,-5.22,-15.58,-26.94,22.58,45.64
+REVIEW,1133,43.64,73.8,-11.04,-25.92,25.24,33.36
+SELL,143,32.79,23.78,-4.01,-26.87,23.78,4.21

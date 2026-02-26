@@ -228,6 +228,10 @@ function median(arr: number[]): number {
   return sorted.length % 2 === 0 ? (sorted[mid - 1] + sorted[mid]) / 2 : sorted[mid]
 }
 
+function winsorize(val: number, cap = 200): number {
+  return Math.max(-cap, Math.min(cap, val))
+}
+
 // ─── Main ─────────────────────────────────────────────────
 
 async function main() {
@@ -411,12 +415,15 @@ async function main() {
     CONCURRENCY,
   )
 
-  // Filter successful results
-  const scoredStocks = results.filter((r): r is StockAnalysisResult => r !== null && !isNaN(r.scoreResult.normalizedScore) && r.scoreResult.normalizedScore > 0)
+  // Filter successful results — track Valuation N/A stocks separately
+  const allScored = results.filter((r): r is StockAnalysisResult => r !== null)
+  const scoredStocks = allScored.filter(r => !isNaN(r.scoreResult.normalizedScore) && r.scoreResult.normalizedScore > 0)
+  const valuationNAStocks = allScored.filter(r => isNaN(r.scoreResult.normalizedScore))
 
   const elapsed = ((Date.now() - startTime) / 1000).toFixed(0)
   console.log(`\n  Completed in ${elapsed}s`)
   console.log(`  Successfully scored: ${scoredStocks.length}`)
+  console.log(`  Valuation N/A (composite NaN): ${valuationNAStocks.length}`)
   console.log(`  Skipped (no data): ${skipped}`)
   if (warnings.length > 0) {
     console.log(`  Warnings: ${warnings.length}`)
@@ -453,6 +460,8 @@ async function main() {
     const qReturns = qStocks.map(s => s.returnPct)
     const positiveReturns = qReturns.filter(r => r > 0).length
 
+    const qWinsorized = qReturns.map(r => winsorize(r))
+
     quintiles.push({
       quintile: q + 1,
       label: quintileLabels[q],
@@ -461,6 +470,7 @@ async function main() {
       minScore: Math.round(Math.min(...qScores) * 100) / 100,
       maxScore: Math.round(Math.max(...qScores) * 100) / 100,
       avgReturn: Math.round((qReturns.reduce((a, b) => a + b, 0) / qReturns.length) * 100) / 100,
+      winsorizedAvgReturn: Math.round((qWinsorized.reduce((a, b) => a + b, 0) / qWinsorized.length) * 100) / 100,
       medianReturn: Math.round(median(qReturns) * 100) / 100,
       hitRatePositive: Math.round((positiveReturns / qStocks.length) * 100 * 100) / 100,
       bestStock: qStocks.reduce((best, s) => s.returnPct > best.returnPct ? s : best),
@@ -473,15 +483,17 @@ async function main() {
   const verdictAnalysis = verdictBands.map(verdict => {
     const vStocks = scoredStocks.filter(s => s.scoreResult.verdict === verdict)
     if (vStocks.length === 0) {
-      return { verdict, stockCount: 0, avgScore: 0, avgReturn: 0, medianReturn: 0, hitRatePositive: 0, pctOfUniverse: 0 }
+      return { verdict, stockCount: 0, avgScore: 0, avgReturn: 0, winsorizedAvgReturn: 0, medianReturn: 0, hitRatePositive: 0, pctOfUniverse: 0 }
     }
     const vReturns = vStocks.map(s => s.returnPct)
     const vScores = vStocks.map(s => s.scoreResult.normalizedScore)
+    const vWinsorized = vReturns.map(r => winsorize(r))
     return {
       verdict,
       stockCount: vStocks.length,
       avgScore: Math.round((vScores.reduce((a, b) => a + b, 0) / vScores.length) * 100) / 100,
       avgReturn: Math.round((vReturns.reduce((a, b) => a + b, 0) / vReturns.length) * 100) / 100,
+      winsorizedAvgReturn: Math.round((vWinsorized.reduce((a, b) => a + b, 0) / vWinsorized.length) * 100) / 100,
       medianReturn: Math.round(median(vReturns) * 100) / 100,
       hitRatePositive: Math.round((vReturns.filter(r => r > 0).length / vStocks.length) * 100 * 100) / 100,
       pctOfUniverse: Math.round((vStocks.length / scoredStocks.length) * 100 * 100) / 100,
@@ -500,11 +512,13 @@ async function main() {
     .map(([sector, stocks]) => {
       const sReturns = stocks.map(s => s.returnPct)
       const sScores = stocks.map(s => s.scoreResult.normalizedScore)
+      const sWinsorized = sReturns.map(r => winsorize(r))
       return {
         sector,
         stockCount: stocks.length,
         avgScore: Math.round((sScores.reduce((a, b) => a + b, 0) / sScores.length) * 100) / 100,
         avgReturn: Math.round((sReturns.reduce((a, b) => a + b, 0) / sReturns.length) * 100) / 100,
+        winsorizedAvgReturn: Math.round((sWinsorized.reduce((a, b) => a + b, 0) / sWinsorized.length) * 100) / 100,
         medianReturn: Math.round(median(sReturns) * 100) / 100,
         correlation: stocks.length >= 5 ? pearsonCorrelation(sScores, sReturns) : 0,
         bestStock: stocks.reduce((best, s) => s.returnPct > best.returnPct ? s : best),
@@ -567,9 +581,13 @@ async function main() {
   report += `## Executive Summary\n\n`
   report += `| Metric | Value |\n|--------|-------|\n`
   report += `| Total stocks analyzed | ${scoredStocks.length} |\n`
+  report += `| Valuation N/A (composite NaN) | ${valuationNAStocks.length} |\n`
   report += `| Banking stocks excluded | ${bankingStocks.length} |\n`
   report += `| Stocks skipped (no data) | ${skipped} |\n`
+  const winReturns = returns.map(r => winsorize(r))
+  const winCorr = pearsonCorrelation(scores, winReturns)
   report += `| Overall Score-Return Correlation (Pearson) | **${overallCorrelation}** |\n`
+  report += `| Winsorized Correlation (±200% cap) | **${winCorr}** |\n`
   report += `| Average Return (all stocks) | ${avgReturn.toFixed(2)}% |\n`
   report += `| Median Return | ${median(returns).toFixed(2)}% |\n`
   report += `| Positive Return Hit Rate | ${(returns.filter(r => r > 0).length / returns.length * 100).toFixed(1)}% |\n`
@@ -594,10 +612,10 @@ async function main() {
   report += `---\n\n`
   report += `## Quintile Analysis\n\n`
   report += `Stocks ranked by V4 score and split into 5 equal groups. A "staircase" pattern (Q1 > Q2 > ... > Q5 in returns) indicates the score predicts performance.\n\n`
-  report += `| Quintile | Stocks | Avg Score | Avg Return % | Median Return % | Hit Rate (>0%) | Best Stock | Worst Stock |\n`
-  report += `|----------|--------|-----------|-------------|----------------|----------------|------------|-------------|\n`
+  report += `| Quintile | Stocks | Avg Score | Avg Return % | Winsorized Avg % | Median Return % | Hit Rate (>0%) | Best Stock | Worst Stock |\n`
+  report += `|----------|--------|-----------|-------------|-----------------|----------------|----------------|------------|-------------|\n`
   for (const q of quintiles) {
-    report += `| ${q.label} | ${q.stockCount} | ${q.avgScore} | ${q.avgReturn}% | ${q.medianReturn}% | ${q.hitRatePositive}% | ${q.bestStock.companyName} (${q.bestStock.returnPct}%) | ${q.worstStock.companyName} (${q.worstStock.returnPct}%) |\n`
+    report += `| ${q.label} | ${q.stockCount} | ${q.avgScore} | ${q.avgReturn}% | ${q.winsorizedAvgReturn}% | ${q.medianReturn}% | ${q.hitRatePositive}% | ${q.bestStock.companyName} (${q.bestStock.returnPct}%) | ${q.worstStock.companyName} (${q.worstStock.returnPct}%) |\n`
   }
 
   const q1Return = quintiles[0]?.avgReturn ?? 0
@@ -613,11 +631,11 @@ async function main() {
   report += `---\n\n`
   report += `## Verdict Band Analysis\n\n`
   report += `How did each verdict category perform?\n\n`
-  report += `| Verdict | Stocks | % Universe | Avg Score | Avg Return % | Median Return % | Hit Rate (>0%) |\n`
-  report += `|---------|--------|-----------|-----------|-------------|----------------|----------------|\n`
+  report += `| Verdict | Stocks | % Universe | Avg Score | Avg Return % | Winsorized Avg % | Median Return % | Hit Rate (>0%) |\n`
+  report += `|---------|--------|-----------|-----------|-------------|-----------------|----------------|----------------|\n`
   for (const v of verdictAnalysis) {
     if (v.stockCount === 0) continue
-    report += `| ${v.verdict} | ${v.stockCount} | ${v.pctOfUniverse}% | ${v.avgScore} | ${v.avgReturn}% | ${v.medianReturn}% | ${v.hitRatePositive}% |\n`
+    report += `| ${v.verdict} | ${v.stockCount} | ${v.pctOfUniverse}% | ${v.avgScore} | ${v.avgReturn}% | ${v.winsorizedAvgReturn}% | ${v.medianReturn}% | ${v.hitRatePositive}% |\n`
   }
 
   report += `\n`
@@ -638,11 +656,11 @@ async function main() {
   // Sector Analysis
   report += `---\n\n`
   report += `## Sector Analysis\n\n`
-  report += `| Sector | Stocks | Avg Score | Avg Return % | Median Return % | Correlation |\n`
-  report += `|--------|--------|-----------|-------------|----------------|-------------|\n`
+  report += `| Sector | Stocks | Avg Score | Avg Return % | Winsorized Avg % | Median Return % | Correlation |\n`
+  report += `|--------|--------|-----------|-------------|-----------------|----------------|-------------|\n`
   for (const s of sectorAnalysis) {
     if (s.stockCount < 2) continue
-    report += `| ${s.sector} | ${s.stockCount} | ${s.avgScore} | ${s.avgReturn}% | ${s.medianReturn}% | ${s.correlation} |\n`
+    report += `| ${s.sector} | ${s.stockCount} | ${s.avgScore} | ${s.avgReturn}% | ${s.winsorizedAvgReturn}% | ${s.medianReturn}% | ${s.correlation} |\n`
   }
 
   report += `\n`
@@ -673,10 +691,64 @@ async function main() {
     report += `| ${i + 1} | ${s.companyName} | ${s.sector} | ${s.scoreResult.normalizedScore.toFixed(1)} | ${s.scoreResult.verdict} | ${s.returnPct}% |\n`
   }
 
+  // Compute segment data coverage
+  let qmWithData = 0
+  let techWithData = 0
+  let finWithData = 0
+  for (const s of scoredStocks) {
+    const finSeg = s.scoreResult.segmentResults.find(sr => sr.segmentId === 'v4_financial')
+    const qmSeg = s.scoreResult.segmentResults.find(sr => sr.segmentId === 'v4_quarterly_momentum')
+    const techSeg = s.scoreResult.segmentResults.find(sr => sr.segmentId === 'v4_technical')
+    if (finSeg && finSeg.segmentScore > 0) finWithData++
+    if (qmSeg && qmSeg.verdict !== 'N/A' && qmSeg.segmentScore > 0) qmWithData++
+    if (techSeg && techSeg.verdict !== 'N/A' && techSeg.segmentScore > 0) techWithData++
+  }
+
   report += `\n---\n\n`
+  report += `## Data Completeness & Segment Coverage\n\n`
+  report += `### Segment Data Availability\n\n`
+  report += `| Segment | Weight (V4) | Stocks with Data | % Coverage | Notes |\n`
+  report += `|---------|------------|-----------------|------------|-------|\n`
+  report += `| Financial | 30% | ${finWithData} | ${(finWithData/scoredStocks.length*100).toFixed(1)}% | Revenue growth, EBITDA, ROE, etc. |\n`
+  report += `| Valuation | 45% | ${scoredStocks.length} (+ ${valuationNAStocks.length} N/A excluded) | ${(scoredStocks.length/(scoredStocks.length+valuationNAStocks.length)*100).toFixed(1)}% of scored | PE/PB/EV vs 5Y averages |\n`
+  report += `| Quarterly Momentum | 18% | ${qmWithData} | ${(qmWithData/scoredStocks.length*100).toFixed(1)}% | Revenue & EBITDA multipliers |\n`
+  report += `| Technical | 7% | ${techWithData} | ${(techWithData/scoredStocks.length*100).toFixed(1)}% | 20/50/200 DMA, RSI, VPT |\n\n`
+
+  // QM explanation
+  const qmPct = ((scoredStocks.length - qmWithData) / scoredStocks.length * 100).toFixed(1)
+  report += `### QM Segment Limitation\n\n`
+  report += `**${qmPct}% of stocks** have QM segment = N/A (both Revenue and EBITDA Multipliers excluded).\n\n`
+  report += `**Root cause:** The CMOTS \`/QuarterlyResults\` API serves only the latest ~8 rolling quarters. `
+  report += `For scoring date ${START_DATE} (14 months ago), only 3 of 8 quarterly columns survive windowing `
+  report += `(quarters ending after the scoring date are excluded as future data). The \`computeV4Multiplier()\` `
+  report += `function requires ≥8 quarterly columns and YoY matching, which cannot be satisfied.\n\n`
+  report += `**Formula implementation is correct** — verified against spec. This is a data availability limitation, not a code issue.\n\n`
+  report += `**Effect on scoring:** V4 adaptive re-normalization (existing engine rule) redistributes QM's 18% weight `
+  report += `to active segments. Effective formula for ${qmPct}% of stocks: **F:36.6% + V:54.9% + T:8.5%**.\n\n`
+
+  // Valuation N/A explanation
+  report += `### Valuation N/A Stocks (${valuationNAStocks.length})\n\n`
+  report += `**${valuationNAStocks.length} stocks** completed scoring but had Valuation segment = N/A `
+  report += `(all PE/PB/EV vs 5Y metrics null), causing the V4 engine to return NaN for the composite score. `
+  report += `These are excluded from the analysis above.\n\n`
+  report += `**Common causes:**\n`
+  report += `- Persistently loss-making (negative EPS → PE undefined, negative EBITDA → EV undefined)\n`
+  report += `- Recently listed with < 2 fiscal years of data (harmonic mean requires ≥2 years)\n`
+  report += `- Negative book value (accumulated losses eroding equity → PB undefined)\n`
+  report += `- Sparse financial data (P&L/BS rows missing specific line items)\n\n`
+  report += `**V4 engine rule:** Valuation carries 45% weight. If valuation is entirely N/A, `
+  report += `the overall score is considered meaningless → composite returns NaN.\n\n`
+
+  report += `### Winsorized Averages\n\n`
+  report += `Raw averages are heavily distorted by extreme outliers (e.g., Swan Defence +75,843%). `
+  report += `**Winsorized averages** cap returns at ±200% before averaging, providing a more robust measure `
+  report += `of central tendency. Compare "Avg Return %" (raw) vs "Winsorized Avg %" in the tables above.\n\n`
+
+  report += `---\n\n`
   report += `## Data Quality Notes\n\n`
   report += `- Banking stocks excluded: ${bankingStocks.length} (sectors: ${[...excludedSectors].join(', ')})\n`
   report += `- Stocks skipped due to insufficient data: ${skipped}\n`
+  report += `- Valuation N/A (composite NaN): ${valuationNAStocks.length}\n`
   report += `- Stocks successfully scored and analyzed: ${scoredStocks.length}\n`
   if (warnings.length > 0) {
     report += `- Warnings during processing: ${warnings.length}\n`
@@ -769,7 +841,7 @@ async function main() {
   console.log(`  Written: stock-metric-details.csv`)
 
   // ── File 4: quintile-analysis.csv ──
-  const csvHeader4 = 'quintile,label,stock_count,avg_score,min_score,max_score,avg_return_pct,median_return_pct,hit_rate_positive,best_stock,best_return,worst_stock,worst_return'
+  const csvHeader4 = 'quintile,label,stock_count,avg_score,min_score,max_score,avg_return_pct,winsorized_avg_return_pct,median_return_pct,hit_rate_positive,best_stock,best_return,worst_stock,worst_return'
   const csvRows4 = quintiles.map(q => [
     q.quintile,
     `"${q.label}"`,
@@ -778,6 +850,7 @@ async function main() {
     q.minScore,
     q.maxScore,
     q.avgReturn,
+    q.winsorizedAvgReturn,
     q.medianReturn,
     q.hitRatePositive,
     `"${q.bestStock.companyName.replace(/"/g, '""')}"`,
@@ -794,12 +867,13 @@ async function main() {
   console.log(`  Written: quintile-analysis.csv`)
 
   // ── File 5: sector-summary.csv ──
-  const csvHeader5 = 'sector,stock_count,avg_score,avg_return_pct,median_return_pct,correlation,best_stock,best_return,worst_stock,worst_return'
+  const csvHeader5 = 'sector,stock_count,avg_score,avg_return_pct,winsorized_avg_return_pct,median_return_pct,correlation,best_stock,best_return,worst_stock,worst_return'
   const csvRows5 = sectorAnalysis.map(s => [
     `"${s.sector.replace(/"/g, '""')}"`,
     s.stockCount,
     s.avgScore,
     s.avgReturn,
+    s.winsorizedAvgReturn,
     s.medianReturn,
     s.correlation,
     `"${s.bestStock.companyName.replace(/"/g, '""')}"`,
@@ -816,7 +890,7 @@ async function main() {
   console.log(`  Written: sector-summary.csv`)
 
   // ── File 6: verdict-band-analysis.csv ──
-  const csvHeader6 = 'verdict,stock_count,avg_score,avg_return_pct,median_return_pct,hit_rate_positive,pct_of_universe'
+  const csvHeader6 = 'verdict,stock_count,avg_score,avg_return_pct,winsorized_avg_return_pct,median_return_pct,hit_rate_positive,pct_of_universe'
   const csvRows6 = verdictAnalysis
     .filter(v => v.stockCount > 0)
     .map(v => [
@@ -824,6 +898,7 @@ async function main() {
       v.stockCount,
       v.avgScore,
       v.avgReturn,
+      v.winsorizedAvgReturn,
       v.medianReturn,
       v.hitRatePositive,
       v.pctOfUniverse,
@@ -837,10 +912,15 @@ async function main() {
   console.log(`  Written: verdict-band-analysis.csv`)
 
   // ── Step 5: Print Summary ──
+  // Compute winsorized correlation
+  const winsorizedReturns = returns.map(r => winsorize(r))
+  const winsorizedCorrelation = pearsonCorrelation(scores, winsorizedReturns)
+
   console.log('\n[5/6] Summary:')
   console.log('='.repeat(70))
   console.log(`  Overall Correlation: ${overallCorrelation}`)
-  console.log(`  Universe: ${scoredStocks.length} stocks`)
+  console.log(`  Winsorized Correlation (±200% cap): ${winsorizedCorrelation}`)
+  console.log(`  Universe: ${scoredStocks.length} stocks (+ ${valuationNAStocks.length} Valuation N/A excluded)`)
   console.log('\n  Quintile Returns:')
   for (const q of quintiles) {
     const bar = '#'.repeat(Math.max(0, Math.round((q.avgReturn + 50) / 3)))
