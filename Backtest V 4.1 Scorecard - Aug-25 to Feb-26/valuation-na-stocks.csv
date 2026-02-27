@@ -1,0 +1,695 @@
+stock_id,stock_name,symbol,sector,mcap_type,industry,financial_score,qm_score,technical_score,start_price,end_price,return_pct
+56,"Ballarpur Industries Ltd",BALLARPUR,"Paper",Small Cap,"Paper - Medium / Small",4.00,0.00,58.50,0.89,0.89,0
+84,"The Bombay Burmah Trading Corporation Ltd",BBTC,"Auto Ancillaries",Small Cap,"Auto Ancillaries - Electrical",44.25,0.00,12.50,1824.5,1761.8,-3.44
+93,"Britannia Industries Ltd",BRITANNIA,"FMCG",Large Cap,"Food And Dairy Products - Multinational",68.50,0.00,62.00,5545.6,6151.55,10.93
+118,"Colgate-Palmolive (India) Ltd",COLPAL,"FMCG",Mid Cap,"Personal Care - Multinational",65.50,0.00,43.50,2298.85,2270.4,-1.24
+185,"Gajra Bevel Gears Ltd",505711,"Auto Ancillaries",Small Cap,"Auto Ancillaries - Gears",10.00,0.00,0.00,3.25,3.25,0
+210,"Golden Tobacco Ltd",GOLDENTOBC,"Realty",Small Cap,"Construction - Factories / Offices / Commercial",16.00,0.00,37.50,36.2,29,-19.89
+340,"Kothari Industrial Corporation Ltd",KOTHARINDL,"Trading",Small Cap,"Trading - Medium / Small",27.50,0.00,79.00,546.85,179.65,-67.15
+347,"Lakshmi Precision Screws Ltd",LAKPRE,"Castings, Forgings & Fastners",Small Cap,"Fasteners",22.75,0.00,100.00,6.58,5.59,-15.05
+363,"Maharashtra Scooters Ltd",MAHSCOOTER,"Finance",Small Cap,"Finance - Investment / Others",45.25,0.00,80.00,15575.5,13271.75,-14.79
+382,"Mipco Seamless Rings (Gujarat) Ltd",505797,"IT - Software",Small Cap,"Computers - Software - Medium / Small",1.00,0.00,0.00,24.26,25.6,5.52
+383,"Modella Woollens Ltd",503772,"Trading",Small Cap,"Trading - Medium / Small",4.00,0.00,86.00,69.4,68.1,-1.87
+394,"Saptak Chem & Business Ltd",506906,"Retail",Small Cap,"Trading - Medium / Small",6.25,0.00,100.00,4.5,59.2,1215.56
+409,"Naperol Investments Ltd",NATPEROXID,"Finance",Small Cap,"Finance - Investment / Others",27.50,0.00,10.00,946.9,634.7,-32.97
+429,"Panyam Cements & Mineral Industries Ltd",PANYAMCEM,"Cement",Small Cap,"Cement - Mini - South India",27.50,10.00,30.50,146.35,123.05,-15.92
+447,"Premier Ltd",PREMIER,"Capital Goods-Non Electrical Equipment",Small Cap,"Machine Tools - Others",2.50,0.00,46.00,3.68,2.86,-22.28
+480,"Procter & Gamble Hygiene and Health Care Ltd",PGHH,"FMCG",Mid Cap,"Personal Care - Multinational",32.50,0.00,30.00,13282.9,11435.05,-13.91
+540,"Sundaram Finance Ltd",SUNDARMFIN,"Finance",Mid Cap,"Finance - Large",37.00,0.00,83.00,5268.35,5503.85,4.47
+555,"Infomedia Press Ltd",INFOMEDIA,"Printing & Stationery",Small Cap,"Printing & Stationery",1.00,0.00,100.00,8.41,4.96,-41.02
+558,"Tayo Rolls Ltd",TATAYODOGA,"Castings, Forgings & Fastners",Small Cap,"Castings - Steel / Alloy",1.00,0.00,26.50,89.4,89.4,0
+573,"Cholamandalam Financial Holdings Ltd",CHOLAHLDNG,"Finance",Small Cap,"Finance - Investment / Others",23.50,0.00,44.50,1858.4,1674.05,-9.92
+672,"JBF Industries Ltd",JBFIND,"Textiles",Small Cap,"Textiles - Manmade - PFY / PSF - From Chips",2.50,0.00,28.00,4.42,4.42,0
+684,"Muller & Phipps (India) Ltd",501477,"Retail",Small Cap,"Trading - Medium / Small",13.00,0.00,29.50,267.85,225,-16
+751,"McNally Bharat Engineering Company Ltd",MBECL,"Infrastructure Developers & Operators",Small Cap,"Engineering - Turnkey Services",7.00,0.00,8.00,3.24,3.24,0
+793,"International Data Management Ltd",517044,"IT - Software",Small Cap,"IT Enabled Services / Business Process Outsourcing",1.00,0.00,79.00,33.55,35.8,6.71
+818,"Khoday India Ltd",507435,"Alcoholic Beverages",Small Cap,"Distilleries",17.50,0.00,84.00,116.25,116.25,0
+843,"Rama Petrochemicals Ltd",RAMAPETRO,"Trading",Small Cap,"Trading - Medium / Small",2.50,0.00,78.00,12.05,14.63,21.41
+884,"EMA India Ltd",522027,"Capital Goods-Non Electrical Equipment",Small Cap,"Engineering - Light - General - Medium / Small",2.50,0.00,78.00,148.15,429.1,189.64
+925,"Miven Machine Tools Ltd",522036,"Capital Goods-Non Electrical Equipment",Small Cap,"Engineering - Heavy - General - Medium / Small",4.00,0.00,23.00,78.9,80,1.39
+967,"Shah Foods Ltd",519031,"FMCG",Small Cap,"Trading - Medium / Small",17.50,0.00,6.00,129.1,154.35,19.56
+971,"Shree Rajasthan Syntex Ltd",SHRERAJSYN,"Textiles",Small Cap,"Textiles - Spinning - Synthetic / Blended",4.00,0.00,93.00,16.5,13.55,-17.88
+983,"Vardhman Holdings Ltd",VHL,"Finance",Small Cap,"Finance - Investment / Others",32.50,0.00,23.00,3807,3286.5,-13.67
+986,"Unitech Ltd",UNITECH,"Realty",Small Cap,"Construction - Housing - Medium / Small",11.50,0.00,27.50,7.41,4.94,-33.33
+1019,"HCL Infosystems Ltd",HCL-INSYS,"IT - Hardware",Small Cap,"Computers - Hardware - Medium / Small",4.00,0.00,57.00,15.96,13,-18.55
+1023,"Venlon Enterprises Ltd",VENLONPOLY,"Trading",Small Cap,"Trading - Medium / Small",19.00,0.00,12.00,4.96,5.8,16.94
+1045,"SIP Industries Ltd",523164,"FMCG",Small Cap,"Floriculture / Tissue Culture",2.50,0.00,50.50,6.01,6.01,0
+1055,"Panther Industrial Products Ltd",524055,"Finance",Small Cap,"Finance - Investment / Others",1.00,0.00,0.00,56.46,40.85,-27.65
+1071,"Kirloskar Industries Ltd",KIRLOSIND,"Finance",Small Cap,"Finance - Investment / Others",41.00,0.00,21.00,3837.8,2837.2,-26.07
+1142,"SRM Energy Ltd",523222,"Power Generation & Distribution",Small Cap,"Power Generation And Supply",1.00,0.00,2.00,11.51,20.46,77.76
+1168,"Modipon Ltd",MODIPON,"Realty",Small Cap,"Construction - Civil / Turnkey - Medium / Small",6.25,0.00,45.00,42.99,34.99,-18.61
+1202,"NB Footwear Ltd",523242,"Leather",Small Cap,"Leather / Synthetic Footware - Medium / Small",1.00,0.00,2.00,9.8,7.77,-20.71
+1223,"Can Fin Homes Ltd",CANFINHOME,"Finance",Small Cap,"Finance - Housing - Large",25.75,0.00,49.00,769.2,888.6,15.52
+1225,"Dharani Sugars & Chemicals Ltd",DHARSUGAR,"Sugar",Small Cap,"Sugar - Integrated",4.00,0.00,29.00,8.63,8.63,0
+1229,"Switching Technologies Gunther Ltd",517201,"Capital Goods - Electrical Equipment",Small Cap,"Electric Equipment - General - Medium / Small",5.50,0.00,32.50,70.33,81.99,16.58
+1286,"Hardcastle & Waud Mfg Co Ltd",509597,"Finance",Small Cap,"Finance - Investment / Others",56.25,0.00,43.50,749,710.4,-5.15
+1292,"Jolly Plastic Industries Ltd",507968,"Finance",Small Cap,"Finance - Investment / Others",17.50,0.00,0.00,182.55,26.02,-85.75
+1339,"Steel Strips Infrastructures Ltd",513173,"Realty",Small Cap,"Construction - Factories / Offices / Commercial",2.50,0.00,51.00,26.39,21.39,-18.95
+1383,"Triumph International Finance India Ltd",532131,"Finance",Small Cap,"Finance - Investment / Others",10.00,0.00,0.00,31.41,15.21,-51.58
+1388,"Prashant India Ltd",519014,"Diversified",Small Cap,"Diversified - Medium / Small",6.25,0.00,6.50,12.01,15.77,31.31
+1415,"Satra Properties (India) Ltd",508996,"Realty",Small Cap,"Construction - Factories / Offices / Commercial",15.25,0.00,26.00,0.87,0.87,0
+1482,"National Oxygen Ltd",NOL,"Chemicals",Small Cap,"Industrial Gas",22.00,0.00,16.50,121,68.97,-43
+1509,"Amalgamated Electricity Company Ltd",501622,"Miscellaneous",Small Cap,"Miscellaneous - Medium / Small",5.50,0.00,34.50,72.03,55.92,-22.37
+1592,"Trustwave Securities Ltd",508963,"Miscellaneous",Small Cap,"Miscellaneous - Medium / Small",6.25,0.00,16.50,22.95,18.71,-18.47
+1657,"Silveroak Commercial Ltd",512197,"Construction",Small Cap,"Construction - Factories / Offices / Commercial",10.75,0.00,58.50,6.8,4.83,-28.97
+1679,"Centrum Capital Ltd",CENTRUM,"Finance",Small Cap,"Finance - Investment / Others",25.25,0.00,78.00,39.71,24.16,-39.16
+1740,"Harig Crankshafts Ltd",HARIGCRANK,"Castings, Forgings & Fastners",Small Cap,"Forgings - Medium / Small",4.75,0.00,0.00,2.49,6.81,173.49
+1745,"Shriram Finance Ltd",SHRIRAMFIN,"Finance",Large Cap,"Finance - Large",31.00,0.00,27.00,616,1085.6,76.23
+1763,"Munoth Capital Markets Ltd",511200,"Stock/ Commodity Brokers",Small Cap,"Securities/Commodities Trading Services",15.25,0.00,78.00,169.95,123.5,-27.33
+1948,"Standard Shoe Sole & Mould India Ltd",523351,"Trading",Small Cap,"Trading - Medium / Small",2.50,0.00,0.00,19.01,22.51,18.41
+1975,"Hercules Investments Ltd",HERCULES,"Finance",Small Cap,"Finance - Investment / Others",32.50,0.00,8.00,164.15,124.7,-24.03
+1997,"Lords Mark Industries Limited",501261,"Miscellaneous",Small Cap,"Miscellaneous - Medium / Small",7.75,0.00,0.00,551.05,669.7,21.53
+1999,"Dalal Street Investments Ltd",501148,"Finance",Small Cap,"Finance - Investment / Others",5.50,0.00,1.00,369,382.5,3.66
+2003,"PS IT Infrastructure & Services Ltd",505502,"Finance",Small Cap,"Finance - Investment / Others",21.25,0.00,39.50,1.44,1.35,-6.25
+2075,"TECIL Chemical & Hydro Power Ltd",TECILCHEM,"Chemicals",Small Cap,"Chemicals - Inorganic - Medium / Small",7.00,0.00,1.00,16.85,13.68,-18.81
+2121,"Ind-Agiv Commerce Ltd",517077,"Trading",Small Cap,"Trading - Medium / Small",15.25,0.00,68.00,92.82,60,-35.36
+2129,"Tamil Nadu Telecommunications Ltd",TNTELE,"Cables",Small Cap,"Cables - Telephone",20.50,0.00,39.50,15.21,9.11,-40.11
+2154,"Hemadri Cements Ltd",502133,"Cement",Small Cap,"Cement - Mini - South India",9.25,0.00,8.00,49.3,50.88,3.2
+2157,"Bheema Cements Ltd",518017,"Cement",Small Cap,"Cement - Mini - South India",16.00,0.00,-3.00,16.15,16.15,0
+2182,"Sri Chakra Cement Ltd",518053,"Cement",Small Cap,"Cement - Mini - South India",15.25,0.00,0.00,79.32,45.8,-42.26
+2220,"Sharp India Ltd",KALYANISHP,"Consumer Durables",Small Cap,"Electronics - TV / Audio / VCR / VCP",2.50,0.00,27.00,57.81,43.16,-25.34
+2233,"Mercury Trade Links Ltd",512415,"Trading",Small Cap,"Trading - Medium / Small",69.75,0.00,1.00,7.37,6.45,-12.48
+2257,"Thakral Services (India) Ltd",509015,"Trading",Small Cap,"Trading - Medium / Small",2.50,0.00,29.50,10.33,15.39,48.98
+2311,"Triliance Polymers Ltd",509046,"Trading",Small Cap,"Trading - Medium / Small",32.75,0.00,83.00,72.46,35.68,-50.76
+2348,"Restile Ceramics Ltd",515085,"Ceramic Products",Small Cap,"Ceramics - Tiles",4.00,0.00,56.50,9.48,6.48,-31.65
+2350,"SER Industries Ltd",507984,"Logistics",Small Cap,"Transport - Road",16.00,0.00,0.00,186.3,739.7,297.05
+2385,"BIL Vyapar Ltd",BILVYAPAR,"Miscellaneous",Small Cap,"Miscellaneous - Medium / Small",6.25,0.00,1.00,10.7,6.92,-35.33
+2395,"Grand Foundry Ltd",GFSTEELS,"Steel",Small Cap,"Steel - Medium / Small",2.50,0.00,75.50,9.05,10.46,15.58
+2410,"Arcotech Ltd",ARCOTECH,"Non Ferrous Metals",Small Cap,"Metal - Others",2.50,0.00,0.00,2.34,2.34,0
+2435,"Rishabh Special Yarns Ltd",514177,"Trading",Small Cap,"Trading - Medium / Small",16.00,0.00,0.00,74.6,72.29,-3.1
+2447,"Easun Reyrolle Ltd",EASUNREYRL,"Capital Goods - Electrical Equipment",Small Cap,"Electric Equipment - Switchgears/Relays/Circuits",2.50,100.00,10.50,2.5,2.5,0
+2467,"Future Enterprises Ltd",FEL,"Retail",Small Cap,"Trading - Medium / Small",7.75,0.00,16.50,0.57,0.49,-14.04
+2472,"Sanmitra Commercial Ltd",512062,"Miscellaneous",Small Cap,"Miscellaneous - Medium / Small",37.75,0.00,0.00,10.48,30.49,190.94
+2477,"Jaybharat Textiles & Real Estate Ltd",512233,"Textiles",Small Cap,"Textiles - Texturising",2.50,0.00,0.00,25.29,26.16,3.44
+2493,"Rama Paper Mills Ltd",500357,"Paper",Small Cap,"Paper - Medium / Small",17.50,0.00,18.50,13.1,12.25,-6.49
+2520,"Prag Bosimi Synthetics Ltd",PRAGBOSIMI,"Textiles",Small Cap,"Textiles - Manmade - PFY/PSF - InHouse Poly Condsn",2.50,0.00,10.00,2.13,1.84,-13.62
+2662,"Artson Ltd",ARTSONENGG,"Infrastructure Developers & Operators",Small Cap,"Engineering - Turnkey Services",39.25,0.00,44.50,169,144,-14.79
+2680,"Silverline Technologies Ltd",SILVERLINE,"IT - Software",Small Cap,"Computers - Software - Medium / Small",21.25,0.00,8.00,11.03,22.68,105.62
+2759,"Olympic Oil Industries Ltd",507609,"Trading",Small Cap,"Trading - Medium / Small",4.75,0.00,1.00,27.7,30.99,11.88
+2762,"Ecoboard Industries Ltd",WESTERNBIO,"Diversified",Small Cap,"Diversified - Medium / Small",20.50,0.00,100.00,33.86,55.13,62.82
+2778,"K-Lifestyle & Industries Ltd",SHREEKRPOL,"Textiles",Small Cap,"Textiles - Hosiery / Knitwear",2.50,0.00,2.00,0.24,0.22,-8.33
+2782,"Ashiana Ispat Ltd",513401,"Steel",Small Cap,"Steel - Rolling",7.75,0.00,31.00,22.03,26.23,19.06
+2794,"Eastern Silk Industries Ltd",EASTSILK,"Textiles",Small Cap,"Textiles - Silk",6.25,0.00,78.00,26.43,27.75,4.99
+2812,"Magnus Steel & Infra Ltd",517320,"Trading",Small Cap,"Trading - Medium / Small",10.75,0.00,0.00,5.14,59.53,1058.17
+2848,"VLS Finance Ltd",VLSFINANCE,"Finance",Small Cap,"Finance - Investment / Others",2.50,0.00,16.50,231.35,259.2,12.04
+2861,"Vallabh Steels Ltd",513397,"Steel",Small Cap,"Steel - Medium / Small",2.50,0.00,83.00,10.64,12.99,22.09
+2912,"CMI Ltd",CMICABLES,"Cables",Small Cap,"Cables - Power - Medium / Small",2.50,0.00,2.00,3.22,4.58,42.24
+2954,"V R Woodart Ltd",523888,"Plantation & Plantation Products",Small Cap,"Rubber - Products",1.00,0.00,79.00,52.19,93,78.2
+2987,"Modern Malleables Ltd",MODERNMAL,"Capital Goods - Electrical Equipment",Small Cap,"Transmisson Line Towers / Equipment",51.75,0.00,0.00,1.65,11.06,570.3
+2998,"Mid India Industries Ltd",MIDINDIA,"Trading",Small Cap,"Trading - Medium / Small",17.50,0.00,56.00,8.24,6.7,-18.69
+3006,"Procal Electronics India Ltd",526009,"Trading",Small Cap,"Trading - Medium / Small",5.50,0.00,0.00,0.89,1.01,13.48
+3028,"KS Smart Technlogies Limited",516038,"Paper",Small Cap,"Paper - Medium / Small",16.00,0.00,0.00,71.94,255.5,255.16
+3082,"Rekvina Labs Ltd",526075,"Pharmaceuticals",Small Cap,"Pharmaceuticals - Indian - Formulations",1.00,0.00,0.00,4.5,26.09,479.78
+3132,"Manor Estates & Industries Ltd",526115,"Realty",Small Cap,"Construction - Factories / Offices / Commercial",36.50,0.00,1.00,5.69,10.1,77.5
+3154,"Transgene Biotek Ltd",526139,"Healthcare",Small Cap,"Miscellaneous - Medium / Small",25.00,0.00,-2.00,4.15,2.66,-35.9
+3173,"Sanwaria Consumer Ltd",SANWARIA,"FMCG",Small Cap,"Food - Proccesing - Rice",2.50,0.00,30.50,0.49,0.49,0
+3174,"MPL Plastics Ltd",MILTONPLAS,"Plastic products",Small Cap,"Plastics - Thermoware",8.50,0.00,21.50,9.23,7.4,-19.83
+3252,"TMT (I) Ltd",TMTINDIA,"Capital Goods-Non Electrical Equipment",Small Cap,"Engineering - Light - General - Medium / Small",2.50,0.00,0.00,5.75,6.97,21.22
+3299,"Tarai Foods Ltd",519285,"FMCG",Small Cap,"Food - Processing - Others",2.50,0.00,32.50,8.25,6.85,-16.97
+3347,"Norris Medicines Ltd",524414,"Pharmaceuticals",Small Cap,"Pharmaceuticals - Indian - Bulk Drugs & Formln M/S",2.50,0.00,0.00,16.04,13.54,-15.59
+3461,"Kartik Investments Trust Ltd",501151,"Finance",Small Cap,"Finance - Small",5.50,0.00,0.00,1087.8,1256.05,15.47
+3502,"Arur Footwear Limited",513515,"Leather",Small Cap,"Leather / Synthetic Footware - Medium / Small",2.50,0.00,92.00,3.12,3.12,0
+3505,"Winsome Yarns Ltd",WINSOME,"Textiles",Small Cap,"Textiles - Cotton Yarn - 100% EOUs",2.50,0.00,40.50,2.04,1.75,-14.22
+3522,"Pan Electronics (India) Ltd",517397,"Consumer Durables",Small Cap,"Electronics - Capacitors",7.00,0.00,29.00,52.94,39.4,-25.58
+3612,"Gem Spinners India Ltd",GEMSPIN,"Textiles",Small Cap,"Textiles - Cotton Yarn - 100% EOUs",1.00,0.00,93.00,7.22,5.32,-26.32
+3648,"Dolat Algotech Ltd",DOLATALGO,"Finance",Small Cap,"Securities/Commodities Trading Services",32.00,0.00,4.00,82.41,75.49,-8.4
+3673,"Shyam Telecom Ltd",SHYAMTEL,"Trading",Small Cap,"Trading - Medium / Small",2.50,0.00,16.50,14.31,10.49,-26.69
+3680,"Sterling Powergensys Ltd",513575,"Trading",Small Cap,"Trading - Medium / Small",26.00,0.00,57.00,38.02,23.09,-39.27
+3692,"Foundry Fuel Products Ltd",513579,"Mining & Mineral products",Small Cap,"Coke / Metalurgical Coke",5.50,0.00,43.00,6.72,5.57,-17.11
+3695,"Kanel Industries Ltd",KANELOIL,"Trading",Small Cap,"Trading - Medium / Small",16.25,0.00,93.00,2.25,14.03,523.56
+3697,"Krebs Biochemicals & Industries Ltd",KREBSBIO,"Pharmaceuticals",Small Cap,"Pharmaceuticals - Indian - Bulk Drugs",4.00,0.00,8.00,73.26,58.8,-19.74
+3715,"Krishna Filament Industries Ltd",KRISNAFILA,"Miscellaneous",Small Cap,"Miscellaneous - Medium / Small",9.25,0.00,35.50,6.68,6,-10.18
+3722,"Bajaj Finance Ltd",BAJFINANCE,"Finance",Large Cap,"Finance - Large",40.00,0.00,58.50,894.65,1020.75,14.09
+3733,"Welterman International Ltd",526431,"Fertilizers",Small Cap,"Fertilizers - Nitrogenous / Phosphatic",4.00,0.00,79.00,29.05,22.71,-21.82
+3785,"Asian Petroproducts & Exports Ltd",524434,"Retail",Small Cap,"Trading - Medium / Small",28.00,0.00,18.50,8.33,8.55,2.64
+3797,"Revati Media Ltd",524504,"Entertainment",Small Cap,"Entertainment - Electronic Media",12.25,0.00,0.00,7.53,10.55,40.11
+3823,"National Plywood Industries Ltd",516062,"Plywood Boards/Laminates",Small Cap,"Decoratives - Wood-based",6.50,0.00,-2.00,3.63,5.56,53.17
+3824,"Datiware Maritime Infra Ltd",519413,"Ship Building",Small Cap,"Shipping - medium / small",2.50,0.00,0.00,17.78,23.78,33.75
+3827,"Bhudevi Infra Projects Ltd",526488,"Realty",Small Cap,"Construction - Housing - Medium / Small",16.00,0.00,55.00,266,272,2.26
+3830,"Gayatri BioOrganics Ltd",524564,"Miscellaneous",Small Cap,"Starch",1.00,0.00,86.00,11.79,13.4,13.66
+3866,"Priya Ltd",PRIYADYES,"Trading",Small Cap,"Trading - Medium / Small",2.50,0.00,30.00,21.91,21.32,-2.69
+3894,"Sharma East India Hosp and Medical Research Ltd",524548,"Healthcare",Small Cap,"Hospitals / Medical Services",71.50,0.00,92.00,174.62,104.1,-40.38
+3901,"Sri Lakshmi Saraswathi Textiles (Arni) Ltd",521161,"Textiles",Small Cap,"Textiles - Spinning/Cotton/Blended Yarn - Ring Spg",10.00,0.00,41.50,39.9,29,-27.32
+3916,"Satiate Agri Ltd",524546,"Trading",Small Cap,"Trading - Medium / Small",31.00,0.00,0.00,39.05,22.1,-43.41
+3922,"Easy Fincorp Ltd",511074,"Finance",Small Cap,"Finance - Small",5.50,0.00,0.00,990,990,0
+3931,"Hemo Organic Ltd",524590,"Trading",Small Cap,"Trading - Medium / Small",22.00,0.00,18.50,9.33,17.03,82.53
+3938,"Maximaa Systems Ltd",526538,"Trading",Small Cap,"Trading - Medium / Small",7.75,0.00,0.00,0.84,0.84,0
+3944,"Maxgrow India Ltd",521167,"Trading",Small Cap,"Trading - Medium / Small",7.75,0.00,0.00,11.59,60.61,422.95
+3998,"Oxford Industries Ltd",514414,"Textiles",Small Cap,"Trading - Medium / Small",17.50,0.00,0.00,0.81,8.76,981.48
+4030,"Linaks Microelectronics Ltd",517463,"Consumer Durables",Small Cap,"Electronics - PCBs",2.50,0.00,0.00,1.38,1.38,0
+4031,"Gangotri Textiles Ltd",GANGOTRI,"Textiles",Small Cap,"Textiles - Cotton Yarn - Open-Ended Spinning",1.00,0.00,0.00,0.58,0.62,6.9
+4032,"iStreet Network Ltd",524622,"E-Commerce/App based Aggregator",Small Cap,"Trading - Medium / Small",19.75,0.00,78.00,18.87,36.72,94.59
+4041,"Midwest Gold Ltd",526570,"Mining & Mineral products",Small Cap,"Mining / Minerals",16.00,0.00,78.00,1915.65,4580.25,139.1
+4055,"Supra Trends Ltd",511539,"Textiles",Small Cap,"Textiles - Others",1.00,0.00,0.00,29.41,14.3,-51.38
+4066,"Marsons Ltd",517467,"Capital Goods - Electrical Equipment",Small Cap,"Electric Equipment - Transformers",48.00,0.00,22.00,185.4,138.05,-25.54
+4068,"Omega Ag Seeds (Punjab) Ltd",519479,"Trading",Small Cap,"Trading - Medium / Small",14.00,0.00,80.00,12.97,8.7,-32.92
+4071,"Riga Sugar Company Ltd",507508,"Sugar",Small Cap,"Sugar - Others",2.50,0.00,0.00,5.25,5.25,0
+4108,"Shree Rajeshwaranand Paper Mills Ltd",516086,"Paper",Small Cap,"Paper - Medium / Small",7.00,0.00,0.00,1.71,1.71,0
+4141,"3P Land Holdings Ltd",3PLAND,"Finance",Small Cap,"Finance - Investment / Others",31.00,0.00,51.00,48.27,34,-29.56
+4144,"N K Industries Ltd",NKIND,"Edible Oil",Small Cap,"Solvent Extraction - Medium / Small",7.00,0.00,44.50,66.5,63.57,-4.41
+4228,"LS Industries Ltd",514446,"Textiles",Small Cap,"Textiles - Weaving",5.50,0.00,12.00,31.49,32.31,2.6
+4248,"LIC Housing Finance Ltd",LICHSGFIN,"Finance",Small Cap,"Finance - Housing - Large",34.50,0.00,12.50,563.3,546.9,-2.91
+4264,"Befound Movement Limited",511585,"Miscellaneous",Small Cap,"Miscellaneous - Medium / Small",17.50,0.00,78.00,5.32,3.18,-40.23
+4275,"Parenteral Drugs (India) Ltd",PDPL,"Pharmaceuticals",Small Cap,"Pharmaceuticals - I V Fluids",2.50,0.00,0.00,3.39,3.39,0
+4279,"Spectra Industries Ltd",513687,"Auto Ancillaries",Small Cap,"Auto Ancillaries - Sheet Metal",2.50,0.00,8.00,4.19,5.52,31.74
+4290,"Cityman Ltd",521210,"Realty",Small Cap,"Construction - Factories / Offices / Commercial",2.50,0.00,72.50,19.17,13.6,-29.06
+4344,"Ventura Textiles Ltd",516098,"Textiles",Small Cap,"Textiles - Weaving",4.00,0.00,29.00,10.47,8.5,-18.82
+4346,"Quest Capital Markets Ltd",500069,"Finance",Small Cap,"Finance - Investment / Others",23.50,0.00,4.00,334.9,273.9,-18.21
+4387,"Univa Foods Ltd",UNIVAFOODS,"Hotels & Restaurants",Small Cap,"Hotels - Small",2.50,0.00,72.00,7.15,7.87,10.07
+4411,"Fenoplast Ltd",526689,"Plastic products",Small Cap,"Plastics - Others",12.25,0.00,0.00,13.04,13.04,0
+4473,"DJS Stock & Shares Ltd",511636,"Stock/ Commodity Brokers",Small Cap,"Securities/Commodities Trading Services",41.00,0.00,0.00,2.67,2.32,-13.11
+4500,"Starlite Components Ltd",517548,"Miscellaneous",Small Cap,"Lighting Systems",17.50,0.00,86.00,3.64,3.64,0
+4502,"Alchemist Ltd",ALCHEM,"Diversified",Small Cap,"Diversified - Medium / Small",2.50,10.00,0.00,3.01,3.01,0
+4521,"Asahi Industries Ltd",514482,"Textiles",Small Cap,"Textiles - Cotton Yarn - Open-Ended Spinning",2.50,0.00,0.00,5.09,5.09,0
+4528,"Axentra Corp Limited",511634,"Construction",Small Cap,"Construction - Factories / Offices / Commercial",4.75,0.00,0.00,128.4,360.9,181.07
+4580,"GIC Housing Finance Ltd",GICHSGFIN,"Finance",Small Cap,"Finance - Housing - Large",17.50,0.00,10.50,176.9,155.1,-12.32
+4592,"Clenon Enterprises Ltd",517564,"Cables",Small Cap,"Cables - Telephone",1.00,0.00,0.00,49.35,59.97,21.52
+4597,"Velan Hotels Ltd",526755,"Hotels & Restaurants",Small Cap,"Hotels - Small",16.75,0.00,2.00,5.27,5.92,12.33
+4620,"IMP Powers Ltd",INDLMETER,"Capital Goods - Electrical Equipment",Small Cap,"Electric Equipment - Transformers",2.50,0.00,76.00,6.06,6.06,0
+4631,"Kandagiri Spinning Mills Ltd",KANDAGIRI,"Textiles",Small Cap,"Trading - Medium / Small",4.00,0.00,89.00,44.69,42.89,-4.03
+4638,"Invigorated Business Consulting Ltd",ESCORTSFIN,"Miscellaneous",Small Cap,"Miscellaneous - Medium / Small",10.00,0.00,38.50,7.74,5.5,-28.94
+4686,"Pasupati Fincap Ltd",511734,"Miscellaneous",Small Cap,"Miscellaneous - Medium / Small",17.50,0.00,94.00,24.44,14.26,-41.65
+4689,"Ushdev International Ltd",USHDEVINT,"Power Generation & Distribution",Small Cap,"Power Generation And Supply",6.25,0.00,2.00,1.03,1.03,0
+4803,"The Investment Trust of India Ltd",THEINVEST,"Finance",Small Cap,"Finance - Small",7.75,0.00,28.50,155.9,99.25,-36.34
+4804,"Aadi Industries Ltd",530027,"Plastic products",Small Cap,"Plastics - Others",4.00,0.00,97.00,7.56,8.92,17.99
+4889,"Heera Ispat Ltd",526967,"Steel",Small Cap,"Steel - Medium / Small",2.50,0.00,46.50,7.95,7.1,-10.69
+4909,"Garodia Chemical Ltd",530161,"Trading",Small Cap,"Trading - Medium / Small",1.00,0.00,0.00,7.32,10.67,45.77
+4928,"Risa International Ltd",530251,"Trading",Small Cap,"Trading - Medium / Small",1.00,0.00,2.00,0.69,0.52,-24.64
+4948,"Paos Industries Ltd",530291,"FMCG",Small Cap,"Detergents / Intermediates",16.00,0.00,92.00,55.14,56.99,3.36
+4980,"Shree Rajivlochan Oil Extraction Ltd",530295,"Edible Oil",Small Cap,"Solvent Extraction - Medium / Small",21.25,0.00,0.00,27.42,36.1,31.66
+4995,"Nutricircle Ltd",530219,"FMCG",Small Cap,"Food - Processing - Others",47.75,0.00,8.00,114.55,391.35,241.64
+4996,"RSC International Ltd",530179,"Textiles",Small Cap,"Trading - Medium / Small",16.00,0.00,83.00,55.44,40.74,-26.52
+5003,"Vaishno Cement Co Ltd",526941,"Cement",Small Cap,"Cement - Mini - North India",4.00,0.00,0.00,3.97,5.28,33
+5018,"Suncity Synthetics Ltd",530795,"Textiles",Small Cap,"Textiles - Texturising",17.50,0.00,-4.00,14.46,13,-10.1
+5092,"ACS Technologies Ltd",530745,"IT - Software",Small Cap,"Computers - Software - Medium / Small",37.25,0.00,0.00,24.52,40.39,64.72
+5097,"Anirit Ventures Ltd",530705,"Miscellaneous",Small Cap,"Miscellaneous - Medium / Small",4.00,0.00,1.00,31.91,44.7,40.08
+5135,"Alps Industries Ltd",ALPSINDUS,"Textiles",Small Cap,"Textiles - Others",7.00,0.00,0.00,1.85,3.44,85.95
+5169,"Sturdy Industries Ltd",530611,"Non Ferrous Metals",Small Cap,"Aluminium - Sheets / Coils / Wires / Others",6.25,0.00,0.00,0.24,0.2,-16.67
+5174,"Popees Cares Ltd",SSLFINANCE,"Retail",Small Cap,"Trading - Medium / Small",2.50,0.00,-5.00,28.48,11.78,-58.64
+5243,"Integrated Thermoplastics Ltd",530921,"Plastic products",Small Cap,"Plastics - Pipes",2.50,0.00,0.00,8.99,8.73,-2.89
+5245,"J R Foods Ltd",530915,"Edible Oil",Small Cap,"Solvent Extraction - Medium / Small",17.50,0.00,23.00,3.61,3.61,0
+5273,"Haryana Financial Corporation Ltd",530927,"Finance",Small Cap,"Finance - Term-Lending Institutions",16.00,0.00,0.00,69.73,80,14.73
+5297,"Infra Industries Ltd",530777,"Plastic products",Small Cap,"Plastics - Others",9.00,0.00,100.00,9.5,9.5,0
+5307,"Pithampur Poly Products Ltd",530683,"Packaging",Small Cap,"Packaging - Polysacks",6.25,0.00,0.00,10.9,11.45,5.05
+5415,"Tacent Projects Ltd",531887,"Trading",Small Cap,"Trading - Medium / Small",16.00,0.00,0.00,33.29,42.46,27.55
+5483,"General Insurance Corporation of India",GICRE,"Insurance",Mid Cap,"General Insurance",26.50,0.00,23.00,381,391.05,2.64
+5498,"Shriram Pistons & Rings Ltd",SHRIPISTON,"Auto Ancillaries",Small Cap,"Auto Ancillaries - Engine Parts",75.00,0.00,0.00,2624.25,3166.5,20.66
+5576,"Epsom Properties Ltd",531155,"Construction",Small Cap,"Construction - Housing - Medium / Small",1.00,0.00,0.00,7.29,8.01,9.88
+5584,"Coromandel Engineering Company Ltd",COROENGG,"Realty",Small Cap,"Construction - Factories / Offices / Commercial",22.25,0.00,79.00,71.53,84.4,17.99
+5586,"Jet Airways (India) Ltd",JETAIRWAYS,"Air Transport Service",Small Cap,"Transport - Airlines",4.00,0.00,-4.00,34.04,34.04,0
+5605,"Kati patang Lifestyle Ltd",531126,"Alcoholic Beverages",Small Cap,"Distilleries",7.00,0.00,26.00,21.95,24.4,11.16
+5655,"Adline Chem Lab Ltd",524604,"Pharmaceuticals",Small Cap,"Pharmaceuticals - Indian - Formulations",17.50,0.00,100.00,17.95,14.02,-21.89
+5686,"Coral Newsprints Ltd",530755,"Paper",Small Cap,"Paper - Medium / Small",2.50,0.00,6.00,9.56,10.5,9.83
+5710,"Bloom Dekor Ltd",526225,"Plywood Boards/Laminates",Small Cap,"Laminates",4.00,0.00,2.00,10.79,13.36,23.82
+5741,"Gaekwar Mills Ltd",502850,"Realty",Small Cap,"Construction - Factories / Offices / Commercial",15.25,0.00,0.00,14.32,14.32,0
+5759,"Boston Commerce Limited",531458,"Healthcare",Small Cap,"Trading - Medium / Small",7.75,0.00,0.00,7.96,5.65,-29.02
+5761,"Mega Fin (India) Ltd",532105,"Finance",Small Cap,"Finance - Small",10.00,0.00,0.00,27.05,31.95,18.11
+5801,"India Radiators Ltd",505100,"Realty",Small Cap,"Miscellaneous - Medium / Small",22.00,0.00,0.00,11.3,13.72,21.42
+5805,"Nilachal Refractories Ltd",502294,"Refractories",Small Cap,"Refractories / Intermediates",12.50,0.00,18.50,40,33.56,-16.1
+5881,"Containerway International Ltd",540597,"Logistics",Small Cap,"Transport - Road",11.75,0.00,22.00,23.35,16.46,-29.51
+5895,"Cranes Software International Ltd",CRANESSOFT,"IT - Software",Small Cap,"Computers - Software - Medium / Small",2.50,0.00,82.50,4.05,4.42,9.14
+5970,"Gujarat Metallic Coal & Coke Ltd",531881,"Trading",Small Cap,"Trading - Medium / Small",7.75,0.00,83.00,30,30,0
+5975,"Cresanto Global Limited",531207,"Packaging",Small Cap,"Packaging - Others",16.00,0.00,0.00,3.65,4.22,15.62
+6012,"Kobo Biotech Ltd",531541,"Pharmaceuticals",Small Cap,"Pharmaceuticals - Indian - Bulk Drugs & Formln M/S",2.50,0.00,16.50,2.41,2.52,4.56
+6064,"Geojit Financial Services Ltd",GEOJITFSL,"Stock/ Commodity Brokers",Small Cap,"Securities/Commodities Trading Services",8.50,0.00,14.50,73.46,64.81,-11.78
+6083,"Manappuram Finance Ltd",MANAPPURAM,"Finance",Small Cap,"Finance - Large",20.50,0.00,75.50,266.8,296.55,11.15
+6087,"GHV Infra Projects Ltd",505504,"Infrastructure Developers & Operators",Small Cap,"Construction - Civil / Turnkey - Medium / Small",23.00,0.00,64.00,308.98,343.95,11.32
+6098,"IDream Film Infrastructure Company Ltd",504375,"IT - Software",Small Cap,"Computers - Software - Medium / Small",15.25,0.00,0.00,160.05,300.05,87.47
+6113,"Aqylon Nexus Ltd",AQYLON,"Entertainment",Small Cap,"Entertainment - Electronic Media",25.00,0.00,86.00,1099.25,1333.55,21.31
+6121,"IEC Education Ltd",531840,"Computer Education",Small Cap,"Computers - Education",1.00,0.00,30.50,19.49,33.23,70.5
+6161,"Venmax Drugs & Pharmaceuticals Ltd",531015,"Pharmaceuticals",Small Cap,"Pharmaceuticals - Indian - Bulk Drugs",17.50,0.00,0.00,31.09,25.49,-18.01
+6187,"Refex Renewables & Infrastructure Ltd",531260,"Infrastructure Developers & Operators",Small Cap,"Engineering - Turnkey Services",2.50,0.00,1.00,630.15,264.35,-58.05
+6202,"Lynx Machinery & Commercials Ltd",505320,"Miscellaneous",Small Cap,"Miscellaneous - Medium / Small",4.00,0.00,0.00,164.5,178.8,8.69
+6230,"Adhata Global Ltd",531286,"Trading",Small Cap,"Trading - Medium / Small",20.00,0.00,0.00,46.75,26.65,-42.99
+6278,"Pratiksha Chemicals Ltd",531257,"Chemicals",Small Cap,"Dyes And Pigments - Medium / Small",10.75,0.00,41.50,20.55,20.13,-2.04
+6295,"Tusaldah Limited",531301,"Trading",Small Cap,"Trading - Medium / Small",17.50,0.00,40.50,166.1,138.4,-16.68
+6352,"Eastern Treads Ltd",531346,"Plantation & Plantation Products",Small Cap,"Rubber - Retreading",5.50,0.00,20.00,34.21,30.71,-10.23
+6358,"Pact Industries Ltd",538963,"Trading",Small Cap,"Trading - Medium / Small",7.75,0.00,0.00,1.36,1.36,0
+6437,"Afcons Infrastructure Ltd",AFCONS,"Infrastructure Developers & Operators",Small Cap,"Construction - Civil / Turnkey - Large",65.50,0.00,35.00,430.95,306.1,-28.97
+6467,"Roselabs Finance Ltd",531324,"Realty",Small Cap,"Construction - Housing - Medium / Small",17.50,0.00,18.50,28.99,21.85,-24.63
+6468,"Five-Star Business Finance Ltd",FIVESTAR,"Finance",Small Cap,"Finance - Large",41.00,0.00,6.00,588.85,426.35,-27.6
+6495,"Trident Tools Ltd",531972,"Trading",Small Cap,"Trading - Medium / Small",2.50,0.00,0.00,7.05,7.05,0
+6661,"AI Champdany Industries Ltd",AICHAMP,"Textiles",Small Cap,"Textiles - Jute - Yarn / Products",24.25,0.00,80.00,57.01,27.47,-51.82
+6662,"Vikas Proppant & Granite Ltd",VIKASPROP,"FMCG",Small Cap,"Granite & Marble - Large",28.75,10.00,31.00,0.38,0.28,-26.32
+6691,"SMC Global Securities Ltd",SMCGLOBAL,"Stock/ Commodity Brokers",Small Cap,"Securities/Commodities Trading Services",15.25,0.00,40.50,67.78,79.2,16.85
+6733,"Karuturi Global Ltd",KGL,"FMCG",Small Cap,"Floriculture / Tissue Culture",7.75,0.00,0.00,0.24,0.24,0
+6760,"Mizzen Ventures Ltd",531537,"Construction",Small Cap,"Construction - Civil / Turnkey - Medium / Small",15.25,0.00,55.00,253.15,184.59,-27.08
+6872,"Vas Infrastructure Ltd",531574,"Realty",Small Cap,"Construction - Housing - Medium / Small",1.00,0.00,78.00,16.12,10.49,-34.93
+6900,"Incon Engineers Ltd",531594,"Capital Goods-Non Electrical Equipment",Small Cap,"Engineering - Heavy - General - Medium / Small",17.50,0.00,19.00,12.05,13.2,9.54
+6901,"Silver Oak (India) Ltd",531635,"Alcoholic Beverages",Small Cap,"Distilleries",19.75,0.00,16.50,146.7,86.11,-41.3
+6932,"Centerac Technologies Ltd",531621,"IT - Software",Small Cap,"Computers - Software - Medium / Small",24.50,0.00,0.00,2.89,2.89,0
+6962,"Cupid Breweries & Distilleries Ltd",512361,"Alcoholic Beverages",Small Cap,"Breweries",26.00,0.00,0.00,97.95,35.38,-63.88
+6994,"Mahavir Industries Ltd",531648,"Capital Goods-Non Electrical Equipment",Small Cap,"Electrodes - Welding Equipment",11.50,0.00,2.00,0.91,0.91,0
+7012,"Starcom Information Technology Ltd",531616,"IT - Software",Small Cap,"Computers - Software - Medium / Small",2.50,0.00,40.50,73.39,74.79,1.91
+7093,"Lerthai Finance Ltd",502250,"Finance",Small Cap,"Finance - Investment / Others",10.00,0.00,78.00,605.9,550.55,-9.14
+7125,"Tricom Fruit Products Ltd",531716,"FMCG",Small Cap,"Food - Processing - Fruit Processing",1.00,0.00,12.50,2.02,2.19,8.42
+7138,"B J Duplex Boards Ltd",531647,"Trading",Small Cap,"Trading - Medium / Small",1.00,0.00,0.00,17.9,21.73,21.4
+7288,"Nuway Organic Naturals India Ltd",531819,"Trading",Small Cap,"Trading - Medium / Small",22.25,0.00,0.00,37,37,0
+7388,"Emmsons International Ltd",532038,"Trading",Small Cap,"Trading - Medium / Small",16.00,0.00,0.00,2.2,2.2,0
+7392,"Unitech International Ltd",531867,"Trading",Small Cap,"Trading - Medium / Small",2.50,0.00,47.50,4.78,3.57,-25.31
+7616,"Hari Govind International Ltd",531971,"Textiles",Small Cap,"Textiles - Others",1.00,0.00,0.00,145.15,208.15,43.4
+7636,"Carraro India Ltd",CARRARO,"Auto Ancillaries",Small Cap,"Auto Ancillaries - Others",73.75,0.00,0.00,426.4,518.85,21.68
+12024,"Life Insurance Corporation of India",LICI,"Insurance",Large Cap,"Life Insurance",29.50,0.00,40.50,889.65,874.85,-1.66
+12067,"Dam Capital Advisors Ltd",DAMCAPITAL,"Finance",Small Cap,"Finance - Investment / Others",26.00,0.00,0.00,223.8,151.15,-32.46
+12068,"Power Finance Corporation Ltd",PFC,"Finance",Large Cap,"Finance - Term-Lending Institutions",34.50,0.00,12.50,399.75,423.5,5.94
+12111,"Hexaware Technologies Ltd",HEXT,"IT - Software",Small Cap,"Computers - Software - Large",83.75,0.00,0.00,799.95,467.25,-41.59
+12214,"New India Assurance Company Ltd",NIACL,"Insurance",Small Cap,"General Insurance",29.50,0.00,65.00,196.1,148.55,-24.25
+12220,"Punj Lloyd Ltd",PUNJLLOYD,"Construction",Small Cap,"Construction - Civil / Turnkey - Large",32.50,0.00,17.00,2.23,2.23,0
+12371,"Zicom Electronic Security Systems Ltd",ZICOM,"Consumer Durables",Small Cap,"Electronics - Others",7.75,0.00,0.00,1.77,1.77,0
+12431,"Dhanada Corporation Ltd",531198,"Hotels & Restaurants",Small Cap,"Hotels - Small",2.50,0.00,35.50,2.3,2.3,0
+12466,"ICICI Securities Ltd",ISEC,"Stock/ Commodity Brokers",Small Cap,"Securities/Commodities Trading Services",40.25,0.00,93.00,895.7,895.7,0
+12483,"Filtron Engineers Ltd",531191,"Capital Goods-Non Electrical Equipment",Small Cap,"Engineering - Light - General - Medium / Small",2.50,0.00,0.00,10.58,100.3,848.02
+12521,"Page Industries Ltd",PAGEIND,"Readymade Garments/ Apparells",Mid Cap,"Textiles - Readymade Apparel",88.00,0.00,46.50,45688.65,32692.2,-28.45
+12608,"SIL Investments Ltd",SILINV,"Finance",Small Cap,"Finance - Investment / Others",23.50,0.00,30.00,579,430,-25.73
+12667,"Equilateral Enterprises Ltd",531262,"Diamond, Gems and Jewellery",Small Cap,"Diamond Cutting / Jewellery - Medium / Small",40.75,0.00,0.00,21.13,20.9,-1.09
+12673,"Scoobee Day Garments India Ltd",531234,"Readymade Garments/ Apparells",Small Cap,"Textiles - Readymade Apparel",46.75,0.00,48.00,103.9,75.41,-27.42
+12681,"Esha Media Research Ltd",531259,"Media - Print/Television/Radio",Small Cap,"Miscellaneous - Medium / Small",29.75,0.00,78.00,29.16,23.75,-18.55
+12727,"Capri Global Capital Ltd",CGCL,"Finance",Small Cap,"Finance - Large",31.00,0.00,63.00,187.65,169.85,-9.49
+12803,"Vardhman Concrete Ltd",531444,"Cement - Products",Small Cap,"Cement Products",2.50,0.00,75.50,11.39,10,-12.2
+12828,"Jain Studios Ltd",JAINSTUDIO,"Entertainment",Small Cap,"Entertainment - Content Providers",7.75,0.00,65.00,2.65,2.65,0
+12986,"Blue Coast Hotels Ltd",BLUECOAST,"Hotels & Restaurants",Small Cap,"Hotels - Small",27.50,0.00,80.00,73.15,23,-68.56
+13267,"Morarjee Textiles Ltd",MORARJEE,"Textiles",Small Cap,"Textiles - Others",2.50,0.00,38.50,9,7.53,-16.33
+13321,"Twinstar Industries Ltd",531917,"IT - Software",Small Cap,"Computers - Software - Medium / Small",7.75,0.00,75.50,1.33,1.33,0
+13419,"Filmcity Media Ltd",531486,"Entertainment",Small Cap,"Entertainment - Content Providers",6.25,0.00,44.50,2.76,2.09,-24.28
+13425,"Cyber Media (India) Ltd",CYBERMEDIA,"Media - Print/Television/Radio",Small Cap,"Entertainment - Electronic Media",14.50,0.00,16.50,15.82,14.74,-6.83
+13454,"Suvidha Infraestate Corporation Ltd",531640,"Realty",Small Cap,"Construction - Factories / Offices / Commercial",17.50,0.00,0.00,19,8.97,-52.79
+13654,"Meyer Apparel Ltd",531613,"Textiles",Small Cap,"Trading - Medium / Small",2.50,0.00,86.00,2.94,2.88,-2.04
+13683,"Nitco Ltd",NITCO,"Ceramic Products",Small Cap,"Trading - Medium / Small",5.50,0.00,40.00,125.4,75.46,-39.82
+13786,"Technofab Engineering Ltd",TECHNOFAB,"Infrastructure Developers & Operators",Small Cap,"Engineering - Turnkey Services",7.75,0.00,0.00,6.85,6.85,0
+14010,"Omkar Overseas Ltd",531496,"Trading",Small Cap,"Trading - Medium / Small",2.50,0.00,78.00,7.61,8.84,16.16
+14064,"Tejassvi Aaharam Ltd",531628,"FMCG",Small Cap,"Food - Processing - Others",2.50,0.00,39.00,22.2,37.88,70.63
+14079,"Monind Ltd",532078,"Mining & Mineral products",Small Cap,"Ferro Alloys",1.00,0.00,86.00,29.4,29.49,0.31
+14137,"Parmeshwari Silk Mills Ltd",540467,"Textiles",Small Cap,"Textiles - Weaving",70.00,0.00,0.00,37.73,94.82,151.31
+14185,"Ortel Communications Ltd",ORTEL,"Entertainment",Small Cap,"Entertainment - Electronic Media",5.50,0.00,61.50,1.67,1.69,1.2
+14236,"Aadhar Housing Finance Ltd",AADHARHFC,"Finance",Small Cap,"Finance - Housing - Large",39.25,0.00,77.00,522.05,457.8,-12.31
+14275,"Quintegra Solutions Ltd",QUINTEGRA,"IT - Software",Small Cap,"Computers - Software - Medium / Small",5.50,0.00,69.50,1.78,1.77,-0.56
+14343,"Aditya Birla Money Ltd",BIRLAMONEY,"Stock/ Commodity Brokers",Small Cap,"Securities/Commodities Trading Services",37.00,0.00,44.50,173.8,131.6,-24.28
+14711,"Aroma Enterprises (India) Ltd",531560,"Trading",Small Cap,"Trading - Medium / Small",7.75,0.00,0.00,28,28,0
+14778,"Surya Chakra Power Corporation Ltd",532874,"Power Generation & Distribution",Small Cap,"Power Generation And Supply",2.50,0.00,1.00,0.59,0.59,0
+14871,"BGR Energy Systems Ltd",BGRENERGY,"Infrastructure Developers & Operators",Small Cap,"Engineering - Turnkey Services",2.50,0.00,92.00,173.09,321.2,85.57
+15146,"Adtech Systems Ltd",544185,"IT - Hardware",Small Cap,"Computers - Peripherals / Accessories",42.75,0.00,18.50,68.59,53.22,-22.41
+15330,"Bharti Hexacom Ltd",BHARTIHEXA,"Telecom-Service",Mid Cap,"Telecommunications - Service Provider",60.75,0.00,89.50,1860.7,1656.8,-10.96
+15550,"Indian Renewable Energy Development Agency Ltd",IREDA,"Finance",Mid Cap,"Finance - Term-Lending Institutions",30.25,0.00,16.50,147.55,125.35,-15.05
+15658,"Lexoraa Industries Ltd",531944,"Retail",Small Cap,"Trading - Medium / Small",2.50,0.00,23.00,14.6,18.6,27.4
+15700,"Shiva Cement Ltd",532323,"Cement",Small Cap,"Cement - Mini - South India",22.00,0.00,2.00,32.19,18.43,-42.75
+16474,"PNB Housing Finance Ltd",PNBHOUSING,"Finance",Small Cap,"Finance - Housing - Large",31.00,0.00,2.00,799.55,849,6.18
+16486,"Hyundai Motor India Ltd",HYUNDAI,"Automobile",Large Cap,"Automobiles - passenger cars",73.50,0.00,94.00,2367.25,2204.35,-6.88
+16667,"BLB Ltd",BLBLIMITED,"Stock/ Commodity Brokers",Small Cap,"Securities/Commodities Trading Services",22.00,0.00,29.00,15.83,17.78,12.32
+16795,"Mahindra & Mahindra Financial Services Ltd",M&MFIN,"Finance",Mid Cap,"Finance - Large",35.50,0.00,41.50,263.1,378.35,43.8
+16966,"Emcure Pharmaceuticals Ltd",EMCURE,"Pharmaceuticals",Small Cap,"Pharmaceuticals - Indian - Bulk Drugs & Formln M/S",37.25,0.00,78.00,1493.85,1430.85,-4.22
+18014,"IL&FS Engineering & Construction Co Ltd",IL&FSENGG,"Infrastructure Developers & Operators",Small Cap,"Construction - Civil / Turnkey - Medium / Small",5.50,0.00,39.50,35,24.15,-31
+18075,"REC Ltd",RECLTD,"Finance",Mid Cap,"Finance - Term-Lending Institutions",25.00,0.00,12.50,375.6,353.9,-5.78
+18506,"Mamata Machinery Ltd",MAMATA,"Capital Goods-Non Electrical Equipment",Small Cap,"Engineering - Light - General - Medium / Small",87.00,0.00,0.00,413.9,440,6.31
+18695,"Shirpur Gold Refinery Ltd",SHIRPUR-G,"Mining & Mineral products",Small Cap,"Mining / Minerals",7.75,0.00,0.00,5.02,5.02,0
+19443,"Oxygenta Pharmaceutical Ltd",524636,"Pharmaceuticals",Small Cap,"Pharmaceuticals - Indian - Bulk Drugs",29.00,0.00,-5.00,80.55,50.53,-37.27
+19534,"Melstar Information Technologies Ltd",MELSTAR,"IT - Software",Small Cap,"Computers - Software - Medium / Small",32.00,0.00,30.00,4.32,4.32,0
+20745,"Integrated Hitech Ltd",532303,"IT - Software",Small Cap,"Computers - Software - Medium / Small",2.50,0.00,14.00,3.08,3.03,-1.62
+20892,"Baron Infotech Ltd",532336,"IT - Software",Small Cap,"Computers - Software - Medium / Small",14.50,37.50,0.00,1.32,1.58,19.7
+20954,"Sankhya Infotech Ltd",532972,"IT - Software",Small Cap,"Computers - Software - Medium / Small",10.75,0.00,12.50,7.5,7.5,0
+21251,"Fourth Generation Information Systems Ltd",532403,"IT - Software",Small Cap,"Computers - Software - Medium / Small",1.00,0.00,92.00,8.33,9.5,14.05
+21300,"Opto Circuits (India) Ltd",OPTOCIRCUI,"Healthcare",Small Cap,"Medical Equipment",12.25,0.00,0.00,1.78,1.78,0
+21319,"Galaxy Cloud Kitchens Ltd",506186,"Retail",Small Cap,"Trading - Medium / Small",16.50,0.00,31.00,25.9,15.33,-40.81
+21357,"Next Mediaworks Ltd",NEXTMEDIA,"Entertainment",Small Cap,"Entertainment - Electronic Media",17.50,0.00,31.00,6.6,5.7,-13.64
+22005,"ICICI Prudential Life Insurance Company Ltd",ICICIPRULI,"Insurance",Mid Cap,"Life Insurance",25.00,0.00,34.00,626.15,668.95,6.84
+22035,"Rainbow Denim Ltd",532441,"Textiles",Small Cap,"Textiles - Others",2.50,0.00,10.50,3.44,3.44,0
+22406,"Compuage Infocom Ltd",COMPINFO,"Trading",Small Cap,"Trading - Medium / Small",13.75,0.00,47.50,2.56,1.55,-39.45
+22664,"ICICI Lombard General Insurance Company Ltd",ICICIGI,"Insurance",Mid Cap,"General Insurance",34.75,0.00,46.00,1912,1938.75,1.4
+22910,"MPF Systems Ltd",532470,"Capital Goods-Non Electrical Equipment",Small Cap,"Fire - Protection Equipment",1.00,0.00,78.00,96.09,96.09,0
+22980,"Orissa Minerals Development Company Ltd",ORISSAMINE,"Mining & Mineral products",Small Cap,"Mining / Minerals",17.50,0.00,29.00,4945.25,4186.35,-15.35
+23428,"Ellenbarrie Industrial Gases Ltd",ELLEN,"Chemicals",Small Cap,"Industrial Gas",74.50,0.00,0.00,527.3,234.85,-55.46
+24413,"Wardwizard Healthcare Ltd",512063,"Healthcare",Small Cap,"Hospitals / Medical Services",25.25,0.00,0.00,27.88,45.34,62.63
+24588,"SVP Global Textiles Ltd",SVPGLOB,"Textiles",Small Cap,"Textiles - Spinning - Synthetic / Blended",7.75,0.00,55.50,3.71,3.03,-18.33
+24642,"Equippp Social Impact Technologies Ltd",EQUIPPP,"IT - Software",Small Cap,"Computers - Software - Medium / Small",22.00,0.00,2.00,18.59,18.58,-0.05
+24690,"JSW Holdings Ltd",JSWHL,"Finance",Small Cap,"Finance - Investment / Others",35.50,0.00,28.50,17972.05,17065.25,-5.05
+24705,"AJR Infra & Tolling Ltd",AJRINFRA,"Infrastructure Developers & Operators",Small Cap,"Engineering - Turnkey Services",7.75,0.00,36.00,0.68,0.68,0
+24769,"Muthoot Finance Ltd",MUTHOOTFIN,"Finance",Large Cap,"Finance - Large",33.50,0.00,67.50,2677.4,3504.3,30.88
+24814,"Grandma Trading & Agencies Ltd",504369,"Trading",Small Cap,"Trading - Medium / Small",31.00,0.00,18.50,0.49,0.49,0
+24820,"Kairosoft AI Solutions Ltd",506122,"Finance",Small Cap,"Finance - Investment / Others",24.50,0.00,-4.00,145.1,45,-68.99
+24976,"SPA Capital Services Ltd",542376,"Finance",Small Cap,"Finance - Investment / Others",17.00,0.00,0.00,165,208,26.06
+25030,"Bansal Wire Industries Ltd",BANSALWIRE,"Steel",Small Cap,"Steel - Wires",80.75,0.00,27.00,371.65,265.55,-28.55
+25067,"Repco Home Finance Ltd",REPCOHOME,"Finance",Small Cap,"Finance - Housing - Large",30.50,0.00,1.00,367.55,385.05,4.76
+25202,"Diffusion Engineers Ltd",DIFFNKG,"Capital Goods-Non Electrical Equipment",Small Cap,"Electrodes - Welding Equipment",79.75,0.00,80.00,344.65,262.2,-23.92
+25326,"Jagjanani Textiles Ltd",532825,"Textiles",Small Cap,"Textiles - Spinning/Cotton/Blended Yarn - Ring Spg",7.00,0.00,18.00,9.36,4.17,-55.45
+25397,"Unity Infraprojects Ltd",UNITY,"Construction",Small Cap,"Construction - Civil / Turnkey - Medium / Small",9.25,0.00,0.00,0.8,0.8,0
+25457,"Impex Ferro Tech Ltd",IMPEXFERRO,"Ferro Alloys",Small Cap,"Ferro Alloys",2.50,0.00,18.50,1.99,1.7,-14.57
+25565,"Kalpataru Ltd",KALPATARU,"Realty",Small Cap,"Construction - Housing - Medium / Small",20.75,0.00,0.00,386.3,335.8,-13.07
+25636,"Uniply Industries Ltd",UNIPLY,"Miscellaneous",Small Cap,"Decoratives - Wood-based",23.50,10.00,0.00,4,4,0
+25777,"Bombay Rayon Fashions Ltd",BRFL,"Textiles",Small Cap,"Textiles - Others",2.50,0.00,-6.00,1.82,1.82,0
+25954,"RRP Semiconductor Ltd",504346,"Trading",Small Cap,"Trading - Medium / Small",24.50,0.00,78.00,4293.2,10034.3,133.73
+26149,"Hilltone Software & Gases Ltd",544308,"Chemicals",Small Cap,"Industrial Gas",61.50,0.00,0.00,41.63,55.95,34.4
+26648,"Nuvama Wealth Management Ltd",NUVAMA,"Stock/ Commodity Brokers",Small Cap,"Securities/Commodities Trading Services",32.50,0.00,57.00,1395.96,1274.25,-8.72
+26658,"IIFL Capital Services Ltd",IIFLCAPS,"Stock/ Commodity Brokers",Small Cap,"Securities/Commodities Trading Services",56.00,0.00,67.50,320.65,298.7,-6.85
+26780,"Dhani Services Ltd",DHANI,"Finance",Small Cap,"Finance - Investment / Others",4.00,0.00,85.00,65.15,51.2,-21.41
+26822,"Rajvir Industries Ltd",RAJVIR,"Textiles",Small Cap,"Textiles - Jute - Yarn / Products",2.50,0.00,0.00,10.5,9.68,-7.81
+26839,"Educomp Solutions Ltd",EDUCOMP,"Computer Education",Small Cap,"Computers - Education",12.50,0.00,2.00,1.65,1.08,-34.55
+27206,"Reliance Communications Ltd",RCOM,"Telecom-Service",Small Cap,"Telecommunications - Service Provider",2.50,0.00,100.00,1.85,0.95,-48.65
+27231,"Malu Paper Mills Ltd",MALUPAPER,"Paper",Small Cap,"Paper - Medium / Small",28.75,0.00,16.50,37.65,31.7,-15.8
+27272,"Supreme Infrastructure India Ltd",SUPREMEINF,"Infrastructure Developers & Operators",Small Cap,"Engineering - Turnkey Services",2.50,0.00,56.50,114.25,81,-29.1
+27316,"Simplex Papers Ltd",533019,"Trading",Small Cap,"Trading - Medium / Small",9.25,0.00,2.00,1696.75,1448.75,-14.62
+27331,"Richa Industries Ltd",532766,"Construction",Small Cap,"Construction - Factories / Offices / Commercial",7.75,0.00,63.00,1.72,1.65,-4.07
+27531,"Euro Ceramics Ltd",EUROCERA,"Ceramic Products",Small Cap,"Ceramics - Sanitaryware / Others",4.00,0.00,0.00,1.11,1.11,0
+27538,"Ankit Metal & Power Ltd",ANKITMETAL,"Steel",Small Cap,"Steel - Medium / Small",16.00,10.00,12.00,1.89,1.68,-11.11
+27581,"C & C Constructions Ltd",CANDC,"Infrastructure Developers & Operators",Small Cap,"Construction - Civil / Turnkey - Medium / Small",15.25,0.00,1.00,2.36,2.36,0
+27662,"SEL Manufacturing Company Ltd",SELMC,"Textiles",Small Cap,"Textiles - Spinning/Cotton/Blended Yarn - Ring Spg",17.50,0.00,12.00,30.93,30.96,0.1
+27675,"Sun Pharma Advanced Research Company Ltd",SPARC,"Pharmaceuticals",Small Cap,"Miscellaneous - Medium / Small",7.00,0.00,18.50,145.85,130.6,-10.46
+27706,"Siti Networks Ltd",SITINET,"Entertainment",Small Cap,"Entertainment - Electronic Media",2.50,0.00,8.50,0.5,0.49,-2
+27768,"Nitin Fire Protection Industries Ltd",NITINFIRE,"Capital Goods-Non Electrical Equipment",Small Cap,"Fire - Protection Equipment",2.50,0.00,40.50,1.82,1.82,0
+27828,"Housing Development & Infrastructure Ltd",HDIL,"Realty",Small Cap,"Construction - Housing - Medium / Small",7.75,0.00,16.50,3.2,2.48,-22.5
+28011,"Motilal Oswal Financial Services Ltd",MOTILALOFS,"Stock/ Commodity Brokers",Mid Cap,"Securities/Commodities Trading Services",41.00,0.00,65.50,929.9,733.25,-21.15
+28041,"Burnpur Cement Ltd",BURNPUR,"Cement",Small Cap,"Cement - Major - North India",2.50,0.00,47.50,6.66,6.66,0
+28071,"Neueon Corporation Ltd",NEUEON,"Trading",Small Cap,"Trading - Medium / Small",16.00,0.00,78.00,5.1,11.26,120.78
+28220,"Citichem India Ltd",544324,"Chemicals",Small Cap,"Trading - Medium / Small",58.75,0.00,0.00,28.83,17,-41.03
+28666,"Euro Multivision Ltd",EUROMULTI,"Consumer Durables",Small Cap,"Electronics - Others",2.50,0.00,0.00,1.43,1.43,0
+28750,"Sea TV Network Ltd",533268,"Entertainment",Small Cap,"Entertainment - Electronic Media",4.00,0.00,8.00,4.97,4.32,-13.08
+29335,"Future Consumer Ltd",FCONSUMER,"Trading",Small Cap,"Trading - Medium / Small",2.50,0.00,2.00,0.44,0.37,-15.91
+29368,"ARSS Infrastructure Projects Ltd",ARSSINFRA,"Infrastructure Developers & Operators",Small Cap,"Construction - Civil / Turnkey - Medium / Small",6.25,0.00,62.50,49.44,54.84,10.92
+30251,"Welspun Investments & Commercials Ltd",WELINV,"Finance",Small Cap,"Finance - Investment / Others",31.00,0.00,12.50,909.95,1242,36.49
+33159,"Interglobe Aviation Ltd",INDIGO,"Air Transport Service",Large Cap,"Transport - Airlines",51.00,0.00,73.50,6084.45,4947.9,-18.68
+33609,"Shree Precoated Steels Ltd",SHPRE,"Realty",Small Cap,"Construction - Factories / Offices / Commercial",20.50,0.00,69.50,15.5,13.45,-13.23
+33760,"Star Health & Allied Insurance Company Ltd",STARHEALTH,"Insurance",Small Cap,"General Insurance",35.50,0.00,51.00,444.7,468.3,5.31
+33976,"Anthem Biosciences Ltd",ANTHEM,"Pharmaceuticals",Mid Cap,"Biotechnology",84.75,0.00,0.00,822.7,703.6,-14.48
+33990,"HDB Financial Services Ltd",HDBFS,"Finance",Mid Cap,"Finance - Investment / Others",41.00,0.00,0.00,795.3,725.35,-8.8
+34046,"Spandana Sphoorty Financial Ltd",SPANDANA,"Finance",Small Cap,"Finance - Investment / Others",11.50,0.00,14.50,248.55,252.6,1.63
+34263,"IL&FS Transportation Networks Ltd",IL&FSTRANS,"Infrastructure Developers & Operators",Small Cap,"Engineering - Turnkey Services",10.75,0.00,12.50,3.26,2.45,-24.85
+34369,"DEE Development Engineers Ltd",DEEDEV,"Steel",Small Cap,"Steel - Tubes / Pipes",57.75,0.00,27.00,273,299.15,9.58
+34484,"Akums Drugs & Pharmaceuticals Ltd",AKUMS,"Pharmaceuticals",Small Cap,"Pharmaceuticals - Indian - Bulk Drugs & Formln M/S",62.00,0.00,6.00,480.55,478,-0.53
+34518,"Emami Realty Ltd",EMAMIREAL,"Realty",Small Cap,"Construction - Factories / Offices / Commercial",9.25,0.00,75.50,118,64.79,-45.09
+35325,"Premier Energy & Infrastructure Ltd",533100,"Construction",Small Cap,"Construction - Civil / Turnkey - Medium / Small",48.50,0.00,0.00,8.91,7.58,-14.93
+35759,"M & B Engineering Ltd",MBEL,"Engineering",Small Cap,"Engineering - Turnkey Services",83.75,0.00,0.00,465.7,302.75,-34.99
+35794,"Omkar Speciality Chemicals Ltd",OMKARCHEM,"Chemicals",Small Cap,"Chemicals - Speciality - Medium / Small",6.25,0.00,10.50,6.69,4.99,-25.41
+36017,"Kalyani Investment Company Ltd",KICL,"Finance",Small Cap,"Finance - Investment / Others",31.00,0.00,27.00,4798.35,5082.85,5.93
+36078,"Stanley Lifestyles Ltd",STANLEY,"Consumer Durables",Small Cap,"Decoratives - Wood-based",61.00,0.00,6.00,308.35,163.1,-47.11
+36109,"P N Gadgil Jewellers Ltd",PNGJL,"Diamond, Gems and Jewellery",Small Cap,"Diamond Cutting / Jewellery - Large",82.75,0.00,39.50,582.35,547.55,-5.98
+36229,"Sammaan Capital Ltd",SAMMAANCAP,"Finance",Small Cap,"Finance - Housing - Large",16.00,0.00,18.50,121.8,158.35,30.01
+36889,"Binny Mills Ltd",535620,"Retail",Small Cap,"Trading - Medium / Small",4.00,0.00,49.00,215,295.75,37.56
+37419,"CreditAccess Grameen Ltd",CREDITACC,"Finance",Small Cap,"Finance - Large",31.00,0.00,83.00,1398.45,1305.2,-6.67
+38120,"Globe Civil Projects Ltd",GLOBECIVIL,"Infrastructure Developers & Operators",Small Cap,"Construction - Civil / Turnkey - Medium / Small",68.50,0.00,0.00,80.14,49.45,-38.3
+38133,"Bil Energy System Ltd",BILENERGY,"Steel",Small Cap,"Steel - Medium / Small",17.50,0.00,0.00,0.66,0.66,0
+38519,"Indo Farm Equipment Ltd",INDOFARM,"Automobile",Small Cap,"Automobiles - Tractors",78.75,0.00,0.00,225.6,138.2,-38.74
+38564,"Indiabulls Limited",IBULLSLTD,"Diversified",Small Cap,"Diversified - Medium / Small",4.00,0.00,86.00,16.8,9.1,-45.83
+38610,"Benara Bearings & Pistons Ltd",541178,"Bearings",Small Cap,"Bearings - Medium / Small",2.50,0.00,6.00,15.12,9.94,-34.26
+38927,"Niva Bupa Health Insurance Company Ltd",NIVABUPA,"Insurance",Small Cap,"General Insurance",37.00,0.00,0.00,85.54,76.31,-10.79
+38976,"Belrise Industries Ltd",BELRISE,"Auto Ancillaries",Small Cap,"Auto Ancillaries - Others",82.75,0.00,0.00,146.65,184.9,26.08
+39108,"Adani Total Gas Ltd",ATGL,"Gas Distribution",Mid Cap,"Gas Distribution",76.25,0.00,16.50,617.4,515.15,-16.56
+39587,"Future Supply Chain Solutions Ltd",FSC,"Logistics",Small Cap,"Miscellaneous - Medium / Small",34.75,0.00,24.00,2.39,2.94,23.01
+39683,"Jash Engineering Ltd",JASH,"Capital Goods-Non Electrical Equipment",Small Cap,"Engineering - Light - General - Medium / Small",74.25,0.00,0.00,541.9,388,-28.4
+39763,"Waaree Energies Ltd",WAAREEENER,"Capital Goods - Electrical Equipment",Mid Cap,"Electric Equipment - General - Large",95.50,0.00,78.00,3188.15,2708.55,-15.04
+39908,"Oswal Pumps Ltd",OSWALPUMPS,"Capital Goods-Non Electrical Equipment",Small Cap,"Pumps",84.00,0.00,0.00,873.8,323.5,-62.98
+40065,"JSW Cement Ltd",JSWCEMENT,"Cement",Small Cap,"Cement - Major - North India",44.25,0.00,0.00,153.15,125,-18.38
+40098,"Interarch Building Solutions Ltd",INTERARCH,"Steel",Small Cap,"Steel - Medium / Small",82.75,0.00,51.00,2054.4,1882.2,-8.38
+40188,"Ventive Hospitality Ltd",VENTIVE,"Hotels & Restaurants",Small Cap,"Hotels - Medium",86.00,0.00,0.00,749.75,711.45,-5.11
+40460,"Tijaria Polypipes Ltd",TIJARIA,"Plastic products",Small Cap,"Plastics - Pipes",2.50,0.00,18.00,7.92,4.38,-44.7
+40541,"Godavari Biorefineries Ltd",GODAVARIB,"Sugar",Small Cap,"Sugar - Integrated",22.75,0.00,30.00,261.45,276.9,5.91
+40552,"Nagarjuna Fertilizers & Chemicals Ltd",NAGAFERT,"Fertilizers",Small Cap,"Fertilizers - Nitrogenous / Phosphatic",26.50,0.00,16.50,5.8,4.43,-23.62
+41218,"Schneider Electric Infrastructure Ltd",SCHNEIDER,"Capital Goods - Electrical Equipment",Small Cap,"Electric Equipment - General - Large",73.25,0.00,56.50,862.4,871.05,1
+41242,"Paul Merchants Ltd",539113,"Finance",Small Cap,"Finance - Investment / Others",28.00,0.00,16.50,751.6,514.25,-31.58
+41403,"TV Vision Ltd",TVVISION,"Entertainment",Small Cap,"Entertainment - Electronic Media",4.00,0.00,-2.00,6.56,6.03,-8.08
+41473,"Hexa Tradex Ltd",HEXATRADEX,"Finance",Small Cap,"Finance - Investment / Others",16.00,0.00,16.50,179.3,159,-11.32
+41486,"CDG Petchem Ltd",534796,"Trading",Small Cap,"Trading - Medium / Small",2.50,0.00,78.00,55.23,104.1,88.48
+42365,"Tasty Dairy Specialities Ltd",540955,"FMCG",Small Cap,"Food and Dairy Products - Indian - Medium / Small",2.50,0.00,27.50,9.04,6.65,-26.44
+42732,"Prudent Corporate Advisory Services Ltd",PRUDENT,"Stock/ Commodity Brokers",Small Cap,"Securities/Commodities Trading Services",44.50,0.00,80.00,2894.8,2539.15,-12.29
+43079,"Aptus Value Housing Finance India Ltd",APTUS,"Finance",Small Cap,"Finance - Housing - Large",41.00,0.00,67.50,345.85,247.5,-28.44
+43417,"R J Bio-Tech Ltd",536456,"Plantation & Plantation Products",Small Cap,"Floriculture / Tissue Culture",13.00,100.00,0.00,3.43,3.43,0
+43524,"Aditya Infotech Ltd",CPPLUS,"Electronics",Small Cap,"Trading - Medium / Small",84.00,0.00,0.00,1361.1,1574.6,15.69
+43575,"Indegene Ltd",INDGN,"Healthcare",Small Cap,"Miscellaneous - Large",71.00,0.00,30.50,572.25,493.1,-13.83
+43592,"Viaan Industries Ltd",537524,"Trading",Small Cap,"Trading - Medium / Small",7.75,0.00,63.50,0.97,0.97,0
+43686,"Future Lifestyle Fashions Ltd",FLFL,"Retail",Small Cap,"Trading - Medium / Small",10.75,0.00,2.00,1.57,1.19,-24.2
+43863,"Jindal Poly Investment & Finance Company Ltd",JPOLYINVST,"Finance",Small Cap,"Finance - Investment / Others",16.00,0.00,8.00,725.8,1283.6,76.85
+43964,"RCI Industries & Technologies Ltd",537254,"Non Ferrous Metals",Small Cap,"Metal - Copper / Copper Alloy Products",2.50,0.00,97.00,7.1,6.81,-4.08
+44363,"Machhar Industries Ltd",543934,"Miscellaneous",Small Cap,"Transport - Road",31.75,0.00,23.00,336,313.5,-6.7
+44990,"Jubilant Agri & Consumer Products Ltd",JUBLCPL,"Chemicals",Small Cap,"Chemicals - Speciality - Large",83.50,0.00,0.00,2798,1789,-36.06
+45167,"Starlit Power Systems Ltd(Merged)",538733,"Mining & Mineral products",Small Cap,"Metal - Others",2.50,0.00,38.50,3.59,3.59,0
+45766,"Shivamshree Businesses Ltd",538520,"Power Generation & Distribution",Small Cap,"Power Generation And Supply",32.75,0.00,0.00,2.33,1.59,-31.76
+45828,"AAVAS Financiers Ltd",AAVAS,"Finance",Small Cap,"Finance - Housing - Large",39.50,0.00,8.00,1650.25,1286.05,-22.07
+48455,"India Shelter Finance Corporation Ltd",INDIASHLTR,"Finance",Small Cap,"Finance - Housing - Large",31.00,0.00,56.50,906.95,717.65,-20.87
+49157,"Laxmi India Finance Ltd",LAXMIINDIA,"Finance",Small Cap,"Finance - Small",35.50,0.00,0.00,140.75,94.44,-32.9
+51512,"Callista Industries Ltd",539335,"Trading",Small Cap,"Trading - Medium / Small",1.00,0.00,0.00,14.44,162.4,1024.65
+52315,"Neopolitan Pizza and Foods Ltd",NEO,"Trading",Small Cap,"Trading - Medium / Small",68.25,0.00,0.00,12.27,9.75,-20.54
+54036,"Svarnim Trade Udyog Ltd",539911,"Trading",Small Cap,"Trading - Medium / Small",2.50,0.00,1.00,15.27,10.9,-28.62
+54764,"Radhagobind Commercial Ltd",539673,"Trading",Small Cap,"Trading - Medium / Small",5.50,0.00,-5.00,1.83,3.06,67.21
+54766,"Quality Power Electrical Equipments Ltd",QPOWER,"Capital Goods - Electrical Equipment",Small Cap,"Electric Equipment - General - Medium / Small",97.75,0.00,0.00,788.2,898.4,13.98
+64823,"Majestic Research Services & Solutions Ltd",539229,"Miscellaneous",Small Cap,"Miscellaneous - Medium / Small",17.50,0.00,12.00,4.38,4.38,0
+64848,"BKM Industries Ltd",BKMINDST,"Engineering",Small Cap,"Engineering - Light - General - Medium / Small",9.25,0.00,100.00,1.82,1.82,0
+64977,"Fusion Finance Ltd",FUSION,"Finance",Small Cap,"Finance - Large",31.00,0.00,29.50,167.35,191.1,14.19
+65789,"Kalpa Commercial Ltd",539014,"Trading",Small Cap,"Trading - Medium / Small",21.25,0.00,0.00,10.52,10.8,2.66
+65804,"Balkrishna Paper Mills Ltd",BALKRISHNA,"Trading",Small Cap,"Trading - Medium / Small",5.50,0.00,65.00,21.49,15.88,-26.11
+65851,"Jiya Eco-Products Ltd",JIYAECO,"Miscellaneous",Small Cap,"Miscellaneous - Medium / Small",16.75,0.00,0.00,3.61,3.61,0
+65911,"Waaree Technologies Ltd",539337,"Auto Ancillaries",Small Cap,"Auto Ancillaries - Batteries",21.25,0.00,16.50,297.5,164.6,-44.67
+66008,"360 ONE WAM Ltd",360ONE,"Stock/ Commodity Brokers",Mid Cap,"Securities/Commodities Trading Services",16.00,0.00,46.50,1077.6,1132.2,5.07
+66042,"Future Retail Ltd",FRETAIL,"Retail",Small Cap,"Trading - Large",20.75,0.00,6.00,2.41,2.41,0
+66221,"SAB Events & Governance Now Media Ltd",SABEVENTS,"Media - Print/Television/Radio",Small Cap,"Entertainment - Content Providers",11.50,0.00,2.00,5.78,17.55,203.63
+66257,"Highway Infrastructure Ltd",HILINFRA,"Construction",Small Cap,"Construction - Civil / Turnkey - Medium / Small",64.00,0.00,0.00,99.2,55.52,-44.03
+67048,"National Securities Depository Ltd",544467,"Miscellaneous",Small Cap,"Miscellaneous - Medium / Small",78.25,0.00,0.00,1275.4,919.55,-27.9
+67061,"Transrail Lighting Ltd",TRANSRAILL,"Infrastructure Developers & Operators",Small Cap,"Engineering - Turnkey Services",90.25,0.00,0.00,779.9,553.55,-29.02
+67729,"Anand Rathi Wealth Ltd",ANANDRATHI,"Finance",Small Cap,"Finance - Investment / Others",41.00,0.00,77.00,2803.95,3055.4,8.97
+67886,"Bajaj Housing Finance Ltd",BAJAJHFL,"Finance",Mid Cap,"Finance - Housing - Large",39.50,0.00,26.50,112.95,87.62,-22.43
+68099,"One Mobikwik Systems Ltd",MOBIKWIK,"E-Commerce/App based Aggregator",Small Cap,"E-Services",32.75,0.00,0.00,228.95,202.75,-11.44
+68121,"Sai Life Sciences Ltd",SAILIFE,"Pharmaceuticals",Small Cap,"Pharmaceuticals - Indian - Formulations",76.75,0.00,0.00,925.15,924.65,-0.05
+68148,"Swiggy Ltd",SWIGGY,"E-Commerce/App based Aggregator",Mid Cap,"E-Services",16.00,0.00,0.00,428.3,307.35,-28.24
+68149,"Brainbees Solutions Ltd",FIRSTCRY,"Retail",Small Cap,"Trading - Medium / Small",52.00,0.00,37.00,383.35,210.5,-45.09
+68245,"Allied Blenders & Distillers Ltd",ABDL,"Alcoholic Beverages",Small Cap,"Distilleries",37.75,0.00,78.00,521.75,490.45,-6
+68827,"India Green Reality Ltd",540152,"Construction",Small Cap,"Construction - Factories / Offices / Commercial",16.25,0.00,0.00,5.24,5.24,0
+68848,"5paisa Capital Ltd",5PAISA,"Stock/ Commodity Brokers",Small Cap,"Securities/Commodities Trading Services",45.25,0.00,16.50,372.05,324.5,-12.78
+68966,"Yash Highvoltage Ltd",544310,"Capital Goods - Electrical Equipment",Small Cap,"Electric Equipment - General - Medium / Small",86.50,0.00,0.00,480.8,466.6,-2.95
+69551,"TBO Tek Ltd",TBOTEK,"E-Commerce/App based Aggregator",Small Cap,"Travel Agencies",52.75,0.00,65.00,1444.2,1287.7,-10.84
+69617,"Ecos (India) Mobility & Hospitality Ltd",ECOSMOBLTY,"Miscellaneous",Small Cap,"Transport - Road",66.50,0.00,28.50,292.4,148.35,-49.26
+69655,"Travel Food Services Ltd",TRAVELFOOD,"Quick Service Restaurant",Small Cap,"Hotels - Medium",40.00,0.00,0.00,1219.4,1235.15,1.29
+69686,"Brigade Hotel Ventures Ltd",BRIGHOTEL,"Hotels & Restaurants",Small Cap,"Hotels - Resorts",40.75,0.00,0.00,86.34,62.29,-27.85
+69951,"Euro Panel Products Ltd",EUROBOND,"Non Ferrous Metals",Small Cap,"Aluminium - Sheets / Coils / Wires / Others",78.25,0.00,0.00,236.35,167.7,-29.05
+70438,"Prabha Energy Ltd",PRABHA,"Crude Oil & Natural Gas",Small Cap,"Oil Exploration / Allied Services",25.75,0.00,0.00,255.5,180.6,-29.32
+70666,"Adani Green Energy Ltd",ADANIGREEN,"Power Generation & Distribution",Large Cap,"Power Generation And Supply",52.25,0.00,16.50,958.05,964.4,0.66
+71013,"Dr Agarwals Health Care Ltd",AGARWALEYE,"Healthcare",Small Cap,"Hospitals / Medical Services",56.25,0.00,0.00,455.5,450.9,-1.01
+71404,"Dhruv Wellness Ltd",540695,"Trading",Small Cap,"Trading - Medium / Small",12.25,0.00,-3.00,5.06,4.58,-9.49
+71480,"Pashupati Cotspin Ltd",PASHUPATI,"Textiles",Small Cap,"Textiles - Spinning/Cotton/Blended Yarn - Ring Spg",51.75,0.00,0.00,687.25,985.85,43.45
+71563,"D.P. Abhushan Ltd",DPABHUSHAN,"Diamond, Gems and Jewellery",Small Cap,"Diamond Cutting / Jewellery - Medium / Small",84.50,0.00,52.50,1594.5,1193.65,-25.14
+71578,"R M Drip & Sprinklers Systems Ltd",RMDRIP,"Plastic products",Small Cap,"Plastics - Drip Irrigation",62.25,0.00,0.00,72.87,97.95,34.42
+71622,"Reliable Data Services Ltd",RELIABLE,"IT - Software",Small Cap,"IT Enabled Services / Business Process Outsourcing",75.75,0.00,83.00,94.36,143.6,52.18
+71636,"ACME Solar Holdings Ltd",ACMESOLAR,"Infrastructure Developers & Operators",Small Cap,"Engineering - Turnkey Services",58.25,0.00,0.00,290.6,233.85,-19.53
+71649,"SecUR Credentials Ltd",SECURCRED,"Miscellaneous",Small Cap,"Miscellaneous - Medium / Small",53.75,10.00,-6.00,1.63,1.63,0
+71654,"Innovana Thinklabs Ltd",INNOVANA,"IT - Software",Small Cap,"Computers - Software - Medium / Small",81.50,0.00,0.00,507.6,433,-14.7
+71706,"Inventurus Knowledge Solutions Ltd",IKS,"IT - Software",Small Cap,"IT Enabled Services / Business Process Outsourcing",78.00,0.00,0.00,1554.9,1430.6,-7.99
+71865,"Home First Finance Company India Ltd",HOMEFIRST,"Finance",Small Cap,"Finance - Housing - Large",41.00,0.00,75.50,1307.65,1246,-4.71
+72173,"Uravi Defence & Technology Ltd",URAVIDEF,"Auto Ancillaries",Small Cap,"Auto Ancillaries - Lamps",38.75,0.00,44.50,483.7,147.8,-69.44
+72780,"Go Digit General Insurance Ltd",GODIGIT,"Insurance",Small Cap,"General Insurance",37.00,0.00,73.50,367.8,340.05,-7.54
+73120,"A B Infrabuild Ltd",ABINFRA,"Infrastructure Developers & Operators",Small Cap,"Construction - Civil / Turnkey - Medium / Small",52.25,0.00,0.00,19.36,18.38,-5.06
+73198,"Diksha Greens Ltd",542155,"Miscellaneous",Small Cap,"Decoratives - Wood-based",16.00,0.00,1.00,2.43,1.37,-43.62
+73254,"Spectrum Electrical Industries Ltd",SPECTRUM,"Capital Goods - Electrical Equipment",Small Cap,"Electric Equipment - General - Medium / Small",75.25,0.00,0.00,1458.4,1260.65,-13.56
+73286,"Prostarm Info Systems Ltd",PROSTARM,"Capital Goods - Electrical Equipment",Small Cap,"Electric Equipment - General - Medium / Small",83.00,0.00,0.00,203.45,152.45,-25.07
+73585,"Mahip Industries Ltd",542503,"Packaging",Small Cap,"Packaging - Others",16.25,0.00,0.00,3.43,18.6,442.27
+73975,"Gala Precision Engineering Ltd",GALAPREC,"Castings, Forgings & Fastners",Small Cap,"Fasteners",84.25,0.00,18.50,834.75,747.6,-10.44
+74261,"Aegis Vopak Terminals Ltd",AEGISVOPAK,"Logistics",Small Cap,"Miscellaneous - Medium / Small",17.75,0.00,0.00,252.85,235.75,-6.76
+74388,"Shree Refrigerations Ltd",544458,"Engineering",Small Cap,"Engineering - Light - General - Medium / Small",77.75,0.00,0.00,180.2,178.2,-1.11
+74592,"Mangalam Global Enterprise Ltd",MGEL,"Trading",Small Cap,"Trading - Medium / Small",74.75,0.00,56.50,15.92,11.2,-29.65
+74653,"Valencia Nutrition Ltd",542910,"FMCG",Small Cap,"Food - Processing - Others",14.00,0.00,81.00,74.95,60,-19.95
+75082,"Jungle Camps India Ltd",544304,"Hotels & Restaurants",Small Cap,"Hotels - Resorts",55.75,0.00,0.00,61.25,45.42,-25.84
+75208,"RDB Real Estate Construction Ltd",544346,"Realty",Small Cap,"Construction - Factories / Offices / Commercial",37.75,0.00,0.00,273.9,162.95,-40.51
+75273,"Blackbuck Ltd",BLACKBUCK,"Logistics",Small Cap,"Transport - Road",20.00,0.00,0.00,644,600.35,-6.78
+75316,"Suumaya Corporation Ltd",543274,"Trading",Small Cap,"Trading - Medium / Small",17.50,0.00,-4.00,2.22,1.19,-46.4
+75371,"Network People Services Technologies Ltd",NPST,"IT - Software",Small Cap,"IT Enabled Services / Business Process Outsourcing",86.50,0.00,0.00,2345.9,1155.1,-50.76
+75406,"Storage Technologies & Automation Ltd",544171,"Capital Goods-Non Electrical Equipment",Small Cap,"Engineering - Light - General - Medium / Small",73.75,0.00,14.00,75,42.34,-43.55
+75410,"Unicommerce eSolutions Ltd",UNIECOM,"IT - Software",Small Cap,"Computers - Software - Medium / Small",82.75,0.00,58.50,140.95,107.05,-24.05
+75448,"National Peroxide Ltd",544205,"Chemicals",Small Cap,"Chemicals - Inorganic - Medium / Small",21.25,0.00,18.50,646.4,402.85,-37.68
+75556,"Ather Energy Ltd",ATHERENERG,"Automobile",Small Cap,"Automobiles - Scooters and 3-Wheelers",26.00,0.00,0.00,416.8,706.8,69.58
+75559,"Ola Electric Mobility Ltd",OLAELEC,"Automobile",Small Cap,"Automobiles - Motorcycles / Mopeds",24.25,0.00,61.50,47.18,25.55,-45.85
+75790,"BEML Land Assets Ltd",BLAL,"Construction",Small Cap,"Construction - Factories / Offices / Commercial",1.00,0.00,33.50,208.45,186.6,-10.48
+75817,"Le Travenues Technology Ltd",IXIGO,"E-Commerce/App based Aggregator",Small Cap,"Travel Agencies",52.75,0.00,79.00,280.15,166,-40.75
+76035,"Wherrelz IT Solutions Ltd",543436,"IT - Software",Small Cap,"Computers - Software - Medium / Small",35.75,0.00,66.00,230.8,202,-12.48
+76054,"Jeena Sikho Lifecare Ltd",JSLL,"Pharmaceuticals",Small Cap,"Trading - Medium / Small",86.50,0.00,0.00,719.2,644.85,-10.34
+76244,"Revathi Equipment India Ltd",RVTH,"Engineering",Small Cap,"Engineering - Light - General - Medium / Small",89.00,0.00,2.00,867,635,-26.76
+76250,"Suraksha Diagnostic Ltd",SURAKSHA,"Healthcare",Small Cap,"Diagnostic Services",76.00,0.00,0.00,314.2,281.25,-10.49
+76395,"Sanathan Textiles Ltd",SANATHAN,"Textiles",Small Cap,"Textiles - Spinning/Cotton/Blended Yarn - Ring Spg",43.25,0.00,0.00,508.95,403.5,-20.72
+76458,"Krishival Foods Ltd",KRISHIVAL,"FMCG",Small Cap,"Food - Processing - Others",89.50,0.00,0.00,388,310.25,-20.04
+76484,"Borosil Scientific Ltd",BOROSCI,"Glass & Glass Products",Small Cap,"Glass - Containers / Others",83.25,0.00,2.00,139.35,104.35,-25.12
+76733,"Baazar Style Retail Ltd",STYLEBAAZA,"Retail",Small Cap,"Trading - Medium / Small",51.75,0.00,80.00,314.55,317.65,0.99
+76751,"Premier Energies Ltd",PREMIERENE,"Trading",Small Cap,"Trading - Medium / Small",56.50,0.00,25.00,1008.3,729.05,-27.7
+77048,"OCCL Ltd",OCCLLTD,"Chemicals",Small Cap,"Chemicals - Inorganic - Medium / Small",19.25,0.00,62.50,135.65,89.73,-33.85
+77163,"Concord Enviro Systems Ltd",CEWATER,"Capital Goods-Non Electrical Equipment",Small Cap,"Pollution Control Equipment",30.25,0.00,0.00,548.4,316.05,-42.37
+77648,"Bluestone Jewellery & Lifestyle Ltd",BLUESTONE,"Diamond, Gems and Jewellery",Small Cap,"Diamond Cutting / Jewellery - Medium / Small",26.00,0.00,0.00,545.55,421.8,-22.68
+77757,"Manoj Jewellers Ltd",544400,"Diamond, Gems and Jewellery",Small Cap,"Diamond Cutting / Jewellery - Medium / Small",80.75,0.00,0.00,53.3,44,-17.45
+77804,"AWFIS Space Solutions Ltd",AWFIS,"Co-Working",Small Cap,"Miscellaneous - Medium / Small",64.25,0.00,12.00,576.1,298.2,-48.24
+77860,"Naturewings Holidays Ltd",544245,"Miscellaneous",Small Cap,"Travel Agencies",75.00,0.00,0.00,81.7,79.6,-2.57
+77882,"Enviro Infra Engineers Ltd",EIEL,"Infrastructure Developers & Operators",Small Cap,"Engineering - Turnkey Services",85.00,0.00,0.00,268.1,159.15,-40.64
+77885,"Maple Infrastructure Trust",543925,"Infrastructure Investment Trusts",Small Cap,"Infra/ Real Estate Investment Trust",18.25,0.00,0.00,144,145.6,1.11
+77886,"Dharni Capital Services Ltd",543753,"Finance",Small Cap,"Finance - Investment / Others",32.50,0.00,80.00,55.65,61.4,10.33
+77922,"Vikram Aroma Ltd",544371,"Chemicals",Small Cap,"Chemicals - Speciality - Medium / Small",1.00,0.00,0.00,101.4,63.33,-37.54
+77924,"Indef Manufacturing Ltd",BAJAJINDEF,"Capital Goods-Non Electrical Equipment",Small Cap,"Engineering - Heavy - Material Handling",1.00,0.00,0.00,384.7,249.4,-35.17
+78033,"Forbes Precision Tools & Machine Parts Ltd",544186,"Capital Goods-Non Electrical Equipment",Small Cap,"Machine Tools - Others",34.50,0.00,8.00,173.15,133.85,-22.7
+78051,"Anzen India Energy Yield Plus Trust",ANZEN,"Power Infrastructure",Small Cap,"Power Generation And Supply",59.25,0.00,0.00,115,117,1.74
+78092,"Leela Palaces Hotels & Resorts Ltd",THELEELA,"Hotels & Restaurants",Small Cap,"Hotels - Medium",28.25,0.00,0.00,420.3,438.8,4.4
+78117,"JHS Svendgaard Retail Ventures Ltd",RETAIL,"Retail",Small Cap,"Trading - Medium / Small",56.75,0.00,83.00,42.98,25.2,-41.37
+78328,"Rossell Techsys Ltd",ROSSTECH,"Aerospace & Defence",Small Cap,"Engineering - Heavy - General - Medium / Small",16.75,0.00,0.00,681.5,670,-1.69
+78377,"Regaal Resources Ltd",REGAAL,"Miscellaneous",Small Cap,"Starch",77.75,0.00,0.00,124.15,68.54,-44.79
+78686,"Jay Kailash Namkeen Ltd",544160,"FMCG",Small Cap,"Food - Processing - Others",74.00,0.00,2.00,48.1,18.99,-60.52
+78691,"Avax Apparels and Ornaments Ltd",544337,"Trading",Small Cap,"Trading - Medium / Small",64.50,0.00,0.00,116.85,297,154.17
+78697,"Innovatus Entertainment Networks Ltd",543951,"Miscellaneous",Small Cap,"Miscellaneous - Medium / Small",66.00,0.00,-4.00,14.15,14.15,0
+78706,"Globale Tessile Ltd",GLOBALE,"Textiles",Small Cap,"Textiles - Others",31.00,0.00,43.50,14.11,12.2,-13.54
+79000,"Cube Highways Trust",CUBEINVIT,"Infrastructure Investment Trusts",Small Cap,"Infra/ Real Estate Investment Trust",37.75,0.00,0.00,130.5,140,7.28
+79030,"Raymond Lifestyle Ltd",RAYMONDLSL,"Textiles",Small Cap,"Textiles - Others",58.25,0.00,37.00,1157.1,894.55,-22.69
+79071,"International Gemmological Institute (India) Ltd",IGIL,"Miscellaneous",Small Cap,"Miscellaneous - Medium / Small",81.00,0.00,0.00,350.85,332.15,-5.33
+79141,"Sanofi Consumer Healthcare India Ltd",SANOFICONR,"Pharmaceuticals",Small Cap,"Pharmaceuticals - Multinational",79.00,0.00,51.00,5152.35,4005.75,-22.25
+80006,"Sanstar Ltd",SANSTAR,"FMCG",Small Cap,"Starch",75.00,0.00,4.00,83.71,85.99,2.72
+81901,"Shree Tirupati Balajee Agro Trading Co. Ltd",BALAJEE,"Packaging",Small Cap,"Packaging - Polysacks",68.50,0.00,41.50,51.63,30.02,-41.86
+82794,"Ajax Engineering Ltd",AJAXENGG,"Capital Goods-Non Electrical Equipment",Small Cap,"Engineering - Heavy - General - Large",81.75,0.00,0.00,680.1,491,-27.8
+82898,"Parmeshwar Metal Ltd",544330,"Mining & Mineral products",Small Cap,"Metal - Copper / Copper Alloy Products",74.50,0.00,0.00,70,122.6,75.14
+85110,"Ceigall India Ltd",CEIGALL,"Infrastructure Developers & Operators",Small Cap,"Construction - Civil / Turnkey - Large",83.50,0.00,16.50,252.7,288.25,14.07
+86032,"Amkay Products Ltd",544169,"Healthcare",Small Cap,"Medical Equipment",48.00,0.00,32.50,54.5,59.85,9.82
+86134,"Laxmi Dental Ltd",LAXMIDENTL,"Healthcare",Small Cap,"Medical Equipment",68.75,0.00,0.00,349.95,186.7,-46.65
+86391,"Vishal Mega Mart Ltd",VMM,"Retail",Mid Cap,"Trading - Large",66.00,0.00,0.00,150.6,122.85,-18.43
+88957,"Odigma Consultancy Solutions Ltd",ODIGMA,"IT - Software",Small Cap,"IT Enabled Services / Business Process Outsourcing",41.50,0.00,0.00,30.65,26.26,-14.32
+89433,"OneSource Specialty Pharma Ltd",ONESOURCE,"Pharmaceuticals",Small Cap,"Biotechnology",38.25,0.00,0.00,1857.75,1293.75,-30.36
+89824,"Indogulf Cropsciences Ltd",IGCL,"Agro Chemicals",Small Cap,"Pesticides / Agrochemicals - Indian - Large",49.25,0.00,0.00,115,64.23,-44.15
+91610,"Rikhav Securities Ltd",544340,"Stock/ Commodity Brokers",Small Cap,"Securities/Commodities Trading Services",31.50,0.00,0.00,72.8,44.83,-38.42
+91644,"Western Carriers (India) Ltd",WCIL,"Logistics",Small Cap,"Transport - Road",68.75,0.00,93.00,130.95,114.4,-12.64
+91692,"Raymond Realty Ltd",RAYMONDREL,"Realty",Small Cap,"Construction - Factories / Offices / Commercial",7.50,0.00,0.00,637.65,427.4,-32.97
+91708,"Sodhani Academy of Fintech Enablers Ltd",544257,"Education",Small Cap,"Miscellaneous - Medium / Small",85.00,0.00,75.50,282,202,-28.37
+91810,"Davin Sons Retail Ltd",544331,"Trading",Small Cap,"Trading - Medium / Small",35.00,0.00,0.00,55.42,36.5,-34.14
+91822,"GNG Electronics Ltd",EBGNG,"Trading",Small Cap,"Trading - Medium / Small",72.25,0.00,0.00,345.3,366.2,6.05
+91836,"ITC Hotels Ltd",ITCHOTELS,"Hotels & Restaurants",Mid Cap,"Hotels - Large",68.25,0.00,0.00,244.85,179.2,-26.81
+91844,"Vruddhi Engineering Works Ltd",544157,"Trading",Small Cap,"Trading - Medium / Small",48.00,0.00,15.00,210.25,200,-4.88
+91866,"JNK India Ltd",JNKINDIA,"Capital Goods-Non Electrical Equipment",Small Cap,"Engineering - Heavy - General - Medium / Small",74.50,0.00,12.00,299.15,238.4,-20.31
+91887,"Shree Marutinandan Tubes Ltd",544083,"Trading",Small Cap,"Trading - Medium / Small",62.50,0.00,12.00,99.85,66.05,-33.85
+91895,"Arkade Developers Ltd",ARKADE,"Realty",Small Cap,"Construction - Housing - Large",85.00,0.00,51.00,183.1,113.7,-37.9
+91898,"Covance Softsol Ltd",544361,"IT - Software",Small Cap,"Computers - Software - Medium / Small",53.25,0.00,0.00,27.74,171.3,517.52
+92153,"Varyaa Creations Ltd",544168,"Diamond, Gems and Jewellery",Small Cap,"Diamond Cutting / Jewellery - Medium / Small",40.00,0.00,12.00,40,32.89,-17.77
+92229,"SRM Contractors Ltd",SRM,"Infrastructure Developers & Operators",Small Cap,"Construction - Civil / Turnkey - Medium / Small",86.50,0.00,80.00,490.9,410.55,-16.37
+92230,"Saraswati Saree Depot Ltd",SSDL,"Textiles",Small Cap,"Trading - Medium / Small",35.00,0.00,12.50,92.18,61.42,-33.37
+92281,"Deepak Chemtex Ltd",544036,"Chemicals",Small Cap,"Dyes And Pigments - Medium / Small",85.00,0.00,55.00,137,100.1,-26.93
+92335,"Kross Ltd",KROSS,"Auto Ancillaries",Small Cap,"Auto Ancillaries - Axles / Shafts",83.75,0.00,75.50,188.75,198.1,4.95
+92398,"Piotex Industries Ltd",544178,"Textiles",Small Cap,"Trading - Medium / Small",74.50,0.00,80.00,64.91,46.56,-28.27
+92423,"Kizi Apparels Ltd",544221,"Textiles",Small Cap,"Textiles - Readymade Apparel",18.25,0.00,6.00,16.58,15,-9.53
+92424,"Intelligent Supply Chain Infrastructure Trust",544005,"Infrastructure Investment Trusts",Small Cap,"Infra/ Real Estate Investment Trust",7.75,0.00,0.00,125,125,0
+92469,"Greenhitech Ventures Ltd",544163,"Miscellaneous",Small Cap,"Miscellaneous - Medium / Small",62.75,0.00,1.00,92.15,84.8,-7.98
+92471,"Magenta Lifecare Ltd",544188,"Consumer Durables",Small Cap,"Miscellaneous - Medium / Small",31.75,0.00,0.00,16.5,13.7,-16.97
+92547,"Kronox Lab Sciences Ltd",KRONOX,"Chemicals",Small Cap,"Chemicals - Speciality - Medium / Small",87.00,0.00,46.50,170.6,112.4,-34.11
+92548,"Gabriel Pet Straps Ltd",544108,"Plastic products",Small Cap,"Plastics - Others",44.25,0.00,77.00,260,185,-28.85
+92579,"Finelistings Technologies Ltd",544173,"IT - Software",Small Cap,"Computers - Software - Medium / Small",41.00,0.00,2.00,28,15.05,-46.25
+92592,"Gconnect Logitech & Supply Chain Ltd",544156,"Logistics",Small Cap,"Transport - Road",77.75,0.00,12.00,21.68,25,15.31
+92618,"Denta Water & Infra Solutions Ltd",DENTA,"Infrastructure Developers & Operators",Small Cap,"Construction - Civil / Turnkey - Medium / Small",75.00,0.00,0.00,423.8,252,-40.54
+92640,"Stallion India Fluorochemicals Ltd",STALLION,"Chemicals",Small Cap,"Industrial Gas",83.75,0.00,0.00,125.55,128.7,2.51
+92650,"Chembond Chemicals Ltd",CHEMBONDCH,"Chemicals",Small Cap,"Chemicals - Speciality - Medium / Small",45.75,0.00,0.00,217.2,151.2,-30.39
+92677,"United Cotfab Ltd",544195,"Textiles",Small Cap,"Textiles - Cotton Yarn - Open-Ended Spinning",29.50,0.00,-3.00,22,19,-13.64
+92681,"Vraj Iron & Steel Ltd",VRAJ,"Steel",Small Cap,"Steel - Sponge Iron",83.50,0.00,12.00,155.7,125.25,-19.56
+92685,"Retaggio Industries Ltd",544391,"Diamond, Gems and Jewellery",Small Cap,"Diamond Cutting / Jewellery - Medium / Small",19.75,0.00,0.00,24.56,37.24,51.63
+92695,"Resourceful Automobile Ltd",544236,"Trading",Small Cap,"Trading - Medium / Small",53.75,0.00,0.00,63.72,36.9,-42.09
+92699,"Broach Lifecare Hospital Ltd",544231,"Healthcare",Small Cap,"Hospitals / Medical Services",46.75,0.00,0.00,25.4,14.5,-42.91
+92700,"Emmforce Autotech Ltd",544166,"Auto Ancillaries",Small Cap,"Auto Ancillaries - Others",82.25,0.00,16.50,92,127.1,38.15
+92701,"Dindigul Farm Product Ltd",544201,"FMCG",Small Cap,"Food and Dairy Products - Indian - Medium / Small",27.50,0.00,-4.00,19.45,13.55,-30.33
+92702,"Dolphin Kitchen Utencils and Applicances Limited",544170,"Consumer Durables",Small Cap,"Domestic Appliances - Cookers / Others",21.50,0.00,16.50,34.61,33.81,-2.31
+92703,"Faalcon Concepts Ltd",FAALCON,"Construction",Small Cap,"Construction - Civil / Turnkey - Medium / Small",83.00,0.00,6.00,40,38.29,-4.28
+92704,"Associated Coaters Ltd",544183,"Miscellaneous",Small Cap,"Miscellaneous - Medium / Small",35.00,0.00,2.00,84.5,112.9,33.61
+92705,"TGIF Agribusiness Ltd",544175,"FMCG",Small Cap,"Miscellaneous - Medium / Small",76.50,0.00,85.00,98,86,-12.24
+92708,"Deepak Builders & Engineers India Ltd",DBEIL,"Infrastructure Developers & Operators",Small Cap,"Construction - Civil / Turnkey - Medium / Small",76.00,0.00,16.50,132.25,80.04,-39.48
+92755,"KRN Heat Exchanger and Refrigeration Ltd",KRN,"Engineering",Small Cap,"Engineering - Light - General - Medium / Small",75.00,0.00,86.00,954.75,999.05,4.64
+92781,"Garuda Construction and Engineering Ltd",GARUDA,"Infrastructure Developers & Operators",Small Cap,"Engineering - Turnkey Services",75.00,0.00,84.00,191.7,180.6,-5.79
+92782,"Rapid Multimodal Logistics Ltd",544237,"Logistics",Small Cap,"Transport - Road",35.00,0.00,0.00,66.5,143.7,116.09
+92784,"Shivam Chemicals Ltd",544165,"Trading",Small Cap,"Trading - Medium / Small",81.50,0.00,56.50,58,100.2,72.76
+92788,"Clinitech Laboratory Ltd",544220,"Healthcare",Small Cap,"Diagnostic Services",56.50,0.00,0.00,50.24,44,-12.42
+92829,"Aztec Fluids & Machinery Ltd",544177,"IT - Hardware",Small Cap,"Computers - Hardware - Medium / Small",99.50,0.00,47.50,84.5,97,14.79
+92832,"Gem Enviro Management Ltd",544199,"Miscellaneous",Small Cap,"Miscellaneous - Medium / Small",56.00,0.00,-4.00,63.82,44.49,-30.29
+92843,"Tolins Tyres Ltd",TOLINS,"Tyres",Small Cap,"Tyres - Medium / Small",58.25,0.00,16.50,149.4,113.6,-23.96
+92846,"Bluspring Enterprises Ltd",BLUSPRING,"Diversified",Small Cap,"Diversified - Large",10.00,0.00,0.00,81.18,54.07,-33.39
+92861,"Smartworks Coworking Spaces Ltd",SMARTWORKS,"Co-Working",Small Cap,"Miscellaneous - Medium / Small",49.50,0.00,0.00,489.85,416.65,-14.94
+92862,"Indiqube Spaces Ltd",INDIQUBE,"Co-Working",Small Cap,"Miscellaneous - Medium / Small",48.50,0.00,0.00,227.15,174.7,-23.09
+92869,"VVIP Infratech Ltd",544219,"Infrastructure Developers & Operators",Small Cap,"Construction - Civil / Turnkey - Medium / Small",82.25,0.00,16.50,182,107.5,-40.93
+92883,"Orient Technologies Ltd",ORIENTTECH,"IT - Software",Small Cap,"Computers - Software - Medium / Small",64.25,0.00,14.50,282.68,298.85,5.72
+92886,"3C IT Solutions & Telecoms (India) Ltd",544190,"IT - Software",Small Cap,"Computers - Software - Medium / Small",29.50,0.00,27.50,24.5,19.86,-18.94
+92923,"Mangal Compusolution Ltd",544287,"Miscellaneous",Small Cap,"Miscellaneous - Medium / Small",65.00,0.00,0.00,57.8,48,-16.96
+92929,"GB Logistics Commerce Ltd",544348,"Logistics",Small Cap,"Transport - Road",83.00,0.00,0.00,50.84,38.5,-24.27
+92934,"Sattrix Information Security Ltd",544189,"IT - Software",Small Cap,"Computers - Software - Medium / Small",85.00,0.00,86.00,200.85,383.6,90.99
+92959,"Crizac Ltd",CRIZAC,"Education",Small Cap,"Miscellaneous - Medium / Small",61.50,0.00,0.00,351.7,221.85,-36.92
+92964,"Afcom Holdings Ltd",544224,"Logistics",Small Cap,"Transport - Airlines",84.50,0.00,51.00,876.4,806.4,-7.99
+92982,"Three M Paper Boards Ltd",544214,"Paper",Small Cap,"Paper - Medium / Small",71.25,0.00,6.50,43.45,28.7,-33.95
+92983,"Popular Foundations Ltd",544259,"Infrastructure Developers & Operators",Small Cap,"Construction - Civil / Turnkey - Medium / Small",53.75,0.00,75.50,34.94,33.38,-4.46
+92984,"Aelea Commodities Ltd",544213,"FMCG",Small Cap,"Food - Processing - Others",32.25,0.00,37.00,179.1,132.5,-26.02
+92996,"Aditya Birla Lifestyle Brands Ltd",ABLBL,"Retail",Small Cap,"Retailing",13.25,0.00,0.00,142.85,104.35,-26.95
+93047,"Travels & Rentals Ltd",544242,"Miscellaneous",Small Cap,"Travel Agencies",49.25,0.00,0.00,38.22,16.34,-57.25
+93048,"Shreenath Paper Products Ltd",544372,"Trading",Small Cap,"Trading - Medium / Small",46.50,0.00,0.00,23.1,12.99,-43.77
+93113,"All Time Plastics Ltd",ALLTIME,"Plastic products",Small Cap,"Plastics - Others",80.75,0.00,0.00,315.45,244.8,-22.4
+93131,"Share Samadhan Ltd",544251,"Miscellaneous",Small Cap,"Miscellaneous - Medium / Small",84.25,0.00,25.00,70.99,49,-30.98
+93186,"Amwill Health Care Ltd",544353,"Pharmaceuticals",Small Cap,"Pharmaceuticals - Indian - Bulk Drugs & Formln M/S",50.00,0.00,0.00,60.9,34.75,-42.94
+93240,"Khyati Global Ventures Ltd",544270,"Trading",Small Cap,"Trading - Medium / Small",77.25,0.00,0.00,68,43.1,-36.62
+93245,"Quadrant Future Tek Ltd",QUADFUTURE,"Cables",Small Cap,"Cables - Power - Medium / Small",40.00,0.00,0.00,410.8,287.65,-29.98
+93246,"Kenrik Industries Ltd",544398,"Diamond, Gems and Jewellery",Small Cap,"Diamond Cutting / Jewellery - Medium / Small",65.50,0.00,0.00,13.5,8.63,-36.07
+93271,"Sagility Ltd",SAGILITY,"IT - Software",Small Cap,"IT Enabled Services / Business Process Outsourcing",82.25,0.00,0.00,46.07,42.78,-7.14
+93274,"Siemens Energy India Ltd",ENRIN,"Power Generation & Distribution",Mid Cap,"Power Generation And Supply",33.75,0.00,0.00,3374.05,2998.25,-11.14
+93284,"H.M. Electro Mech Ltd",544349,"Infrastructure Developers & Operators",Small Cap,"Engineering - Turnkey Services",83.75,0.00,0.00,65,45.5,-30
+93287,"CapitalNumbers Infotech Ltd",544343,"IT - Software",Small Cap,"Computers - Software - Medium / Small",82.25,0.00,0.00,121.05,84.66,-30.06
+93288,"Supertech EV Ltd",544428,"Automobile",Small Cap,"Automobiles - Scooters and 3-Wheelers",83.00,0.00,0.00,56.57,57.99,2.51
+93328,"Nacdac Infrastructure Ltd",544313,"Construction",Small Cap,"Construction - Civil / Turnkey - Medium / Small",82.25,0.00,0.00,34.4,26.5,-22.97
+93341,"Subam Papers Ltd",544267,"Packaging",Small Cap,"Packaging - Others",78.00,0.00,77.00,120.37,173.5,44.14
+93342,"Mach Conferences & Events Ltd",544248,"Miscellaneous",Small Cap,"Miscellaneous - Medium / Small",40.00,0.00,8.00,130,121,-6.92
+93346,"Identixweb Ltd",544388,"IT - Software",Small Cap,"Computers - Software - Medium / Small",85.00,0.00,0.00,65.33,72.32,10.7
+93347,"Shiv Texchem Ltd",544272,"Chemicals",Small Cap,"Trading - Medium / Small",77.75,0.00,89.50,283.5,122.1,-56.93
+93453,"Nexxus Petro Industries Ltd",544265,"Petrochemicals",Small Cap,"Petrochemicals - Others",83.00,0.00,0.00,135,83.5,-38.15
+93473,"Standard Engineering Technology Ltd",SETL,"Capital Goods-Non Electrical Equipment",Small Cap,"Engineering - Heavy - Glass-lined Equipment",73.25,0.00,0.00,180.1,122.25,-32.12
+93474,"Swasth Foodtech India Ltd",544368,"Edible Oil",Small Cap,"Solvent Extraction - Medium / Small",66.75,0.00,0.00,32.7,18.12,-44.59
+93477,"Senores Pharmaceuticals Ltd",SENORES,"Pharmaceuticals",Small Cap,"Pharmaceuticals - Indian - Formulations",55.25,0.00,0.00,723.7,770.75,6.5
+93482,"Toss The Coin Ltd",544303,"Miscellaneous",Small Cap,"Miscellaneous - Medium / Small",72.00,0.00,0.00,321,327,1.87
+93505,"Hamps Bio Limited",544312,"Trading",Small Cap,"Trading - Medium / Small",64.75,0.00,0.00,26.15,18.95,-27.53
+93506,"PDP Shipping & Projects Ltd",544378,"Logistics",Small Cap,"Miscellaneous - Medium / Small",65.00,0.00,0.00,72.18,60,-16.87
+93507,"CLN Energy Ltd",544347,"Auto Ancillaries",Small Cap,"Auto Ancillaries - Batteries",79.00,0.00,0.00,545.1,329,-39.64
+93509,"Nisus Finance Services Co Ltd",544296,"Finance",Small Cap,"Finance - Investment / Others",41.00,0.00,0.00,358.9,265.2,-26.11
+93578,"Mahalaxmi Fabric Mills Ltd",MFML,"Textiles",Small Cap,"Textiles - Others",30.25,0.00,31.00,30.84,24.97,-19.03
+93579,"B.R.Goyal Infrastructure Ltd",544335,"Infrastructure Developers & Operators",Small Cap,"Construction - Civil / Turnkey - Medium / Small",80.75,0.00,0.00,163,93.95,-42.36
+93587,"Rajesh Power Services Ltd",544291,"Infrastructure Developers & Operators",Small Cap,"Construction - Civil / Turnkey - Large",74.50,0.00,0.00,1584.55,889.8,-43.85
+93589,"Arisinfra Solutions Ltd",ARIS,"Trading",Small Cap,"Trading - Medium / Small",42.50,0.00,0.00,144.4,111.1,-23.06
+93610,"Fabtech Technologies Cleanrooms Ltd",544332,"Miscellaneous",Small Cap,"Miscellaneous - Medium / Small",71.25,0.00,0.00,429.65,268.8,-37.44
+93613,"Capital Infra Trust",CAPINVIT,"Infrastructure Investment Trusts",Small Cap,"Infra/ Real Estate Investment Trust",32.00,0.00,0.00,79.93,70.06,-12.35
+93630,"L.K.Mehta Polymers Ltd",544366,"Plastic products",Small Cap,"Plastics - Others",48.50,0.00,0.00,50,43.99,-12.02
+93631,"Unimech Aerospace and Manufacturing Ltd",UNIMECH,"Aerospace & Defence",Small Cap,"Engineering - Heavy - General - Medium / Small",58.25,0.00,0.00,1085.05,884.8,-18.46
+93635,"Landmark Global Learning Ltd",544341,"Education",Small Cap,"Miscellaneous - Medium / Small",80.25,0.00,0.00,60.35,37.5,-37.86
+93638,"Technichem Organics Ltd",544327,"Chemicals",Small Cap,"Chemicals - Speciality - Medium / Small",47.75,0.00,0.00,61.5,45,-26.83
+93643,"Astonea Labs Ltd",544409,"Pharmaceuticals",Small Cap,"Pharmaceuticals - Indian - Bulk Drugs",78.25,0.00,0.00,182.3,160,-12.23
+93644,"Cryogenic OGS Ltd",544440,"Engineering",Small Cap,"Engineering - Light - General - Medium / Small",73.50,0.00,0.00,107.65,156.1,45.01
+93841,"Indobell Insulations Ltd",544334,"Plastic products",Small Cap,"Plastics - Others",72.25,0.00,0.00,124.3,58.55,-52.9
+93842,"Adcounty Media India Ltd",544435,"IT - Software",Small Cap,"Computers - Software - Medium / Small",85.00,0.00,0.00,238.35,120.45,-49.47
+93850,"Leo Dryfruits & Spices Trading Ltd",544329,"Retail",Small Cap,"Trading - Medium / Small",77.50,0.00,0.00,77,55,-28.57
+93853,"NAPS Global India Ltd",544373,"Textiles",Small Cap,"Trading - Medium / Small",75.00,0.00,0.00,45,44,-2.22
+94003,"Malpani Pipes & Fittings Ltd",544351,"Plastic products",Small Cap,"Plastics - Pipes",82.50,0.00,0.00,78.29,71.86,-8.21
+94004,"Nukleus Office Solutions Ltd",544370,"Miscellaneous",Small Cap,"Miscellaneous - Medium / Small",85.00,0.00,0.00,160,202,26.25
+94005,"Solarium Green Energy Ltd",544354,"Infrastructure Developers & Operators",Small Cap,"Engineering - Turnkey Services",76.50,0.00,0.00,381,159.3,-58.19
+94006,"Paradeep Parivahan Ltd",544383,"Logistics",Small Cap,"Miscellaneous - Medium / Small",83.25,0.00,0.00,138.4,162.5,17.41
+94007,"Srigee DLM Ltd",544399,"Plastic products",Small Cap,"Plastics - Others",83.75,0.00,0.00,218.9,83.64,-61.79
+94008,"NTPC Green Energy Ltd",NTPCGREEN,"Power Generation & Distribution",Mid Cap,"Power Generation And Supply",84.25,0.00,0.00,103.4,90.29,-12.68
+94022,"Neetu Yoshi Ltd",544434,"Castings, Forgings & Fastners",Small Cap,"Castings - Steel / Alloy",84.50,0.00,0.00,125.5,92.5,-26.29
+94032,"Aten Papers & Foam Ltd",544417,"Trading",Small Cap,"Trading - Medium / Small",73.75,0.00,0.00,33.1,21.3,-35.65
+94034,"Shanmuga Hospital Ltd",544365,"Healthcare",Small Cap,"Hospitals / Medical Services",44.00,0.00,0.00,48.95,40,-18.28
+94035,"Takyon Networks Ltd",544471,"IT - Software",Small Cap,"Computers - Software - Medium / Small",54.75,0.00,0.00,50.86,34,-33.15
+94039,"Icon Facilitators Ltd",544426,"Miscellaneous",Small Cap,"Miscellaneous - Medium / Small",83.75,0.00,0.00,54.95,55.2,0.45
+94044,"BLT Logistics Ltd",544474,"Logistics",Small Cap,"Transport - Road",85.50,0.00,0.00,67.97,37,-45.56
+94045,"Monarch Surveyors and Engineering Consultants Ltd",544453,"Miscellaneous",Small Cap,"Miscellaneous - Medium / Small",86.00,0.00,0.00,272.25,203.55,-25.23
+94047,"Super Iron Foundry Ltd",544381,"Castings, Forgings & Fastners",Small Cap,"Castings - Grey Iron",46.25,0.00,0.00,46.65,35.25,-24.44
+94048,"ACE Alpha Tech Ltd",544431,"IT - Software",Small Cap,"Computers - Software - Medium / Small",65.00,0.00,0.00,101,100,-0.99
+94067,"Scoda Tubes Ltd",SCODATUBES,"Steel",Small Cap,"Steel - Tubes / Pipes",71.75,0.00,0.00,171.65,136.6,-20.42
+94069,"Sambhv Steel Tubes Ltd",SAMBHV,"Steel",Small Cap,"Steel - Tubes / Pipes",83.50,0.00,0.00,129.65,101.23,-21.92
+94071,"Infonative Solutions Ltd",544393,"Miscellaneous",Small Cap,"Miscellaneous - Medium / Small",80.00,0.00,0.00,33.95,27.9,-17.82
+94075,"Desco Infratech Ltd",544387,"Infrastructure Developers & Operators",Small Cap,"Construction - Civil / Turnkey - Medium / Small",84.00,0.00,0.00,260.05,157,-39.63
+94076,"AJC Jewel Manufacturers Ltd",544425,"Diamond, Gems and Jewellery",Small Cap,"Diamond Cutting / Jewellery - Medium / Small",68.50,0.00,0.00,97.02,127,30.9
+94126,"Repono Ltd",544463,"Logistics",Small Cap,"Miscellaneous - Medium / Small",82.00,0.00,0.00,85,60,-29.41
+94175,"3B Films Ltd",544412,"Packaging",Small Cap,"Packaging - BOPP Film",62.25,0.00,0.00,34.97,21.49,-38.55
+94177,"Borana Weaves Ltd",BORANA,"Textiles",Small Cap,"Textiles - Weaving",74.50,0.00,0.00,216.75,417.9,92.8
+94187,"Spinaroo Commercial Ltd",544392,"Paper",Small Cap,"Paper - Medium / Small",57.25,0.00,0.00,76.69,58.6,-23.59
+94247,"Beezaasan Explotech Ltd",544369,"Chemicals",Small Cap,"Industrial Explosives",82.25,0.00,0.00,213.1,228.25,7.11
+94266,"Marc Loire Fashions Ltd",544437,"E-Commerce/App based Aggregator",Small Cap,"Trading - Medium / Small",74.25,0.00,0.00,66.5,67.58,1.62
+94267,"Unified Data- Tech Solutions Ltd",544406,"IT - Software",Small Cap,"Computers - Software - Medium / Small",94.50,0.00,0.00,333.5,358.9,7.62
+94283,"Meta Infotech Ltd",544441,"IT - Software",Small Cap,"Computers - Software - Medium / Small",84.50,0.00,0.00,159.9,89.26,-44.18
+94294,"Vandan Foods Ltd",544436,"Edible Oil",Small Cap,"Solvent Extraction - Medium / Small",59.50,0.00,0.00,39.08,38.36,-1.84
+94301,"Valencia India Ltd",544433,"Miscellaneous",Small Cap,"Miscellaneous - Medium / Small",84.50,0.00,0.00,31.67,17,-46.32
+94305,"Sri Lotus Developers & Realty Ltd",LOTUSDEV,"Realty",Small Cap,"Construction - Factories / Offices / Commercial",50.00,0.00,0.00,192.2,142.2,-26.01
+94330,"GLEN Industries Ltd",544444,"Packaging",Small Cap,"Packaging - Plastic Containers",77.75,0.00,0.00,106.45,74,-30.48
+94346,"Patel Chem Specialities Ltd",544460,"Chemicals",Small Cap,"Chemicals - Speciality - Medium / Small",74.50,0.00,0.00,99.57,69.73,-29.97
+94412,"Shanti Gold International Ltd",SHANTIGOLD,"Diamond, Gems and Jewellery",Small Cap,"Diamond Cutting / Jewellery - Medium / Small",71.50,0.00,0.00,246.25,210,-14.72
+94414,"Abram Food Ltd",544422,"FMCG",Small Cap,"Food - Processing - Others",83.00,0.00,0.00,113,95,-15.93
+94417,"Asston Pharmaceuticals Ltd",544445,"Pharmaceuticals",Small Cap,"Pharmaceuticals - Indian - Bulk Drugs",53.00,0.00,0.00,102.45,82,-19.96
+94535,"Icodex Publishing Solutions Ltd",544483,"IT - Software",Small Cap,"Computers - Software - Medium / Small",86.50,0.00,0.00,70.5,41.41,-41.26
+94601,"Roadstar Infra Investment Trust",ROADSTAR,"Infrastructure Investment Trusts",Small Cap,"Infra/ Real Estate Investment Trust",68.25,0.00,0.00,72,60,-16.67
+94603,"B. D. Industries (Pune) Ltd",544468,"Plastic products",Small Cap,"Plastics - Others",80.50,0.00,0.00,126.8,108.25,-14.63
+94610,"Knowledge Realty Trust",KRT,"Real Estate Investment Trusts",Mid Cap,"Infra/ Real Estate Investment Trust",75.50,0.00,0.00,107.09,123.58,15.4
+94627,"Chemkart India Ltd",544442,"Retail",Small Cap,"Trading - Medium / Small",74.50,0.00,0.00,211.5,105.95,-49.91
+94637,"Star Imaging and Path Lab Ltd",544482,"Healthcare",Small Cap,"Diagnostic Services",68.50,0.00,0.00,139.75,68,-51.34
+94650,"Mehul Colours Ltd",544472,"Plastic products",Small Cap,"Plastics - Others",94.00,0.00,0.00,81,67,-17.28
+95342,"Swastika Castal Ltd",544452,"Castings, Forgings & Fastners",Small Cap,"Castings - Steel / Alloy",71.75,0.00,0.00,76.9,63,-18.08
+95345,"Umiya Mobile Ltd",544464,"Retail",Small Cap,"Trading - Medium / Small",80.25,0.00,0.00,81.19,58,-28.56
+95363,"Essex Marine Ltd",544475,"FMCG",Small Cap,"Aquaculture",49.75,0.00,0.00,30.12,24.29,-19.36
+95379,"Monika Alcobev Ltd",544451,"Trading",Small Cap,"Trading - Medium / Small",80.00,0.00,0.00,288.7,274.55,-4.9
+95407,"Property Share Investment Trust- Propshare Titania",544462,"Real Estate Investment Trusts",Small Cap,"Infra/ Real Estate Investment Trust",54.25,0.00,0.00,1056000,1100000,4.17
