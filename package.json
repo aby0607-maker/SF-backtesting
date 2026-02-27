@@ -25,6 +25,7 @@
     "react-router-dom": "^6.28.0",
     "recharts": "^2.13.0",
     "tailwind-merge": "^2.5.0",
+    "undici": "^7.22.0",
     "zustand": "^5.0.0"
   },
   "devDependencies": {

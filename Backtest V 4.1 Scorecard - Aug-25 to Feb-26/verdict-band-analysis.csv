@@ -1,0 +1,6 @@
+verdict,stock_count,avg_score,avg_return_pct,winsorized_avg_return_pct,median_return_pct,hit_rate_positive,pct_of_universe
+STRONG BUY,73,82.9,-13.85,-13.85,-12.63,24.66,2.03
+BUY,767,70.87,-4.22,-6.33,-12.85,26.99,21.31
+HOLD,1626,57.35,-7.94,-9.44,-14.81,23.19,45.18
+REVIEW,988,43.49,3.39,-3.93,-13.97,30.26,27.45
+SELL,145,32.38,4.52,-0.28,-10.98,32.41,4.03
