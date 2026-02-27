@@ -11,13 +11,15 @@
  *   - Closer start date improves QM segment coverage
  *
  * Outputs:
- *   - report.md                    — Human-readable findings
- *   - stock-scores-and-returns.csv — Full stock-level data
- *   - stock-metric-details.csv     — Per-metric raw + score per stock
- *   - quintile-analysis.csv        — Q1-Q5 breakdown
- *   - sector-summary.csv           — Per-sector aggregates
- *   - verdict-band-analysis.csv    — Returns by verdict band
- *   - valuation-na-stocks.csv      — Stocks excluded due to Valuation N/A
+ *   - report.md                              — Human-readable findings
+ *   - stock-scores-and-returns.csv           — Full stock-level data
+ *   - stock-metric-details.csv               — Per-metric raw + score per stock
+ *   - quintile-analysis.csv                  — Q1-Q5 breakdown
+ *   - sector-summary.csv                     — Per-sector aggregates
+ *   - verdict-band-analysis.csv              — Returns by verdict band
+ *   - valuation-na-stocks.csv                — Stocks excluded due to Valuation N/A
+ *   - sector-rank-comparison-detail.csv      — Per-stock score rank vs return rank
+ *   - sector-rank-comparison-summary.csv     — Per-sector rank accuracy buckets
  *
  * Usage:
  *   npx tsx --tsconfig tsconfig.json scripts/scorecard-v4.1-6month-analysis.ts
@@ -236,6 +238,23 @@ function median(arr: number[]): number {
 
 function winsorize(val: number, cap = 200): number {
   return Math.max(-cap, Math.min(cap, val))
+}
+
+/** Assign fractional (average) ranks. Rank 1 = best (highest value when descending). */
+function averageRank(values: number[], descending = true): number[] {
+  const indexed = values.map((v, i) => ({ v, i }))
+  indexed.sort((a, b) => descending ? b.v - a.v : a.v - b.v)
+
+  const ranks = new Array<number>(values.length)
+  let i = 0
+  while (i < indexed.length) {
+    let j = i
+    while (j < indexed.length && indexed[j].v === indexed[i].v) j++
+    const avg = (i + 1 + j) / 2  // average of 1-based positions i+1..j
+    for (let k = i; k < j; k++) ranks[indexed[k].i] = avg
+    i = j
+  }
+  return ranks
 }
 
 // ─── Main ─────────────────────────────────────────────────
@@ -549,6 +568,83 @@ async function main() {
     }
   })
 
+  // ── Sector Rank Comparison ──
+  const MIN_SECTOR_SIZE = 5
+
+  interface SectorRankStock {
+    stockName: string; symbol: string; sector: string
+    overallScore: number; returnPct: number
+    scoreRank: number; returnRank: number
+    rankDeviation: number; rankDeviationPct: number
+    bucket: string
+  }
+
+  interface SectorRankSummary {
+    sector: string; stockCount: number
+    exactCount: number; exactPct: number
+    within10Count: number; within10Pct: number
+    within25Count: number; within25Pct: number
+    restCount: number; restPct: number
+    spearmanCorrelation: number | null
+  }
+
+  const allRankStocks: SectorRankStock[] = []
+  const sectorRankSummaries: SectorRankSummary[] = []
+
+  for (const [sector, stocks] of sectorMap.entries()) {
+    if (stocks.length < MIN_SECTOR_SIZE) continue
+
+    const n = stocks.length
+    const sScoresRank = stocks.map(s => s.scoreResult.normalizedScore)
+    const sRetsRank = stocks.map(s => s.returnPct)
+
+    const scoreRanks = averageRank(sScoresRank, true)   // rank 1 = highest score
+    const returnRanks = averageRank(sRetsRank, true)     // rank 1 = highest return
+
+    const buckets = { exact: 0, within10: 0, within25: 0, rest: 0 }
+
+    for (let i = 0; i < n; i++) {
+      const dev = Math.abs(scoreRanks[i] - returnRanks[i])
+      const devPct = dev / n
+      const isExact = dev < 1e-9
+      const bucket = isExact ? 'Exact Match'
+        : devPct <= 0.10 ? 'Within 10%'
+        : devPct <= 0.25 ? 'Within 25%' : 'Rest'
+
+      if (isExact) buckets.exact++
+      else if (devPct <= 0.10) buckets.within10++
+      else if (devPct <= 0.25) buckets.within25++
+      else buckets.rest++
+
+      allRankStocks.push({
+        stockName: stocks[i].companyName,
+        symbol: stocks[i].symbol,
+        sector,
+        overallScore: stocks[i].scoreResult.normalizedScore,
+        returnPct: stocks[i].returnPct,
+        scoreRank: scoreRanks[i],
+        returnRank: returnRanks[i],
+        rankDeviation: Math.round(dev * 100) / 100,
+        rankDeviationPct: Math.round(devPct * 10000) / 100,
+        bucket,
+      })
+    }
+
+    // Spearman correlation = Pearson correlation of the ranks
+    const spearman = n >= 5 ? pearsonCorrelation(scoreRanks, returnRanks) : null
+
+    sectorRankSummaries.push({
+      sector, stockCount: n,
+      exactCount: buckets.exact, exactPct: Math.round(buckets.exact / n * 10000) / 100,
+      within10Count: buckets.within10, within10Pct: Math.round(buckets.within10 / n * 10000) / 100,
+      within25Count: buckets.within25, within25Pct: Math.round(buckets.within25 / n * 10000) / 100,
+      restCount: buckets.rest, restPct: Math.round(buckets.rest / n * 10000) / 100,
+      spearmanCorrelation: spearman,
+    })
+  }
+
+  sectorRankSummaries.sort((a, b) => b.stockCount - a.stockCount)
+
   // ── Step 4: Generate Reports ──
   console.log('\n[4/6] Generating report files...')
 
@@ -672,6 +768,55 @@ async function main() {
   for (const s of sectorAnalysis) {
     if (s.stockCount < 2) continue
     report += `| ${s.sector} | ${s.stockCount} | ${s.avgScore} | ${s.avgReturn}% | ${s.winsorizedAvgReturn}% | ${s.medianReturn}% | ${s.correlation} |\n`
+  }
+
+  report += `\n`
+
+  // Sector Rank Comparison
+  report += `---\n\n`
+  report += `## Sector Rank Comparison (Score Rank vs Return Rank)\n\n`
+  report += `Sectors with >= ${MIN_SECTOR_SIZE} stocks. Ranks within each sector: 1 = highest score / highest return.\n`
+  report += `Deviation = |score_rank - return_rank| / sector_stock_count.\n\n`
+
+  // Overall bucket distribution
+  const totalRankStocks = allRankStocks.length
+  const totalExact = allRankStocks.filter(s => s.bucket === 'Exact Match').length
+  const totalW10 = allRankStocks.filter(s => s.bucket === 'Within 10%').length
+  const totalW25 = allRankStocks.filter(s => s.bucket === 'Within 25%').length
+  const totalRest = allRankStocks.filter(s => s.bucket === 'Rest').length
+
+  report += `### Overall Rank Accuracy (${sectorRankSummaries.length} sectors, ${totalRankStocks} stocks)\n\n`
+  report += `| Bucket | Count | % |\n`
+  report += `|--------|-------|---|\n`
+  report += `| Exact Match | ${totalExact} | ${(totalExact / totalRankStocks * 100).toFixed(1)}% |\n`
+  report += `| Within 10% | ${totalW10} | ${(totalW10 / totalRankStocks * 100).toFixed(1)}% |\n`
+  report += `| Within 25% | ${totalW25} | ${(totalW25 / totalRankStocks * 100).toFixed(1)}% |\n`
+  report += `| Rest (>25%) | ${totalRest} | ${(totalRest / totalRankStocks * 100).toFixed(1)}% |\n\n`
+
+  // Top 10 sectors by Spearman
+  const sortedBySpearman = [...sectorRankSummaries]
+    .filter(s => s.spearmanCorrelation != null)
+    .sort((a, b) => (b.spearmanCorrelation ?? 0) - (a.spearmanCorrelation ?? 0))
+
+  report += `### Top 10 Sectors by Rank Correlation (model works)\n\n`
+  report += `| Sector | Stocks | Spearman r | Exact % | Within 10% | Within 25% | Rest % |\n`
+  report += `|--------|--------|-----------|---------|-----------|-----------|--------|\n`
+  for (const s of sortedBySpearman.slice(0, 10)) {
+    report += `| ${s.sector} | ${s.stockCount} | ${s.spearmanCorrelation?.toFixed(3)} | ${s.exactPct}% | ${s.within10Pct}% | ${s.within25Pct}% | ${s.restPct}% |\n`
+  }
+
+  report += `\n### Bottom 10 Sectors by Rank Correlation (model anti-works)\n\n`
+  report += `| Sector | Stocks | Spearman r | Exact % | Within 10% | Within 25% | Rest % |\n`
+  report += `|--------|--------|-----------|---------|-----------|-----------|--------|\n`
+  for (const s of sortedBySpearman.slice(-10).reverse()) {
+    report += `| ${s.sector} | ${s.stockCount} | ${s.spearmanCorrelation?.toFixed(3)} | ${s.exactPct}% | ${s.within10Pct}% | ${s.within25Pct}% | ${s.restPct}% |\n`
+  }
+
+  report += `\n### All Sectors Rank Breakdown\n\n`
+  report += `| Sector | Stocks | Spearman r | Exact | W/in 10% | W/in 25% | Rest |\n`
+  report += `|--------|--------|-----------|-------|----------|----------|------|\n`
+  for (const s of sectorRankSummaries) {
+    report += `| ${s.sector} | ${s.stockCount} | ${s.spearmanCorrelation?.toFixed(3) ?? 'N/A'} | ${s.exactCount} (${s.exactPct}%) | ${s.within10Count} (${s.within10Pct}%) | ${s.within25Count} (${s.within25Pct}%) | ${s.restCount} (${s.restPct}%) |\n`
   }
 
   report += `\n`
@@ -963,6 +1108,55 @@ async function main() {
   )
   console.log(`  Written: valuation-na-stocks.csv (${valuationNAStocks.length} stocks)`)
 
+  // ── File 8: sector-rank-comparison-detail.csv ──
+  const sortedRankStocks = [...allRankStocks].sort((a, b) => {
+    const sectorCmp = a.sector.localeCompare(b.sector)
+    return sectorCmp !== 0 ? sectorCmp : a.scoreRank - b.scoreRank
+  })
+  const csvHeader8 = 'sector,stock_name,symbol,overall_score,return_pct,score_rank,return_rank,rank_deviation,rank_deviation_pct,bucket'
+  const csvRows8 = sortedRankStocks.map(s => [
+    `"${s.sector.replace(/"/g, '""')}"`,
+    `"${s.stockName.replace(/"/g, '""')}"`,
+    s.symbol,
+    s.overallScore.toFixed(2),
+    s.returnPct.toFixed(2),
+    s.scoreRank,
+    s.returnRank,
+    s.rankDeviation,
+    s.rankDeviationPct,
+    `"${s.bucket}"`,
+  ].join(','))
+
+  writeFileSync(
+    resolve(OUTPUT_DIR, 'sector-rank-comparison-detail.csv'),
+    [csvHeader8, ...csvRows8].join('\n'),
+    'utf-8',
+  )
+  console.log(`  Written: sector-rank-comparison-detail.csv (${allRankStocks.length} stocks across ${sectorRankSummaries.length} sectors)`)
+
+  // ── File 9: sector-rank-comparison-summary.csv ──
+  const csvHeader9 = 'sector,stock_count,exact_match_count,exact_match_pct,within_10pct_count,within_10pct_pct,within_25pct_count,within_25pct_pct,rest_count,rest_pct,spearman_correlation'
+  const csvRows9 = sectorRankSummaries.map(s => [
+    `"${s.sector.replace(/"/g, '""')}"`,
+    s.stockCount,
+    s.exactCount,
+    s.exactPct,
+    s.within10Count,
+    s.within10Pct,
+    s.within25Count,
+    s.within25Pct,
+    s.restCount,
+    s.restPct,
+    s.spearmanCorrelation?.toFixed(3) ?? '',
+  ].join(','))
+
+  writeFileSync(
+    resolve(OUTPUT_DIR, 'sector-rank-comparison-summary.csv'),
+    [csvHeader9, ...csvRows9].join('\n'),
+    'utf-8',
+  )
+  console.log(`  Written: sector-rank-comparison-summary.csv (${sectorRankSummaries.length} sectors)`)
+
   // ── Step 5: Print Summary ──
   // Compute winsorized correlation
   const winsorizedReturns = returns.map(r => winsorize(r))
@@ -988,6 +1182,25 @@ async function main() {
     console.log(`    ${s.segment.padEnd(22)} r = ${s.correlation}`)
   }
 
+  console.log(`\n  Sector Rank Accuracy (${sectorRankSummaries.length} sectors, >= ${MIN_SECTOR_SIZE} stocks, ${totalRankStocks} stocks):`)
+  console.log(`    Exact Match:   ${String(totalExact).padStart(5)} stocks (${(totalExact / totalRankStocks * 100).toFixed(1)}%)`)
+  console.log(`    Within 10%:    ${String(totalW10).padStart(5)} stocks (${(totalW10 / totalRankStocks * 100).toFixed(1)}%)`)
+  console.log(`    Within 25%:    ${String(totalW25).padStart(5)} stocks (${(totalW25 / totalRankStocks * 100).toFixed(1)}%)`)
+  console.log(`    Rest (>25%):   ${String(totalRest).padStart(5)} stocks (${(totalRest / totalRankStocks * 100).toFixed(1)}%)`)
+
+  // Top/Bottom 5 sectors by Spearman
+  const top5Spearman = [...sectorRankSummaries]
+    .filter(s => s.spearmanCorrelation != null)
+    .sort((a, b) => (b.spearmanCorrelation ?? 0) - (a.spearmanCorrelation ?? 0))
+  console.log('\n  Top 5 Sectors by Rank Correlation:')
+  for (const s of top5Spearman.slice(0, 5)) {
+    console.log(`    ${s.sector.padEnd(40)} ${String(s.stockCount).padStart(4)} stocks  r = ${s.spearmanCorrelation?.toFixed(3)}`)
+  }
+  console.log('  Bottom 5 Sectors by Rank Correlation:')
+  for (const s of top5Spearman.slice(-5).reverse()) {
+    console.log(`    ${s.sector.padEnd(40)} ${String(s.stockCount).padStart(4)} stocks  r = ${s.spearmanCorrelation?.toFixed(3)}`)
+  }
+
   console.log(`\n[6/6] Output saved to: ${OUTPUT_DIR}`)
   console.log('  Files:')
   console.log('    - report.md')
@@ -997,6 +1210,8 @@ async function main() {
   console.log('    - sector-summary.csv')
   console.log('    - verdict-band-analysis.csv')
   console.log('    - valuation-na-stocks.csv')
+  console.log('    - sector-rank-comparison-detail.csv')
+  console.log('    - sector-rank-comparison-summary.csv')
   console.log('\n' + '='.repeat(70))
 }
 
