@@ -26,6 +26,16 @@ export default defineConfig(({ mode }) => {
             Authorization: `Bearer ${env.CMOTS_API_TOKEN || ''}`,
           },
         },
+        '/api/dhan': {
+          target: 'https://api.dhan.co',
+          changeOrigin: true,
+          rewrite: (p) => p.replace(/^\/api\/dhan/, '/v2'),
+          secure: true,
+          headers: {
+            'access-token': env.DHAN_ACCESS_TOKEN || '',
+            'Content-Type': 'application/json',
+          },
+        },
       },
     },
     build: {
