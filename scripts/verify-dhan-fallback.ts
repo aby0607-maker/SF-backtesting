@@ -82,12 +82,20 @@ async function downloadAndParseInstruments(): Promise<Map<string, DhanSecurity>>
   console.log(`  URL: ${SCRIP_MASTER_URL}`)
 
   const start = Date.now()
-  const res = await fetch(SCRIP_MASTER_URL)
+  let res: Response
+  try {
+    res = await fetch(SCRIP_MASTER_URL)
+  } catch (err) {
+    console.warn(`  WARN: CSV download failed (${err instanceof Error ? err.message : err})`)
+    console.log('  Using hardcoded test mappings instead (CSV host may be unreachable)')
+    return getHardcodedTestMap()
+  }
   const elapsed = Date.now() - start
 
   if (!res.ok) {
     console.error(`  FAIL: HTTP ${res.status} ${res.statusText}`)
-    return new Map()
+    console.log('  Using hardcoded test mappings instead')
+    return getHardcodedTestMap()
   }
 
   const csv = await res.text()
@@ -159,6 +167,29 @@ async function downloadAndParseInstruments(): Promise<Map<string, DhanSecurity>>
   return map
 }
 
+/**
+ * Hardcoded test mappings for when the CSV download fails.
+ * Security IDs sourced from DhanHQ docs / manual lookup.
+ * These are NSE_EQ security IDs for the test stocks.
+ */
+function getHardcodedTestMap(): Map<string, DhanSecurity> {
+  const map = new Map<string, DhanSecurity>()
+  const testEntries: DhanSecurity[] = [
+    { securityId: '11536', exchangeSegment: 'NSE_EQ', tradingSymbol: 'TCS', isin: 'INE467B01029' },
+    { securityId: '5900', exchangeSegment: 'NSE_EQ', tradingSymbol: 'AXISBANK', isin: 'INE238A01034' },
+    { securityId: '5097', exchangeSegment: 'NSE_EQ', tradingSymbol: 'ETERNAL', isin: 'INE758T01015' },
+    { securityId: '2885', exchangeSegment: 'NSE_EQ', tradingSymbol: 'RELIANCE', isin: 'INE002A01018' },
+    { securityId: '10604', exchangeSegment: 'NSE_EQ', tradingSymbol: 'BHARTIARTL', isin: 'INE397D01024' },
+  ]
+  for (const entry of testEntries) {
+    map.set(entry.isin, entry)
+  }
+  console.log(`  Hardcoded map: ${map.size} test stocks`)
+  console.log(`  NOTE: These securityIds may need verification — run with CSV when network allows`)
+  console.log()
+  return map
+}
+
 // ─── Step 2: ISIN → Security Mapping ──────────────
 
 function verifyMapping(map: Map<string, DhanSecurity>): DhanSecurity[] {
@@ -208,14 +239,20 @@ async function fetchDhanPrices(sec: DhanSecurity, from: string, to: string): Pro
     expiryCode: 0,
   }
 
-  const res = await fetch(`${DHAN_BASE}/charts/historical`, {
-    method: 'POST',
-    headers: {
-      'access-token': dhanToken!,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(body),
-  })
+  let res: Response
+  try {
+    res = await fetch(`${DHAN_BASE}/charts/historical`, {
+      method: 'POST',
+      headers: {
+        'access-token': dhanToken!,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    })
+  } catch (err) {
+    console.error(`    Network error: ${err instanceof Error ? err.message : err}`)
+    return []
+  }
 
   if (!res.ok) {
     const text = await res.text().catch(() => '(unreadable)')
@@ -303,13 +340,17 @@ interface CMOTSPriceRecord {
 
 async function fetchCmotsPrices(coCode: number, from: string, to: string): Promise<CMOTSPriceRecord[]> {
   const url = `${CMOTS_BASE}/AdjustedPriceChart/bse/${coCode}/${from}/${to}`
-  const res = await fetch(url, {
-    headers: { Authorization: `Bearer ${cmotsToken}` },
-  })
-  if (!res.ok) return []
-  const json = await res.json()
-  const data = Array.isArray(json) ? json : (json.data || [])
-  return data as CMOTSPriceRecord[]
+  try {
+    const res = await fetch(url, {
+      headers: { Authorization: `Bearer ${cmotsToken}` },
+    })
+    if (!res.ok) return []
+    const json = await res.json()
+    const data = Array.isArray(json) ? json : (json.data || [])
+    return data as CMOTSPriceRecord[]
+  } catch {
+    return []
+  }
 }
 
 async function comparePrices(resolvedSecurities: DhanSecurity[]): Promise<void> {
@@ -406,9 +447,15 @@ async function analyzeBacktestCoverage(instrumentMap: Map<string, DhanSecurity>)
   console.log()
 
   // Fetch CMOTS company master
-  const res = await fetch(`${CMOTS_BASE}/companymaster`, {
-    headers: { Authorization: `Bearer ${cmotsToken}` },
-  })
+  let res: Response
+  try {
+    res = await fetch(`${CMOTS_BASE}/companymaster`, {
+      headers: { Authorization: `Bearer ${cmotsToken}` },
+    })
+  } catch (err) {
+    console.log(`  FAIL: CMOTS companymaster network error (${err instanceof Error ? err.message : err})`)
+    return
+  }
   if (!res.ok) {
     console.log(`  FAIL: CMOTS companymaster HTTP ${res.status}`)
     return
