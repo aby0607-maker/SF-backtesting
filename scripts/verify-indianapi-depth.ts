@@ -269,26 +269,81 @@ if (cmotsToken) {
   console.log()
 }
 
+// ─── Step 7: Historical Price Data Granularity ──────
+
+console.log('STEP 7: Historical Price Data Granularity')
+console.log('  (Needed for Technical Score — 7% weight: EMA200, RSI, etc.)')
+console.log()
+
+const PERIODS = ['1yr', '5yr', 'max'] as const
+for (const period of PERIODS) {
+  const data = indianApiFetch('historical_data', { stock_name: 'TCS', period, filter: 'price' }) as { datasets?: { metric: string; values: unknown[] }[] } | null
+  if (data?.datasets) {
+    for (const ds of data.datasets) {
+      const vals = ds.values as string[][]
+      if (vals.length < 2) continue
+      const firstDate = vals[0]?.[0] ?? '?'
+      const lastDate = vals[vals.length - 1]?.[0] ?? '?'
+      // Determine granularity from date spacing
+      const d1 = new Date(vals[0]?.[0] ?? '')
+      const d2 = new Date(vals[1]?.[0] ?? '')
+      const dayGap = Math.round((d2.getTime() - d1.getTime()) / (1000 * 60 * 60 * 24))
+      const granularity = dayGap <= 1 ? 'daily' : dayGap <= 7 ? 'weekly' : 'monthly'
+      console.log(`  period=${period.padEnd(5)} ${ds.metric.padEnd(10)} ${String(vals.length).padEnd(6)} records  ${granularity.padEnd(7)}  ${firstDate} → ${lastDate}`)
+    }
+  } else {
+    console.log(`  period=${period}: NO DATA or error`)
+  }
+}
+
+console.log()
+console.log('  KEY FINDING:')
+console.log('  - 1yr period → DAILY data (248 records) — sufficient for recent technical')
+console.log('  - 5yr period → WEEKLY data (262 records) — NOT sufficient for daily EMA/RSI')
+console.log('  - max period → WEEKLY data (1093 records from 2005) — great depth but weekly')
+console.log('  - Includes pre-computed DMA50, DMA200, Volume with delivery %')
+console.log('  - NO OHLC data — only Close prices')
+console.log()
+
 // ─── Summary ───────────────────────────────────────
 
 console.log('═'.repeat(70))
 console.log('SUMMARY: IndianAPI.in Data Coverage for 2021 Backtest')
 console.log('═'.repeat(70))
 console.log()
-console.log('  Data Type            Depth               Covers 2021 Backtest?')
-console.log('  ─────────────────    ────────────────     ────────────────────')
-console.log('  Quarterly Results    ~13q (Dec 2022+)     NO — starts ~2 years late')
-console.log('  Annual P&L           ~12Y (Mar 2014+)     YES — excellent depth')
-console.log('  Balance Sheet        ~13 periods (2014+)  YES — excellent depth')
-console.log('  Cash Flow            ~12Y (2014+)         YES — excellent depth')
-console.log('  Ratios (ROCE etc)    ~12Y (2014+)         YES — excellent depth')
-console.log('  Shareholding         ~12q (Mar 2023+)     NO — starts ~2 years late')
+console.log('  Data Type            Depth               Covers 2021?  Granularity')
+console.log('  ─────────────────    ────────────────     ───────────   ───────────')
+console.log('  Quarterly Results    ~13q (Dec 2022+)     NO            quarterly')
+console.log('  Annual P&L           ~12Y (Mar 2014+)     YES           annual')
+console.log('  Balance Sheet        ~13 periods (2014+)  YES           annual')
+console.log('  Cash Flow            ~12Y (2014+)         YES           annual')
+console.log('  Ratios (ROCE etc)    ~12Y (2014+)         YES           annual')
+console.log('  Shareholding         ~12q (Dec 2023+)     NO            quarterly')
+console.log('  Price (1yr)          248 days             NO (recent)   daily')
+console.log('  Price (5yr/max)      1093 weeks (2005+)   YES           weekly')
+console.log('  DMA50/DMA200         Pre-computed          YES           weekly')
 console.log()
-console.log('  CONCLUSION:')
-console.log('  - Annual fundamentals: EXCELLENT — 12Y depth covers 2021 easily')
-console.log('  - Quarterly data: LIMITED — only ~13 quarters from Dec 2022')
-console.log('  - Quarterly Momentum for 2021-2022 period STILL has gaps')
-console.log('  - But quarterly gap is SMALLER than CMOTS (13q vs 8q)')
-console.log('  - Combined: Use CMOTS for quarterly (8q), fill MORE with IndianAPI (13q)')
+console.log('  CONCLUSIONS:')
+console.log()
+console.log('  1. ANNUAL FUNDAMENTALS: EXCELLENT')
+console.log('     - 12Y depth covers 2021 easily (P&L, BS, CF, Ratios)')
+console.log('     - Can compute revenue/EBITDA CAGR, ROE, ROCE, D/E etc.')
+console.log('     - IndianAPI.in is the best fallback for Financial Score (30%)')
+console.log()
+console.log('  2. QUARTERLY DATA: BETTER THAN CMOTS BUT STILL GAPS')
+console.log('     - IndianAPI: 13q (Dec 2022+) vs CMOTS: 8q — +5 more quarters')
+console.log('     - Neither covers 2021 for Quarterly Momentum (18%)')
+console.log()
+console.log('  3. PRICE DATA: PARTIAL')
+console.log('     - Daily prices: only last 1 year (no 2021 daily data)')
+console.log('     - Weekly prices: from 2005 (covers 2021 but weekly, not daily)')
+console.log('     - Pre-computed DMA50/DMA200 available (useful for technical checks)')
+console.log('     - NO OHLC — only close prices')
+console.log('     - For daily OHLCV (EMA200/RSI): DhanHQ with production token needed')
+console.log()
+console.log('  RECOMMENDATION:')
+console.log('     IndianAPI.in → Primary fallback for annual fundamentals')
+console.log('     DhanHQ (prod) → Primary fallback for daily OHLCV price data')
+console.log('     IndianAPI.in → Secondary fallback for weekly prices + pre-computed DMAs')
 console.log()
 console.log('═'.repeat(70))
