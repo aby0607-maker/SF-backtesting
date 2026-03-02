@@ -1,0 +1,383 @@
+Label,Value,Decimals,UnitId,Description,ContextName,From,To
+ScripCode,532696,0,,Scrip code,MainD,2024-7-01 00:00:00,2024-9-30 00:00:00
+Symbol,EDUCOMP,0,,Symbol,MainD,2024-7-01 00:00:00,2024-9-30 00:00:00
+MSEISymbol,NOTLISTED,0,,MSEI Symbol,MainD,2024-7-01 00:00:00,2024-9-30 00:00:00
+ISIN,INE216H01027,0,,ISIN,MainD,2024-7-01 00:00:00,2024-9-30 00:00:00
+NameOfTheCompany,EDUCOMP SOLUTIONS LIMITED,0,,Name of the company,MainD,2024-7-01 00:00:00,2024-9-30 00:00:00
+WhetherCompanyIsSME,false,0,,Whether company is SME,MainI,2024-9-30 00:00:00,2024-9-30 00:00:00
+ClassOfSecurity,Equity Shares,0,,Class of security,MainD,2024-7-01 00:00:00,2024-9-30 00:00:00
+TypeOfReport,Quarterly,0,,Type of report,MainD,2024-7-01 00:00:00,2024-9-30 00:00:00
+DateOfReport,2024-09-30,0,,Date of report,MainI,2024-9-30 00:00:00,2024-9-30 00:00:00
+ShareholdingPatternFiledUnder,Regulation 31 (1) (b),0,,Shareholding pattern filed under,MainD,2024-7-01 00:00:00,2024-9-30 00:00:00
+WhetherTheListedEntityIsPublicSectorUndertaking,false,0,,Whether the listed entity is Public Sector Undertaking (PSU),MainI,2024-9-30 00:00:00,2024-9-30 00:00:00
+WhetherTheListedEntityHasIssuedAnyPartlyPaidUpShares,false,0,,Whether the listed entity has issued any partly paid up shares,MainI,2024-9-30 00:00:00,2024-9-30 00:00:00
+WhetherTheListedEntityHasIssuedAnyPartlyPaidUpSharesForPromoterAndPromoterGroup,false,0,,Whether the listed entity has issued any partly paid up shares for promoter and promoter group,MainI,2024-9-30 00:00:00,2024-9-30 00:00:00
+WhetherTheListedEntityHasIssuedAnyPartlyPaidUpSharesForPublicShareHolder,false,0,,Whether the listed entity has issued any partly paid up shares for public share holder,MainI,2024-9-30 00:00:00,2024-9-30 00:00:00
+WhetherTheListedEntityHasIssuedAnyPartlyPaidUpSharesForNonPromoterNonPublic,false,0,,Whether the listed entity has issued any partly paid up shares for non promoter non-public,MainI,2024-9-30 00:00:00,2024-9-30 00:00:00
+WhetherTheListedEntityHasIssuedAnyConvertibleSecurities,false,0,,Whether the listed entity has issued any convertible securities,MainI,2024-9-30 00:00:00,2024-9-30 00:00:00
+WhetherTheListedEntityHasIssuedAnyConvertibleSecuritiesForPromoterAndPromoterGroup,false,0,,Whether the listed entity has issued any convertible securities for promoter and promoter group,MainI,2024-9-30 00:00:00,2024-9-30 00:00:00
+WhetherTheListedEntityHasIssuedAnyConvertibleSecuritiesForPublicShareHolder,false,0,,Whether the listed entity has issued any convertible securities for public share holder,MainI,2024-9-30 00:00:00,2024-9-30 00:00:00
+WhetherTheListedEntityHasIssuedAnyConvertibleSecuritiesForNonPromoterNonPublic,false,0,,Whether the listed entity has issued any convertible securities for non promoter non public,MainI,2024-9-30 00:00:00,2024-9-30 00:00:00
+WhetherTheListedEntityHasIssuedAnyWarrants,false,0,,Whether the listed entity has issued any warrants,MainI,2024-9-30 00:00:00,2024-9-30 00:00:00
+WhetherTheListedEntityHasIssuedAnyWarrantsForPromoterAndPromoterGroup,false,0,,Whether the listed entity has issued any warrants for promoter and promoter group,MainI,2024-9-30 00:00:00,2024-9-30 00:00:00
+WhetherTheListedEntityHasIssuedAnyWarrantsForPublicShareHolder,false,0,,Whether the listed entity has issued any warrants for public shareholder,MainI,2024-9-30 00:00:00,2024-9-30 00:00:00
+WhetherTheListedEntityHasIssuedAnyWarrantsForNonPromoterNonPublic,false,0,,Whether the listed entity has issued any warrants for non promoter non public,MainI,2024-9-30 00:00:00,2024-9-30 00:00:00
+WhetherTheListedEntityHasAnySharesAgainstWhichDepositoryReceiptsAreIssued,false,0,,Whether the listed entity has any shares against which depository receipts are issued,MainI,2024-9-30 00:00:00,2024-9-30 00:00:00
+WhetherTheListedEntityHasAnySharesAgainstWhichDepositoryReceiptsAreIssuedForPromoterAndPromoterGroup,false,0,,Whether the listed entity has any shares against which depository receipts are issued for promoter and promoter group,MainI,2024-9-30 00:00:00,2024-9-30 00:00:00
+WhetherTheListedEntityHasAnySharesAgainstWhichDepositoryReceiptsAreIssuedForPublicShareHolder,false,0,,Whether the listed entity has any shares against which depository receipts are issued for public shareholder,MainI,2024-9-30 00:00:00,2024-9-30 00:00:00
+WhetherTheListedEntityHasAnySharesAgainstWhichDepositoryReceiptsAreIssuedForNonPromoterNonPublic,false,0,,Whether the listed entity has any shares against which depository receipts are issued for non promoter non public,MainI,2024-9-30 00:00:00,2024-9-30 00:00:00
+WhetherTheListedEntityHasAnySharesInLockedIn,false,0,,Whether the listed entity has any shares in locked-in,MainI,2024-9-30 00:00:00,2024-9-30 00:00:00
+WhetherTheListedEntityHasAnySharesInLockedInForPromoterAndPromoterGroup,false,0,,Whether the listed entity has any shares in locked in for promoter and promoter group,MainI,2024-9-30 00:00:00,2024-9-30 00:00:00
+WhetherTheListedEntityHasAnySharesInLockedInForPublicShareHolder,false,0,,Whether the listed entity has any shares in locked in for public shareholder,MainI,2024-9-30 00:00:00,2024-9-30 00:00:00
+WhetherTheListedEntityHasAnySharesInLockedInForNonPromoterNonPublic,false,0,,Whether the listed entity has any shares in locked in for non promoter non public,MainI,2024-9-30 00:00:00,2024-9-30 00:00:00
+WhetherAnySharesHeldByPromotersArePledgeOrOtherwiseEncumbered,true,0,,Whether any shares held by promoters are pledge or otherwise encumbered,MainI,2024-9-30 00:00:00,2024-9-30 00:00:00
+WhetherAnySharesHeldByPromotersArePledgeOrOtherwiseEncumberedForPromoterAndPromoterGroup,true,0,,Whether any shares held by promoters are pledge or otherwise encumbered for promoter and promoter group,MainI,2024-9-30 00:00:00,2024-9-30 00:00:00
+WhetherCompanyHasEquitySharesWithDifferentialVotingRights,false,0,,Whether company has equity shares with differential voting rights,MainI,2024-9-30 00:00:00,2024-9-30 00:00:00
+WhetherCompanyHasEquitySharesWithDifferentialVotingRightsForPromoterAndPromoterGroup,false,0,,Whether company has equity shares with differential voting rights for promoter and promoter group,MainI,2024-9-30 00:00:00,2024-9-30 00:00:00
+WhetherCompanyHasEquitySharesWithDifferentialVotingRightsForPublicShareHolder,false,0,,Whether company has equity shares with differential voting rights for public shareholder,MainI,2024-9-30 00:00:00,2024-9-30 00:00:00
+WhetherCompanyHasEquitySharesWithDifferentialVotingRightsForNonPromoterNonPublic,false,0,,Whether company has equity shares with differential voting rights for non promoter non public,MainI,2024-9-30 00:00:00,2024-9-30 00:00:00
+WhetherTheListedEntityHasAnySignificantBeneficialOwner,true,0,,Whether the listed entity has any significant beneficial owner,MainI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShareholders,2,0,pure,Number of shareholders,IndividualsOrHinduUndividedFamily_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfFullyPaidUpEquityShares,47553645,0,shares,Number of fully paid up equity shares,IndividualsOrHinduUndividedFamily_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShares,47553645,0,shares,Total number of shares,IndividualsOrHinduUndividedFamily_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+ShareholdingAsAPercentageOfTotalNumberOfShares,38.83,0,pure,Shareholding as a percentage of total number of shares,IndividualsOrHinduUndividedFamily_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfVotingRightsHeldBySameClassOfSecurities,47553645,0,pure,Number of voting rights held by same class of securities,IndividualsOrHinduUndividedFamily_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfVotingRights,47553645,0,pure,Number of voting rights,IndividualsOrHinduUndividedFamily_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+PercentageOfTotalVotingRights,38.83,0,pure,Percentage of total voting rights,IndividualsOrHinduUndividedFamily_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+ShareholdingAsAPercentageAssumingFullConversionOfConvertibleSecuritiesAndWarrants,38.83,0,pure,Total shareholding as a percentage assuming full conversion of convertible securities and warrants and warrants,IndividualsOrHinduUndividedFamily_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+PledgedOrEncumberedNumberOfShares,44486978,0,shares,Pledged or encumbered - number of shares,IndividualsOrHinduUndividedFamily_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+PledgedOrEncumberedSharesHeldAsPercentageOfTotalNumberOfShares,93.55,0,pure,Pledged or encumbered shares held as percentage of total number of shares,IndividualsOrHinduUndividedFamily_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfEquitySharesHeldInDematerializedForm,47553645,0,shares,Number of equity shares held in dematerialized form,IndividualsOrHinduUndividedFamily_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShareholders,1,0,pure,Number of shareholders,OtherIndianShareholders_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfFullyPaidUpEquityShares,7284600,0,shares,Number of fully paid up equity shares,OtherIndianShareholders_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShares,7284600,0,shares,Total number of shares,OtherIndianShareholders_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+ShareholdingAsAPercentageOfTotalNumberOfShares,5.95,0,pure,Shareholding as a percentage of total number of shares,OtherIndianShareholders_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfVotingRightsHeldBySameClassOfSecurities,7284600,0,pure,Number of voting rights held by same class of securities,OtherIndianShareholders_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfVotingRights,7284600,0,pure,Number of voting rights,OtherIndianShareholders_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+PercentageOfTotalVotingRights,5.95,0,pure,Percentage of total voting rights,OtherIndianShareholders_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+ShareholdingAsAPercentageAssumingFullConversionOfConvertibleSecuritiesAndWarrants,5.95,0,pure,Total shareholding as a percentage assuming full conversion of convertible securities and warrants and warrants,OtherIndianShareholders_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+PledgedOrEncumberedNumberOfShares,7284600,0,shares,Pledged or encumbered - number of shares,OtherIndianShareholders_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+PledgedOrEncumberedSharesHeldAsPercentageOfTotalNumberOfShares,100.00,0,pure,Pledged or encumbered shares held as percentage of total number of shares,OtherIndianShareholders_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfEquitySharesHeldInDematerializedForm,7284600,0,shares,Number of equity shares held in dematerialized form,OtherIndianShareholders_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShareholders,3,0,pure,Number of shareholders,Indian_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfFullyPaidUpEquityShares,54838245,0,shares,Number of fully paid up equity shares,Indian_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShares,54838245,0,shares,Total number of shares,Indian_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+ShareholdingAsAPercentageOfTotalNumberOfShares,44.78,0,pure,Shareholding as a percentage of total number of shares,Indian_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfVotingRightsHeldBySameClassOfSecurities,54838245,0,pure,Number of voting rights held by same class of securities,Indian_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfVotingRights,54838245,0,pure,Number of voting rights,Indian_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+PercentageOfTotalVotingRights,44.78,0,pure,Percentage of total voting rights,Indian_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+ShareholdingAsAPercentageAssumingFullConversionOfConvertibleSecuritiesAndWarrants,44.78,0,pure,Total shareholding as a percentage assuming full conversion of convertible securities and warrants and warrants,Indian_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+PledgedOrEncumberedNumberOfShares,51771578,0,shares,Pledged or encumbered - number of shares,Indian_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+PledgedOrEncumberedSharesHeldAsPercentageOfTotalNumberOfShares,94.41,0,pure,Pledged or encumbered shares held as percentage of total number of shares,Indian_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfEquitySharesHeldInDematerializedForm,54838245,0,shares,Number of equity shares held in dematerialized form,Indian_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShareholders,3,0,pure,Number of shareholders,ShareholdingOfPromoterAndPromoterGroup_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfFullyPaidUpEquityShares,54838245,0,shares,Number of fully paid up equity shares,ShareholdingOfPromoterAndPromoterGroup_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShares,54838245,0,shares,Total number of shares,ShareholdingOfPromoterAndPromoterGroup_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+ShareholdingAsAPercentageOfTotalNumberOfShares,44.78,0,pure,Shareholding as a percentage of total number of shares,ShareholdingOfPromoterAndPromoterGroup_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfVotingRightsHeldBySameClassOfSecurities,54838245,0,pure,Number of voting rights held by same class of securities,ShareholdingOfPromoterAndPromoterGroup_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfVotingRights,54838245,0,pure,Number of voting rights,ShareholdingOfPromoterAndPromoterGroup_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+PercentageOfTotalVotingRights,44.78,0,pure,Percentage of total voting rights,ShareholdingOfPromoterAndPromoterGroup_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+ShareholdingAsAPercentageAssumingFullConversionOfConvertibleSecuritiesAndWarrants,44.78,0,pure,Total shareholding as a percentage assuming full conversion of convertible securities and warrants and warrants,ShareholdingOfPromoterAndPromoterGroup_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+PledgedOrEncumberedNumberOfShares,51771578,0,shares,Pledged or encumbered - number of shares,ShareholdingOfPromoterAndPromoterGroup_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+PledgedOrEncumberedSharesHeldAsPercentageOfTotalNumberOfShares,94.41,0,pure,Pledged or encumbered shares held as percentage of total number of shares,ShareholdingOfPromoterAndPromoterGroup_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfEquitySharesHeldInDematerializedForm,54838245,0,shares,Number of equity shares held in dematerialized form,ShareholdingOfPromoterAndPromoterGroup_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShareholders,1,0,pure,Number of shareholders,InsuranceCompanies_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfFullyPaidUpEquityShares,126664,0,shares,Number of fully paid up equity shares,InsuranceCompanies_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShares,126664,0,shares,Total number of shares,InsuranceCompanies_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+ShareholdingAsAPercentageOfTotalNumberOfShares,0.10,0,pure,Shareholding as a percentage of total number of shares,InsuranceCompanies_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfVotingRightsHeldBySameClassOfSecurities,126664,0,pure,Number of voting rights held by same class of securities,InsuranceCompanies_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfVotingRights,126664,0,pure,Number of voting rights,InsuranceCompanies_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+PercentageOfTotalVotingRights,0.10,0,pure,Percentage of total voting rights,InsuranceCompanies_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+ShareholdingAsAPercentageAssumingFullConversionOfConvertibleSecuritiesAndWarrants,0.10,0,pure,Total shareholding as a percentage assuming full conversion of convertible securities and warrants and warrants,InsuranceCompanies_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfEquitySharesHeldInDematerializedForm,126664,0,shares,Number of equity shares held in dematerialized form,InsuranceCompanies_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShareUnderSubCategoryOne,0,0,shares,Number of share under sub category one,InsuranceCompanies_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShareUnderSubCategoryTwo,0,0,shares,Number of share under sub category two,InsuranceCompanies_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShareUnderSubCategoryThree,0,0,shares,Number of share under sub category three,InsuranceCompanies_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShareholders,1,0,pure,Number of shareholders,NBFCsRegisteredWithRbi_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfFullyPaidUpEquityShares,7900,0,shares,Number of fully paid up equity shares,NBFCsRegisteredWithRbi_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShares,7900,0,shares,Total number of shares,NBFCsRegisteredWithRbi_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+ShareholdingAsAPercentageOfTotalNumberOfShares,0.01,0,pure,Shareholding as a percentage of total number of shares,NBFCsRegisteredWithRbi_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfVotingRightsHeldBySameClassOfSecurities,7900,0,pure,Number of voting rights held by same class of securities,NBFCsRegisteredWithRbi_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfVotingRights,7900,0,pure,Number of voting rights,NBFCsRegisteredWithRbi_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+PercentageOfTotalVotingRights,0.01,0,pure,Percentage of total voting rights,NBFCsRegisteredWithRbi_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+ShareholdingAsAPercentageAssumingFullConversionOfConvertibleSecuritiesAndWarrants,0.01,0,pure,Total shareholding as a percentage assuming full conversion of convertible securities and warrants and warrants,NBFCsRegisteredWithRbi_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfEquitySharesHeldInDematerializedForm,7900,0,shares,Number of equity shares held in dematerialized form,NBFCsRegisteredWithRbi_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShareUnderSubCategoryOne,0,0,shares,Number of share under sub category one,NBFCsRegisteredWithRbi_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShareUnderSubCategoryTwo,0,0,shares,Number of share under sub category two,NBFCsRegisteredWithRbi_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShareUnderSubCategoryThree,0,0,shares,Number of share under sub category three,NBFCsRegisteredWithRbi_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShareholders,2,0,pure,Number of shareholders,InstitutionsDomestic_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfFullyPaidUpEquityShares,134564,0,shares,Number of fully paid up equity shares,InstitutionsDomestic_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShares,134564,0,shares,Total number of shares,InstitutionsDomestic_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+ShareholdingAsAPercentageOfTotalNumberOfShares,0.11,0,pure,Shareholding as a percentage of total number of shares,InstitutionsDomestic_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfVotingRightsHeldBySameClassOfSecurities,134564,0,pure,Number of voting rights held by same class of securities,InstitutionsDomestic_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfVotingRights,134564,0,pure,Number of voting rights,InstitutionsDomestic_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+PercentageOfTotalVotingRights,0.11,0,pure,Percentage of total voting rights,InstitutionsDomestic_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+ShareholdingAsAPercentageAssumingFullConversionOfConvertibleSecuritiesAndWarrants,0.11,0,pure,Total shareholding as a percentage assuming full conversion of convertible securities and warrants and warrants,InstitutionsDomestic_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfEquitySharesHeldInDematerializedForm,134564,0,shares,Number of equity shares held in dematerialized form,InstitutionsDomestic_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShareUnderSubCategoryOne,0,0,shares,Number of share under sub category one,InstitutionsDomestic_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShareUnderSubCategoryTwo,0,0,shares,Number of share under sub category two,InstitutionsDomestic_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShareUnderSubCategoryThree,0,0,shares,Number of share under sub category three,InstitutionsDomestic_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShareholders,1,0,pure,Number of shareholders,CentralGovernmentOrPresidentOfIndia_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfFullyPaidUpEquityShares,10168,0,shares,Number of fully paid up equity shares,CentralGovernmentOrPresidentOfIndia_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShares,10168,0,shares,Total number of shares,CentralGovernmentOrPresidentOfIndia_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+ShareholdingAsAPercentageOfTotalNumberOfShares,0.01,0,pure,Shareholding as a percentage of total number of shares,CentralGovernmentOrPresidentOfIndia_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfVotingRightsHeldBySameClassOfSecurities,10168,0,pure,Number of voting rights held by same class of securities,CentralGovernmentOrPresidentOfIndia_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfVotingRights,10168,0,pure,Number of voting rights,CentralGovernmentOrPresidentOfIndia_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+PercentageOfTotalVotingRights,0.01,0,pure,Percentage of total voting rights,CentralGovernmentOrPresidentOfIndia_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+ShareholdingAsAPercentageAssumingFullConversionOfConvertibleSecuritiesAndWarrants,0.01,0,pure,Total shareholding as a percentage assuming full conversion of convertible securities and warrants and warrants,CentralGovernmentOrPresidentOfIndia_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfEquitySharesHeldInDematerializedForm,10168,0,shares,Number of equity shares held in dematerialized form,CentralGovernmentOrPresidentOfIndia_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShareUnderSubCategoryOne,0,0,shares,Number of share under sub category one,CentralGovernmentOrPresidentOfIndia_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShareUnderSubCategoryTwo,0,0,shares,Number of share under sub category two,CentralGovernmentOrPresidentOfIndia_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShareUnderSubCategoryThree,0,0,shares,Number of share under sub category three,CentralGovernmentOrPresidentOfIndia_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShareholders,1,0,pure,Number of shareholders,Goverments_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfFullyPaidUpEquityShares,10168,0,shares,Number of fully paid up equity shares,Goverments_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShares,10168,0,shares,Total number of shares,Goverments_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+ShareholdingAsAPercentageOfTotalNumberOfShares,0.01,0,pure,Shareholding as a percentage of total number of shares,Goverments_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfVotingRightsHeldBySameClassOfSecurities,10168,0,pure,Number of voting rights held by same class of securities,Goverments_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfVotingRights,10168,0,pure,Number of voting rights,Goverments_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+PercentageOfTotalVotingRights,0.01,0,pure,Percentage of total voting rights,Goverments_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+ShareholdingAsAPercentageAssumingFullConversionOfConvertibleSecuritiesAndWarrants,0.01,0,pure,Total shareholding as a percentage assuming full conversion of convertible securities and warrants and warrants,Goverments_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfEquitySharesHeldInDematerializedForm,10168,0,shares,Number of equity shares held in dematerialized form,Goverments_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShareUnderSubCategoryOne,0,0,shares,Number of share under sub category one,Goverments_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShareUnderSubCategoryTwo,0,0,shares,Number of share under sub category two,Goverments_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShareUnderSubCategoryThree,0,0,shares,Number of share under sub category three,Goverments_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShareholders,1,0,pure,Number of shareholders,InvestorEducationAndProtectionFund_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfFullyPaidUpEquityShares,18204,0,shares,Number of fully paid up equity shares,InvestorEducationAndProtectionFund_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShares,18204,0,shares,Total number of shares,InvestorEducationAndProtectionFund_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+ShareholdingAsAPercentageOfTotalNumberOfShares,0.01,0,pure,Shareholding as a percentage of total number of shares,InvestorEducationAndProtectionFund_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfVotingRightsHeldBySameClassOfSecurities,18204,0,pure,Number of voting rights held by same class of securities,InvestorEducationAndProtectionFund_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfVotingRights,18204,0,pure,Number of voting rights,InvestorEducationAndProtectionFund_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+PercentageOfTotalVotingRights,0.01,0,pure,Percentage of total voting rights,InvestorEducationAndProtectionFund_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+ShareholdingAsAPercentageAssumingFullConversionOfConvertibleSecuritiesAndWarrants,0.01,0,pure,Total shareholding as a percentage assuming full conversion of convertible securities and warrants and warrants,InvestorEducationAndProtectionFund_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfEquitySharesHeldInDematerializedForm,18204,0,shares,Number of equity shares held in dematerialized form,InvestorEducationAndProtectionFund_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShareUnderSubCategoryOne,0,0,shares,Number of share under sub category one,InvestorEducationAndProtectionFund_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShareUnderSubCategoryTwo,0,0,shares,Number of share under sub category two,InvestorEducationAndProtectionFund_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShareUnderSubCategoryThree,0,0,shares,Number of share under sub category three,InvestorEducationAndProtectionFund_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShareholders,90645,0,pure,Number of shareholders,ResidentIndividualShareholdersHoldingNominalShareCapitalUpToRsTwoLakh_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfFullyPaidUpEquityShares,52254557,0,shares,Number of fully paid up equity shares,ResidentIndividualShareholdersHoldingNominalShareCapitalUpToRsTwoLakh_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShares,52254557,0,shares,Total number of shares,ResidentIndividualShareholdersHoldingNominalShareCapitalUpToRsTwoLakh_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+ShareholdingAsAPercentageOfTotalNumberOfShares,42.67,0,pure,Shareholding as a percentage of total number of shares,ResidentIndividualShareholdersHoldingNominalShareCapitalUpToRsTwoLakh_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfVotingRightsHeldBySameClassOfSecurities,52254557,0,pure,Number of voting rights held by same class of securities,ResidentIndividualShareholdersHoldingNominalShareCapitalUpToRsTwoLakh_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfVotingRights,52254557,0,pure,Number of voting rights,ResidentIndividualShareholdersHoldingNominalShareCapitalUpToRsTwoLakh_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+PercentageOfTotalVotingRights,42.67,0,pure,Percentage of total voting rights,ResidentIndividualShareholdersHoldingNominalShareCapitalUpToRsTwoLakh_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+ShareholdingAsAPercentageAssumingFullConversionOfConvertibleSecuritiesAndWarrants,42.67,0,pure,Total shareholding as a percentage assuming full conversion of convertible securities and warrants and warrants,ResidentIndividualShareholdersHoldingNominalShareCapitalUpToRsTwoLakh_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfEquitySharesHeldInDematerializedForm,52250726,0,shares,Number of equity shares held in dematerialized form,ResidentIndividualShareholdersHoldingNominalShareCapitalUpToRsTwoLakh_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShareUnderSubCategoryOne,0,0,shares,Number of share under sub category one,ResidentIndividualShareholdersHoldingNominalShareCapitalUpToRsTwoLakh_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShareUnderSubCategoryTwo,0,0,shares,Number of share under sub category two,ResidentIndividualShareholdersHoldingNominalShareCapitalUpToRsTwoLakh_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShareUnderSubCategoryThree,0,0,shares,Number of share under sub category three,ResidentIndividualShareholdersHoldingNominalShareCapitalUpToRsTwoLakh_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShareholders,29,0,pure,Number of shareholders,ResidentIndividualShareholdersHoldingNominalShareCapitalInExcessOfRsTwoLakh_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfFullyPaidUpEquityShares,7377264,0,shares,Number of fully paid up equity shares,ResidentIndividualShareholdersHoldingNominalShareCapitalInExcessOfRsTwoLakh_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShares,7377264,0,shares,Total number of shares,ResidentIndividualShareholdersHoldingNominalShareCapitalInExcessOfRsTwoLakh_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+ShareholdingAsAPercentageOfTotalNumberOfShares,6.02,0,pure,Shareholding as a percentage of total number of shares,ResidentIndividualShareholdersHoldingNominalShareCapitalInExcessOfRsTwoLakh_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfVotingRightsHeldBySameClassOfSecurities,7377264,0,pure,Number of voting rights held by same class of securities,ResidentIndividualShareholdersHoldingNominalShareCapitalInExcessOfRsTwoLakh_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfVotingRights,7377264,0,pure,Number of voting rights,ResidentIndividualShareholdersHoldingNominalShareCapitalInExcessOfRsTwoLakh_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+PercentageOfTotalVotingRights,6.02,0,pure,Percentage of total voting rights,ResidentIndividualShareholdersHoldingNominalShareCapitalInExcessOfRsTwoLakh_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+ShareholdingAsAPercentageAssumingFullConversionOfConvertibleSecuritiesAndWarrants,6.02,0,pure,Total shareholding as a percentage assuming full conversion of convertible securities and warrants and warrants,ResidentIndividualShareholdersHoldingNominalShareCapitalInExcessOfRsTwoLakh_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfEquitySharesHeldInDematerializedForm,7377264,0,shares,Number of equity shares held in dematerialized form,ResidentIndividualShareholdersHoldingNominalShareCapitalInExcessOfRsTwoLakh_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShareUnderSubCategoryOne,0,0,shares,Number of share under sub category one,ResidentIndividualShareholdersHoldingNominalShareCapitalInExcessOfRsTwoLakh_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShareUnderSubCategoryTwo,0,0,shares,Number of share under sub category two,ResidentIndividualShareholdersHoldingNominalShareCapitalInExcessOfRsTwoLakh_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShareUnderSubCategoryThree,0,0,shares,Number of share under sub category three,ResidentIndividualShareholdersHoldingNominalShareCapitalInExcessOfRsTwoLakh_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShareholders,721,0,pure,Number of shareholders,NonResidentIndians_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfFullyPaidUpEquityShares,1569536,0,shares,Number of fully paid up equity shares,NonResidentIndians_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShares,1569536,0,shares,Total number of shares,NonResidentIndians_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+ShareholdingAsAPercentageOfTotalNumberOfShares,1.28,0,pure,Shareholding as a percentage of total number of shares,NonResidentIndians_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfVotingRightsHeldBySameClassOfSecurities,1569536,0,pure,Number of voting rights held by same class of securities,NonResidentIndians_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfVotingRights,1569536,0,pure,Number of voting rights,NonResidentIndians_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+PercentageOfTotalVotingRights,1.28,0,pure,Percentage of total voting rights,NonResidentIndians_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+ShareholdingAsAPercentageAssumingFullConversionOfConvertibleSecuritiesAndWarrants,1.28,0,pure,Total shareholding as a percentage assuming full conversion of convertible securities and warrants and warrants,NonResidentIndians_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfEquitySharesHeldInDematerializedForm,1569536,0,shares,Number of equity shares held in dematerialized form,NonResidentIndians_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShareUnderSubCategoryOne,0,0,shares,Number of share under sub category one,NonResidentIndians_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShareUnderSubCategoryTwo,0,0,shares,Number of share under sub category two,NonResidentIndians_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShareUnderSubCategoryThree,0,0,shares,Number of share under sub category three,NonResidentIndians_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShareholders,1,0,pure,Number of shareholders,ForeignCompanies_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfFullyPaidUpEquityShares,1823545,0,shares,Number of fully paid up equity shares,ForeignCompanies_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShares,1823545,0,shares,Total number of shares,ForeignCompanies_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+ShareholdingAsAPercentageOfTotalNumberOfShares,1.49,0,pure,Shareholding as a percentage of total number of shares,ForeignCompanies_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfVotingRightsHeldBySameClassOfSecurities,1823545,0,pure,Number of voting rights held by same class of securities,ForeignCompanies_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfVotingRights,1823545,0,pure,Number of voting rights,ForeignCompanies_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+PercentageOfTotalVotingRights,1.49,0,pure,Percentage of total voting rights,ForeignCompanies_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+ShareholdingAsAPercentageAssumingFullConversionOfConvertibleSecuritiesAndWarrants,1.49,0,pure,Total shareholding as a percentage assuming full conversion of convertible securities and warrants and warrants,ForeignCompanies_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfEquitySharesHeldInDematerializedForm,1823545,0,shares,Number of equity shares held in dematerialized form,ForeignCompanies_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShareUnderSubCategoryOne,0,0,shares,Number of share under sub category one,ForeignCompanies_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShareUnderSubCategoryTwo,0,0,shares,Number of share under sub category two,ForeignCompanies_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShareUnderSubCategoryThree,0,0,shares,Number of share under sub category three,ForeignCompanies_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShareholders,293,0,pure,Number of shareholders,BodiesCorporate_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfFullyPaidUpEquityShares,2341753,0,shares,Number of fully paid up equity shares,BodiesCorporate_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShares,2341753,0,shares,Total number of shares,BodiesCorporate_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+ShareholdingAsAPercentageOfTotalNumberOfShares,1.91,0,pure,Shareholding as a percentage of total number of shares,BodiesCorporate_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfVotingRightsHeldBySameClassOfSecurities,2341753,0,pure,Number of voting rights held by same class of securities,BodiesCorporate_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfVotingRights,2341753,0,pure,Number of voting rights,BodiesCorporate_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+PercentageOfTotalVotingRights,1.91,0,pure,Percentage of total voting rights,BodiesCorporate_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+ShareholdingAsAPercentageAssumingFullConversionOfConvertibleSecuritiesAndWarrants,1.91,0,pure,Total shareholding as a percentage assuming full conversion of convertible securities and warrants and warrants,BodiesCorporate_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfEquitySharesHeldInDematerializedForm,2341753,0,shares,Number of equity shares held in dematerialized form,BodiesCorporate_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShareUnderSubCategoryOne,0,0,shares,Number of share under sub category one,BodiesCorporate_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShareUnderSubCategoryTwo,0,0,shares,Number of share under sub category two,BodiesCorporate_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShareUnderSubCategoryThree,0,0,shares,Number of share under sub category three,BodiesCorporate_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShareholders,1568,0,pure,Number of shareholders,OtherNonInstitutions_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfFullyPaidUpEquityShares,2099332,0,shares,Number of fully paid up equity shares,OtherNonInstitutions_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShares,2099332,0,shares,Total number of shares,OtherNonInstitutions_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+ShareholdingAsAPercentageOfTotalNumberOfShares,1.71,0,pure,Shareholding as a percentage of total number of shares,OtherNonInstitutions_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfVotingRightsHeldBySameClassOfSecurities,2099332,0,pure,Number of voting rights held by same class of securities,OtherNonInstitutions_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfVotingRights,2099332,0,pure,Number of voting rights,OtherNonInstitutions_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+PercentageOfTotalVotingRights,1.71,0,pure,Percentage of total voting rights,OtherNonInstitutions_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+ShareholdingAsAPercentageAssumingFullConversionOfConvertibleSecuritiesAndWarrants,1.71,0,pure,Total shareholding as a percentage assuming full conversion of convertible securities and warrants and warrants,OtherNonInstitutions_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfEquitySharesHeldInDematerializedForm,2099332,0,shares,Number of equity shares held in dematerialized form,OtherNonInstitutions_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShareUnderSubCategoryOne,0,0,shares,Number of share under sub category one,OtherNonInstitutions_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShareUnderSubCategoryTwo,0,0,shares,Number of share under sub category two,OtherNonInstitutions_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShareUnderSubCategoryThree,0,0,shares,Number of share under sub category three,OtherNonInstitutions_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShareholders,93258,0,pure,Number of shareholders,NonInstitutions_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfFullyPaidUpEquityShares,67484191,0,shares,Number of fully paid up equity shares,NonInstitutions_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShares,67484191,0,shares,Total number of shares,NonInstitutions_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+ShareholdingAsAPercentageOfTotalNumberOfShares,55.10,0,pure,Shareholding as a percentage of total number of shares,NonInstitutions_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfVotingRightsHeldBySameClassOfSecurities,67484191,0,pure,Number of voting rights held by same class of securities,NonInstitutions_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfVotingRights,67484191,0,pure,Number of voting rights,NonInstitutions_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+PercentageOfTotalVotingRights,55.10,0,pure,Percentage of total voting rights,NonInstitutions_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+ShareholdingAsAPercentageAssumingFullConversionOfConvertibleSecuritiesAndWarrants,55.10,0,pure,Total shareholding as a percentage assuming full conversion of convertible securities and warrants and warrants,NonInstitutions_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfEquitySharesHeldInDematerializedForm,67480360,0,shares,Number of equity shares held in dematerialized form,NonInstitutions_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShareUnderSubCategoryOne,0,0,shares,Number of share under sub category one,NonInstitutions_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShareUnderSubCategoryTwo,0,0,shares,Number of share under sub category two,NonInstitutions_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShareUnderSubCategoryThree,0,0,shares,Number of share under sub category three,NonInstitutions_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShareholders,93261,0,pure,Number of shareholders,PublicShareholding_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfFullyPaidUpEquityShares,67628923,0,shares,Number of fully paid up equity shares,PublicShareholding_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShares,67628923,0,shares,Total number of shares,PublicShareholding_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+ShareholdingAsAPercentageOfTotalNumberOfShares,55.22,0,pure,Shareholding as a percentage of total number of shares,PublicShareholding_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfVotingRightsHeldBySameClassOfSecurities,67628923,0,pure,Number of voting rights held by same class of securities,PublicShareholding_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfVotingRights,67628923,0,pure,Number of voting rights,PublicShareholding_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+PercentageOfTotalVotingRights,55.22,0,pure,Percentage of total voting rights,PublicShareholding_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+ShareholdingAsAPercentageAssumingFullConversionOfConvertibleSecuritiesAndWarrants,55.22,0,pure,Total shareholding as a percentage assuming full conversion of convertible securities and warrants and warrants,PublicShareholding_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfEquitySharesHeldInDematerializedForm,67625092,0,shares,Number of equity shares held in dematerialized form,PublicShareholding_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShareUnderSubCategoryOne,0,0,shares,Number of share under sub category one,PublicShareholding_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShareUnderSubCategoryTwo,0,0,shares,Number of share under sub category two,PublicShareholding_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShareUnderSubCategoryThree,0,0,shares,Number of share under sub category three,PublicShareholding_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShareholders,93264,0,pure,Number of shareholders,ShareholdingPattern_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfFullyPaidUpEquityShares,122467168,0,shares,Number of fully paid up equity shares,ShareholdingPattern_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShares,122467168,0,shares,Total number of shares,ShareholdingPattern_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+ShareholdingAsAPercentageOfTotalNumberOfShares,100.00,0,pure,Shareholding as a percentage of total number of shares,ShareholdingPattern_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfVotingRightsHeldBySameClassOfSecurities,122467168,0,pure,Number of voting rights held by same class of securities,ShareholdingPattern_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfVotingRights,122467168,0,pure,Number of voting rights,ShareholdingPattern_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+PercentageOfTotalVotingRights,100.00,0,pure,Percentage of total voting rights,ShareholdingPattern_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+ShareholdingAsAPercentageAssumingFullConversionOfConvertibleSecuritiesAndWarrants,100.00,0,pure,Total shareholding as a percentage assuming full conversion of convertible securities and warrants and warrants,ShareholdingPattern_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+PledgedOrEncumberedNumberOfShares,51771578,0,shares,Pledged or encumbered - number of shares,ShareholdingPattern_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+PledgedOrEncumberedSharesHeldAsPercentageOfTotalNumberOfShares,42.27,0,pure,Pledged or encumbered shares held as percentage of total number of shares,ShareholdingPattern_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfEquitySharesHeldInDematerializedForm,122463337,0,shares,Number of equity shares held in dematerialized form,ShareholdingPattern_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShareUnderSubCategoryOne,0,0,shares,Number of share under sub category one,ShareholdingPattern_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShareUnderSubCategoryTwo,0,0,shares,Number of share under sub category two,ShareholdingPattern_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShareUnderSubCategoryThree,0,0,shares,Number of share under sub category three,ShareholdingPattern_ContextI,2024-9-30 00:00:00,2024-9-30 00:00:00
+NameOfTheShareholder,Shantanu Prakash,0,,Name of the shareholder,D_IndividualsOrHUF_Context15,2024-7-01 00:00:00,2024-9-30 00:00:00
+NumberOfFullyPaidUpEquityShares,44315205,0,shares,Number of fully paid up equity shares,IndividualsOrHUF_Context15,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShares,44315205,0,shares,Total number of shares,IndividualsOrHUF_Context15,2024-9-30 00:00:00,2024-9-30 00:00:00
+ShareholdingAsAPercentageOfTotalNumberOfShares,36.19,0,pure,Shareholding as a percentage of total number of shares,IndividualsOrHUF_Context15,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfVotingRightsHeldBySameClassOfSecurities,44315205,0,pure,Number of voting rights held by same class of securities,IndividualsOrHUF_Context15,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfVotingRights,44315205,0,pure,Number of voting rights,IndividualsOrHUF_Context15,2024-9-30 00:00:00,2024-9-30 00:00:00
+PercentageOfTotalVotingRights,36.19,0,pure,Percentage of total voting rights,IndividualsOrHUF_Context15,2024-9-30 00:00:00,2024-9-30 00:00:00
+ShareholdingAsAPercentageAssumingFullConversionOfConvertibleSecuritiesAndWarrants,36.19,0,pure,Total shareholding as a percentage assuming full conversion of convertible securities and warrants and warrants,IndividualsOrHUF_Context15,2024-9-30 00:00:00,2024-9-30 00:00:00
+PledgedOrEncumberedNumberOfShares,41248538,0,shares,Pledged or encumbered - number of shares,IndividualsOrHUF_Context15,2024-9-30 00:00:00,2024-9-30 00:00:00
+PledgedOrEncumberedSharesHeldAsPercentageOfTotalNumberOfShares,93.08,0,pure,Pledged or encumbered shares held as percentage of total number of shares,IndividualsOrHUF_Context15,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfEquitySharesHeldInDematerializedForm,44315205,0,shares,Number of equity shares held in dematerialized form,IndividualsOrHUF_Context15,2024-9-30 00:00:00,2024-9-30 00:00:00
+TypeOfPromoterShareholding,Promoter,0,,Type Of promoter shareholding,D_IndividualsOrHUF_Context15,2024-7-01 00:00:00,2024-9-30 00:00:00
+NumberOfShareholders,1,0,pure,Number of shareholders,IndividualsOrHUF_Context15,2024-9-30 00:00:00,2024-9-30 00:00:00
+NameOfTheShareholder,Anjlee Prakash,0,,Name of the shareholder,D_IndividualsOrHUF_Context16,2024-7-01 00:00:00,2024-9-30 00:00:00
+NumberOfFullyPaidUpEquityShares,3238440,0,shares,Number of fully paid up equity shares,IndividualsOrHUF_Context16,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShares,3238440,0,shares,Total number of shares,IndividualsOrHUF_Context16,2024-9-30 00:00:00,2024-9-30 00:00:00
+ShareholdingAsAPercentageOfTotalNumberOfShares,2.64,0,pure,Shareholding as a percentage of total number of shares,IndividualsOrHUF_Context16,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfVotingRightsHeldBySameClassOfSecurities,3238440,0,pure,Number of voting rights held by same class of securities,IndividualsOrHUF_Context16,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfVotingRights,3238440,0,pure,Number of voting rights,IndividualsOrHUF_Context16,2024-9-30 00:00:00,2024-9-30 00:00:00
+PercentageOfTotalVotingRights,2.64,0,pure,Percentage of total voting rights,IndividualsOrHUF_Context16,2024-9-30 00:00:00,2024-9-30 00:00:00
+ShareholdingAsAPercentageAssumingFullConversionOfConvertibleSecuritiesAndWarrants,2.64,0,pure,Total shareholding as a percentage assuming full conversion of convertible securities and warrants and warrants,IndividualsOrHUF_Context16,2024-9-30 00:00:00,2024-9-30 00:00:00
+PledgedOrEncumberedNumberOfShares,3238440,0,shares,Pledged or encumbered - number of shares,IndividualsOrHUF_Context16,2024-9-30 00:00:00,2024-9-30 00:00:00
+PledgedOrEncumberedSharesHeldAsPercentageOfTotalNumberOfShares,100,0,pure,Pledged or encumbered shares held as percentage of total number of shares,IndividualsOrHUF_Context16,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfEquitySharesHeldInDematerializedForm,3238440,0,shares,Number of equity shares held in dematerialized form,IndividualsOrHUF_Context16,2024-9-30 00:00:00,2024-9-30 00:00:00
+TypeOfPromoterShareholding,Promoter,0,,Type Of promoter shareholding,D_IndividualsOrHUF_Context16,2024-7-01 00:00:00,2024-9-30 00:00:00
+NumberOfShareholders,1,0,pure,Number of shareholders,IndividualsOrHUF_Context16,2024-9-30 00:00:00,2024-9-30 00:00:00
+CategoryOfOtherIndianShareholders,Bodies Corporate,0,,Category of other indian shareholders,D_OthersIndianShareholders_Context15,2024-7-01 00:00:00,2024-9-30 00:00:00
+NameOfTheShareholder,A.P.Eduvision Pvt. Ltd.,0,,Name of the shareholder,D_OthersIndianShareholders_Context15,2024-7-01 00:00:00,2024-9-30 00:00:00
+NumberOfShareholders,1,0,pure,Number of shareholders,OthersIndianShareholders_Context15,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfFullyPaidUpEquityShares,7284600,0,shares,Number of fully paid up equity shares,OthersIndianShareholders_Context15,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShares,7284600,0,shares,Total number of shares,OthersIndianShareholders_Context15,2024-9-30 00:00:00,2024-9-30 00:00:00
+ShareholdingAsAPercentageOfTotalNumberOfShares,5.95,0,pure,Shareholding as a percentage of total number of shares,OthersIndianShareholders_Context15,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfVotingRightsHeldBySameClassOfSecurities,7284600,0,pure,Number of voting rights held by same class of securities,OthersIndianShareholders_Context15,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfVotingRights,7284600,0,pure,Number of voting rights,OthersIndianShareholders_Context15,2024-9-30 00:00:00,2024-9-30 00:00:00
+PercentageOfTotalVotingRights,5.95,0,pure,Percentage of total voting rights,OthersIndianShareholders_Context15,2024-9-30 00:00:00,2024-9-30 00:00:00
+ShareholdingAsAPercentageAssumingFullConversionOfConvertibleSecuritiesAndWarrants,5.95,0,pure,Total shareholding as a percentage assuming full conversion of convertible securities and warrants and warrants,OthersIndianShareholders_Context15,2024-9-30 00:00:00,2024-9-30 00:00:00
+PledgedOrEncumberedNumberOfShares,7284600,0,shares,Pledged or encumbered - number of shares,OthersIndianShareholders_Context15,2024-9-30 00:00:00,2024-9-30 00:00:00
+PledgedOrEncumberedSharesHeldAsPercentageOfTotalNumberOfShares,100,0,pure,Pledged or encumbered shares held as percentage of total number of shares,OthersIndianShareholders_Context15,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfEquitySharesHeldInDematerializedForm,7284600,0,shares,Number of equity shares held in dematerialized form,OthersIndianShareholders_Context15,2024-9-30 00:00:00,2024-9-30 00:00:00
+TypeOfPromoterShareholding,Promoter Group,0,,Type Of promoter shareholding,D_OthersIndianShareholders_Context15,2024-7-01 00:00:00,2024-9-30 00:00:00
+CategoryOfOtherNonInstitutions,HUF,0,,Category of other non-institutions,D_OtherNonInstitutions_Context15,2024-7-01 00:00:00,2024-9-30 00:00:00
+WhetherACategoryOrMoreThan1PercentageOfShareHolding,Category,0,,Whether a category or more than 1 percentage of share holding,D_OtherNonInstitutions_Context15,2024-7-01 00:00:00,2024-9-30 00:00:00
+NumberOfShareholders,1547,0,pure,Number of shareholders,OtherNonInstitutions_Context15,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfFullyPaidUpEquityShares,1983010,0,shares,Number of fully paid up equity shares,OtherNonInstitutions_Context15,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShares,1983010,0,shares,Total number of shares,OtherNonInstitutions_Context15,2024-9-30 00:00:00,2024-9-30 00:00:00
+ShareholdingAsAPercentageOfTotalNumberOfShares,1.62,0,pure,Shareholding as a percentage of total number of shares,OtherNonInstitutions_Context15,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfVotingRightsHeldBySameClassOfSecurities,1983010,0,pure,Number of voting rights held by same class of securities,OtherNonInstitutions_Context15,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfVotingRights,1983010,0,pure,Number of voting rights,OtherNonInstitutions_Context15,2024-9-30 00:00:00,2024-9-30 00:00:00
+PercentageOfTotalVotingRights,1.62,0,pure,Percentage of total voting rights,OtherNonInstitutions_Context15,2024-9-30 00:00:00,2024-9-30 00:00:00
+ShareholdingAsAPercentageAssumingFullConversionOfConvertibleSecuritiesAndWarrants,1.62,0,pure,Total shareholding as a percentage assuming full conversion of convertible securities and warrants and warrants,OtherNonInstitutions_Context15,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfEquitySharesHeldInDematerializedForm,1983010,0,shares,Number of equity shares held in dematerialized form,OtherNonInstitutions_Context15,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShareUnderSubCategoryOne,0,0,shares,Number of share under sub category one,OtherNonInstitutions_Context15,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShareUnderSubCategoryTwo,0,0,shares,Number of share under sub category two,OtherNonInstitutions_Context15,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShareUnderSubCategoryThree,0,0,shares,Number of share under sub category three,OtherNonInstitutions_Context15,2024-9-30 00:00:00,2024-9-30 00:00:00
+CategoryOfOtherNonInstitutions,LLP,0,,Category of other non-institutions,D_OtherNonInstitutions_Context16,2024-7-01 00:00:00,2024-9-30 00:00:00
+WhetherACategoryOrMoreThan1PercentageOfShareHolding,Category,0,,Whether a category or more than 1 percentage of share holding,D_OtherNonInstitutions_Context16,2024-7-01 00:00:00,2024-9-30 00:00:00
+NumberOfShareholders,13,0,pure,Number of shareholders,OtherNonInstitutions_Context16,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfFullyPaidUpEquityShares,99860,0,shares,Number of fully paid up equity shares,OtherNonInstitutions_Context16,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShares,99860,0,shares,Total number of shares,OtherNonInstitutions_Context16,2024-9-30 00:00:00,2024-9-30 00:00:00
+ShareholdingAsAPercentageOfTotalNumberOfShares,0.08,0,pure,Shareholding as a percentage of total number of shares,OtherNonInstitutions_Context16,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfVotingRightsHeldBySameClassOfSecurities,99860,0,pure,Number of voting rights held by same class of securities,OtherNonInstitutions_Context16,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfVotingRights,99860,0,pure,Number of voting rights,OtherNonInstitutions_Context16,2024-9-30 00:00:00,2024-9-30 00:00:00
+PercentageOfTotalVotingRights,0.08,0,pure,Percentage of total voting rights,OtherNonInstitutions_Context16,2024-9-30 00:00:00,2024-9-30 00:00:00
+ShareholdingAsAPercentageAssumingFullConversionOfConvertibleSecuritiesAndWarrants,0.08,0,pure,Total shareholding as a percentage assuming full conversion of convertible securities and warrants and warrants,OtherNonInstitutions_Context16,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfEquitySharesHeldInDematerializedForm,99860,0,shares,Number of equity shares held in dematerialized form,OtherNonInstitutions_Context16,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShareUnderSubCategoryOne,0,0,shares,Number of share under sub category one,OtherNonInstitutions_Context16,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShareUnderSubCategoryTwo,0,0,shares,Number of share under sub category two,OtherNonInstitutions_Context16,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShareUnderSubCategoryThree,0,0,shares,Number of share under sub category three,OtherNonInstitutions_Context16,2024-9-30 00:00:00,2024-9-30 00:00:00
+CategoryOfOtherNonInstitutions,Clearing Members,0,,Category of other non-institutions,D_OtherNonInstitutions_Context17,2024-7-01 00:00:00,2024-9-30 00:00:00
+WhetherACategoryOrMoreThan1PercentageOfShareHolding,Category,0,,Whether a category or more than 1 percentage of share holding,D_OtherNonInstitutions_Context17,2024-7-01 00:00:00,2024-9-30 00:00:00
+NumberOfShareholders,5,0,pure,Number of shareholders,OtherNonInstitutions_Context17,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfFullyPaidUpEquityShares,16028,0,shares,Number of fully paid up equity shares,OtherNonInstitutions_Context17,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShares,16028,0,shares,Total number of shares,OtherNonInstitutions_Context17,2024-9-30 00:00:00,2024-9-30 00:00:00
+ShareholdingAsAPercentageOfTotalNumberOfShares,0.01,0,pure,Shareholding as a percentage of total number of shares,OtherNonInstitutions_Context17,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfVotingRightsHeldBySameClassOfSecurities,16028,0,pure,Number of voting rights held by same class of securities,OtherNonInstitutions_Context17,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfVotingRights,16028,0,pure,Number of voting rights,OtherNonInstitutions_Context17,2024-9-30 00:00:00,2024-9-30 00:00:00
+PercentageOfTotalVotingRights,0.01,0,pure,Percentage of total voting rights,OtherNonInstitutions_Context17,2024-9-30 00:00:00,2024-9-30 00:00:00
+ShareholdingAsAPercentageAssumingFullConversionOfConvertibleSecuritiesAndWarrants,0.01,0,pure,Total shareholding as a percentage assuming full conversion of convertible securities and warrants and warrants,OtherNonInstitutions_Context17,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfEquitySharesHeldInDematerializedForm,16028,0,shares,Number of equity shares held in dematerialized form,OtherNonInstitutions_Context17,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShareUnderSubCategoryOne,0,0,shares,Number of share under sub category one,OtherNonInstitutions_Context17,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShareUnderSubCategoryTwo,0,0,shares,Number of share under sub category two,OtherNonInstitutions_Context17,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShareUnderSubCategoryThree,0,0,shares,Number of share under sub category three,OtherNonInstitutions_Context17,2024-9-30 00:00:00,2024-9-30 00:00:00
+CategoryOfOtherNonInstitutions,Trusts,0,,Category of other non-institutions,D_OtherNonInstitutions_Context18,2024-7-01 00:00:00,2024-9-30 00:00:00
+WhetherACategoryOrMoreThan1PercentageOfShareHolding,Category,0,,Whether a category or more than 1 percentage of share holding,D_OtherNonInstitutions_Context18,2024-7-01 00:00:00,2024-9-30 00:00:00
+NumberOfShareholders,3,0,pure,Number of shareholders,OtherNonInstitutions_Context18,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfFullyPaidUpEquityShares,434,0,shares,Number of fully paid up equity shares,OtherNonInstitutions_Context18,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShares,434,0,shares,Total number of shares,OtherNonInstitutions_Context18,2024-9-30 00:00:00,2024-9-30 00:00:00
+ShareholdingAsAPercentageOfTotalNumberOfShares,0,0,pure,Shareholding as a percentage of total number of shares,OtherNonInstitutions_Context18,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfVotingRightsHeldBySameClassOfSecurities,434,0,pure,Number of voting rights held by same class of securities,OtherNonInstitutions_Context18,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfVotingRights,434,0,pure,Number of voting rights,OtherNonInstitutions_Context18,2024-9-30 00:00:00,2024-9-30 00:00:00
+PercentageOfTotalVotingRights,0,0,pure,Percentage of total voting rights,OtherNonInstitutions_Context18,2024-9-30 00:00:00,2024-9-30 00:00:00
+ShareholdingAsAPercentageAssumingFullConversionOfConvertibleSecuritiesAndWarrants,0,0,pure,Total shareholding as a percentage assuming full conversion of convertible securities and warrants and warrants,OtherNonInstitutions_Context18,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfEquitySharesHeldInDematerializedForm,434,0,shares,Number of equity shares held in dematerialized form,OtherNonInstitutions_Context18,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShareUnderSubCategoryOne,0,0,shares,Number of share under sub category one,OtherNonInstitutions_Context18,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShareUnderSubCategoryTwo,0,0,shares,Number of share under sub category two,OtherNonInstitutions_Context18,2024-9-30 00:00:00,2024-9-30 00:00:00
+NumberOfShareUnderSubCategoryThree,0,0,shares,Number of share under sub category three,OtherNonInstitutions_Context18,2024-9-30 00:00:00,2024-9-30 00:00:00
+NameOfSignificantBeneficialOwners,Shantanu Prakash,0,,Name of significant beneficial owners,D_DetailsOfSBO15,2024-7-01 00:00:00,2024-9-30 00:00:00
+NationalityOfSignificantBeneficialOwners,India,0,,Nationality of significant beneficial owners,D_DetailsOfSBO15,2024-7-01 00:00:00,2024-9-30 00:00:00
+NameOfRegisteredOwner,A P Eduvision Private Limited,0,,Name of registered owner,D_DetailsOfSBO15,2024-7-01 00:00:00,2024-9-30 00:00:00
+NationalityOfRegisteredOwner,India,0,,Nationality of registered owner,D_DetailsOfSBO15,2024-7-01 00:00:00,2024-9-30 00:00:00
+DetailsOfHoldingExerciseOfRightOfTheSBOInTheReportingCompanyWhetherByVirtueOfShares,100,0,pure,Details of holding exercise of right of the sbo in the reporting company whether by virtue of shares,DetailsOfSBO15,2024-9-30 00:00:00,2024-9-30 00:00:00
+DetailsOfHoldingExerciseOfRightOfTheSBOInTheReportingCompanyWhetherByVirtueOfVotingRights,100,0,pure,Details of holding exercise of right of the sbo in the reporting company whether by virtue of voting rights,DetailsOfSBO15,2024-9-30 00:00:00,2024-9-30 00:00:00
+DetailsOfHoldingExerciseOfRightOfTheSBOInTheReportingCompanyWhetherByVirtueOfExerciseOfControl,true,0,,Details of holding exercise of right of the sbo in the reporting company whether by virtue of exercise of control,DetailsOfSBO15,2024-9-30 00:00:00,2024-9-30 00:00:00
+DetailsOfHoldingExerciseOfRightOfTheSBOInTheReportingCompanyWhetherByVirtueOfExerciseOfSignificantInfluence,true,0,,Details of holding exercise of right of the sbo in the reporting company whether by virtue of exercise of significant influence,DetailsOfSBO15,2024-9-30 00:00:00,2024-9-30 00:00:00
+DateOfCreationOrAcquisitionOfSignificantBeneficialInterest,2012-07-17,0,,Date of creation or acquisition of significant beneficial interest,DetailsOfSBO15,2024-9-30 00:00:00,2024-9-30 00:00:00
+PercentageOfBoardApprovedLimits,100,0,pure,Board approved limits (%),MainI,2024-9-30 00:00:00,2024-9-30 00:00:00
+PercentageOfLimitsUtilized,1.48,0,pure,Limits utilized (%),MainI,2024-9-30 00:00:00,2024-9-30 00:00:00
+PercentageOfBoardApprovedLimits,100,0,pure,Board approved limits (%),MainPYI,2024-6-30 00:00:00,2024-6-30 00:00:00
+PercentageOfLimitsUtilized,1.48,0,pure,Limits utilized (%),MainPYI,2024-6-30 00:00:00,2024-6-30 00:00:00
+PercentageOfBoardApprovedLimits,100,0,pure,Board approved limits (%),MainPPYI,2024-3-31 00:00:00,2024-3-31 00:00:00
+PercentageOfLimitsUtilized,1.48,0,pure,Limits utilized (%),MainPPYI,2024-3-31 00:00:00,2024-3-31 00:00:00
+PercentageOfBoardApprovedLimits,100,0,pure,Board approved limits (%),MainPPPYI,2023-12-31 00:00:00,2023-12-31 00:00:00
+PercentageOfLimitsUtilized,1.48,0,pure,Limits utilized (%),MainPPPYI,2023-12-31 00:00:00,2023-12-31 00:00:00
+PercentageOfBoardApprovedLimits,100,0,pure,Board approved limits (%),MainPPPPYI,2023-9-30 00:00:00,2023-9-30 00:00:00
+PercentageOfLimitsUtilized,1.48,0,pure,Limits utilized (%),MainPPPPYI,2023-9-30 00:00:00,2023-9-30 00:00:00
+XbrlUrl,http://www.bseindia.com/XBRL1/532696_2822025145529_SHP.xml,0,,XbrlUrl,,,
+ReceivedAt,,0,,Received At DateTime,,,
+SavedAt,2025-4-02 14:21:44,0,,Saved At DateTim,,,
