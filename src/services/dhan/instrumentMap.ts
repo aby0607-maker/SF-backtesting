@@ -14,7 +14,7 @@
 import type { DhanSecurity } from '@/types/scoring'
 import { cache } from '@/services/cache'
 
-const SCRIP_MASTER_URL = 'https://images.dhan.co/api-data/api-scrip-master.csv'
+const SCRIP_MASTER_URL = 'https://images.dhan.co/api-data/api-scrip-master-detailed.csv'
 const CACHE_KEY = 'dhan\0instrumentMap'
 const CACHE_TTL = 24 * 60 * 60 * 1000  // 24 hours
 
@@ -22,11 +22,11 @@ const CACHE_TTL = 24 * 60 * 60 * 1000  // 24 hours
 
 /**
  * Parse the DhanHQ scrip master CSV into DhanSecurity records.
- * CSV columns (compact format): SEM_EXM_EXCH_ID, SEM_SEGMENT, SEM_SMST_SECURITY_ID,
- * SEM_INSTRUMENT_NAME, SEM_TRADING_SYMBOL, SEM_LOT_UNITS, SEM_TICK_SIZE,
- * SEM_ISIN, SM_SYMBOL_NAME, SEM_EXPIRY_CODE, SEM_CUSTOM_SYMBOL, ...
+ * Uses the DETAILED CSV format which includes ISIN:
+ *   EXCH_ID, SEGMENT, SECURITY_ID, ISIN, INSTRUMENT, UNDERLYING_SECURITY_ID,
+ *   UNDERLYING_SYMBOL, SYMBOL_NAME, DISPLAY_NAME, INSTRUMENT_TYPE, SERIES, ...
  *
- * We only need: exchange (col 0), securityId (col 2), tradingSymbol (col 4), isin (col 7)
+ * We need: exchange (EXCH_ID), securityId (SECURITY_ID), symbol (SYMBOL_NAME), isin (ISIN), instrument (INSTRUMENT)
  */
 function parseCsv(csvText: string): DhanSecurity[] {
   const lines = csvText.split('\n')
@@ -34,11 +34,11 @@ function parseCsv(csvText: string): DhanSecurity[] {
 
   // Parse header to find column indices (defensive — don't assume fixed positions)
   const header = lines[0].split(',').map(h => h.trim())
-  const idxExchange = header.indexOf('SEM_EXM_EXCH_ID')
-  const idxSecurityId = header.indexOf('SEM_SMST_SECURITY_ID')
-  const idxTradingSymbol = header.indexOf('SEM_TRADING_SYMBOL')
-  const idxIsin = header.indexOf('SEM_ISIN')
-  const idxInstrument = header.indexOf('SEM_INSTRUMENT_NAME')
+  const idxExchange = header.indexOf('EXCH_ID')
+  const idxSecurityId = header.indexOf('SECURITY_ID')
+  const idxTradingSymbol = header.indexOf('SYMBOL_NAME')
+  const idxIsin = header.indexOf('ISIN')
+  const idxInstrument = header.indexOf('INSTRUMENT')
 
   if (idxExchange === -1 || idxSecurityId === -1 || idxIsin === -1) {
     console.error('[DhanInstruments] CSV header missing expected columns:', header.slice(0, 10))
