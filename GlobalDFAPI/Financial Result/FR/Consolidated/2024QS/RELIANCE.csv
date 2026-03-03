@@ -1,0 +1,142 @@
+Label,Value,Decimals,UnitId,Description,Key
+ScripCode,500325,0,,Scrip code,ScripCode
+Symbol,RELIANCE,0,,Symbol,Symbol
+MSEISymbol,NA,0,,MSEI symbol,MSEISymbolMseiSymbol
+ISIN,INE002A01018,0,,ISIN,ISINIsin
+NameOfTheCompany,RELIANCE INDUSTRIES LIMITED,0,,Name of the company,NameOfTheCompany
+DateOfStartOfFinancialYear,2024-04-01,0,,Date of start of financial year,DateOfStartOfFinancialYear
+DateOfEndOfFinancialYear,2025-03-31,0,,Date of end of financial year,DateOfEndOfFinancialYear
+ReportingQuarter,Half yearly,0,,Reporting quarter,ReportingQuarter
+DateOfStartOfReportingPeriod,2024-07-01,0,,Date of start of reporting period,DateOfStartOfReportingPeriod
+DateOfEndOfReportingPeriod,2024-09-30,0,,Date of end of reporting period,DateOfEndOfReportingPeriod
+NatureOfReportStandaloneConsolidated,Consolidated,0,,Nature of report standalone consolidated,NatureOfReportStandaloneConsolidated
+AccountReceivableTurnoverRatio,30.4423,-7,INR,Account Receivable Turnover Ratio,AccountReceivableTurnoverRatio
+AccountReceivableDays,11.9899,-7,INR,Account Receivable Days,AccountReceivableDays
+AccrualRatio,-0.0662,-7,INR,AccrualRatio,AccrualRatio
+AssetTurnoverRatio,0,4,INR,Asset Turnover Ratio,AssetTurnoverRatio
+AssetToShareholdersEquity,2.213,-7,INR,Asset to Shareholders Equity,AssetToShareholdersEquity
+CashEps,47.5953,0,INRPerShare,Cash Eps,CashEps
+CfoDebtRatio,0.4891,-7,INR,Cash Flow from Operation to Debt Ratio,CfoDebtRatio
+CFROA,0.0904,-7,INR,Cash Flow Return on Assets,CFROA
+CashRatio,0.2447,-7,INR,Cash Ratio,CashRatio
+CashTurnoverRatio,9.5709,-7,INR,Cash Turnover Ratio,CashTurnoverRatio
+CurrentRatio,1.183,-7,INR,Current Ratio,CurrentRatio
+DaysinWorkingCapital,28.5295,-7,INR,Days in Working Capital,DaysinWorkingCapital
+DebtAssetsRatio,0.1849,-7,INR,Debt Assets Ratio,DebtAssetsRatio
+DebtCapitalRatio,0.2903,-7,INR,Debt Capital Ratio,DebtCapitalRatio
+DebtEbitdaRatio,1.8208,-7,INR,Debt EBITDA Ratio,DebtEbitdaRatio
+DebtEquityRatio,0.4091,-7,INR,Debt Equity Ratio,DebtEquityRatio
+DividendCoverageRatio,1143.4084,0,INRPerShare,Dividend Coverage Ratio,DividendCoverageRatio
+DividendPayoutRatio,7.7056,-7,INR,Dividend Payout Ratio,DividendPayoutRatio
+EarningsYield,0.034,4,INR,Earnings Yield,EarningsYield
+EBITDA,441560000000,-7,INR,Earnings before Interest'| Taxes'| Depreciation and Amortization,EBITDA
+EbitdaMargin,0.1837,-7,INR,EBITDA Marging,EbitdaMargin
+MarketCap,19985410800000,4,INR,Market Capital,MarketCap
+EnterpriseValue,22259380800000,4,INR,Enterprise Value,EnterpriseValue
+EnterpriseValueEbitdaRatio,50.4108,4,INR,Enterprise Value EBITDA Ratio,EnterpriseValueEbitdaRatio
+EnterpriseValueRevenueRatio,9.261,4,INR,Enterprise Value Revenue Ratio,EnterpriseValueRevenueRatio
+EPS,24.48,4,INR,EPS,EPS
+FreeCashFlowToRevenue,0.2098,-7,INR,Free Cash Flow To Revenue,FreeCashFlowToRevenue
+InterestCoverage,5.161,-7,INR,Interest Coverage,InterestCoverage
+InventoryTurnoverRatio,1.2099,-7,INR,Inventory Turnover Ratio,InventoryTurnoverRatio
+InventoryDay,301.6728,-7,INR,Inventory Day,InventoryDay
+MarketCapSalesRatio,8.4871,-7,INR,Market Capitalization Sales Ratio,MarketCapSalesRatio
+NetMargin,0.0804,-7,INR,Net Margin,NetMargin
+OperatingCycleRatio,313.6627,-7,INR,Operating Cycle Ratio,OperatingCycleRatio
+OperatingExpensesRatio,87.818,-7,INR,Operating Expenses Ratio,OperatingExpensesRatio
+OperatingMargin,0.137,-7,INR,Operating Margin,OperatingMargin
+PeRatio,29.4262,4,INR,PE Ratio,PeRatio
+BookValuePerShare,1172.7476,0,INRPerShare,Book value per share,BookValuePerShare
+PriceBookValue,2.5187,0,INRPerShare,Price to Book value,PriceBookValue
+PriceSalesRatio,8.4871,-7,INR,Price Sales Ratio,PriceSalesRatio
+PriceCashFlowOperationRatio,12.5862,-7,INR,Price Cash Flow Operation Ratio,PriceCashFlowOperationRatio
+QuickRatio,0.3468,-7,INR,Quick Ratio,QuickRatio
+ROA,0.0594,-7,INR,ROA,ROA
+EBIT,312760000000,-7,INR,Earnings Before Interest and Taxes,EBIT
+ROCE,0.023,-7,INR,ROCE,ROCE
+ROE,0.0996,-7,INR,Return on Equity,ROE
+ROIC,0.03,-7,INR,Return on Equity,ROIC
+ShareholdersEquityRatio,0.4519,-7,INR,Shareholders Equity Ratio,ShareholdersEquityRatio
+ShortTermDebtEquityRatio,0.1284,-7,INR,Short Term Debt Equity Ratio,ShortTermDebtEquityRatio
+PBIDTMEXOI,16.5865,-7,INR,PBIDTMEXOI,PBIDTMEXOI
+PBIDTM,18.6571,-7,INR,PBIDTM,PBIDTM
+PBDTM,16.1019,-7,INR,PBDTM,PBDTM
+PBTM,10.6323,-7,INR,PBTM,PBTM
+PATM,8.2058,-7,INR,PATM,PATM
+PBIDTXOI,390580000000,-7,INR,PBIDTXOI,PBIDTXOI
+YOYQuarterlySalesGrowth,0.2234,-7,INR,YOY Quarterly Sales Growth,YOYQuarterlySalesGrowth
+SalesGrowth,2.4109,-7,INR,Sales Growth,SalesGrowth
+YOYQuarterlyProfitGrowth,-2.792,-7,INR,YOY Quarterly Profit Growth,YOYQuarterlyProfitGrowth
+ProfitGrowth,6.6569,-7,INR,Profit Growth,ProfitGrowth
+BVPSGrowth,-3.3699,0,INRPerShare,Book value per share Growth,BVPSGrowth
+SalesFixedAsset,0.7112,-7,INR,Sales Fixed Asset,SalesFixedAsset
+CashFlowPerShare,234.6852,-7,INR,Cash Flow per Share,CashFlowPerShare
+FreeCashFlowPerShare,-59.9025,-7,INR,Free Cash Flow Per Share,FreeCashFlowPerShare
+CashProfitMargin,13.398,-7,INR,Cash Profit Margin(%),CashProfitMargin
+RevenueGrowth,2.847,-7,INR,Revenue Growth,RevenueGrowth
+EBITGrowth,-3.1163,-7,INR,EBIT Growth(%),EBITGrowth
+EpsGrowth,-4.7841,0,INRPerShare,EPS Growth(%),EpsGrowth
+DebtorToSalesPct,3.4586,-7,INR,Debtor to Sales(%),DebtorToSalesPct
+GrossProfitMarginPct,16.1019,-7,INR,Gross Profit Margin(%),GrossProfitMarginPct
+ReturnOnNetworthEquityPct,8.5354,-7,INR,Return on Networth/Equity(%),ReturnOnNetworthEquityPct
+DebtorsToEquity,0.0342,-7,INR,Debtors to Equity,DebtorsToEquity
+InterestCover,5.1979,-7,INR,Interest Cover,InterestCover
+OperatingProfitMarginPct,99.7169,-7,INR,Operating Profit Margin(%),OperatingProfitMarginPct
+WorkingCapitalDay,-30.7873,-7,INR,Working Capital Day,WorkingCapitalDay
+DividendPerShare,0.09,-7,INR,Dividend Per Share,DividendPerShare
+DividendYieldPct,0.003,-7,INR,Dividend Yield (%),DividendYieldPct
+PayableDays,0.3047,-7,INR,Payable Days,PayableDays
+CashConversionCycle,313.358,-7,INR,Cash Conversion Cycle,CashConversionCycle
+CashEarningsRetentionRatio,95.3108,-7,INR,Cash Earnings Retention Ratio,CashEarningsRetentionRatio
+EarningsRetentionRatio,92.2944,-7,INR,Earnings Retention Ratio,EarningsRetentionRatio
+WorkingCapitalSalesRatioPct,-8.4349,-7,INR,Working Capital to Sales Ratio (%),WorkingCapitalSalesRatioPct
+EbitdaMarginPct,18.7514,-7,INR,EBITDA Margin (%),EbitdaMarginPct
+FixedCapitalSalesRatioPct,105.6848,-7,INR,Fixed Capital to Sales Ratio (%),FixedCapitalSalesRatioPct
+CpGrowthPct,13.5,-7,INR,CP Growth(%),CpGrowthPct
+PBIDTMEXOIGrowthPct,10.8502,-7,INR,PBIDT Excl OI Growth (%),PBIDTMEXOIGrowthPct
+Fixed_Assets_TA,73.2287,-7,INR,Fixed_Assets_TA,Fixed_Assets_TA
+Net_Sales_Growth,2.4109,-7,INR,Net_Sales_Growth,Net_Sales_Growth
+NetProfit_To_PBT,0.7718,-7,INR,NetProfit_To_PBT,NetProfit_To_PBT
+NetProfit_To_Sales,8.2058,-7,INR,NetProfit_To_Sales,NetProfit_To_Sales
+NetSales_To_TotalAssets,0,4,INR,NetSales_To_TotalAssets,NetSales_To_TotalAssets
+EBIT_Margin,13.0123,-7,INR,EBIT_Margin,EBIT_Margin
+PAT_Growth,6.6569,-7,INR,PAT_Growth,PAT_Growth
+InterestToDebt,0.0185,-7,INR,Interest to Debt,InterestToDebt
+LT_Debt_Equity_Ratio,0.2406,-7,INR,LT_Debt_Equity_Ratio,LT_Debt_Equity_Ratio
+AdjustedEPS_TTM,100.38,4,INR,Adjusted EPS_TTM,AdjustedEPS_TTM
+NetWorthShareholdersEquity,7934810000000,-7,INR,Net Worth (Shareholders’ Equity),NetWorthShareholdersEquity
+ReturnNetWorthPct,8.5354,-7,INR,Return on Net Worth(%),ReturnNetWorthPct
+EV_EBIT,71.1708,4,INR,EV_EBIT,EV_EBIT
+EV_NetSales,9.4527,4,INR,EV_NetSales,EV_NetSales
+MCapGrowthPct,25.8811,-7,INR,MCap Growth %,MCapGrowthPct
+Pre_Tax_Margin,10.6323,-7,INR,Pre_Tax_Margin,Pre_Tax_Margin
+OperatingCashFlow3Y,3844740000000,-7,INR,Operating cash flow 3years,OperatingCashFlow3Y
+FreeCashFlow,1952620000000,-7,INR,Free Cash Flow,FreeCashFlow
+FCF_Yield,12.2989,-7,INR,FCF Yield,FCF_Yield
+NetworthGrowthPct,-0.8964,-7,INR,Networth Growth (%),NetworthGrowthPct
+OtherIncomeNetworthPct,1.7344,-7,INR,OtherIncome to NetWorth (%),OtherIncomeNetworthPct
+OwnersFundToTotalSourcePct,52.7218,-7,INR,OwnersFund to Total Source (%),OwnersFundToTotalSourcePct
+SalesToCurrentAssets,1.9453,-7,INR,Sales to Current Assets,SalesToCurrentAssets
+PBDTGrowthPct,0,-7,INR,PBDT Growth %,PBDTGrowthPct
+PBITGrowthPct,0,-7,INR,PBIT Growth %,PBITGrowthPct
+PBITToSales,493740433413.284,-7,INR,PBIT to Sales,PBITToSales
+PBTGrowthPct,0,-7,INR,PBT Growth %,PBTGrowthPct
+PbtToPbit,0,-7,INR,PBT to PBIT,PbtToPbit
+ReturnOnSales,493740433413.284,-7,INR,Return On Sales,ReturnOnSales
+PceRatio,12.5862,-7,INR,PCE Ratio,PceRatio
+PfcfRatio,-49.3102,-7,INR,PFCF Ratio,PfcfRatio
+ROA_After_Interest,4.5551,-7,INR,ROA_After_Interest,ROA_After_Interest
+ROE_After_Interest,8.497,-7,INR,ROE_After_Interest,ROE_After_Interest
+ROE_After_Tax_Rate,8.497,-7,INR,ROE_After_Tax_Rate,ROE_After_Tax_Rate
+ROE_Before_Other_Income,6.7704,-7,INR,ROE Before Other Income,ROE_Before_Other_Income
+TotalDebtToMarketCap,20.4468,4,INR,Total Debt to Market Cap,TotalDebtToMarketCap
+OpCost_Asset,0.4573,-7,INR,OpCost_Asset,OpCost_Asset
+SalesGrowth3Y,26.7224,-7,INR,Sales Growth (3 Years),SalesGrowth3Y
+ProfitGrowth3Y,16.4714,-7,INR,Profit Growth (3 Years),ProfitGrowth3Y
+EpsGrowth3Y,11.8478,0,INRPerShare,EPS Growth (3 Years),EpsGrowth3Y
+SalesGrowthRate,2.4109,-7,INR,Sales Growth (3 Years),SalesGrowthRate
+SalesPrecedingYear,26810273140.7498,-7,INR,Sales Preceding Year,SalesPrecedingYear
+Interest_To_Assets,0,4,INR,Interest_To_Assets,Interest_To_Assets
+InvestmentDepositsRatio,0,4,INR,Investment Deposits Ratio,InvestmentDepositsRatio
+NetInterestMargin,0,4,INR,Net Interest Margin (NIM),NetInterestMargin
+XbrlUrl,https://www.bseindia.com/XBRLFILES/FourOneUploadDocument/Main_Ind_As_500325_1410202419535.xml,0,,XbrlUrl,

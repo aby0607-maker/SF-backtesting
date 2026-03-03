@@ -1,0 +1,103 @@
+Label,Value,Decimals,UnitId,Description,Key
+ScripCode,500325,0,,Scrip code,ScripCode
+Symbol,RELIANCE,0,,Symbol,Symbol
+MSEISymbol,NA,0,,MSEI symbol,MSEISymbolMseiSymbol
+ISIN,INE002A01018,0,,ISIN,ISINIsin
+NameOfTheCompany,RELIANCE INDUSTRIES LIMITED,0,,Name of the company,NameOfTheCompany
+ClassOfSecurity,Equity,0,,Class of security,ClassOfSecurity
+DateOfStartOfFinancialYear,2024-04-01,0,,Date of start of financial year,DateOfStartOfFinancialYear
+DateOfEndOfFinancialYear,2025-03-31,0,,Date of end of financial year,DateOfEndOfFinancialYear
+DateOfBoardMeetingWhenFinancialResultsWereApproved,2024-10-14,0,,Date of board meeting when financial results were approved,DateOfBoardMeetingWhenFinancialResultsWereApproved
+DateOnWhichPriorIntimationOfTheMeetingForConsideringFinancialResultsWasInformedToTheExchange,2024-10-07,0,,Date on which prior intimation of the meeting for considering financial results was informed to the exchange,DateOnWhichPriorIntimationOfTheMeetingForConsideringFinancialResultsWasInformedToTheExchange
+DescriptionOfPresentationCurrency,INR,0,,Description of presentation currency,DescriptionOfPresentationCurrency
+LevelOfRoundingUsedInFinancialStatements,Crores,0,,Level of rounding used in financial statements,LevelOfRoundingUsedInFinancialStatements
+ReportingQuarter,Half yearly,0,,Reporting quarter,ReportingQuarter
+IsCompanyReportingMultisegmentOrSingleSegment,Multi segment,0,,Is company reporting multisegment or single segment,IsCompanyReportingMultisegmentOrSingleSegment
+DateOfStartOfBoardMeeting,2024-10-14,0,,Date of start of board meeting,DateOfStartOfBoardMeeting
+StartTimeOfBoardMeeting,17:30:00,0,,Start time of board meeting,StartTimeOfBoardMeeting
+DateOfEndOfBoardMeeting,2024-10-14,0,,Date of end of board meeting,DateOfEndOfBoardMeeting
+EndTimeOfBoardMeeting,18:50:00,0,,End time of board meeting,EndTimeOfBoardMeeting
+WhetherCashFlowStatementIsApplicableOnCompany,true,0,,Whether cash flow statement is applicable on company,WhetherCashFlowStatementIsApplicableOnCompany
+TypeOfCashFlowStatement,Cash Flow Indirect,0,,Type of cash flow statement,TypeOfCashFlowStatement
+DeclarationOfUnmodifiedOpinionOrStatementOnImpactOfAuditQualification,Not applicable,0,,Declaration of unmodified opinion or statement on impact of audit qualification,DeclarationOfUnmodifiedOpinionOrStatementOnImpactOfAuditQualification
+DateOfStartOfReportingPeriod,2024-04-01,0,,Date of start of reporting period,DateOfStartOfReportingPeriod
+DateOfEndOfReportingPeriod,2024-09-30,0,,Date of end of reporting period,DateOfEndOfReportingPeriod
+WhetherResultsAreAuditedOrUnaudited,Unaudited,0,,Whether results are audited or unaudited,WhetherResultsAreAuditedOrUnaudited
+NatureOfReportStandaloneConsolidated,Consolidated,0,,Nature of report standalone consolidated,NatureOfReportStandaloneConsolidated
+RevenueFromOperations,4716980000000,-7,INR,Revenue from operations,RevenueFromOperations
+OtherIncome,88590000000,-7,INR,Other income,OtherIncome
+Income,4805570000000,-7,INR,Total income,IncomeTotalIncome
+CostOfMaterialsConsumed,2162660000000,-7,INR,Cost of materials consumed,CostOfMaterialsConsumed
+PurchasesOfStockInTrade,1028250000000,-7,INR,Purchases of stock-in-trade,PurchasesOfStockInTrade
+ChangesInInventoriesOfFinishedGoodsWorkInProgressAndStockInTrade,-127310000000,-7,INR,Changes in inventories of finished goods'| work-in-progress and stock-in-trade,ChangesInInventoriesOfFinishedGoodsWorkInProgressAndStockInTrade
+EmployeeBenefitExpense,137200000000,-7,INR,Employee benefit expense,EmployeeBenefitExpense
+FinanceCosts,119350000000,-7,INR,Finance costs,FinanceCosts
+DepreciationDepletionAndAmortisationExpense,264760000000,-7,INR,Depreciation'| depletion and amortisation expense,DepreciationDepletionAndAmortisationExpense
+OtherExpenses,737950000000,-7,INR,Other expenses Sum,OtherExpensesOtherExpensesSum
+Expenses,4322860000000,-7,INR,Total Expenses,ExpensesTotalExpenses
+ProfitBeforeExceptionalItemsAndTax,482710000000,-7,INR,Total profit before exceptional items and tax,ProfitBeforeExceptionalItemsAndTaxTotalProfitBeforeExceptionalItemsAndTax
+ExceptionalItemsBeforeTax,0,-7,INR,Exceptional items before tax,ExceptionalItemsBeforeTax
+ProfitBeforeTax,482710000000,-7,INR,Total profit before tax,ProfitBeforeTaxTotalProfitBeforeTax
+CurrentTax,61290000000,-7,INR,Current tax,CurrentTax
+DeferredTax,55930000000,-7,INR,Deferred tax,DeferredTax
+TaxExpense,117220000000,-7,INR,Total tax expense,TaxExpenseTotalTaxExpense
+NetMovementInRegulatoryDeferralAccountBalancesRelatedToProfitOrLossAndTheRelatedDeferredTaxMovement,0,-7,INR,Net movement in regulatory deferral account balances related to profit or loss and the related deferred tax movement,NetMovementInRegulatoryDeferralAccountBalancesRelatedToProfitOrLossAndTheRelatedDeferredTaxMovement
+ProfitLossForPeriodFromContinuingOperations,365490000000,-7,INR,Net profit (loss) for period from continuing operations,ProfitLossForPeriodFromContinuingOperationsNetProfitLossForPeriodFromContinuingOperations
+ProfitLossFromDiscontinuedOperationsBeforeTax,0,-7,INR,Profit (loss) from discontinued operations before tax,ProfitLossFromDiscontinuedOperationsBeforeTax
+TaxExpenseOfDiscontinuedOperations,0,-7,INR,Tax expense of discontinued operations,TaxExpenseOfDiscontinuedOperations
+ProfitLossFromDiscontinuedOperationsAfterTax,0,-7,INR,Net profit (loss) from discontinued operations after tax,ProfitLossFromDiscontinuedOperationsAfterTaxNetProfitLossFromDiscontinuedOperationsAfterTax
+ShareOfProfitLossOfAssociatesAndJointVenturesAccountedForUsingEquityMethod,2190000000,-7,INR,Share of profit (loss) of associates and joint ventures accounted for using equity method,ShareOfProfitLossOfAssociatesAndJointVenturesAccountedForUsingEquityMethod
+ProfitLossForPeriod,367680000000,-7,INR,Total profit (loss) for period,ProfitLossForPeriodTotalProfitLossForPeriod
+OtherComprehensiveIncomeNetOfTaxes,-12090000000,-7,INR,Other comprehensive income net of taxes,OtherComprehensiveIncomeNetOfTaxes
+ComprehensiveIncomeForThePeriod,355590000000,-7,INR,Total comprehensive income for the period,ComprehensiveIncomeForThePeriodTotalComprehensiveIncomeForThePeriod
+ProfitOrLossAttributableToOwnersOfParent,317010000000,-7,INR,Profit or loss'| attributable to owners of parent,ProfitOrLossAttributableToOwnersOfParent
+ProfitOrLossAttributableToNonControllingInterests,50670000000,-7,INR,Profit or loss'| attributable to non-controlling interests,ProfitOrLossAttributableToNonControllingInterests
+ComprehensiveIncomeForThePeriodAttributableToOwnersOfParent,-10110000000,-7,INR,Total comprehensive income for the period attributable to owners of parent,ComprehensiveIncomeForThePeriodAttributableToOwnersOfParentTotalComprehensiveIncomeForThePeriodAttributableToOwnersOfParent
+ComprehensiveIncomeForThePeriodAttributableToOwnersOfParentNonControllingInterests,-1980000000,-7,INR,Total comprehensive income for the period attributable to owners of parent non-controlling interests,ComprehensiveIncomeForThePeriodAttributableToOwnersOfParentNonControllingInterestsTotalComprehensiveIncomeForThePeriodAttributableToOwnersOfParentNonControllingInterests
+PaidUpValueOfEquityShareCapital,67660000000,-7,INR,Paid-up equity share capital,PaidUpValueOfEquityShareCapitalPaidUpEquityShareCapital
+FaceValueOfEquityShareCapital,10,0,INRPerShare,Face value of equity share capital,FaceValueOfEquityShareCapital
+BasicEarningsLossPerShareFromContinuingOperations,46.85,0,INRPerShare,Basic earnings (loss) per share from continuing operations,BasicEarningsLossPerShareFromContinuingOperations
+DilutedEarningsLossPerShareFromContinuingOperations,46.85,0,INRPerShare,Diluted earnings (loss) per share from continuing operations,DilutedEarningsLossPerShareFromContinuingOperations
+BasicEarningsLossPerShareFromDiscontinuedOperations,0,0,INRPerShare,Basic earnings (loss) per share from discontinued operations,BasicEarningsLossPerShareFromDiscontinuedOperations
+DilutedEarningsLossPerShareFromDiscontinuedOperations,0,0,INRPerShare,Diluted earnings (loss) per share from discontinued operations,DilutedEarningsLossPerShareFromDiscontinuedOperations
+BasicEarningsLossPerShareFromContinuingAndDiscontinuedOperations,46.85,0,INRPerShare,Total basic earnings (loss) per share from continuing and discontinued operations,BasicEarningsLossPerShareFromContinuingAndDiscontinuedOperationsTotalBasicEarningsLossPerShareFromContinuingAndDiscontinuedOperations
+DilutedEarningsLossPerShareFromContinuingAndDiscontinuedOperations,46.85,0,INRPerShare,Total diluted earnings (loss) per share from continuing and discontinued operations,DilutedEarningsLossPerShareFromContinuingAndDiscontinuedOperationsTotalDilutedEarningsLossPerShareFromContinuingAndDiscontinuedOperations
+DebtEquityRatio,0.0041,0,pure,Debt equity ratio,DebtEquityRatio
+DebtServiceCoverageRatio,0.0217,0,pure,Debt service coverage ratio,DebtServiceCoverageRatio
+InterestServiceCoverageRatio,0.0504,0,pure,Interest service coverage ratio,InterestServiceCoverageRatio
+OtherExpenses,83790000000,-7,INR,Excise Duty,OtherExpensesExciseDuty
+OtherExpenses,654160000000,-7,INR,Other Expenses,OtherExpenses
+SegmentRevenue,3127130000000,-7,INR,Oil to Chemicals (O2C),SegmentRevenueOilToChemicalsO2c
+SegmentRevenue,124010000000,-7,INR,Oil and Gas,SegmentRevenueOilAndGas
+SegmentRevenue,1519550000000,-7,INR,Retail,SegmentRevenueRetail
+SegmentRevenue,735250000000,-7,INR,Digital Services,SegmentRevenueDigitalServices
+SegmentRevenue,237030000000,-7,INR,Others,SegmentRevenueOthers
+SegmentRevenue,5742970000000,-7,INR,Segment revenue,SegmentRevenue
+InterSegmentRevenue,584470000000,-7,INR,Inter segment revenue,InterSegmentRevenue
+SegmentRevenueFromOperations,5158500000000,-7,INR,Revenue from operations,SegmentRevenueFromOperationsRevenueFromOperations
+SegmentProfitLossBeforeTaxAndFinanceCosts,212990000000,-7,INR,Oil to Chemicals (O2C),SegmentProfitLossBeforeTaxAndFinanceCostsOilToChemicalsO2c
+SegmentProfitLossBeforeTaxAndFinanceCosts,78130000000,-7,INR,Oil and Gas,SegmentProfitLossBeforeTaxAndFinanceCostsOilAndGas
+SegmentProfitLossBeforeTaxAndFinanceCosts,84340000000,-7,INR,Retail,SegmentProfitLossBeforeTaxAndFinanceCostsRetail
+SegmentProfitLossBeforeTaxAndFinanceCosts,186640000000,-7,INR,Digital Services,SegmentProfitLossBeforeTaxAndFinanceCostsDigitalServices
+SegmentProfitLossBeforeTaxAndFinanceCosts,2140000000,-7,INR,Others,SegmentProfitLossBeforeTaxAndFinanceCostsOthers
+SegmentProfitLossBeforeTaxAndFinanceCosts,564240000000,-7,INR,Segment profit (loss) before tax and finance costs,SegmentProfitLossBeforeTaxAndFinanceCosts
+SegmentFinanceCosts,119350000000,-7,INR,Segment finance costs,SegmentFinanceCosts
+OtherUnallocableExpenditureNetOffUnAllocableIncome,-37820000000,-7,INR,Other unallocable expenditure net off un-allocable income,OtherUnallocableExpenditureNetOffUnAllocableIncome
+SegmentProfitBeforeTax,482710000000,-7,INR,Profit before tax,SegmentProfitBeforeTaxProfitBeforeTax
+AmountOfItemThatWillNotBeReclassifiedToProfitAndLoss,-22880000000,-7,INR,Items that will not be reclassified to Profit or Loss,AmountOfItemThatWillNotBeReclassifiedToProfitAndLossItemsThatWillNotBeReclassifiedToProfitOrLoss
+AmountOfItemThatWillNotBeReclassifiedToProfitAndLoss,-22880000000,-7,INR,Amount of item that will not be reclassified to profit and loss,AmountOfItemThatWillNotBeReclassifiedToProfitAndLoss
+IncomeTaxRelatingToItmesThatWillNotBeReclassifiedToProfitOrLoss,-3250000000,-7,INR,Income tax relating to items that will not be reclassified to profit or loss,IncomeTaxRelatingToItmesThatWillNotBeReclassifiedToProfitOrLossIncomeTaxRelatingToItemsThatWillNotBeReclassifiedToProfitOrLoss
+AmountOfItemThatWillBeReclassifiedToProfitAndLoss,9930000000,-7,INR,Items that will be reclassified to Profit or Loss,AmountOfItemThatWillBeReclassifiedToProfitAndLossItemsThatWillBeReclassifiedToProfitOrLoss
+AmountOfItemThatWillBeReclassifiedToProfitAndLoss,9930000000,-7,INR,Amount of item that will be reclassified to profit and loss,AmountOfItemThatWillBeReclassifiedToProfitAndLoss
+IncomeTaxRelatingToItmesThatWillBeReclassifiedToProfitOrLoss,2390000000,-7,INR,Income tax relating to items that will be reclassified to profit or loss,IncomeTaxRelatingToItmesThatWillBeReclassifiedToProfitOrLossIncomeTaxRelatingToItemsThatWillBeReclassifiedToProfitOrLoss
+InterestCoverage,5.0444909928780896522832006703,-7,INR,Interest Coverage,InterestCoverage
+MarketCapSalesRatio,176.69766541742186670883995031,-7,INR,Market Capitalization Sales Ratio,MarketCapSalesRatio
+NetMargin,0.076511215110798510894649334,-7,INR,Net Margin,NetMargin
+OperatingExpensesRatio,87.47162147258285697638365480,-7,INR,Operating Expenses Ratio,OperatingExpensesRatio
+OperatingMargin,0.125283785274171430236163452,-7,INR,Operating Margin,OperatingMargin
+PriceSalesRatio,176.69766541742186670883995031,-7,INR,Price Sales Ratio,PriceSalesRatio
+PBIDTM,-79.91039564505355244018919712,-7,INR,PBIDTM,PBIDTM
+PBTM,10.233454456029069446976667270,-7,INR,PBTM,PBTM
+PATM,7.7948178707562889815093555600,-7,INR,PATM,PATM
+InterestCoverageRatio,4.0444909928780896522832006703,-7,INR,Interest Coverage Ratio,InterestCoverageRatio
+XbrlUrl,https://www.bseindia.com/XBRLFILES/FourOneUploadDocument/Main_Ind_As_500325_1410202419535.xml,0,,XbrlUrl,
