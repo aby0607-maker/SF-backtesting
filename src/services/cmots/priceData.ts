@@ -9,12 +9,22 @@
  * automatically supplements historical data with the delayed price feed
  * so the most current price is always available.
  *
+ * DhanHQ Fallback:
+ *   When CMOTS returns no price data for a stock and DHAN_ACCESS_TOKEN is
+ *   configured, the system automatically tries DhanHQ as a fallback source.
+ *   DhanHQ provides daily OHLCV data back to instrument inception.
+ *   The response is converted to CMOTSOHLCVRecord[] so the scoring pipeline
+ *   sees no difference regardless of data source.
+ *
  * On error: logs a warning with reasoning and returns empty arrays.
  */
 
 import type { CMOTSOHLCVRecord, CMOTSDelayedPrice } from '@/types/scoring'
 import { cmotsFetch } from './client'
-import { getCoCode } from './companyMaster'
+import { getCoCode, getCompanyBySymbol } from './companyMaster'
+import { pMap } from '@/services/batchQueue'
+import { resolveToSecurity } from '@/services/dhan/instrumentMap'
+import { getDhanHistoricalPrices } from '@/services/dhan/priceData'
 
 const CACHE_TTL = 60 * 60 * 1000          // 1 hour (historical)
 const DELAYED_CACHE_TTL = 5 * 60 * 1000   // 5 minutes (real-time feed)
@@ -79,7 +89,8 @@ function delayedToOHLCV(dp: CMOTSDelayedPrice): CMOTSOHLCVRecord {
 
 // ─── Historical Price Data ───
 
-/** Get historical prices for a stock by co_code (string) or NSE symbol */
+/** Get historical prices for a stock by co_code (string) or NSE symbol.
+ *  Falls back to DhanHQ when CMOTS returns no data and DHAN_ACCESS_TOKEN is set. */
 export async function getHistoricalPrices(
   symbol: string,
   from: string,
@@ -93,14 +104,69 @@ export async function getHistoricalPrices(
     return []
   }
 
+  // 1. Try CMOTS (primary source)
   const records = await cmotsFetch<CMOTSOHLCVRecord>({
     endpoint: `/AdjustedPriceChart/${exchange}/${coCode}/${from}/${to}`,
     cacheTTL: CACHE_TTL,
   })
-  // CMOTS API may return records in descending order — ensure ascending (oldest first)
-  // for EMA, RSI, findClosestPriceValue, and other consumers that assume chronological order
-  records.sort((a, b) => a.Tradedate.localeCompare(b.Tradedate))
-  return records
+
+  if (records.length > 0) {
+    // CMOTS API may return records in descending order — ensure ascending (oldest first)
+    records.sort((a, b) => a.Tradedate.localeCompare(b.Tradedate))
+    return records
+  }
+
+  // 2. Try DhanHQ fallback (only if CMOTS returned empty)
+  const dhanRecords = await tryDhanFallback(symbol, from, to)
+  if (dhanRecords.length > 0) {
+    return dhanRecords
+  }
+
+  return []
+}
+
+/**
+ * Attempt to fetch historical prices from DhanHQ as a fallback.
+ * Resolves the ISIN bridge: co_code → ISIN → DhanHQ securityId.
+ * Returns empty array if DhanHQ is not configured or lookup fails.
+ */
+async function tryDhanFallback(
+  symbol: string,
+  from: string,
+  to: string,
+): Promise<CMOTSOHLCVRecord[]> {
+  try {
+    // Look up company to get ISIN for the ID bridge
+    const company = await getCompanyBySymbol(symbol)
+    if (!company?.isin) {
+      return []
+    }
+
+    // Resolve ISIN → DhanHQ securityId + exchange segment
+    const dhanSecurity = await resolveToSecurity(company.isin)
+    if (!dhanSecurity) {
+      return []
+    }
+
+    const records = await getDhanHistoricalPrices(
+      dhanSecurity.securityId,
+      dhanSecurity.exchangeSegment,
+      from,
+      to,
+      company.companyname,
+    )
+
+    if (records.length > 0) {
+      console.log(
+        `[PriceData] ${symbol}: DhanHQ fallback (${records.length} records, ${dhanSecurity.exchangeSegment})`,
+      )
+    }
+
+    return records
+  } catch (error) {
+    console.warn(`[PriceData] DhanHQ fallback failed for ${symbol}:`, error instanceof Error ? error.message : error)
+    return []
+  }
 }
 
 /** Get latest price for a stock (fetches last 7 days, returns most recent) */
@@ -132,12 +198,13 @@ export async function getBatchPrices(
   const needsRealtime = diffDays <= 2
 
   // Fetch historical + optionally real-time in parallel
+  // Historical fetches are concurrency-limited to avoid flooding the browser connection pool
   const [_, delayedFeed] = await Promise.all([
-    // Historical fetch for all symbols
-    Promise.all(symbols.map(async symbol => {
+    // Historical fetch for all symbols (max 6 concurrent — matches browser connection limit)
+    pMap(symbols, async (symbol) => {
       const data = await getHistoricalPrices(symbol, from, to)
       result[symbol] = data
-    })),
+    }, 6),
     // Delayed feed (only if needed)
     needsRealtime ? getDelayedPriceFeed() : Promise.resolve(null),
   ])

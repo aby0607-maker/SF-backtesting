@@ -1,0 +1,6 @@
+quintile,label,stock_count,avg_score,min_score,max_score,avg_return_pct,winsorized_avg_return_pct,median_return_pct,hit_rate_positive,best_stock,best_return,worst_stock,worst_return
+1,"Q1 (Top 20%)",720,72.95,66.49,91.49,-4.91,-7.11,-12.08,27.5,"Trade-Wings Ltd",1110.21,"Yuvraaj Hygiene Products Ltd",-71.35
+2,"Q2 (20-40%)",720,62.54,59.24,66.48,-10.35,-10.81,-15.99,20.97,"Regal Entertainment & Consultants Ltd",431.11,"Rajeshwari Cans Ltd",-83.77
+3,"Q3 (40-60%)",720,56.06,52.81,59.24,-3.93,-6.89,-13.66,24.72,"Shree Salasar Investments Ltd",1753.57,"Chothani Foods Ltd",-73.62
+4,"Q4 (60-80%)",720,49.24,45.13,52.8,-4.82,-7.09,-15.07,26.67,"Emrock Corporation Limited",1069.75,"Elitecon International Ltd",-84.63
+5,"Q5 (Bottom 20%)",719,38.88,27.46,45.06,5.74,-3.01,-12.6,31.85,"Steelco Gujarat Ltd",4354.55,"Worth Investment & Trading Company Ltd",-87.74

@@ -20,6 +20,7 @@ import type { FundamentalsBundle } from '@/services/cmots/fundamentals'
 import { getAllFundamentals, findStatementRow, getStatementValue, getYearColumns } from '@/services/cmots/fundamentals'
 import { getCompanyBySymbol } from '@/services/cmots/companyMaster'
 import { getHistoricalPrices } from '@/services/cmots/priceData'
+import { getIndianAPIFundamentals, mergeFundamentals } from '@/services/indianapi'
 import { ema, rsi, volumePriceTrend, priceVsEMA } from '@/lib/technicalCalc'
 
 // ─────────────────────────────────────────────────
@@ -40,15 +41,21 @@ const PNL_ROW_EBITDA = 46   // "Operation Profit before Depreciation"
 const PNL_ROW_PAT = 35      // "Profit After Tax"
 const PNL_ROW_REVENUE = 1   // "Revenue from Operations"
 const PNL_ROW_EPS = 44      // "Earning Per Share - Basic"
+const PNL_ROW_PBT = 28      // "Profit Before Tax" (SME: CMOTS rid 28)
+const PNL_ROW_OTHER_INCOME = 9  // "Other Income" (SME: CMOTS column name 9)
 
 // Cash Flow rows
 const CF_ROW_OCF = 68       // "Net Cash Generated from (Used In) Operations"
 
 // Balance Sheet rows
 const BS_ROW_FIXED_ASSETS = 2     // "Fixed Assets" (Gross Block)
+const BS_ROW_CURRENT_INVESTMENTS = 27 // "Current Investments"
 const BS_ROW_CASH = 29            // "Cash and Cash Equivalents"
+const BS_ROW_BANK_BALANCES = 30   // "Bank Balances Other Than Cash and Cash Equivalents"
 const BS_ROW_ST_BORROWINGS = 44   // "Short term Borrowings"
+const BS_ROW_LEASE_CURRENT = 45   // "Lease Liabilities (Current)"
 const BS_ROW_LT_BORROWINGS = 58   // "Long term Borrowings"
+const BS_ROW_LEASE_NC = 62        // "Lease Liabilities (Non Current)"
 const BS_ROW_SHAREHOLDERS_FUND = 80 // "Total Shareholder's Fund"
 const BS_ROW_SHARES_OUTSTANDING = 91 // "Susbcribed & fully Paid up Shares"
 
@@ -303,6 +310,50 @@ function mapCMOTSToMetricIds(
     metrics['v2_price_change'] = null
   }
 
+  // ─────────────────────────────────────────────────
+  // V4 Non-Banking Expert Model — Additional Metrics
+  // Reuses V2 data where calculations are identical, adds new metrics where changed.
+  // ─────────────────────────────────────────────────
+
+  // Financial metrics (aliased from V2 where identical)
+  metrics['v4_revenue_growth'] = metrics['v2_revenue_growth']
+  metrics['v4_ebitda_growth'] = metrics['v2_ebitda_growth']
+  // V4 ROE = PAT / Avg Equity (not single-year equity like V2). CSV: "ROE = PAT ÷ Avg Equity"
+  metrics['v4_roe'] = (pnl.length > 0 && balanceSheet.length > 0)
+    ? computeAvgROEv4(pnl, balanceSheet, asOfDate)
+    : metrics['v2_roe']  // fallback if no statements
+  // V4 Gross Block = YoY growth (not CAGR like V2). CSV: (FY5-FY4)/FY4 × 100
+  metrics['v4_gross_block'] = balanceSheet.length > 0
+    ? computeStatementYoYGrowth(balanceSheet, BS_ROW_FIXED_ASSETS, asOfDate)
+    : null  // No fallback — BS required per SME
+  metrics['v4_debt_ebitda'] = metrics['v2_debt_ebitda']  // Bands differ but raw value is same
+
+  // NEW: Earnings = PBT minus Other Income, 5Y CAGR
+  metrics['v4_earnings_pbt_oi'] = computePBTMinusOICagr(pnl, asOfDate)
+
+  // NEW: OCF/EBITDA = 5Y CAGR of the ratio (cash conversion efficiency trend)
+  metrics['v4_ocf_ebitda_cagr'] = computeOCFEBITDACagr(cashFlow, pnl, asOfDate)
+
+  // Valuation metrics: V4 uses percentages (44 = 44%), V2 uses ratios (0.44)
+  metrics['v4_pe_vs_5y'] = metrics['v2_pe_vs_5y'] != null ? metrics['v2_pe_vs_5y'] * 100 : null
+  metrics['v4_pb_vs_5y'] = metrics['v2_pb_vs_5y'] != null ? metrics['v2_pb_vs_5y'] * 100 : null
+  metrics['v4_ev_vs_5y'] = metrics['v2_ev_vs_5y'] != null ? metrics['v2_ev_vs_5y'] * 100 : null
+
+  // Technical metrics: alias V2 (same calculations, different metric IDs)
+  metrics['v4_20dma'] = metrics['v2_price_ema20']
+  metrics['v4_50dma'] = metrics['v2_price_ema50']
+  metrics['v4_200dma'] = metrics['v2_price_ema200']
+  metrics['v4_rsi'] = metrics['v2_rsi']
+  metrics['v4_vpt'] = metrics['v2_vpt']
+  metrics['v4_volume_change'] = metrics['v2_volume_change']
+  metrics['v4_price_change'] = metrics['v2_price_change']
+
+  // NEW: Quarterly Momentum V4 = Avg(latest 2Q YoY growth) / 5Y CAGR
+  const revCagr = metrics['v4_revenue_growth']  // Already in percentage
+  const ebitdaCagr = metrics['v4_ebitda_growth']
+  metrics['v4_revenue_multiplier'] = computeV4Multiplier(quarterly, QR_ROW_REVENUE, revCagr, asOfDate)
+  metrics['v4_ebitda_multiplier'] = computeV4Multiplier(quarterly, QR_ROW_OP_PROFIT, ebitdaCagr, asOfDate)
+
   // ── Ownership Metrics (from shareholding pattern) ──
   if (shareholding && shareholding.length > 0) {
     const windowed = windowShareholding(shareholding, asOfDate)
@@ -385,19 +436,31 @@ function computeHistoricalValuation(
       // MCap in crores: (price × sharesCount) / 1e7
       const mcapCr = (priceAtDate * sharesCount) / 10000000
 
-      // Debt = LT Borrowings + ST Borrowings (in crores)
+      // Debt = LT Borrowings + ST Borrowings + Lease Liabilities (in crores)
       const ltDebtRow = findStatementRow(balanceSheet, BS_ROW_LT_BORROWINGS)
       const stDebtRow = findStatementRow(balanceSheet, BS_ROW_ST_BORROWINGS)
+      const leaseCurrentRow = findStatementRow(balanceSheet, BS_ROW_LEASE_CURRENT)
+      const leaseNCRow = findStatementRow(balanceSheet, BS_ROW_LEASE_NC)
       const ltCols = ltDebtRow ? windowYearColumns(ltDebtRow, asOfDate) : []
       const stCols = stDebtRow ? windowYearColumns(stDebtRow, asOfDate) : []
       const ltDebt = ltCols.length > 0 && ltDebtRow ? (getStatementValue(ltDebtRow, ltCols[0]) ?? 0) : 0
       const stDebt = stCols.length > 0 && stDebtRow ? (getStatementValue(stDebtRow, stCols[0]) ?? 0) : 0
-      const totalDebt = ltDebt + stDebt
+      const leaseCurCols = leaseCurrentRow ? windowYearColumns(leaseCurrentRow, asOfDate) : []
+      const leaseNCCols = leaseNCRow ? windowYearColumns(leaseNCRow, asOfDate) : []
+      const leaseCur = leaseCurCols.length > 0 && leaseCurrentRow ? (getStatementValue(leaseCurrentRow, leaseCurCols[0]) ?? 0) : 0
+      const leaseNC = leaseNCCols.length > 0 && leaseNCRow ? (getStatementValue(leaseNCRow, leaseNCCols[0]) ?? 0) : 0
+      const totalDebt = ltDebt + stDebt + leaseCur + leaseNC
 
-      // Cash (in crores)
+      // Cash + Bank Balances + Current Investments (in crores)
       const cashRow = findStatementRow(balanceSheet, BS_ROW_CASH)
+      const bankBalRow = findStatementRow(balanceSheet, BS_ROW_BANK_BALANCES)
+      const curInvRow = findStatementRow(balanceSheet, BS_ROW_CURRENT_INVESTMENTS)
       const cashCols = cashRow ? windowYearColumns(cashRow, asOfDate) : []
-      const cash = cashCols.length > 0 && cashRow ? (getStatementValue(cashRow, cashCols[0]) ?? 0) : 0
+      const bankBalCols = bankBalRow ? windowYearColumns(bankBalRow, asOfDate) : []
+      const curInvCols = curInvRow ? windowYearColumns(curInvRow, asOfDate) : []
+      const cash = (cashCols.length > 0 && cashRow ? (getStatementValue(cashRow, cashCols[0]) ?? 0) : 0)
+        + (bankBalCols.length > 0 && bankBalRow ? (getStatementValue(bankBalRow, bankBalCols[0]) ?? 0) : 0)
+        + (curInvCols.length > 0 && curInvRow ? (getStatementValue(curInvRow, curInvCols[0]) ?? 0) : 0)
 
       const ev = mcapCr + totalDebt - cash
       evEbitda = ev / ebitdaVal
@@ -434,7 +497,11 @@ function compute5YAvgValuation(
   const sharesRow = findStatementRow(balanceSheet, BS_ROW_SHARES_OUTSTANDING)
   const ltDebtRow = findStatementRow(balanceSheet, BS_ROW_LT_BORROWINGS)
   const stDebtRow = findStatementRow(balanceSheet, BS_ROW_ST_BORROWINGS)
+  const leaseCurrentRow = findStatementRow(balanceSheet, BS_ROW_LEASE_CURRENT)
+  const leaseNCRow = findStatementRow(balanceSheet, BS_ROW_LEASE_NC)
   const cashRow = findStatementRow(balanceSheet, BS_ROW_CASH)
+  const bankBalRow = findStatementRow(balanceSheet, BS_ROW_BANK_BALANCES)
+  const curInvRow = findStatementRow(balanceSheet, BS_ROW_CURRENT_INVESTMENTS)
 
   // Use any available row to determine year columns
   const referenceRow = epsRow || ebitdaRow || shFundRow
@@ -478,7 +545,7 @@ function compute5YAvgValuation(
       }
     }
 
-    // EV/EBITDA = (MCap + Debt - Cash) / EBITDA at this FY-end
+    // EV/EBITDA = (MCap + Debt + Leases - Cash) / EBITDA at this FY-end
     if (ebitdaRow && sharesRow) {
       const ebitda = getStatementValue(ebitdaRow, col)
       const shares = getStatementValue(sharesRow, col)
@@ -486,8 +553,12 @@ function compute5YAvgValuation(
         const mcapCr = (fyPrice * shares) / 10000000
         const ltDebt = ltDebtRow ? (getStatementValue(ltDebtRow, col) ?? 0) : 0
         const stDebt = stDebtRow ? (getStatementValue(stDebtRow, col) ?? 0) : 0
-        const cash = cashRow ? (getStatementValue(cashRow, col) ?? 0) : 0
-        const ev = mcapCr + ltDebt + stDebt - cash
+        const leaseCur = leaseCurrentRow ? (getStatementValue(leaseCurrentRow, col) ?? 0) : 0
+        const leaseNC = leaseNCRow ? (getStatementValue(leaseNCRow, col) ?? 0) : 0
+        const cash = (cashRow ? (getStatementValue(cashRow, col) ?? 0) : 0)
+          + (bankBalRow ? (getStatementValue(bankBalRow, col) ?? 0) : 0)
+          + (curInvRow ? (getStatementValue(curInvRow, col) ?? 0) : 0)
+        const ev = mcapCr + ltDebt + stDebt + leaseCur + leaseNC - cash
         if (ev > 0) {
           evValues.push(ev / ebitda)
         }
@@ -495,12 +566,17 @@ function compute5YAvgValuation(
     }
   }
 
-  const avg = (arr: number[]) => arr.length > 0 ? arr.reduce((a, b) => a + b, 0) / arr.length : null
+  // All valuation averages use harmonic mean (≥2 positive years required)
+  const harmonicMean = (arr: number[]) => {
+    if (arr.length < 2) return null
+    const reciprocalSum = arr.reduce((sum, v) => sum + 1 / v, 0)
+    return arr.length / reciprocalSum
+  }
 
   return {
-    avgPE: avg(peValues),
-    avgPB: avg(pbValues),
-    avgEV: avg(evValues),
+    avgPE: harmonicMean(peValues),
+    avgPB: harmonicMean(pbValues),
+    avgEV: harmonicMean(evValues),
   }
 }
 
@@ -508,7 +584,8 @@ function compute5YAvgValuation(
 // Historical ROE & Debt/EBITDA
 // ─────────────────────────────────────────────────
 
-/** ROE = PAT / Shareholders Fund, averaged across available fiscal years (5Y avg) */
+/** ROE = PAT / Shareholders Fund (single-year equity), averaged across available FYs.
+ *  Used by V2 scorecard. */
 function computeAvgROE(
   pnl: CMOTSStatementRow[],
   balanceSheet: CMOTSStatementRow[],
@@ -536,7 +613,55 @@ function computeAvgROE(
   return roeValues.reduce((a, b) => a + b, 0) / roeValues.length
 }
 
-/** Debt/EBITDA = (LT Borrowings + ST Borrowings) / EBITDA */
+/** V4 ROE = PAT / Avg Equity, averaged across available FYs.
+ *  Avg Equity = (ShFund_thisYear + ShFund_priorYear) / 2.
+ *  CSV definition: "ROE = PAT ÷ Avg Equity" */
+function computeAvgROEv4(
+  pnl: CMOTSStatementRow[],
+  balanceSheet: CMOTSStatementRow[],
+  asOfDate?: string,
+): number | null {
+  const patRow = findStatementRow(pnl, PNL_ROW_PAT)
+  const shFundRow = findStatementRow(balanceSheet, BS_ROW_SHAREHOLDERS_FUND)
+  if (!patRow || !shFundRow) return null
+
+  const patCols = windowYearColumns(patRow, asOfDate)     // Newest first
+  const shFundCols = windowYearColumns(shFundRow, asOfDate) // Newest first
+  if (patCols.length === 0 || shFundCols.length === 0) return null
+
+  const roeValues: number[] = []
+  for (let i = 0; i < patCols.length; i++) {
+    const col = patCols[i]
+    const colIdx = shFundCols.indexOf(col)
+    if (colIdx < 0) continue  // Column not in BS
+
+    const pat = getStatementValue(patRow, col)
+    const shFundCurrent = getStatementValue(shFundRow, col)
+    if (pat == null || shFundCurrent == null) continue
+
+    // Prior fiscal year = next in PAT array, then look up in BS
+    const priorCol = patCols[i + 1]  // Prior FY from PAT perspective (newest-first)
+    const shFundPrior = (priorCol && shFundCols.includes(priorCol))
+      ? getStatementValue(shFundRow, priorCol) : null
+
+    let avgEquity: number
+    if (shFundPrior != null) {
+      avgEquity = (shFundCurrent + shFundPrior) / 2
+    } else {
+      // First available year — fall back to single-year equity
+      avgEquity = shFundCurrent
+    }
+
+    if (avgEquity === 0) continue
+    if (pat <= 0) continue  // Exclude negative-PAT years from ROE average per SME
+    roeValues.push((pat / avgEquity) * 100)
+  }
+
+  if (roeValues.length === 0) return null
+  return roeValues.reduce((a, b) => a + b, 0) / roeValues.length
+}
+
+/** Net Debt/EBITDA = (LT + ST Borrowings + Lease Liabilities - Cash) / EBITDA */
 function computeHistoricalDebtEBITDA(
   pnl: CMOTSStatementRow[],
   balanceSheet: CMOTSStatementRow[],
@@ -550,14 +675,148 @@ function computeHistoricalDebtEBITDA(
   const ebitdaVal = getStatementValue(ebitdaRow, ebitdaCols[0])
   if (!ebitdaVal || ebitdaVal === 0) return null
 
-  const ltRow = findStatementRow(balanceSheet, BS_ROW_LT_BORROWINGS)
-  const stRow = findStatementRow(balanceSheet, BS_ROW_ST_BORROWINGS)
-  const ltCols = ltRow ? windowYearColumns(ltRow, asOfDate) : []
-  const stCols = stRow ? windowYearColumns(stRow, asOfDate) : []
-  const ltDebt = ltCols.length > 0 && ltRow ? (getStatementValue(ltRow, ltCols[0]) ?? 0) : 0
-  const stDebt = stCols.length > 0 && stRow ? (getStatementValue(stRow, stCols[0]) ?? 0) : 0
+  const getLatestVal = (rowNo: number) => {
+    const row = findStatementRow(balanceSheet, rowNo)
+    if (!row) return 0
+    const cols = windowYearColumns(row, asOfDate)
+    return cols.length > 0 ? (getStatementValue(row, cols[0]) ?? 0) : 0
+  }
 
-  return (ltDebt + stDebt) / ebitdaVal
+  const ltDebt = getLatestVal(BS_ROW_LT_BORROWINGS)
+  const stDebt = getLatestVal(BS_ROW_ST_BORROWINGS)
+  const leaseCurrent = getLatestVal(BS_ROW_LEASE_CURRENT)
+  const leaseNC = getLatestVal(BS_ROW_LEASE_NC)
+  const cash = getLatestVal(BS_ROW_CASH) + getLatestVal(BS_ROW_BANK_BALANCES) + getLatestVal(BS_ROW_CURRENT_INVESTMENTS)
+
+  const netDebt = ltDebt + stDebt + leaseCurrent + leaseNC - cash
+  return netDebt / ebitdaVal
+}
+
+// ─────────────────────────────────────────────────
+// V4 New Metric Calculations
+// ─────────────────────────────────────────────────
+
+/**
+ * V4 Earnings: (PBT - Other Income) 5Y CAGR.
+ * Isolates core operating earnings by removing non-operating income.
+ * Returns null if (PBT - OI) is ≤ 0 in either anchor year (CAGR undefined).
+ */
+function computePBTMinusOICagr(
+  pnl: CMOTSStatementRow[],
+  asOfDate?: string,
+): number | null {
+  const pbtRow = findStatementRow(pnl, PNL_ROW_PBT)
+  const oiRow = findStatementRow(pnl, PNL_ROW_OTHER_INCOME)
+  if (!pbtRow) return null
+
+  const pbtCols = windowYearColumns(pbtRow, asOfDate)
+  if (pbtCols.length < 2) return null
+
+  // Get OI columns (may not exist for all companies)
+  const oiCols = oiRow ? windowYearColumns(oiRow, asOfDate) : []
+
+  // Latest year: PBT - Other Income
+  const latestPBT = getStatementValue(pbtRow, pbtCols[0])
+  const latestOI = oiCols.includes(pbtCols[0]) && oiRow
+    ? (getStatementValue(oiRow, pbtCols[0]) ?? 0) : 0
+  if (latestPBT == null) return null
+  const latestCoreEarnings = latestPBT - latestOI
+
+  // Oldest year: PBT - Other Income
+  const oldestCol = pbtCols[pbtCols.length - 1]
+  const oldestPBT = getStatementValue(pbtRow, oldestCol)
+  const oldestOI = oiCols.includes(oldestCol) && oiRow
+    ? (getStatementValue(oiRow, oldestCol) ?? 0) : 0
+  if (oldestPBT == null) return null
+  const oldestCoreEarnings = oldestPBT - oldestOI
+
+  // Both anchor years must be positive for CAGR
+  if (oldestCoreEarnings <= 0 || latestCoreEarnings <= 0) return null
+
+  return computeCAGR(oldestCoreEarnings, latestCoreEarnings, pbtCols.length - 1)
+}
+
+/**
+ * V4 OCF/EBITDA: 5Y CAGR of the OCF/EBITDA ratio.
+ * Measures how fast cash conversion efficiency is improving.
+ * Formula: ((OCF_latest/EBITDA_latest) / (OCF_oldest/EBITDA_oldest))^(1/years) - 1
+ * Returns null if EBITDA ≤ 0 in any anchor year or if ratio is negative.
+ */
+function computeOCFEBITDACagr(
+  cashFlow: CMOTSStatementRow[],
+  pnl: CMOTSStatementRow[],
+  asOfDate?: string,
+): number | null {
+  const ocfRow = findStatementRow(cashFlow, CF_ROW_OCF)
+  const ebitdaRow = findStatementRow(pnl, PNL_ROW_EBITDA)
+  if (!ocfRow || !ebitdaRow) return null
+
+  const ocfCols = windowYearColumns(ocfRow, asOfDate)
+  const ebitdaCols = windowYearColumns(ebitdaRow, asOfDate)
+  const commonCols = ocfCols.filter(c => ebitdaCols.includes(c))
+  if (commonCols.length < 2) return null
+
+  const latestOCF = getStatementValue(ocfRow, commonCols[0])
+  const latestEBITDA = getStatementValue(ebitdaRow, commonCols[0])
+  const oldestOCF = getStatementValue(ocfRow, commonCols[commonCols.length - 1])
+  const oldestEBITDA = getStatementValue(ebitdaRow, commonCols[commonCols.length - 1])
+
+  if (latestOCF == null || latestEBITDA == null || oldestOCF == null || oldestEBITDA == null) return null
+  if (latestEBITDA <= 0 || oldestEBITDA <= 0) return null
+
+  const latestRatio = latestOCF / latestEBITDA
+  const oldestRatio = oldestOCF / oldestEBITDA
+  // Both ratios must be positive for CAGR
+  if (oldestRatio <= 0 || latestRatio <= 0) return null
+
+  return computeCAGR(oldestRatio, latestRatio, commonCols.length - 1)
+}
+
+/**
+ * V4 Quarterly Multiplier: Avg(latest 2Q YoY growth rates) / 5Y CAGR.
+ * Measures whether recent growth is accelerating (>1) or decelerating (<1) vs long-term trend.
+ *
+ * Validation: returns null if fewer than 3 annual data points or if 5Y CAGR ≤ 0.
+ */
+function computeV4Multiplier(
+  quarterly: CMOTSStatementRow[],
+  rowno: number,
+  annualCagr: number | null,
+  asOfDate?: string,
+): number | null {
+  // CAGR validation: must be > 0 (can't divide by zero/negative)
+  if (annualCagr == null || annualCagr <= 0) return null
+
+  const row = findStatementRow(quarterly, rowno)
+  if (!row) return null
+
+  const qCols = windowYearColumns(row, asOfDate)  // Newest first (e.g., Q2FY26, Q1FY26, ...)
+  if (qCols.length < 8) return null  // Need at least 2 recent quarters + their YoY counterparts
+
+  // Find the 2 most recent quarters and their same-quarter-last-year counterparts
+  const yoyGrowths: number[] = []
+  for (let i = 0; i < Math.min(2, qCols.length); i++) {
+    const currentCol = qCols[i]
+    const currentMonth = currentCol.slice(5)  // Month portion (e.g., "03", "06")
+
+    // Find same quarter from previous year
+    const sameQLastYear = qCols.find(col =>
+      col !== currentCol && col.slice(5) === currentMonth
+    )
+    if (!sameQLastYear) continue
+
+    const currentVal = getStatementValue(row, currentCol)
+    const prevVal = getStatementValue(row, sameQLastYear)
+    if (currentVal == null || prevVal == null || prevVal === 0) continue
+
+    yoyGrowths.push(((currentVal - prevVal) / Math.abs(prevVal)) * 100)
+  }
+
+  if (yoyGrowths.length === 0) return null
+
+  const avgYoYGrowth = yoyGrowths.reduce((a, b) => a + b, 0) / yoyGrowths.length
+  // Multiplier = short-term growth / long-term CAGR (both as percentages)
+  return Math.round((avgYoYGrowth / annualCagr) * 1000) / 1000
 }
 
 // ─────────────────────────────────────────────────
@@ -580,6 +839,25 @@ function computeStatementGrowth(
   if (latest == null || oldest == null || oldest <= 0) return null
 
   return computeCAGR(oldest, latest, yearCols.length - 1)
+}
+
+/** Compute YoY growth of a statement row: (Latest - PriorYear) / PriorYear × 100
+ *  CSV example for Gross Block: (234451 - 229406.5) / 229406.5 = 2.2% */
+function computeStatementYoYGrowth(
+  rows: CMOTSStatementRow[],
+  rowno: number,
+  asOfDate?: string,
+): number | null {
+  const row = findStatementRow(rows, rowno)
+  if (!row) return null
+  const yearCols = windowYearColumns(row, asOfDate)  // Newest first
+  if (yearCols.length < 2) return null
+
+  const latest = getStatementValue(row, yearCols[0])
+  const priorYear = getStatementValue(row, yearCols[1])
+  if (latest == null || priorYear == null || priorYear === 0) return null
+
+  return ((latest - priorYear) / Math.abs(priorYear)) * 100
 }
 
 // ─────────────────────────────────────────────────
@@ -701,6 +979,8 @@ function extractGrowthContext(
   finData: CMOTSFinancialRecord[],
   asOfDate?: string,
   growthPeriods?: Record<string, number>,
+  cashFlow?: CMOTSStatementRow[],
+  balanceSheet?: CMOTSStatementRow[],
 ): Record<string, { startValue?: number; endValue?: number }> {
   const context: Record<string, { startValue?: number; endValue?: number }> = {}
   const windowedFinData = windowFinData(finData, asOfDate)
@@ -724,6 +1004,50 @@ function extractGrowthContext(
 
   const patCtx = extractRowContext(pnl, PNL_ROW_PAT, asOfDate, growthPeriods?.['v2_earnings_growth'])
   if (patCtx) context.v2_earnings_growth = patCtx
+
+  // ── V4 Context (aliased + new) ──
+  // Alias V2 context for shared metrics
+  if (context.v2_revenue_growth) context.v4_revenue_growth = context.v2_revenue_growth
+  if (context.v2_ebitda_growth) context.v4_ebitda_growth = context.v2_ebitda_growth
+
+  // V4 Earnings (PBT-OI): start/end values of (PBT - Other Income)
+  const pbtCtx = extractRowContext(pnl, PNL_ROW_PBT, asOfDate)
+  const oiCtx = extractRowContext(pnl, PNL_ROW_OTHER_INCOME, asOfDate)
+  if (pbtCtx) {
+    const startPBT = pbtCtx.startValue ?? 0
+    const startOI = oiCtx?.startValue ?? 0
+    const endPBT = pbtCtx.endValue ?? 0
+    const endOI = oiCtx?.endValue ?? 0
+    context.v4_earnings_pbt_oi = {
+      startValue: startPBT - startOI,
+      endValue: endPBT - endOI,
+    }
+  }
+
+  // V4 OCF/EBITDA CAGR: start/end OCF/EBITDA ratios
+  if (cashFlow) {
+    const ocfCtx = extractRowContext(cashFlow, CF_ROW_OCF, asOfDate)
+    if (ocfCtx && ebitdaCtx) {
+      const startEBITDA = ebitdaCtx.startValue ?? 0
+      const endEBITDA = ebitdaCtx.endValue ?? 0
+      context.v4_ocf_ebitda_cagr = {
+        startValue: startEBITDA !== 0 ? (ocfCtx.startValue ?? 0) / startEBITDA : undefined,
+        endValue: endEBITDA !== 0 ? (ocfCtx.endValue ?? 0) / endEBITDA : undefined,
+      }
+    }
+  }
+
+  // V4 Gross Block: alias
+  const gbCtx = extractRowContext(balanceSheet ?? [], BS_ROW_FIXED_ASSETS, asOfDate)
+  if (gbCtx) context.v4_gross_block = gbCtx
+
+  // V4 Debt/EBITDA: endValue = EBITDA (for ebitdaFloor check in scoring engine)
+  if (ebitdaCtx) {
+    context.v4_debt_ebitda = {
+      startValue: undefined,  // Not needed
+      endValue: ebitdaCtx.endValue,  // EBITDA — checked for ≤ 0 by ebitdaFloor
+    }
+  }
 
   return context
 }
@@ -781,9 +1105,11 @@ function computeTechnicalFromPriceArray(
     const avgDenVol = recentDenVol.reduce((a, b) => a + b, 0) / recentDenVol.length
     volumeChange = avgDenVol > 0 ? avgNumVol / avgDenVol : null
 
-    const priceNDAgo = closes[closes.length - 1 - priceChangeDays]
-    if (priceNDAgo != null && priceNDAgo > 0) {
-      priceChange = ((currentPrice - priceNDAgo) / priceNDAgo) * 100
+    if (closes.length > priceChangeDays) {
+      const priceNDAgo = closes[closes.length - 1 - priceChangeDays]
+      if (priceNDAgo != null && priceNDAgo > 0) {
+        priceChange = ((currentPrice - priceNDAgo) / priceNDAgo) * 100
+      }
     }
   }
 
@@ -993,10 +1319,30 @@ export async function resolveMetricValues(
   config?: MetricResolutionConfig,
 ): Promise<ResolvedMetrics | null> {
   // Fetch fundamentals + price data in parallel
-  const [fundamentals, priceResult] = await Promise.all([
-    getAllFundamentals(stockId),
-    fetchPriceDataForScoring(stockId),
-  ])
+  let fundamentals: Awaited<ReturnType<typeof getAllFundamentals>>
+  let priceResult: Awaited<ReturnType<typeof fetchPriceDataForScoring>>
+  try {
+    [fundamentals, priceResult] = await Promise.all([
+      getAllFundamentals(stockId),
+      fetchPriceDataForScoring(stockId),
+    ])
+  } catch (err) {
+    console.warn(`[MetricResolver] Failed to fetch data for ${stockId}:`, err instanceof Error ? err.message : err)
+    return null
+  }
+
+  // ── IndianAPI Fallback: enrich with deeper historical data when needed ──
+  try {
+    const needsEnrichment = fundamentals.pnl.length === 0 ||
+      (fundamentals.pnl[0] && getYearColumns(fundamentals.pnl[0]).length < 5)
+    if (needsEnrichment) {
+      const iaFundamentals = await getIndianAPIFundamentals(stockId)
+      fundamentals = mergeFundamentals(fundamentals, iaFundamentals)
+    }
+  } catch {
+    // Non-fatal: continue with CMOTS-only data
+  }
+
   const technicalData = priceResult.technicalData
 
   const { ttm, finData, pnl, cashFlow, balanceSheet, quarterly, shareholding } = fundamentals
@@ -1012,7 +1358,7 @@ export async function resolveMetricValues(
     technicalData ?? undefined, undefined, undefined, config,
     undefined, shareholding, priceResult.priceHistory,
   )
-  const context = extractGrowthContext(pnl, finData, undefined, config?.growthPeriods)
+  const context = extractGrowthContext(pnl, finData, undefined, config?.growthPeriods, cashFlow, balanceSheet)
 
   return {
     data,
@@ -1052,7 +1398,7 @@ export function resolveMetricsAtDate(
     technicalData, asOfDate, priceAtDate ?? undefined, config,
     undefined, shareholding, priceHistory,
   )
-  const context = extractGrowthContext(pnl, finData, asOfDate, config?.growthPeriods)
+  const context = extractGrowthContext(pnl, finData, asOfDate, config?.growthPeriods, cashFlow, balanceSheet)
 
   // Resolve custom metrics and merge
   if (config?.customMetrics && config.customMetrics.length > 0) {

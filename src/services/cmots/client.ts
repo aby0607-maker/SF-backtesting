@@ -1,10 +1,15 @@
 /**
- * CMOTS API Client — HTTP layer with caching
+ * CMOTS API Client — HTTP layer with caching + retry
  *
  * All CMOTS data access goes through this client.
  *
- * Real API: All responses are wrapped in { success, data: T[], message }.
- * This client unwraps automatically so callers get clean typed arrays.
+ * Handles both response formats from the CMOTS API:
+ *   - Raw array: [{...}, {...}]
+ *   - Envelope:  { success: boolean, data: T[], message: string }
+ * This client normalizes automatically so callers get clean typed arrays.
+ *
+ * Retry policy: up to 3 retries with exponential backoff (1s → 2s → 4s)
+ * on network errors, HTTP 429, and HTTP 5xx. Client errors (4xx) are not retried.
  *
  * On error, returns empty arrays with console warnings explaining the reason.
  */
@@ -12,17 +17,84 @@
 import { cache } from '@/services/cache'
 
 const API_BASE = '/api/cmots'
+const DEFAULT_MAX_RETRIES = 3
+const PER_REQUEST_TIMEOUT_MS = 20_000  // 20s — below Vercel's 30s serverless limit
 
 interface CMOTSRequestOptions {
   /** Path segment after /api/cmots, e.g. '/TTMData/476/s' */
   endpoint: string
   /** Cache TTL in ms (default 1 hour) */
   cacheTTL?: number
+  /** Max retry attempts on transient failure (default 3) */
+  retries?: number
+}
+
+// ─── Retry infrastructure ───────────────────────────
+
+function sleep(ms: number): Promise<void> {
+  return new Promise(resolve => setTimeout(resolve, ms))
+}
+
+/** Exponential backoff: 1s, 2s, 4s with ±20% jitter */
+function getBackoffDelay(attempt: number): number {
+  const base = 1000 * Math.pow(2, attempt)
+  const jitter = base * 0.2 * (Math.random() * 2 - 1)
+  return Math.round(base + jitter)
+}
+
+/** Is this HTTP status retryable? */
+function isRetryableStatus(status: number): boolean {
+  return status === 429 || status >= 500
 }
 
 /**
+ * Fetch with automatic retry on transient failures.
+ * Retries on: network errors (TypeError / Failed to fetch), HTTP 429, HTTP 5xx.
+ * Does NOT retry: HTTP 4xx client errors (400, 401, 403, 404).
+ */
+async function fetchWithRetry(
+  url: string,
+  init: RequestInit,
+  maxRetries: number,
+  endpoint: string,
+): Promise<Response> {
+  let lastError: unknown
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), PER_REQUEST_TIMEOUT_MS)
+    try {
+      const response = await fetch(url, { ...init, signal: controller.signal })
+      clearTimeout(timeoutId)
+      if (isRetryableStatus(response.status) && attempt < maxRetries) {
+        const delay = getBackoffDelay(attempt)
+        console.warn(
+          `[CMOTS] HTTP ${response.status} for ${endpoint} — retry ${attempt + 1}/${maxRetries} in ${delay}ms`,
+        )
+        await sleep(delay)
+        continue
+      }
+      return response
+    } catch (error) {
+      clearTimeout(timeoutId)
+      lastError = error
+      if (attempt < maxRetries) {
+        const delay = getBackoffDelay(attempt)
+        console.warn(
+          `[CMOTS] ${error instanceof DOMException ? 'Timeout' : 'Network error'} for ${endpoint} — retry ${attempt + 1}/${maxRetries} in ${delay}ms`,
+        )
+        await sleep(delay)
+        continue
+      }
+    }
+  }
+  throw lastError
+}
+
+// ─── Public API ─────────────────────────────────────
+
+/**
  * Fetch an array of items from CMOTS API.
- * Unwraps the { success, data, message } envelope automatically.
+ * Handles both raw array and { success, data, message } envelope formats.
  * Returns empty array on error (never throws) and logs the reason.
  *
  * NOTE: Cache keys are endpoint-based. For backtesting, TTM/FinData endpoints
@@ -30,7 +102,7 @@ interface CMOTSRequestOptions {
  * Historical scoring uses windowed fundamental data, not date-keyed API calls.
  */
 export async function cmotsFetch<T>(options: CMOTSRequestOptions): Promise<T[]> {
-  const { endpoint, cacheTTL = 60 * 60 * 1000 } = options
+  const { endpoint, cacheTTL = 60 * 60 * 1000, retries = DEFAULT_MAX_RETRIES } = options
 
   // Use null byte separator to prevent key collisions from string concatenation
   // (e.g., endpoint "A:B" vs prefix "cmots:A" + "B" would collide without this)
@@ -40,26 +112,52 @@ export async function cmotsFetch<T>(options: CMOTSRequestOptions): Promise<T[]> 
 
   try {
     const url = `${API_BASE}${endpoint}`
-    const response = await fetch(url, {
-      headers: { 'Content-Type': 'application/json' },
-    })
+    const response = await fetchWithRetry(
+      url,
+      { headers: { 'Content-Type': 'application/json' } },
+      retries,
+      endpoint,
+    )
 
     if (!response.ok) {
-      console.warn(`[CMOTS] HTTP ${response.status} for ${endpoint} — data unavailable from API`)
+      const body = await response.text().catch(() => '(unreadable)')
+      console.error(`[CMOTS] HTTP ${response.status} for ${endpoint}`, body.slice(0, 200))
       return []
     }
 
-    const json = await response.json() as { success: boolean; data: T[]; message: string }
-
-    if (!json.success || !Array.isArray(json.data)) {
-      console.warn(`[CMOTS] Unsuccessful response for ${endpoint}: ${json.message}`)
+    // Detect SPA fallback: if serverless function isn't deployed, Vercel returns
+    // index.html (text/html) with status 200 — parsing it as JSON would throw
+    const contentType = response.headers.get('content-type') || ''
+    if (contentType.includes('text/html')) {
+      console.error(`[CMOTS] API returned HTML for ${endpoint} — serverless function may not be deployed. Check /api/health`)
       return []
     }
 
-    cache.set(cacheKey, json.data, { ttl: cacheTTL })
-    return json.data
+    const json = await response.json()
+
+    // Normalize response: CMOTS may return a raw array or an envelope
+    let data: T[]
+    if (Array.isArray(json)) {
+      // Raw array response: [{...}, {...}]
+      data = json
+    } else if (json && typeof json === 'object' && Array.isArray(json.data)) {
+      // Envelope response: { success, data: [...], message }
+      data = json.data
+    } else {
+      console.error(`[CMOTS] Unexpected response shape for ${endpoint}:`, JSON.stringify(json).slice(0, 300))
+      return []
+    }
+
+    if (data.length === 0) {
+      console.warn(`[CMOTS] ${endpoint} returned 0 records`)
+    } else {
+      console.log(`[CMOTS] ${endpoint} → ${data.length} records`)
+    }
+
+    cache.set(cacheKey, data, { ttl: cacheTTL })
+    return data
   } catch (error) {
-    console.warn(`[CMOTS] Network error fetching ${endpoint}:`, error instanceof Error ? error.message : error)
+    console.error(`[CMOTS] Network error fetching ${endpoint}:`, error instanceof Error ? error.message : error)
     return []
   }
 }

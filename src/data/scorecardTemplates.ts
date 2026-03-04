@@ -820,8 +820,417 @@ export const V1_COMPREHENSIVE_SCORECARD: ScorecardVersion = {
   verdictDisplayMode: 'action',
 }
 
+// ─────────────────────────────────────────────────
+// V4 Non-Banking Expert Model — Score Bands (SME CSV Feb 2026)
+//
+// Key differences from V2:
+//   - 10-11 bands per metric (vs V2's 5-8) — much more granular
+//   - Zero-NA handling: missing metrics contribute 0, denominator stays 100
+//   - Flat composite: F×30% + V×45% + QM×18% + T×7%
+//   - Weighted financial metrics (not equal 1/7)
+//   - Earnings = PBT minus Other Income (CAGR)
+//   - OCF/EBITDA = 5Y CAGR of the ratio (not ratio level)
+//   - Multiplier = Avg(latest 2Q YoY growth) / 5Y CAGR
+// ─────────────────────────────────────────────────
+
+// V4 Growth bands (10 bands): Shared by Revenue, EBITDA, OCF/EBITDA CAGR, Earnings (PBT-OI) CAGR
+// CSV calibration: Bharti Rev 14%→80, EBITDA 19.3%→95, OCF/EBITDA 17.85%→95, HUL earns 7.09%→60
+const v4GrowthBands: ScoreBand[] = [
+  { min: 20, max: Infinity, score: 100, label: 'Exceptional', color: 'text-success-400' },
+  { min: 15, max: 19.99, score: 95, label: 'Very Strong', color: 'text-success-400' },
+  { min: 12, max: 14.99, score: 80, label: 'Strong', color: 'text-success-400' },
+  { min: 8, max: 11.99, score: 70, label: 'Good', color: 'text-teal-400' },
+  { min: 4, max: 7.99, score: 60, label: 'Above Average', color: 'text-teal-400' },
+  { min: 2, max: 3.99, score: 50, label: 'Moderate', color: 'text-warning-400' },
+  { min: 0, max: 1.99, score: 40, label: 'Low Growth', color: 'text-warning-400' },
+  { min: -5, max: -0.01, score: 30, label: 'Mild Decline', color: 'text-warning-400' },
+  { min: -10, max: -5.01, score: 20, label: 'Decline', color: 'text-destructive-400' },
+  { min: -Infinity, max: -10.01, score: 10, label: 'Sharp Decline', color: 'text-destructive-400' },
+]
+
+// V4 ROE bands (11 bands) — more granular in the 5-15% zone
+// CSV calibration: Bharti 5.64%→45, HUL 19.41%→85, SpiceJet -40%→10, Suzlon 2.08%→35
+const v4ROEBands: ScoreBand[] = [
+  { min: 25, max: Infinity, score: 100, label: 'Excellent', color: 'text-success-400' },
+  { min: 20, max: 24.99, score: 95, label: 'Very Strong', color: 'text-success-400' },
+  { min: 15, max: 19.99, score: 85, label: 'Strong', color: 'text-success-400' },
+  { min: 12, max: 14.99, score: 75, label: 'Good', color: 'text-teal-400' },
+  { min: 10, max: 11.99, score: 65, label: 'Above Average', color: 'text-teal-400' },
+  { min: 7, max: 9.99, score: 55, label: 'Average', color: 'text-warning-400' },
+  { min: 5, max: 6.99, score: 45, label: 'Below Average', color: 'text-warning-400' },
+  { min: 0, max: 4.99, score: 35, label: 'Weak', color: 'text-warning-400' },
+  { min: -5, max: -0.01, score: 25, label: 'Negative ROE', color: 'text-destructive-400' },
+  { min: -10, max: -5.01, score: 20, label: 'Poor', color: 'text-destructive-400' },
+  { min: -Infinity, max: -10.01, score: 10, label: 'Deep Losses', color: 'text-destructive-400' },
+]
+
+// V4 Gross Block bands (10 bands) — requires ≥25% for top score (vs V2's 20%)
+// CSV calibration: Bharti 2.2%→45, Zomato 47.9%→100, SpiceJet -17.6%→20
+const v4GrossBlockBands: ScoreBand[] = [
+  { min: 25, max: Infinity, score: 100, label: 'Heavy Investment', color: 'text-success-400' },
+  { min: 20, max: 24.99, score: 95, label: 'Very Strong Investment', color: 'text-success-400' },
+  { min: 15, max: 19.99, score: 90, label: 'Strong Investment', color: 'text-success-400' },
+  { min: 12, max: 14.99, score: 85, label: 'Good Investment', color: 'text-teal-400' },
+  { min: 10, max: 11.99, score: 80, label: 'Solid Investment', color: 'text-teal-400' },
+  { min: 8, max: 9.99, score: 70, label: 'Moderate Investment', color: 'text-teal-400' },
+  { min: 5, max: 7.99, score: 60, label: 'Average Investment', color: 'text-warning-400' },
+  { min: 0, max: 4.99, score: 45, label: 'Minimal Investment', color: 'text-warning-400' },
+  { min: -5, max: -0.01, score: 35, label: 'Mild Decline', color: 'text-warning-400' },
+  { min: -Infinity, max: -5.01, score: 20, label: 'Declining Assets', color: 'text-destructive-400' },
+]
+
+// V4 Debt/EBITDA bands (11 bands, inverted — lower is better)
+// Key change: <0 → 100 (net cash position); V2 excluded negatives entirely.
+// EBITDA ≤ 0 → score 10 hard floor is handled in scoringEngine.ts, not in bands.
+// CSV calibration: Bharti 1.17→80, HUL 0.46→95, Zomato net cash→100
+const v4DebtEbitdaBands: ScoreBand[] = [
+  { min: -Infinity, max: -0.01, score: 100, label: 'Net Cash', color: 'text-success-400' },
+  { min: 0, max: 0.99, score: 95, label: 'Very Low Debt', color: 'text-success-400' },
+  { min: 1.0, max: 1.49, score: 80, label: 'Low Debt', color: 'text-success-400' },
+  { min: 1.5, max: 1.99, score: 75, label: 'Moderate Debt', color: 'text-teal-400' },
+  { min: 2.0, max: 2.49, score: 65, label: 'Elevated Debt', color: 'text-teal-400' },
+  { min: 2.5, max: 2.99, score: 55, label: 'Above Average Debt', color: 'text-warning-400' },
+  { min: 3.0, max: 3.49, score: 50, label: 'High Debt', color: 'text-warning-400' },
+  { min: 3.5, max: 3.99, score: 40, label: 'Very High Debt', color: 'text-warning-400' },
+  { min: 4.0, max: 5.99, score: 35, label: 'Excessive Debt', color: 'text-destructive-400' },
+  { min: 6.0, max: 9.99, score: 25, label: 'Dangerous Debt', color: 'text-destructive-400' },
+  { min: 10.0, max: Infinity, score: 10, label: 'Critical Debt', color: 'text-destructive-400' },
+]
+
+// V4 Valuation bands (9 bands, as percentages — lower % = more undervalued)
+// V4 stores PE/PB/EV as percentage of 5Y avg (44 means 44%, not 0.44)
+// Same bands for PE, PB, and EV — conditional weighting happens in engine.
+// CSV calibration: Bharti PE=44→100, PB=141→65, EV=127→70; HUL PE=153→60, PB=107→80
+const v4ValuationBands: ScoreBand[] = [
+  { min: -Infinity, max: 69.99, score: 100, label: 'Deeply Undervalued', color: 'text-success-400' },
+  { min: 70, max: 79.99, score: 90, label: 'Undervalued', color: 'text-success-400' },
+  { min: 80, max: 94.99, score: 85, label: 'Attractive', color: 'text-success-400' },
+  { min: 95, max: 109.99, score: 80, label: 'Near Fair Value', color: 'text-teal-400' },
+  { min: 110, max: 124.99, score: 75, label: 'Slightly Overvalued', color: 'text-teal-400' },
+  { min: 125, max: 134.99, score: 70, label: 'Moderately Overvalued', color: 'text-warning-400' },
+  { min: 135, max: 144.99, score: 65, label: 'Overvalued', color: 'text-warning-400' },
+  { min: 145, max: 159.99, score: 60, label: 'Expensive', color: 'text-destructive-400' },
+  { min: 160, max: Infinity, score: 50, label: 'Very Expensive', color: 'text-destructive-400' },
+]
+
+// V4 Multiplier bands (11 official bands from updated CSV)
+// Multiplier = Avg(latest 2Q YoY growth) / 5Y Revenue or EBITDA CAGR
+// >1 = recent growth exceeding long-term trend (accelerating)
+// <1 = recent growth below long-term trend (decelerating)
+// Boundary: lower-inclusive, upper-exclusive — Updated to match latest CSV (Feb 2026)
+const v4MultiplierBands: ScoreBand[] = [
+  { min: 1.50, max: Infinity, score: 100, label: 'Explosive', color: 'text-success-400' },
+  { min: 1.30, max: 1.49, score: 90, label: 'Exceptional', color: 'text-success-400' },
+  { min: 1.20, max: 1.29, score: 80, label: 'Very Strong', color: 'text-success-400' },
+  { min: 1.10, max: 1.19, score: 70, label: 'Strong', color: 'text-teal-400' },
+  { min: 0.95, max: 1.09, score: 65, label: 'Near Trend', color: 'text-teal-400' },
+  { min: 0.75, max: 0.94, score: 60, label: 'Above Average', color: 'text-teal-400' },
+  { min: 0.50, max: 0.74, score: 50, label: 'Average', color: 'text-warning-400' },
+  { min: 0.40, max: 0.49, score: 40, label: 'Below Average', color: 'text-warning-400' },
+  { min: 0.30, max: 0.39, score: 30, label: 'Low', color: 'text-warning-400' },
+  { min: 0.20, max: 0.29, score: 20, label: 'Very Low', color: 'text-destructive-400' },
+  { min: 0, max: 0.19, score: 10, label: 'Near-Zero', color: 'text-destructive-400' },
+  { min: -Infinity, max: -0.01, score: 10, label: 'Negative', color: 'text-destructive-400' },
+]
+
+// V4 RSI bands (8 bands) — widened optimal zone from 50-60 to 50-65
+// New ultra-low tier (<20 → 10). 70-80 is a separate band (not lumped with >70).
+// CSV calibration: RSI 52→100, 65→100, 48→70, 36→30, 72→30, 25→20, 83→20, 18→10
+const v4RSIBands: ScoreBand[] = [
+  { min: 50, max: 64.99, score: 100, label: 'Optimal Momentum', color: 'text-success-400' },
+  { min: 40, max: 49.99, score: 70, label: 'Healthy Pullback', color: 'text-teal-400' },
+  { min: 65, max: 69.99, score: 70, label: 'Bullish Extended', color: 'text-teal-400' },
+  { min: 30, max: 39.99, score: 30, label: 'Weak Momentum', color: 'text-warning-400' },
+  { min: 70, max: 79.99, score: 30, label: 'Overbought Zone', color: 'text-warning-400' },
+  { min: 20, max: 29.99, score: 20, label: 'Oversold', color: 'text-destructive-400' },
+  { min: 80, max: Infinity, score: 20, label: 'Strongly Overbought', color: 'text-destructive-400' },
+  { min: -Infinity, max: 19.99, score: 10, label: 'Extreme Oversold', color: 'text-destructive-400' },
+]
+
+// ─────────────────────────────────────────────────
+// V4 Non-Banking Expert Model — Negative Handling Rules
+//
+// V4 Philosophy: Zero-NA (missing → 0, denominator stays 100).
+// These rules define WHEN a metric is excluded (CAGR undefined, etc.).
+// The zero-NA treatment (0 contribution, fixed denominator) is applied
+// by the scoring engine when naHandling === 'zero'.
+// ─────────────────────────────────────────────────
+
+const v4NegativeHandlingRules: NegativeHandling[] = [
+  // Revenue Growth: start/end negative → CAGR undefined → exclude
+  { metricId: 'v4_revenue_growth', condition: 'start_negative', action: 'exclude', description: 'Start year negative revenue → CAGR undefined' },
+  { metricId: 'v4_revenue_growth', condition: 'end_negative', action: 'exclude', description: 'End year negative revenue → CAGR undefined' },
+
+  // EBITDA Growth: any negative → exclude (CAGR breaks)
+  { metricId: 'v4_ebitda_growth', condition: 'start_negative', action: 'exclude', description: 'Negative EBITDA → CAGR undefined' },
+  { metricId: 'v4_ebitda_growth', condition: 'end_negative', action: 'exclude', description: 'Negative EBITDA → CAGR undefined' },
+  { metricId: 'v4_ebitda_growth', condition: 'both_negative', action: 'exclude', description: 'Both years negative EBITDA' },
+  { metricId: 'v4_ebitda_growth', condition: 'any_negative', action: 'exclude', description: 'Any year negative EBITDA' },
+
+  // Earnings (PBT-OI) Growth: any negative anchor → exclude
+  { metricId: 'v4_earnings_pbt_oi', condition: 'start_negative', action: 'exclude', description: 'PBT-OI start year ≤ 0 → CAGR undefined' },
+  { metricId: 'v4_earnings_pbt_oi', condition: 'end_negative', action: 'exclude', description: 'PBT-OI end year ≤ 0 → CAGR undefined' },
+  { metricId: 'v4_earnings_pbt_oi', condition: 'both_negative', action: 'exclude', description: 'Both years PBT-OI negative' },
+  { metricId: 'v4_earnings_pbt_oi', condition: 'any_negative', action: 'exclude', description: 'Any year PBT-OI negative' },
+
+  // ROE: start/end negative → exclude, but negative values flow through bands (→10)
+  { metricId: 'v4_roe', condition: 'start_negative', action: 'exclude', description: 'Negative ROE start year → exclude' },
+  { metricId: 'v4_roe', condition: 'end_negative', action: 'exclude', description: 'Negative ROE end year → exclude' },
+
+  // OCF/EBITDA CAGR: if ratio anchor year has EBITDA ≤ 0, exclude
+  // OCF/EBITDA CAGR: only exclude when anchor-year EBITDA ≤ 0 (ratio undefined).
+  // Negative CAGR (declining cash conversion) is still valid and scores through growth bands.
+  { metricId: 'v4_ocf_ebitda_cagr', condition: 'start_negative', action: 'exclude', description: 'EBITDA ≤ 0 in oldest anchor year → ratio meaningless' },
+  { metricId: 'v4_ocf_ebitda_cagr', condition: 'end_negative', action: 'exclude', description: 'EBITDA ≤ 0 in latest anchor year → ratio meaningless' },
+
+  // Gross Block: negative → exclude (asset write-offs)
+  { metricId: 'v4_gross_block', condition: 'start_negative', action: 'exclude', description: 'Negative gross block → asset write-off' },
+  { metricId: 'v4_gross_block', condition: 'end_negative', action: 'exclude', description: 'Negative gross block → asset write-off' },
+  { metricId: 'v4_gross_block', condition: 'both_negative', action: 'exclude', description: 'Both years negative gross block' },
+  { metricId: 'v4_gross_block', condition: 'any_negative', action: 'exclude', description: 'Any year negative gross block' },
+
+  // Debt/EBITDA: V4 does NOT exclude negatives — <0 → 100 from bands (net cash).
+  // EBITDA ≤ 0 → score 10 hard floor is handled in the scoring engine via calculationParams.
+
+  // Valuation metrics: negative inputs → exclude
+  { metricId: 'v4_pe_vs_5y', condition: 'any_negative', action: 'exclude', description: 'Negative PE → valuation not meaningful' },
+  { metricId: 'v4_pb_vs_5y', condition: 'any_negative', action: 'exclude', description: 'Negative PB → valuation not meaningful' },
+  { metricId: 'v4_ev_vs_5y', condition: 'any_negative', action: 'exclude', description: 'Negative EV → valuation not meaningful' },
+]
+
+// ─────────────────────────────────────────────────
+// V4 Non-Banking Expert Model — Segment Definitions
+// ─────────────────────────────────────────────────
+
+const v4FinancialSegment: ScorecardSegment = {
+  id: 'v4_financial',
+  name: 'Financial Score',
+  segmentWeight: 0.30,
+  description: 'Fundamental financial health with weighted metrics. Earnings (20%) > Growth/ROE/Cash (15%) > Investment/Debt (10%)',
+  metrics: [
+    {
+      id: 'v4_revenue_growth', name: 'Revenue Growth (5Y CAGR)', type: 'raw',
+      rawMetric: { id: 'v4_revenue_growth', name: 'Revenue Growth', cmots_source: 'pnl', cmots_field: 'RevenueGrowth5Y', unit: 'percent', description: '5-year revenue CAGR' },
+      scoreBands: v4GrowthBands, weight: 0.15,
+    },
+    {
+      id: 'v4_ebitda_growth', name: 'EBITDA Growth (5Y CAGR)', type: 'raw',
+      rawMetric: { id: 'v4_ebitda_growth', name: 'EBITDA Growth', cmots_source: 'pnl', cmots_field: 'EBITDAGrowth5Y', unit: 'percent', description: '5-year EBITDA CAGR' },
+      scoreBands: v4GrowthBands, weight: 0.15,
+    },
+    {
+      id: 'v4_earnings_pbt_oi', name: 'Earnings Growth (PBT-OI, 5Y CAGR)', type: 'formula',
+      formula: {
+        id: 'v4_earnings_pbt_oi_formula', name: 'PBT minus Other Income CAGR',
+        inputs: [
+          { id: 'pbt', name: 'Profit Before Tax', cmots_source: 'pnl', cmots_field: 'PBT', unit: 'currency', description: 'CMOTS row 28: Profit Before Tax' },
+          { id: 'other_income', name: 'Other Income', cmots_source: 'pnl', cmots_field: 'OtherIncome', unit: 'currency', description: 'CMOTS col 9: Other Income' },
+        ],
+        operator: 'subtract', description: 'PBT - Other Income → 5Y CAGR of core operating earnings',
+      },
+      scoreBands: v4GrowthBands, weight: 0.20,
+      calculationParams: { calculationType: 'pbt_minus_oi_cagr', growthYears: 5 },
+    },
+    {
+      id: 'v4_roe', name: 'Return on Equity (ROE, 5Y Avg)', type: 'raw',
+      rawMetric: { id: 'v4_roe', name: 'ROE', cmots_source: 'ttm', cmots_field: 'ROE', unit: 'percent', description: 'Return on equity (avg 5Y)' },
+      scoreBands: v4ROEBands, weight: 0.15,
+    },
+    {
+      id: 'v4_ocf_ebitda_cagr', name: 'OCF/EBITDA (5Y CAGR)', type: 'formula',
+      formula: {
+        id: 'v4_ocf_ebitda_cagr_formula', name: 'OCF/EBITDA Ratio CAGR',
+        inputs: [
+          { id: 'ocf', name: 'Operating Cash Flow', cmots_source: 'cash_flow', cmots_field: 'OCF', unit: 'currency', description: 'Operating cash flow' },
+          { id: 'ebitda', name: 'EBITDA', cmots_source: 'pnl', cmots_field: 'EBITDA', unit: 'currency', description: 'EBITDA' },
+        ],
+        operator: 'divide', description: 'CAGR of the OCF/EBITDA ratio over 5 years (cash conversion efficiency trend)',
+      },
+      scoreBands: v4GrowthBands, weight: 0.15,
+      calculationParams: { calculationType: 'ocf_ebitda_cagr', growthYears: 5 },
+    },
+    {
+      id: 'v4_gross_block', name: 'Gross Block Growth', type: 'raw',
+      rawMetric: { id: 'v4_gross_block', name: 'Gross Block Growth', cmots_source: 'balance_sheet', cmots_field: 'GrossBlockGrowth', unit: 'percent', description: 'Growth in gross block (PP&E investment)' },
+      scoreBands: v4GrossBlockBands, weight: 0.10,
+    },
+    {
+      id: 'v4_debt_ebitda', name: 'Debt/EBITDA', type: 'formula',
+      formula: {
+        id: 'v4_debt_ebitda_formula', name: 'Debt/EBITDA',
+        inputs: [
+          { id: 'total_debt', name: 'Total Debt', cmots_source: 'balance_sheet', cmots_field: 'TotalDebt', unit: 'currency', description: 'Total debt' },
+          { id: 'ebitda', name: 'EBITDA', cmots_source: 'pnl', cmots_field: 'EBITDA', unit: 'currency', description: 'EBITDA' },
+        ],
+        operator: 'divide', description: 'Total Debt / EBITDA. <0 = net cash (100). EBITDA ≤ 0 → hard floor 10.',
+      },
+      scoreBands: v4DebtEbitdaBands, weight: 0.10,
+      calculationParams: { ebitdaFloor: 10 },
+    },
+  ],
+  verdictThresholds: [
+    { minScore: 85, maxScore: 100, verdict: 'Very Strong Financials', altVerdict: 'Excellent', color: 'text-success-400', description: 'Best-in-class profitability, growth, balance sheet' },
+    { minScore: 70, maxScore: 84, verdict: 'Strong Financials', altVerdict: 'Strong', color: 'text-success-400', description: 'Above average on most financial metrics' },
+    { minScore: 55, maxScore: 69, verdict: 'Average Financials', altVerdict: 'Average', color: 'text-warning-400', description: 'Mixed performance; some strengths, some weakness' },
+    { minScore: 40, maxScore: 54, verdict: 'Weak Financials', altVerdict: 'Weak', color: 'text-warning-400', description: 'Red flags in efficiency, growth or balance sheet' },
+    { minScore: 0, maxScore: 39, verdict: 'Poor Financials', altVerdict: 'Poor', color: 'text-destructive-400', description: 'Structurally weak fundamentals' },
+  ],
+}
+
+const v4ValuationSegment: ScorecardSegment = {
+  id: 'v4_valuation',
+  name: 'Valuation Score',
+  segmentWeight: 0.45,
+  description: 'PB-anchored conditional valuation using Historical 5Y averages. PE=30%, PB=50%, EV=20%. Input as percentage (44 = 44% of avg).',
+  metrics: [
+    {
+      id: 'v4_pe_vs_5y', name: 'PE vs 5Y Average', type: 'raw',
+      rawMetric: { id: 'v4_pe_vs_5y', name: 'PE vs 5Y Avg', cmots_source: 'ttm', cmots_field: 'PE_vs_5YAvg', unit: 'percent', description: 'Current PE as % of 5-year average PE' },
+      scoreBands: v4ValuationBands, weight: 0.30,
+      calculationParams: { valuationRole: 'pe' },
+    },
+    {
+      id: 'v4_pb_vs_5y', name: 'PB vs 5Y Average', type: 'raw',
+      rawMetric: { id: 'v4_pb_vs_5y', name: 'PB vs 5Y Avg', cmots_source: 'ttm', cmots_field: 'PB_vs_5YAvg', unit: 'percent', description: 'Current PB as % of 5-year average PB' },
+      scoreBands: v4ValuationBands, weight: 0.50,
+      calculationParams: { valuationRole: 'pb' },
+    },
+    {
+      id: 'v4_ev_vs_5y', name: 'EV/EBITDA vs 5Y Average', type: 'raw',
+      rawMetric: { id: 'v4_ev_vs_5y', name: 'EV vs 5Y Avg', cmots_source: 'ttm', cmots_field: 'EV_vs_5YAvg', unit: 'percent', description: 'Current EV/EBITDA as % of 5-year average' },
+      scoreBands: v4ValuationBands, weight: 0.20,
+      calculationParams: { valuationRole: 'ev' },
+    },
+  ],
+  valuationConditionals: {
+    enabled: true,
+    peThreshold: 75,        // Hist 5Y avg PE > 75 → exclude PE
+    evThreshold: 35,        // Hist 5Y avg EV > 35 → exclude EV
+    pbNAThreshold: 30,      // Hist 5Y avg PB > 30 → entire valuation NA
+    defaultWeights: { pe: 0.30, pb: 0.50, ev: 0.20 },
+    peExcludedWeights: { pb: 0.60, ev: 0.40 },
+    evExcludedWeights: { pe: 0.40, pb: 0.60 },
+  },
+  verdictThresholds: [
+    { minScore: 85, maxScore: 100, verdict: 'Undervalued', altVerdict: 'Excellent', color: 'text-success-400', description: 'Cheap compared to historical averages' },
+    { minScore: 75, maxScore: 84, verdict: 'Attractive', altVerdict: 'Good', color: 'text-success-400', description: 'Attractively priced at CMP' },
+    { minScore: 65, maxScore: 74, verdict: 'Fairly Valued', altVerdict: 'Fair', color: 'text-warning-400', description: 'Priced near long-term averages' },
+    { minScore: 55, maxScore: 64, verdict: 'Moderately Expensive', altVerdict: 'Caution', color: 'text-warning-400', description: 'Limited upside from valuation' },
+    { minScore: 0, maxScore: 54, verdict: 'Expensive', altVerdict: 'Expensive', color: 'text-destructive-400', description: 'Valuation risk at CMP' },
+  ],
+}
+
+const v4TechnicalSegment: ScorecardSegment = {
+  id: 'v4_technical',
+  name: 'Technical Score',
+  segmentWeight: 0.07,
+  description: 'Price trend & momentum. Weights: 200-DMA (35%) > 20-DMA (20%) = VPT (20%) > 50-DMA (15%) > RSI (10%)',
+  metrics: [
+    {
+      id: 'v4_20dma', name: 'Price vs 20-DMA', type: 'raw',
+      rawMetric: { id: 'v4_20dma', name: '20-DMA Deviation', cmots_source: 'technical', cmots_field: 'PriceVs20DMA', unit: 'percent', description: 'Price deviation from 20-day moving average' },
+      scoreBands: priceVsEmaBands, weight: 0.20,
+    },
+    {
+      id: 'v4_50dma', name: 'Price vs 50-DMA', type: 'raw',
+      rawMetric: { id: 'v4_50dma', name: '50-DMA Deviation', cmots_source: 'technical', cmots_field: 'PriceVs50DMA', unit: 'percent', description: 'Price deviation from 50-day moving average' },
+      scoreBands: priceVsEmaBands, weight: 0.15,
+    },
+    {
+      id: 'v4_200dma', name: 'Price vs 200-DMA', type: 'raw',
+      rawMetric: { id: 'v4_200dma', name: '200-DMA Deviation', cmots_source: 'technical', cmots_field: 'PriceVs200DMA', unit: 'percent', description: 'Price deviation from 200-day moving average' },
+      scoreBands: priceVsEmaBands, weight: 0.35,
+    },
+    {
+      id: 'v4_rsi', name: 'RSI (14-day)', type: 'raw',
+      rawMetric: { id: 'v4_rsi', name: 'RSI', cmots_source: 'technical', cmots_field: 'RSI14', unit: 'number', description: 'Relative Strength Index (14-day)' },
+      scoreBands: v4RSIBands, weight: 0.10,
+    },
+    {
+      id: 'v4_vpt', name: 'Volume-Price Trend', type: 'raw',
+      rawMetric: { id: 'v4_vpt', name: 'VPT Score', cmots_source: 'technical', cmots_field: 'VPT', unit: 'number', description: 'Volume-Price Trend — conditional scoring using vol ratio + price change' },
+      scoreBands: [], // VPT uses conditional scoring, not band lookup
+      weight: 0.20,
+      scoringMethod: 'conditional_vpt_v4',
+      calculationParams: { volumeKey: 'v4_volume_change', priceKey: 'v4_price_change' },
+    },
+  ],
+  verdictThresholds: [
+    { minScore: 75, maxScore: 100, verdict: 'Bullish', altVerdict: 'Strong Uptrend', color: 'text-success-400', description: 'Strong uptrend with volume confirmation' },
+    { minScore: 60, maxScore: 74, verdict: 'Mild Bullish', altVerdict: 'Improving', color: 'text-teal-400', description: 'Positive trend building' },
+    { minScore: 50, maxScore: 59, verdict: 'Neutral', altVerdict: 'Sideways', color: 'text-warning-400', description: 'No clear trend' },
+    { minScore: 40, maxScore: 49, verdict: 'Mild Bearish', altVerdict: 'Weakening', color: 'text-warning-400', description: 'Early weakness signals' },
+    { minScore: 0, maxScore: 39, verdict: 'Bearish', altVerdict: 'Downtrend', color: 'text-destructive-400', description: 'Confirmed downtrend' },
+  ],
+}
+
+const v4QuarterlyMomentumSegment: ScorecardSegment = {
+  id: 'v4_quarterly_momentum',
+  name: 'Quarterly Momentum',
+  segmentWeight: 0.18,
+  naHandling: 'exclude',  // QM uses exclude mode: avg of valid multiplier scores (CSV: COUNT-based divisor)
+  description: 'Growth acceleration: Avg(latest 2Q YoY growth) ÷ 5Y CAGR. >1 = accelerating, <1 = decelerating.',
+  metrics: [
+    {
+      id: 'v4_revenue_multiplier', name: 'Revenue Growth Multiplier', type: 'raw',
+      rawMetric: { id: 'v4_revenue_multiplier', name: 'Revenue Multiplier', cmots_source: 'quarterly', cmots_field: 'RevenueMultiplierV4', unit: 'times', description: 'Avg(latest 2Q YoY rev growth) / 5Y Revenue CAGR' },
+      scoreBands: v4MultiplierBands, weight: 0.50,
+      calculationParams: { calculationType: 'multiplier_v4', baseCagrMetric: 'revenue' },
+    },
+    {
+      id: 'v4_ebitda_multiplier', name: 'EBITDA Growth Multiplier', type: 'raw',
+      rawMetric: { id: 'v4_ebitda_multiplier', name: 'EBITDA Multiplier', cmots_source: 'quarterly', cmots_field: 'EBITDAMultiplierV4', unit: 'times', description: 'Avg(latest 2Q YoY EBITDA growth) / 5Y EBITDA CAGR' },
+      scoreBands: v4MultiplierBands, weight: 0.50,
+      calculationParams: { calculationType: 'multiplier_v4', baseCagrMetric: 'ebitda' },
+    },
+  ],
+  verdictThresholds: [
+    { minScore: 80, maxScore: 100, verdict: 'Strong Acceleration', altVerdict: 'Accelerating', color: 'text-success-400', description: 'Recent growth strongly exceeding long-term trend' },
+    { minScore: 65, maxScore: 79, verdict: 'Improving Trend', altVerdict: 'Improving', color: 'text-teal-400', description: 'Positive momentum building' },
+    { minScore: 50, maxScore: 64, verdict: 'Stable / Mild Slowdown', altVerdict: 'Stable', color: 'text-warning-400', description: 'Growth near long-term trend' },
+    { minScore: 10, maxScore: 49, verdict: 'Growth Deterioration', altVerdict: 'Deteriorating', color: 'text-destructive-400', description: 'Recent growth below long-term trend' },
+  ],
+}
+
+// ─────────────────────────────────────────────────
+// V4 Non-Banking Expert Model — Full Scorecard
+// ─────────────────────────────────────────────────
+
+export const V4_NONBANKING_SCORECARD: ScorecardVersion = {
+  id: 'v4-nonbanking-expert-1',
+  versionInfo: {
+    macroVersion: 'V4',
+    microVersion: 1,
+    displayVersion: 'V4.1',
+    name: 'V4 — Updated V2 Expert (Non-Banking)',
+    description: 'Non-banking scorecard with weighted financial metrics, zero-NA handling, flat composite, and new multiplier formula. Based on SME methodology CSV Feb 2026.',
+    sourceReference: 'Scorecard calculation - Non-banking stocks (Vishal Rampuria, Feb 2026)',
+    createdAt: new Date('2026-02-25').getTime(),
+    parentVersionId: 'v2-expert-1',
+  },
+  segments: [v4FinancialSegment, v4ValuationSegment, v4TechnicalSegment, v4QuarterlyMomentumSegment],
+  compositeFormula: {
+    // Flat composite: F×30% + V×45% + QM×18% + T×7% = 100% (CSV formula cell B53)
+    // All segments in baseSegments with baseWeight=1.0 (no nested overlays)
+    baseSegments: [
+      { segmentId: 'v4_financial', weight: 0.30 },
+      { segmentId: 'v4_valuation', weight: 0.45 },
+      { segmentId: 'v4_technical', weight: 0.07 },
+      { segmentId: 'v4_quarterly_momentum', weight: 0.18 },
+    ],
+    baseWeight: 1.0,
+  },
+  normalization: { method: 'none' },
+  verdictThresholds: v2OverallVerdicts,
+  customFactors: [],
+  negativeHandlingRules: v4NegativeHandlingRules,
+  verdictDisplayMode: 'action',
+  naHandling: 'zero',
+}
+
 /** All available scorecard templates */
 export const SCORECARD_TEMPLATES: ScorecardVersion[] = [
+  V4_NONBANKING_SCORECARD,
   V3_EXPERT_BANKING_SCORECARD,
   V2_EXPERT_SCORECARD,
   V1_COMPREHENSIVE_SCORECARD,

@@ -1,0 +1,81 @@
+Label,Value,Decimals,UnitId,Description,Key
+ScripCode,532540,0,,Scrip code,ScripCode
+Symbol,TCS,0,,Symbol,Symbol
+MSEISymbol,NOTLISTED,0,,MSEI symbol,MSEISymbolMseiSymbol
+ISIN,INE467B01029,0,,ISIN,ISINIsin
+NameOfTheCompany,Tata Consultancy Services Limited,0,,Name of the company,NameOfTheCompany
+TypeOfCompany,Main Board,0,,Type of company,TypeOfCompany
+ClassOfSecurity,Equity,0,,Class of security,ClassOfSecurity
+DateOfStartOfFinancialYear,2024-04-01,0,,Date of start of financial year,DateOfStartOfFinancialYear
+DateOfEndOfFinancialYear,2025-03-31,0,,Date of end of financial year,DateOfEndOfFinancialYear
+DateOfBoardMeetingWhenFinancialResultsWereApproved,2025-04-10,0,,Date of board meeting when financial results were approved,DateOfBoardMeetingWhenFinancialResultsWereApproved
+DateOnWhichPriorIntimationOfTheMeetingForConsideringFinancialResultsWasInformedToTheExchange,2025-03-28,0,,Date on which prior intimation of the meeting for considering financial results was informed to the exchange,DateOnWhichPriorIntimationOfTheMeetingForConsideringFinancialResultsWasInformedToTheExchange
+DescriptionOfPresentationCurrency,INR,0,,Description of presentation currency,DescriptionOfPresentationCurrency
+LevelOfRounding,Crores,0,,Level of rounding,LevelOfRounding
+TypeOfReportingPeriod,Quarterly,0,,Type of reporting period,TypeOfReportingPeriod
+ReportingQuarter,Fourth quarter,0,,Reporting quarter,ReportingQuarter
+IsCompanyReportingMultisegmentOrSingleSegment,Multi segment,0,,Is company reporting multi segment or single segment,IsCompanyReportingMultisegmentOrSingleSegmentIsCompanyReportingMultiSegmentOrSingleSegment
+DateOfStartOfBoardMeeting,2025-04-10,0,,Date of start of board meeting,DateOfStartOfBoardMeeting
+StartTimeOfBoardMeeting,11:30:00,0,,Start time of board meeting,StartTimeOfBoardMeeting
+DateOfEndOfBoardMeeting,2025-04-10,0,,Date of end of board meeting,DateOfEndOfBoardMeeting
+EndTimeOfBoardMeeting,15:30:00,0,,End time of board meeting,EndTimeOfBoardMeeting
+WhetherCashFlowStatementIsApplicableOnCompany,true,0,,Whether cash flow statement is applicable on company,WhetherCashFlowStatementIsApplicableOnCompany
+TypeOfCashFlowStatement,Cash Flow Indirect,0,,Type of cash flow statement,TypeOfCashFlowStatement
+DeclarationOfUnmodifiedOpinionOrStatementOnImpactOfAuditQualification,Declaration of unmodified opinion,0,,Declaration of unmodified opinion or statement on impact of audit qualification,DeclarationOfUnmodifiedOpinionOrStatementOnImpactOfAuditQualification
+PropertyPlantAndEquipment,109780000000,-7,INR,Property plant and equipment,PropertyPlantAndEquipment
+CapitalWorkInProgress,15460000000,-7,INR,Capital work-in-progress,CapitalWorkInProgress
+Goodwill,18600000000,-7,INR,Goodwill,Goodwill
+OtherIntangibleAssets,102150000000,-7,INR,Other intangible assets,OtherIntangibleAssets
+NoncurrentInvestments,2750000000,-7,INR,Non-current investments,NoncurrentInvestmentsNonCurrentInvestments
+TradeReceivablesNoncurrent,1290000000,-7,INR,Trade receivables non-current,TradeReceivablesNoncurrentTradeReceivablesNonCurrent
+LoansNoncurrent,250000000,-7,INR,Loans non-current,LoansNoncurrentLoansNonCurrent
+OtherNoncurrentFinancialAssets,27310000000,-7,INR,Other non-current financial assets,OtherNoncurrentFinancialAssetsOtherNonCurrentFinancialAssets
+NoncurrentFinancialAssets,31600000000,-7,INR,Total non-current financial assets,NoncurrentFinancialAssetsTotalNonCurrentFinancialAssets
+DeferredTaxAssetsNet,35780000000,-7,INR,Deferred tax assets (net),DeferredTaxAssetsNet
+OtherNoncurrentAssets,52810000000,-7,INR,Other non-current assets,OtherNoncurrentAssetsOtherNonCurrentAssets
+NoncurrentAssets,366180000000,-7,INR,Total non-current assets,NoncurrentAssetsTotalNonCurrentAssets
+Inventories,210000000,-7,INR,Inventories,Inventories
+CurrentInvestments,306890000000,-7,INR,Current investments,CurrentInvestments
+TradeReceivablesCurrent,590460000000,-7,INR,Trade receivables current,TradeReceivablesCurrent
+CashAndCashEquivalents,83420000000,-7,INR,Cash and cash equivalents,CashAndCashEquivalents
+BankBalanceOtherThanCashAndCashEquivalents,71210000000,-7,INR,Bank balance other than cash and cash equivalents,BankBalanceOtherThanCashAndCashEquivalents
+LoansCurrent,90000000,-7,INR,Loans current,LoansCurrent
+OtherCurrentFinancialAssets,27420000000,-7,INR,Other current financial assets,OtherCurrentFinancialAssets
+CurrentFinancialAssets,1079490000000,-7,INR,Total current financial assets,CurrentFinancialAssetsTotalCurrentFinancialAssets
+CurrentTaxAssets,2570000000,-7,INR,Current tax assets,CurrentTaxAssets
+OtherCurrentAssets,147840000000,-7,INR,Other current assets,OtherCurrentAssets
+CurrentAssets,1230110000000,-7,INR,Total current assets,CurrentAssetsTotalCurrentAssets
+NoncurrentAssetsClassifiedAsHeldForSale,0,-7,INR,Non-current assets classified as held for sale,NoncurrentAssetsClassifiedAsHeldForSaleNonCurrentAssetsClassifiedAsHeldForSale
+RegulatoryDeferralAccountDebitBalancesAndRelatedDeferredTaxAssets,0,-7,INR,Regulatory deferral account debit balances and related deferred tax Assets,RegulatoryDeferralAccountDebitBalancesAndRelatedDeferredTaxAssets
+Assets,1596290000000,-7,INR,Total assets,AssetsTotalAssets
+EquityShareCapital,3620000000,-7,INR,Equity share capital,EquityShareCapital
+OtherEquity,943940000000,-7,INR,Other equity,OtherEquity
+EquityAttributableToOwnersOfParent,947560000000,-7,INR,Total equity attributable to owners of parent,EquityAttributableToOwnersOfParentTotalEquityAttributableToOwnersOfParent
+NonControllingInterest,10150000000,-7,INR,Non-controlling interest,NonControllingInterest
+Equity,957710000000,-7,INR,Total equity,EquityTotalEquity
+BorrowingsNoncurrent,0,-7,INR,Borrowings non-current,BorrowingsNoncurrentBorrowingsNonCurrent
+TotalOutstandingDuesOfMicroEnterpriseAndSmallEnterpriseNoncurrent,0,-7,INR,Total outstanding dues of micro enterprise and small enterprise non-current,TotalOutstandingDuesOfMicroEnterpriseAndSmallEnterpriseNoncurrentTotalOutstandingDuesOfMicroEnterpriseAndSmallEnterpriseNonCurrent
+TotalOutstandingDuesOfCreditorsOtherThanMicroEnterpriseAndSmallEnterpriseNoncurrent,0,-7,INR,Total outstanding dues of creditors other than micro enterprise and small enterprise non-current,TotalOutstandingDuesOfCreditorsOtherThanMicroEnterpriseAndSmallEnterpriseNoncurrentTotalOutstandingDuesOfCreditorsOtherThanMicroEnterpriseAndSmallEnterpriseNonCurrent
+TradePayablesNoncurrent,0,-7,INR,Total trade payables non-current,TradePayablesNoncurrentTotalTradePayablesNonCurrent
+OtherNoncurrentFinancialLiabilities,85180000000,-7,INR,Other non-current financial liabilities,OtherNoncurrentFinancialLiabilitiesOtherNonCurrentFinancialLiabilities
+NoncurrentFinancialLiabilities,85180000000,-7,INR,Total non-current financial liabilities,NoncurrentFinancialLiabilitiesTotalNonCurrentFinancialLiabilities
+ProvisionsNoncurrent,0,-7,INR,Provisions non-current,ProvisionsNoncurrentProvisionsNonCurrent
+DeferredTaxLiabilitiesNet,9800000000,-7,INR,Deferred tax liabilities (net),DeferredTaxLiabilitiesNet
+OtherNoncurrentLiabilities,13590000000,-7,INR,Other non-current liabilities,OtherNoncurrentLiabilitiesOtherNonCurrentLiabilities
+NoncurrentLiabilities,108570000000,-7,INR,Total non-current liabilities,NoncurrentLiabilitiesTotalNonCurrentLiabilities
+BorrowingsCurrent,0,-7,INR,Borrowings current,BorrowingsCurrent
+TotalOutstandingDuesOfMicroEnterpriseAndSmallEnterpriseCurrent,1570000000,-7,INR,Total outstanding dues of micro enterprise and small enterprise current,TotalOutstandingDuesOfMicroEnterpriseAndSmallEnterpriseCurrent
+TotalOutstandingDuesOfCreditorsOtherThanMicroEnterpriseAndSmallEnterpriseCurrent,137520000000,-7,INR,Total outstanding dues of creditors other than micro enterprise and small enterprise current,TotalOutstandingDuesOfCreditorsOtherThanMicroEnterpriseAndSmallEnterpriseCurrent
+TradePayablesCurrent,139090000000,-7,INR,Total trade payables current,TradePayablesCurrentTotalTradePayablesCurrent
+OtherCurrentFinancialLiabilities,100960000000,-7,INR,Other current financial liabilities,OtherCurrentFinancialLiabilities
+CurrentFinancialLiabilities,240050000000,-7,INR,Total current financial liabilities,CurrentFinancialLiabilitiesTotalCurrentFinancialLiabilities
+OtherCurrentLiabilities,161010000000,-7,INR,Other current liabilities,OtherCurrentLiabilities
+ProvisionsCurrent,1800000000,-7,INR,Provisions current,ProvisionsCurrent
+CurrentTaxLiabilities,127150000000,-7,INR,Current tax liabilities,CurrentTaxLiabilities
+DeferredGovernmentGrantsCurrent,0,-7,INR,Deferred government grants Current,DeferredGovernmentGrantsCurrent
+CurrentLiabilities,530010000000,-7,INR,Total current liabilities,CurrentLiabilitiesTotalCurrentLiabilities
+LiabilitiesDirectlyAssociatedWithAssetsInDisposalGroupClassifiedAsHeldForSale,0,-7,INR,Liabilities directly associated with assets in disposal group classified as held for sale,LiabilitiesDirectlyAssociatedWithAssetsInDisposalGroupClassifiedAsHeldForSale
+RegulatoryDeferralAccountCreditBalancesAndRelatedDeferredTaxLiability,0,-7,INR,Regulatory deferral account credit balances and related deferred tax liability,RegulatoryDeferralAccountCreditBalancesAndRelatedDeferredTaxLiability
+Liabilities,638580000000,-7,INR,Total liabilities,LiabilitiesTotalLiabilities
+EquityAndLiabilities,1596290000000,-7,INR,Total equity and liabilities,EquityAndLiabilitiesTotalEquityAndLiabilities
+XbrlUrl,https://www.bseindia.com/XBRLFILES/IFIndasDuplicateUploadDocument/Integrated_Finance_Ind_As_532540_11420250124_IFIndAs.xml,0,,XbrlUrl,

@@ -1,0 +1,482 @@
+Label,Value,Decimals,UnitId,Description,ContextName,From,To
+ScripCode,506186,0,,Scrip code,MainD,2024-11-14 00:00:00,2025-2-13 00:00:00
+ISIN,INE403B01016,0,,ISIN,MainD,2024-11-14 00:00:00,2025-2-13 00:00:00
+NameOfTheCompany,Galaxy Cloud Kitchens Limited,0,,Name of the company,MainD,2024-11-14 00:00:00,2025-2-13 00:00:00
+WhetherCompanyIsSME,false,0,,Whether company is SME,MainI,2025-2-13 00:00:00,2025-2-13 00:00:00
+ClassOfSecurity,Equity Shares,0,,Class of security,MainD,2024-11-14 00:00:00,2025-2-13 00:00:00
+TypeOfReport,Capital Restructuring,0,,Type of report,MainD,2024-11-14 00:00:00,2025-2-13 00:00:00
+DateOfReport,2025-02-13,0,,Date of report,MainI,2025-2-13 00:00:00,2025-2-13 00:00:00
+DateOfAllotment,2025-02-13,0,,Date of allotment,MainI,2025-2-13 00:00:00,2025-2-13 00:00:00
+ShareholdingPatternFiledUnder,Regulation 31 (1) (c),0,,Shareholding pattern filed under,MainD,2024-11-14 00:00:00,2025-2-13 00:00:00
+WhetherTheListedEntityIsPublicSectorUndertaking,false,0,,Whether the listed entity is Public Sector Undertaking (PSU),MainI,2025-2-13 00:00:00,2025-2-13 00:00:00
+WhetherTheListedEntityHasIssuedAnyPartlyPaidUpShares,false,0,,Whether the listed entity has issued any partly paid up shares,MainI,2025-2-13 00:00:00,2025-2-13 00:00:00
+WhetherTheListedEntityHasIssuedAnyPartlyPaidUpSharesForPromoterAndPromoterGroup,false,0,,Whether the listed entity has issued any partly paid up shares for promoter and promoter group,MainI,2025-2-13 00:00:00,2025-2-13 00:00:00
+WhetherTheListedEntityHasIssuedAnyPartlyPaidUpSharesForPublicShareHolder,false,0,,Whether the listed entity has issued any partly paid up shares for public share holder,MainI,2025-2-13 00:00:00,2025-2-13 00:00:00
+WhetherTheListedEntityHasIssuedAnyPartlyPaidUpSharesForNonPromoterNonPublic,false,0,,Whether the listed entity has issued any partly paid up shares for non promoter non-public,MainI,2025-2-13 00:00:00,2025-2-13 00:00:00
+WhetherTheListedEntityHasIssuedAnyConvertibleSecurities,true,0,,Whether the listed entity has issued any convertible securities,MainI,2025-2-13 00:00:00,2025-2-13 00:00:00
+WhetherTheListedEntityHasIssuedAnyConvertibleSecuritiesForPromoterAndPromoterGroup,true,0,,Whether the listed entity has issued any convertible securities for promoter and promoter group,MainI,2025-2-13 00:00:00,2025-2-13 00:00:00
+WhetherTheListedEntityHasIssuedAnyConvertibleSecuritiesForPublicShareHolder,false,0,,Whether the listed entity has issued any convertible securities for public share holder,MainI,2025-2-13 00:00:00,2025-2-13 00:00:00
+WhetherTheListedEntityHasIssuedAnyConvertibleSecuritiesForNonPromoterNonPublic,false,0,,Whether the listed entity has issued any convertible securities for non promoter non public,MainI,2025-2-13 00:00:00,2025-2-13 00:00:00
+WhetherTheListedEntityHasIssuedAnyWarrants,false,0,,Whether the listed entity has issued any warrants,MainI,2025-2-13 00:00:00,2025-2-13 00:00:00
+WhetherTheListedEntityHasIssuedAnyWarrantsForPromoterAndPromoterGroup,false,0,,Whether the listed entity has issued any warrants for promoter and promoter group,MainI,2025-2-13 00:00:00,2025-2-13 00:00:00
+WhetherTheListedEntityHasIssuedAnyWarrantsForPublicShareHolder,false,0,,Whether the listed entity has issued any warrants for public shareholder,MainI,2025-2-13 00:00:00,2025-2-13 00:00:00
+WhetherTheListedEntityHasIssuedAnyWarrantsForNonPromoterNonPublic,false,0,,Whether the listed entity has issued any warrants for non promoter non public,MainI,2025-2-13 00:00:00,2025-2-13 00:00:00
+WhetherTheListedEntityHasAnySharesAgainstWhichDepositoryReceiptsAreIssued,false,0,,Whether the listed entity has any shares against which depository receipts are issued,MainI,2025-2-13 00:00:00,2025-2-13 00:00:00
+WhetherTheListedEntityHasAnySharesAgainstWhichDepositoryReceiptsAreIssuedForPromoterAndPromoterGroup,false,0,,Whether the listed entity has any shares against which depository receipts are issued for promoter and promoter group,MainI,2025-2-13 00:00:00,2025-2-13 00:00:00
+WhetherTheListedEntityHasAnySharesAgainstWhichDepositoryReceiptsAreIssuedForPublicShareHolder,false,0,,Whether the listed entity has any shares against which depository receipts are issued for public shareholder,MainI,2025-2-13 00:00:00,2025-2-13 00:00:00
+WhetherTheListedEntityHasAnySharesAgainstWhichDepositoryReceiptsAreIssuedForNonPromoterNonPublic,false,0,,Whether the listed entity has any shares against which depository receipts are issued for non promoter non public,MainI,2025-2-13 00:00:00,2025-2-13 00:00:00
+WhetherTheListedEntityHasAnySharesInLockedIn,true,0,,Whether the listed entity has any shares in locked-in,MainI,2025-2-13 00:00:00,2025-2-13 00:00:00
+WhetherTheListedEntityHasAnySharesInLockedInForPromoterAndPromoterGroup,true,0,,Whether the listed entity has any shares in locked in for promoter and promoter group,MainI,2025-2-13 00:00:00,2025-2-13 00:00:00
+WhetherTheListedEntityHasAnySharesInLockedInForPublicShareHolder,false,0,,Whether the listed entity has any shares in locked in for public shareholder,MainI,2025-2-13 00:00:00,2025-2-13 00:00:00
+WhetherTheListedEntityHasAnySharesInLockedInForNonPromoterNonPublic,false,0,,Whether the listed entity has any shares in locked in for non promoter non public,MainI,2025-2-13 00:00:00,2025-2-13 00:00:00
+WhetherAnySharesHeldByPromotersArePledgeOrOtherwiseEncumbered,false,0,,Whether any shares held by promoters are pledge or otherwise encumbered,MainI,2025-2-13 00:00:00,2025-2-13 00:00:00
+WhetherAnySharesHeldByPromotersArePledgeOrOtherwiseEncumberedForPromoterAndPromoterGroup,false,0,,Whether any shares held by promoters are pledge or otherwise encumbered for promoter and promoter group,MainI,2025-2-13 00:00:00,2025-2-13 00:00:00
+WhetherCompanyHasEquitySharesWithDifferentialVotingRights,false,0,,Whether company has equity shares with differential voting rights,MainI,2025-2-13 00:00:00,2025-2-13 00:00:00
+WhetherCompanyHasEquitySharesWithDifferentialVotingRightsForPromoterAndPromoterGroup,false,0,,Whether company has equity shares with differential voting rights for promoter and promoter group,MainI,2025-2-13 00:00:00,2025-2-13 00:00:00
+WhetherCompanyHasEquitySharesWithDifferentialVotingRightsForPublicShareHolder,false,0,,Whether company has equity shares with differential voting rights for public shareholder,MainI,2025-2-13 00:00:00,2025-2-13 00:00:00
+WhetherCompanyHasEquitySharesWithDifferentialVotingRightsForNonPromoterNonPublic,false,0,,Whether company has equity shares with differential voting rights for non promoter non public,MainI,2025-2-13 00:00:00,2025-2-13 00:00:00
+WhetherTheListedEntityHasAnySignificantBeneficialOwner,true,0,,Whether the listed entity has any significant beneficial owner,MainI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareholders,4,0,pure,Number of shareholders,OtherIndianShareholders_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfFullyPaidUpEquityShares,20087729,0,shares,Number of fully paid up equity shares,OtherIndianShareholders_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShares,20087729,0,shares,Total number of shares,OtherIndianShareholders_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+ShareholdingAsAPercentageOfTotalNumberOfShares,42.47,0,pure,Shareholding as a percentage of total number of shares,OtherIndianShareholders_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfVotingRightsHeldBySameClassOfSecurities,20087729,0,pure,Number of voting rights held by same class of securities,OtherIndianShareholders_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfVotingRights,20087729,0,pure,Number of voting rights,OtherIndianShareholders_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+PercentageOfTotalVotingRights,42.47,0,pure,Percentage of total voting rights,OtherIndianShareholders_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfSharesUnderlyingOutstandingConvertibleSecurities,2480000,0,shares,Number of shares underlying outstanding convertible securities,OtherIndianShareholders_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfConvertibleSecuritiesAndWarrants,2480000,0,shares,Number of convertible securities and warrants,OtherIndianShareholders_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+ShareholdingAsAPercentageAssumingFullConversionOfConvertibleSecuritiesAndWarrants,45.34,0,pure,Total shareholding as a percentage assuming full conversion of convertible securities and warrants and warrants,OtherIndianShareholders_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfTheLockedInShares,2360000,0,shares,Number of the locked-in-shares,OtherIndianShareholders_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+LockedInSharesAsAPercentageOfTotalNumberOfShares,11.75,0,pure,Locked-in-shares as a percentage of total number of shares,OtherIndianShareholders_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfEquitySharesHeldInDematerializedForm,17727729,0,shares,Number of equity shares held in dematerialized form,OtherIndianShareholders_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareholders,4,0,pure,Number of shareholders,Indian_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfFullyPaidUpEquityShares,20087729,0,shares,Number of fully paid up equity shares,Indian_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShares,20087729,0,shares,Total number of shares,Indian_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+ShareholdingAsAPercentageOfTotalNumberOfShares,42.47,0,pure,Shareholding as a percentage of total number of shares,Indian_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfVotingRightsHeldBySameClassOfSecurities,20087729,0,pure,Number of voting rights held by same class of securities,Indian_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfVotingRights,20087729,0,pure,Number of voting rights,Indian_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+PercentageOfTotalVotingRights,42.47,0,pure,Percentage of total voting rights,Indian_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfSharesUnderlyingOutstandingConvertibleSecurities,2480000,0,shares,Number of shares underlying outstanding convertible securities,Indian_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfConvertibleSecuritiesAndWarrants,2480000,0,shares,Number of convertible securities and warrants,Indian_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+ShareholdingAsAPercentageAssumingFullConversionOfConvertibleSecuritiesAndWarrants,45.34,0,pure,Total shareholding as a percentage assuming full conversion of convertible securities and warrants and warrants,Indian_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfTheLockedInShares,2360000,0,shares,Number of the locked-in-shares,Indian_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+LockedInSharesAsAPercentageOfTotalNumberOfShares,11.75,0,pure,Locked-in-shares as a percentage of total number of shares,Indian_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfEquitySharesHeldInDematerializedForm,17727729,0,shares,Number of equity shares held in dematerialized form,Indian_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareholders,4,0,pure,Number of shareholders,ShareholdingOfPromoterAndPromoterGroup_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfFullyPaidUpEquityShares,20087729,0,shares,Number of fully paid up equity shares,ShareholdingOfPromoterAndPromoterGroup_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShares,20087729,0,shares,Total number of shares,ShareholdingOfPromoterAndPromoterGroup_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+ShareholdingAsAPercentageOfTotalNumberOfShares,42.47,0,pure,Shareholding as a percentage of total number of shares,ShareholdingOfPromoterAndPromoterGroup_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfVotingRightsHeldBySameClassOfSecurities,20087729,0,pure,Number of voting rights held by same class of securities,ShareholdingOfPromoterAndPromoterGroup_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfVotingRights,20087729,0,pure,Number of voting rights,ShareholdingOfPromoterAndPromoterGroup_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+PercentageOfTotalVotingRights,42.47,0,pure,Percentage of total voting rights,ShareholdingOfPromoterAndPromoterGroup_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfSharesUnderlyingOutstandingConvertibleSecurities,2480000,0,shares,Number of shares underlying outstanding convertible securities,ShareholdingOfPromoterAndPromoterGroup_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfConvertibleSecuritiesAndWarrants,2480000,0,shares,Number of convertible securities and warrants,ShareholdingOfPromoterAndPromoterGroup_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+ShareholdingAsAPercentageAssumingFullConversionOfConvertibleSecuritiesAndWarrants,45.34,0,pure,Total shareholding as a percentage assuming full conversion of convertible securities and warrants and warrants,ShareholdingOfPromoterAndPromoterGroup_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfTheLockedInShares,2360000,0,shares,Number of the locked-in-shares,ShareholdingOfPromoterAndPromoterGroup_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+LockedInSharesAsAPercentageOfTotalNumberOfShares,11.75,0,pure,Locked-in-shares as a percentage of total number of shares,ShareholdingOfPromoterAndPromoterGroup_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfEquitySharesHeldInDematerializedForm,17727729,0,shares,Number of equity shares held in dematerialized form,ShareholdingOfPromoterAndPromoterGroup_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareholders,3610,0,pure,Number of shareholders,ResidentIndividualShareholdersHoldingNominalShareCapitalUpToRsTwoLakh_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfFullyPaidUpEquityShares,1821033,0,shares,Number of fully paid up equity shares,ResidentIndividualShareholdersHoldingNominalShareCapitalUpToRsTwoLakh_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShares,1821033,0,shares,Total number of shares,ResidentIndividualShareholdersHoldingNominalShareCapitalUpToRsTwoLakh_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+ShareholdingAsAPercentageOfTotalNumberOfShares,3.85,0,pure,Shareholding as a percentage of total number of shares,ResidentIndividualShareholdersHoldingNominalShareCapitalUpToRsTwoLakh_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfVotingRightsHeldBySameClassOfSecurities,1821033,0,pure,Number of voting rights held by same class of securities,ResidentIndividualShareholdersHoldingNominalShareCapitalUpToRsTwoLakh_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfVotingRights,1821033,0,pure,Number of voting rights,ResidentIndividualShareholdersHoldingNominalShareCapitalUpToRsTwoLakh_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+PercentageOfTotalVotingRights,3.85,0,pure,Percentage of total voting rights,ResidentIndividualShareholdersHoldingNominalShareCapitalUpToRsTwoLakh_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+ShareholdingAsAPercentageAssumingFullConversionOfConvertibleSecuritiesAndWarrants,3.66,0,pure,Total shareholding as a percentage assuming full conversion of convertible securities and warrants and warrants,ResidentIndividualShareholdersHoldingNominalShareCapitalUpToRsTwoLakh_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfEquitySharesHeldInDematerializedForm,1760857,0,shares,Number of equity shares held in dematerialized form,ResidentIndividualShareholdersHoldingNominalShareCapitalUpToRsTwoLakh_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareUnderSubCategoryOne,0,0,shares,Number of share under sub category one,ResidentIndividualShareholdersHoldingNominalShareCapitalUpToRsTwoLakh_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareUnderSubCategoryTwo,0,0,shares,Number of share under sub category two,ResidentIndividualShareholdersHoldingNominalShareCapitalUpToRsTwoLakh_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareUnderSubCategoryThree,0,0,shares,Number of share under sub category three,ResidentIndividualShareholdersHoldingNominalShareCapitalUpToRsTwoLakh_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareholders,43,0,pure,Number of shareholders,ResidentIndividualShareholdersHoldingNominalShareCapitalInExcessOfRsTwoLakh_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfFullyPaidUpEquityShares,5085504,0,shares,Number of fully paid up equity shares,ResidentIndividualShareholdersHoldingNominalShareCapitalInExcessOfRsTwoLakh_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShares,5085504,0,shares,Total number of shares,ResidentIndividualShareholdersHoldingNominalShareCapitalInExcessOfRsTwoLakh_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+ShareholdingAsAPercentageOfTotalNumberOfShares,10.75,0,pure,Shareholding as a percentage of total number of shares,ResidentIndividualShareholdersHoldingNominalShareCapitalInExcessOfRsTwoLakh_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfVotingRightsHeldBySameClassOfSecurities,5085504,0,pure,Number of voting rights held by same class of securities,ResidentIndividualShareholdersHoldingNominalShareCapitalInExcessOfRsTwoLakh_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfVotingRights,5085504,0,pure,Number of voting rights,ResidentIndividualShareholdersHoldingNominalShareCapitalInExcessOfRsTwoLakh_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+PercentageOfTotalVotingRights,10.75,0,pure,Percentage of total voting rights,ResidentIndividualShareholdersHoldingNominalShareCapitalInExcessOfRsTwoLakh_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+ShareholdingAsAPercentageAssumingFullConversionOfConvertibleSecuritiesAndWarrants,10.22,0,pure,Total shareholding as a percentage assuming full conversion of convertible securities and warrants and warrants,ResidentIndividualShareholdersHoldingNominalShareCapitalInExcessOfRsTwoLakh_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfEquitySharesHeldInDematerializedForm,5085504,0,shares,Number of equity shares held in dematerialized form,ResidentIndividualShareholdersHoldingNominalShareCapitalInExcessOfRsTwoLakh_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareUnderSubCategoryOne,0,0,shares,Number of share under sub category one,ResidentIndividualShareholdersHoldingNominalShareCapitalInExcessOfRsTwoLakh_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareUnderSubCategoryTwo,0,0,shares,Number of share under sub category two,ResidentIndividualShareholdersHoldingNominalShareCapitalInExcessOfRsTwoLakh_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareUnderSubCategoryThree,0,0,shares,Number of share under sub category three,ResidentIndividualShareholdersHoldingNominalShareCapitalInExcessOfRsTwoLakh_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareholders,54,0,pure,Number of shareholders,NonResidentIndians_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfFullyPaidUpEquityShares,299448,0,shares,Number of fully paid up equity shares,NonResidentIndians_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShares,299448,0,shares,Total number of shares,NonResidentIndians_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+ShareholdingAsAPercentageOfTotalNumberOfShares,0.63,0,pure,Shareholding as a percentage of total number of shares,NonResidentIndians_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfVotingRightsHeldBySameClassOfSecurities,299448,0,pure,Number of voting rights held by same class of securities,NonResidentIndians_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfVotingRights,299448,0,pure,Number of voting rights,NonResidentIndians_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+PercentageOfTotalVotingRights,0.63,0,pure,Percentage of total voting rights,NonResidentIndians_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+ShareholdingAsAPercentageAssumingFullConversionOfConvertibleSecuritiesAndWarrants,0.60,0,pure,Total shareholding as a percentage assuming full conversion of convertible securities and warrants and warrants,NonResidentIndians_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfEquitySharesHeldInDematerializedForm,299448,0,shares,Number of equity shares held in dematerialized form,NonResidentIndians_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareUnderSubCategoryOne,0,0,shares,Number of share under sub category one,NonResidentIndians_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareUnderSubCategoryTwo,0,0,shares,Number of share under sub category two,NonResidentIndians_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareUnderSubCategoryThree,0,0,shares,Number of share under sub category three,NonResidentIndians_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareholders,34,0,pure,Number of shareholders,BodiesCorporate_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfFullyPaidUpEquityShares,16114727,0,shares,Number of fully paid up equity shares,BodiesCorporate_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShares,16114727,0,shares,Total number of shares,BodiesCorporate_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+ShareholdingAsAPercentageOfTotalNumberOfShares,34.07,0,pure,Shareholding as a percentage of total number of shares,BodiesCorporate_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfVotingRightsHeldBySameClassOfSecurities,16114727,0,pure,Number of voting rights held by same class of securities,BodiesCorporate_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfVotingRights,16114727,0,pure,Number of voting rights,BodiesCorporate_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+PercentageOfTotalVotingRights,34.07,0,pure,Percentage of total voting rights,BodiesCorporate_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+ShareholdingAsAPercentageAssumingFullConversionOfConvertibleSecuritiesAndWarrants,32.37,0,pure,Total shareholding as a percentage assuming full conversion of convertible securities and warrants and warrants,BodiesCorporate_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfEquitySharesHeldInDematerializedForm,16114627,0,shares,Number of equity shares held in dematerialized form,BodiesCorporate_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareUnderSubCategoryOne,0,0,shares,Number of share under sub category one,BodiesCorporate_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareUnderSubCategoryTwo,0,0,shares,Number of share under sub category two,BodiesCorporate_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareUnderSubCategoryThree,0,0,shares,Number of share under sub category three,BodiesCorporate_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareholders,115,0,pure,Number of shareholders,OtherNonInstitutions_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfFullyPaidUpEquityShares,3889233,0,shares,Number of fully paid up equity shares,OtherNonInstitutions_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShares,3889233,0,shares,Total number of shares,OtherNonInstitutions_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+ShareholdingAsAPercentageOfTotalNumberOfShares,8.22,0,pure,Shareholding as a percentage of total number of shares,OtherNonInstitutions_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfVotingRightsHeldBySameClassOfSecurities,3889233,0,pure,Number of voting rights held by same class of securities,OtherNonInstitutions_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfVotingRights,3889233,0,pure,Number of voting rights,OtherNonInstitutions_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+PercentageOfTotalVotingRights,8.22,0,pure,Percentage of total voting rights,OtherNonInstitutions_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+ShareholdingAsAPercentageAssumingFullConversionOfConvertibleSecuritiesAndWarrants,7.81,0,pure,Total shareholding as a percentage assuming full conversion of convertible securities and warrants and warrants,OtherNonInstitutions_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfEquitySharesHeldInDematerializedForm,3889233,0,shares,Number of equity shares held in dematerialized form,OtherNonInstitutions_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareUnderSubCategoryOne,0,0,shares,Number of share under sub category one,OtherNonInstitutions_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareUnderSubCategoryTwo,0,0,shares,Number of share under sub category two,OtherNonInstitutions_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareUnderSubCategoryThree,0,0,shares,Number of share under sub category three,OtherNonInstitutions_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareholders,3856,0,pure,Number of shareholders,NonInstitutions_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfFullyPaidUpEquityShares,27209945,0,shares,Number of fully paid up equity shares,NonInstitutions_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShares,27209945,0,shares,Total number of shares,NonInstitutions_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+ShareholdingAsAPercentageOfTotalNumberOfShares,57.53,0,pure,Shareholding as a percentage of total number of shares,NonInstitutions_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfVotingRightsHeldBySameClassOfSecurities,27209945,0,pure,Number of voting rights held by same class of securities,NonInstitutions_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfVotingRights,27209945,0,pure,Number of voting rights,NonInstitutions_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+PercentageOfTotalVotingRights,57.53,0,pure,Percentage of total voting rights,NonInstitutions_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+ShareholdingAsAPercentageAssumingFullConversionOfConvertibleSecuritiesAndWarrants,54.66,0,pure,Total shareholding as a percentage assuming full conversion of convertible securities and warrants and warrants,NonInstitutions_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfEquitySharesHeldInDematerializedForm,27149669,0,shares,Number of equity shares held in dematerialized form,NonInstitutions_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareUnderSubCategoryOne,0,0,shares,Number of share under sub category one,NonInstitutions_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareUnderSubCategoryTwo,0,0,shares,Number of share under sub category two,NonInstitutions_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareUnderSubCategoryThree,0,0,shares,Number of share under sub category three,NonInstitutions_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareholders,3856,0,pure,Number of shareholders,PublicShareholding_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfFullyPaidUpEquityShares,27209945,0,shares,Number of fully paid up equity shares,PublicShareholding_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShares,27209945,0,shares,Total number of shares,PublicShareholding_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+ShareholdingAsAPercentageOfTotalNumberOfShares,57.53,0,pure,Shareholding as a percentage of total number of shares,PublicShareholding_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfVotingRightsHeldBySameClassOfSecurities,27209945,0,pure,Number of voting rights held by same class of securities,PublicShareholding_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfVotingRights,27209945,0,pure,Number of voting rights,PublicShareholding_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+PercentageOfTotalVotingRights,57.53,0,pure,Percentage of total voting rights,PublicShareholding_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+ShareholdingAsAPercentageAssumingFullConversionOfConvertibleSecuritiesAndWarrants,54.66,0,pure,Total shareholding as a percentage assuming full conversion of convertible securities and warrants and warrants,PublicShareholding_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfEquitySharesHeldInDematerializedForm,27149669,0,shares,Number of equity shares held in dematerialized form,PublicShareholding_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareUnderSubCategoryOne,0,0,shares,Number of share under sub category one,PublicShareholding_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareUnderSubCategoryTwo,0,0,shares,Number of share under sub category two,PublicShareholding_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareUnderSubCategoryThree,0,0,shares,Number of share under sub category three,PublicShareholding_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareholders,3860,0,pure,Number of shareholders,ShareholdingPattern_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfFullyPaidUpEquityShares,47297674,0,shares,Number of fully paid up equity shares,ShareholdingPattern_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShares,47297674,0,shares,Total number of shares,ShareholdingPattern_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+ShareholdingAsAPercentageOfTotalNumberOfShares,100.00,0,pure,Shareholding as a percentage of total number of shares,ShareholdingPattern_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfVotingRightsHeldBySameClassOfSecurities,47297674,0,pure,Number of voting rights held by same class of securities,ShareholdingPattern_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfVotingRights,47297674,0,pure,Number of voting rights,ShareholdingPattern_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+PercentageOfTotalVotingRights,100.00,0,pure,Percentage of total voting rights,ShareholdingPattern_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfSharesUnderlyingOutstandingConvertibleSecurities,2480000,0,shares,Number of shares underlying outstanding convertible securities,ShareholdingPattern_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfConvertibleSecuritiesAndWarrants,2480000,0,shares,Number of convertible securities and warrants,ShareholdingPattern_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+ShareholdingAsAPercentageAssumingFullConversionOfConvertibleSecuritiesAndWarrants,100.00,0,pure,Total shareholding as a percentage assuming full conversion of convertible securities and warrants and warrants,ShareholdingPattern_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfTheLockedInShares,2360000,0,shares,Number of the locked-in-shares,ShareholdingPattern_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+LockedInSharesAsAPercentageOfTotalNumberOfShares,4.99,0,pure,Locked-in-shares as a percentage of total number of shares,ShareholdingPattern_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfEquitySharesHeldInDematerializedForm,44877398,0,shares,Number of equity shares held in dematerialized form,ShareholdingPattern_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareUnderSubCategoryOne,0,0,shares,Number of share under sub category one,ShareholdingPattern_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareUnderSubCategoryTwo,0,0,shares,Number of share under sub category two,ShareholdingPattern_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareUnderSubCategoryThree,0,0,shares,Number of share under sub category three,ShareholdingPattern_ContextI,2025-2-13 00:00:00,2025-2-13 00:00:00
+DisclosureOfNotesOnShareholdingPatternExplanatoryTextBlock,&lt;div&gt; &lt;div&gt; &lt;div&gt; &lt;/div&gt; &lt;div&gt;For Promoter and Promoter Group'| with respect to Table II'| (1) Indian (d) Any other'| we have classified Niyman Mall Management Company Private Limited as 'Promoter' instead of 'Promoter Group'. This is because the XBRL sheet could not get validated without mentioning atleast one  Promoter.&lt;/div&gt; &lt;div&gt; &lt;/div&gt; &lt;div&gt;Compulsorily Convertible Debentures (CCDs) were issued to entities belonging to the Promoter Group during the quarter ended September 2024. However'| these entities are not the existing Promoter/Promoter Group who are holding Equity Shares of the Company and accordingly'| the details of CCDs are not applicable to the existing Shareholding Pattern for the quarter ended 31st December'| 2024.&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;,0,,Disclosure of notes on shareholding pattern explanatory ,MainI,2025-2-13 00:00:00,2025-2-13 00:00:00
+DisclosureOfNotesInCaseOfPromoterHolidingInDematerialsedFormIsLessThan100PercentageExplanatoryTextBlock,&lt;div&gt; &lt;div&gt; &lt;p&gt;In the 'No. of equity shares held in dematerialized form' column'| we have mentioned zero for FDRT Consultancy Services Limited and Nu Business Ventures Private Limited due to the following reasons:&lt;/p&gt; &lt;p&gt;The Board of Directors'| at their meeting held on February 13'| 2025'| approved the allotment of equity shares upon the conversion of Compulsorily Convertible Debentures. The Company will proceed with the listing and trading application for the allotted shares'| followed by the necessary corporate action by the Depository/RTA. Subsequently'| the shares will be credited to the respective Demat accounts. The Company confirms that the allotment was made exclusively in Demat form.&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;,0,,Disclosure of notes in case of promoter holiding in dematerialsed form is less than 100 percentage ,MainI,2025-2-13 00:00:00,2025-2-13 00:00:00
+CategoryOfOtherIndianShareholders,Bodies Corporate,0,,Category of other indian shareholders,D_OthersIndianShareholders_Context15,2024-11-14 00:00:00,2025-2-13 00:00:00
+NameOfTheShareholder,Future Enterprises Limited,0,,Name of the shareholder,D_OthersIndianShareholders_Context15,2024-11-14 00:00:00,2025-2-13 00:00:00
+NumberOfShareholders,1,0,pure,Number of shareholders,OthersIndianShareholders_Context15,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfFullyPaidUpEquityShares,8369819,0,shares,Number of fully paid up equity shares,OthersIndianShareholders_Context15,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShares,8369819,0,shares,Total number of shares,OthersIndianShareholders_Context15,2025-2-13 00:00:00,2025-2-13 00:00:00
+ShareholdingAsAPercentageOfTotalNumberOfShares,17.7,0,pure,Shareholding as a percentage of total number of shares,OthersIndianShareholders_Context15,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfVotingRightsHeldBySameClassOfSecurities,8369819,0,pure,Number of voting rights held by same class of securities,OthersIndianShareholders_Context15,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfVotingRights,8369819,0,pure,Number of voting rights,OthersIndianShareholders_Context15,2025-2-13 00:00:00,2025-2-13 00:00:00
+PercentageOfTotalVotingRights,17.7,0,pure,Percentage of total voting rights,OthersIndianShareholders_Context15,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfSharesUnderlyingOutstandingConvertibleSecurities,0,0,shares,Number of shares underlying outstanding convertible securities,OthersIndianShareholders_Context15,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfConvertibleSecuritiesAndWarrants,0,0,shares,Number of convertible securities and warrants,OthersIndianShareholders_Context15,2025-2-13 00:00:00,2025-2-13 00:00:00
+ShareholdingAsAPercentageAssumingFullConversionOfConvertibleSecuritiesAndWarrants,16.81,0,pure,Total shareholding as a percentage assuming full conversion of convertible securities and warrants and warrants,OthersIndianShareholders_Context15,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfTheLockedInShares,0,0,shares,Number of the locked-in-shares,OthersIndianShareholders_Context15,2025-2-13 00:00:00,2025-2-13 00:00:00
+LockedInSharesAsAPercentageOfTotalNumberOfShares,0,0,pure,Locked-in-shares as a percentage of total number of shares,OthersIndianShareholders_Context15,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfEquitySharesHeldInDematerializedForm,8369819,0,shares,Number of equity shares held in dematerialized form,OthersIndianShareholders_Context15,2025-2-13 00:00:00,2025-2-13 00:00:00
+TypeOfPromoterShareholding,Promoter Group,0,,Type Of promoter shareholding,D_OthersIndianShareholders_Context15,2024-11-14 00:00:00,2025-2-13 00:00:00
+CategoryOfOtherIndianShareholders,Bodies Corporate,0,,Category of other indian shareholders,D_OthersIndianShareholders_Context16,2024-11-14 00:00:00,2025-2-13 00:00:00
+NameOfTheShareholder,Niyman Mall Management Company Private Limited,0,,Name of the shareholder,D_OthersIndianShareholders_Context16,2024-11-14 00:00:00,2025-2-13 00:00:00
+NumberOfShareholders,1,0,pure,Number of shareholders,OthersIndianShareholders_Context16,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfFullyPaidUpEquityShares,9357910,0,shares,Number of fully paid up equity shares,OthersIndianShareholders_Context16,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShares,9357910,0,shares,Total number of shares,OthersIndianShareholders_Context16,2025-2-13 00:00:00,2025-2-13 00:00:00
+ShareholdingAsAPercentageOfTotalNumberOfShares,19.79,0,pure,Shareholding as a percentage of total number of shares,OthersIndianShareholders_Context16,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfVotingRightsHeldBySameClassOfSecurities,9357910,0,pure,Number of voting rights held by same class of securities,OthersIndianShareholders_Context16,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfVotingRights,9357910,0,pure,Number of voting rights,OthersIndianShareholders_Context16,2025-2-13 00:00:00,2025-2-13 00:00:00
+PercentageOfTotalVotingRights,19.79,0,pure,Percentage of total voting rights,OthersIndianShareholders_Context16,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfSharesUnderlyingOutstandingConvertibleSecurities,0,0,shares,Number of shares underlying outstanding convertible securities,OthersIndianShareholders_Context16,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfConvertibleSecuritiesAndWarrants,0,0,shares,Number of convertible securities and warrants,OthersIndianShareholders_Context16,2025-2-13 00:00:00,2025-2-13 00:00:00
+ShareholdingAsAPercentageAssumingFullConversionOfConvertibleSecuritiesAndWarrants,18.8,0,pure,Total shareholding as a percentage assuming full conversion of convertible securities and warrants and warrants,OthersIndianShareholders_Context16,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfTheLockedInShares,0,0,shares,Number of the locked-in-shares,OthersIndianShareholders_Context16,2025-2-13 00:00:00,2025-2-13 00:00:00
+LockedInSharesAsAPercentageOfTotalNumberOfShares,0,0,pure,Locked-in-shares as a percentage of total number of shares,OthersIndianShareholders_Context16,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfEquitySharesHeldInDematerializedForm,9357910,0,shares,Number of equity shares held in dematerialized form,OthersIndianShareholders_Context16,2025-2-13 00:00:00,2025-2-13 00:00:00
+TypeOfPromoterShareholding,Promoter,0,,Type Of promoter shareholding,D_OthersIndianShareholders_Context16,2024-11-14 00:00:00,2025-2-13 00:00:00
+CategoryOfOtherIndianShareholders,Bodies Corporate,0,,Category of other indian shareholders,D_OthersIndianShareholders_Context17,2024-11-14 00:00:00,2025-2-13 00:00:00
+NameOfTheShareholder,Central Departmental Stores Pvt Ltd,0,,Name of the shareholder,D_OthersIndianShareholders_Context17,2024-11-14 00:00:00,2025-2-13 00:00:00
+NumberOfShareholders,0,0,pure,Number of shareholders,OthersIndianShareholders_Context17,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfFullyPaidUpEquityShares,0,0,shares,Number of fully paid up equity shares,OthersIndianShareholders_Context17,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShares,0,0,shares,Total number of shares,OthersIndianShareholders_Context17,2025-2-13 00:00:00,2025-2-13 00:00:00
+ShareholdingAsAPercentageOfTotalNumberOfShares,0,0,pure,Shareholding as a percentage of total number of shares,OthersIndianShareholders_Context17,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfVotingRightsHeldBySameClassOfSecurities,0,0,pure,Number of voting rights held by same class of securities,OthersIndianShareholders_Context17,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfVotingRights,0,0,pure,Number of voting rights,OthersIndianShareholders_Context17,2025-2-13 00:00:00,2025-2-13 00:00:00
+PercentageOfTotalVotingRights,0,0,pure,Percentage of total voting rights,OthersIndianShareholders_Context17,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfSharesUnderlyingOutstandingConvertibleSecurities,0,0,shares,Number of shares underlying outstanding convertible securities,OthersIndianShareholders_Context17,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfConvertibleSecuritiesAndWarrants,0,0,shares,Number of convertible securities and warrants,OthersIndianShareholders_Context17,2025-2-13 00:00:00,2025-2-13 00:00:00
+ShareholdingAsAPercentageAssumingFullConversionOfConvertibleSecuritiesAndWarrants,0,0,pure,Total shareholding as a percentage assuming full conversion of convertible securities and warrants and warrants,OthersIndianShareholders_Context17,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfTheLockedInShares,0,0,shares,Number of the locked-in-shares,OthersIndianShareholders_Context17,2025-2-13 00:00:00,2025-2-13 00:00:00
+LockedInSharesAsAPercentageOfTotalNumberOfShares,0,0,pure,Locked-in-shares as a percentage of total number of shares,OthersIndianShareholders_Context17,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfEquitySharesHeldInDematerializedForm,0,0,shares,Number of equity shares held in dematerialized form,OthersIndianShareholders_Context17,2025-2-13 00:00:00,2025-2-13 00:00:00
+TypeOfPromoterShareholding,Promoter Group,0,,Type Of promoter shareholding,D_OthersIndianShareholders_Context17,2024-11-14 00:00:00,2025-2-13 00:00:00
+CategoryOfOtherIndianShareholders,Bodies Corporate,0,,Category of other indian shareholders,D_OthersIndianShareholders_Context18,2024-11-14 00:00:00,2025-2-13 00:00:00
+NameOfTheShareholder,FDRT Consultancy Services Limited,0,,Name of the shareholder,D_OthersIndianShareholders_Context18,2024-11-14 00:00:00,2025-2-13 00:00:00
+NumberOfShareholders,1,0,pure,Number of shareholders,OthersIndianShareholders_Context18,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfFullyPaidUpEquityShares,927786,0,shares,Number of fully paid up equity shares,OthersIndianShareholders_Context18,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShares,927786,0,shares,Total number of shares,OthersIndianShareholders_Context18,2025-2-13 00:00:00,2025-2-13 00:00:00
+ShareholdingAsAPercentageOfTotalNumberOfShares,1.96,0,pure,Shareholding as a percentage of total number of shares,OthersIndianShareholders_Context18,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfVotingRightsHeldBySameClassOfSecurities,927786,0,pure,Number of voting rights held by same class of securities,OthersIndianShareholders_Context18,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfVotingRights,927786,0,pure,Number of voting rights,OthersIndianShareholders_Context18,2025-2-13 00:00:00,2025-2-13 00:00:00
+PercentageOfTotalVotingRights,1.96,0,pure,Percentage of total voting rights,OthersIndianShareholders_Context18,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfSharesUnderlyingOutstandingConvertibleSecurities,974962,0,shares,Number of shares underlying outstanding convertible securities,OthersIndianShareholders_Context18,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfConvertibleSecuritiesAndWarrants,974962,0,shares,Number of convertible securities and warrants,OthersIndianShareholders_Context18,2025-2-13 00:00:00,2025-2-13 00:00:00
+ShareholdingAsAPercentageAssumingFullConversionOfConvertibleSecuritiesAndWarrants,3.82,0,pure,Total shareholding as a percentage assuming full conversion of convertible securities and warrants and warrants,OthersIndianShareholders_Context18,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfTheLockedInShares,927786,0,shares,Number of the locked-in-shares,OthersIndianShareholders_Context18,2025-2-13 00:00:00,2025-2-13 00:00:00
+LockedInSharesAsAPercentageOfTotalNumberOfShares,100,0,pure,Locked-in-shares as a percentage of total number of shares,OthersIndianShareholders_Context18,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfEquitySharesHeldInDematerializedForm,0,0,shares,Number of equity shares held in dematerialized form,OthersIndianShareholders_Context18,2025-2-13 00:00:00,2025-2-13 00:00:00
+TypeOfPromoterShareholding,Promoter Group,0,,Type Of promoter shareholding,D_OthersIndianShareholders_Context18,2024-11-14 00:00:00,2025-2-13 00:00:00
+CategoryOfOtherIndianShareholders,Bodies Corporate,0,,Category of other indian shareholders,D_OthersIndianShareholders_Context19,2024-11-14 00:00:00,2025-2-13 00:00:00
+NameOfTheShareholder,Nu Business Ventures Private Limited,0,,Name of the shareholder,D_OthersIndianShareholders_Context19,2024-11-14 00:00:00,2025-2-13 00:00:00
+NumberOfShareholders,1,0,pure,Number of shareholders,OthersIndianShareholders_Context19,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfFullyPaidUpEquityShares,1432214,0,shares,Number of fully paid up equity shares,OthersIndianShareholders_Context19,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShares,1432214,0,shares,Total number of shares,OthersIndianShareholders_Context19,2025-2-13 00:00:00,2025-2-13 00:00:00
+ShareholdingAsAPercentageOfTotalNumberOfShares,3.03,0,pure,Shareholding as a percentage of total number of shares,OthersIndianShareholders_Context19,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfVotingRightsHeldBySameClassOfSecurities,1432214,0,pure,Number of voting rights held by same class of securities,OthersIndianShareholders_Context19,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfVotingRights,1432214,0,pure,Number of voting rights,OthersIndianShareholders_Context19,2025-2-13 00:00:00,2025-2-13 00:00:00
+PercentageOfTotalVotingRights,3.03,0,pure,Percentage of total voting rights,OthersIndianShareholders_Context19,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfSharesUnderlyingOutstandingConvertibleSecurities,1505038,0,shares,Number of shares underlying outstanding convertible securities,OthersIndianShareholders_Context19,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfConvertibleSecuritiesAndWarrants,1505038,0,shares,Number of convertible securities and warrants,OthersIndianShareholders_Context19,2025-2-13 00:00:00,2025-2-13 00:00:00
+ShareholdingAsAPercentageAssumingFullConversionOfConvertibleSecuritiesAndWarrants,5.9,0,pure,Total shareholding as a percentage assuming full conversion of convertible securities and warrants and warrants,OthersIndianShareholders_Context19,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfTheLockedInShares,1432214,0,shares,Number of the locked-in-shares,OthersIndianShareholders_Context19,2025-2-13 00:00:00,2025-2-13 00:00:00
+LockedInSharesAsAPercentageOfTotalNumberOfShares,100,0,pure,Locked-in-shares as a percentage of total number of shares,OthersIndianShareholders_Context19,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfEquitySharesHeldInDematerializedForm,0,0,shares,Number of equity shares held in dematerialized form,OthersIndianShareholders_Context19,2025-2-13 00:00:00,2025-2-13 00:00:00
+TypeOfPromoterShareholding,Promoter Group,0,,Type Of promoter shareholding,D_OthersIndianShareholders_Context19,2024-11-14 00:00:00,2025-2-13 00:00:00
+NameOfTheShareholder,Habitat Apartments Private Ltd,0,,Name of the shareholder,D_DetailsOfSharesHeldByBodiesCorporate_Context15,2024-11-14 00:00:00,2025-2-13 00:00:00
+NumberOfFullyPaidUpEquityShares,4384500,0,shares,Number of fully paid up equity shares,DetailsOfSharesHeldByBodiesCorporate_Context15,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShares,4384500,0,shares,Total number of shares,DetailsOfSharesHeldByBodiesCorporate_Context15,2025-2-13 00:00:00,2025-2-13 00:00:00
+ShareholdingAsAPercentageOfTotalNumberOfShares,9.27,0,pure,Shareholding as a percentage of total number of shares,DetailsOfSharesHeldByBodiesCorporate_Context15,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfVotingRightsHeldBySameClassOfSecurities,4384500,0,pure,Number of voting rights held by same class of securities,DetailsOfSharesHeldByBodiesCorporate_Context15,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfVotingRights,4384500,0,pure,Number of voting rights,DetailsOfSharesHeldByBodiesCorporate_Context15,2025-2-13 00:00:00,2025-2-13 00:00:00
+PercentageOfTotalVotingRights,9.27,0,pure,Percentage of total voting rights,DetailsOfSharesHeldByBodiesCorporate_Context15,2025-2-13 00:00:00,2025-2-13 00:00:00
+ShareholdingAsAPercentageAssumingFullConversionOfConvertibleSecuritiesAndWarrants,8.81,0,pure,Total shareholding as a percentage assuming full conversion of convertible securities and warrants and warrants,DetailsOfSharesHeldByBodiesCorporate_Context15,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfEquitySharesHeldInDematerializedForm,4384500,0,shares,Number of equity shares held in dematerialized form,DetailsOfSharesHeldByBodiesCorporate_Context15,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareUnderSubCategoryOne,0,0,shares,Number of share under sub category one,DetailsOfSharesHeldByBodiesCorporate_Context15,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareUnderSubCategoryTwo,0,0,shares,Number of share under sub category two,DetailsOfSharesHeldByBodiesCorporate_Context15,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareUnderSubCategoryThree,0,0,shares,Number of share under sub category three,DetailsOfSharesHeldByBodiesCorporate_Context15,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareholders,1,0,pure,Number of shareholders,DetailsOfSharesHeldByBodiesCorporate_Context15,2025-2-13 00:00:00,2025-2-13 00:00:00
+NameOfTheShareholder,Abacus Realty Logistics Private Limited,0,,Name of the shareholder,D_DetailsOfSharesHeldByBodiesCorporate_Context16,2024-11-14 00:00:00,2025-2-13 00:00:00
+NumberOfFullyPaidUpEquityShares,4632904,0,shares,Number of fully paid up equity shares,DetailsOfSharesHeldByBodiesCorporate_Context16,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShares,4632904,0,shares,Total number of shares,DetailsOfSharesHeldByBodiesCorporate_Context16,2025-2-13 00:00:00,2025-2-13 00:00:00
+ShareholdingAsAPercentageOfTotalNumberOfShares,9.8,0,pure,Shareholding as a percentage of total number of shares,DetailsOfSharesHeldByBodiesCorporate_Context16,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfVotingRightsHeldBySameClassOfSecurities,4632904,0,pure,Number of voting rights held by same class of securities,DetailsOfSharesHeldByBodiesCorporate_Context16,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfVotingRights,4632904,0,pure,Number of voting rights,DetailsOfSharesHeldByBodiesCorporate_Context16,2025-2-13 00:00:00,2025-2-13 00:00:00
+PercentageOfTotalVotingRights,9.8,0,pure,Percentage of total voting rights,DetailsOfSharesHeldByBodiesCorporate_Context16,2025-2-13 00:00:00,2025-2-13 00:00:00
+ShareholdingAsAPercentageAssumingFullConversionOfConvertibleSecuritiesAndWarrants,9.31,0,pure,Total shareholding as a percentage assuming full conversion of convertible securities and warrants and warrants,DetailsOfSharesHeldByBodiesCorporate_Context16,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfEquitySharesHeldInDematerializedForm,4632904,0,shares,Number of equity shares held in dematerialized form,DetailsOfSharesHeldByBodiesCorporate_Context16,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareUnderSubCategoryOne,0,0,shares,Number of share under sub category one,DetailsOfSharesHeldByBodiesCorporate_Context16,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareUnderSubCategoryTwo,0,0,shares,Number of share under sub category two,DetailsOfSharesHeldByBodiesCorporate_Context16,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareUnderSubCategoryThree,0,0,shares,Number of share under sub category three,DetailsOfSharesHeldByBodiesCorporate_Context16,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareholders,1,0,pure,Number of shareholders,DetailsOfSharesHeldByBodiesCorporate_Context16,2025-2-13 00:00:00,2025-2-13 00:00:00
+NameOfTheShareholder,Bellona Hospitality Services Ltd,0,,Name of the shareholder,D_DetailsOfSharesHeldByBodiesCorporate_Context17,2024-11-14 00:00:00,2025-2-13 00:00:00
+NumberOfFullyPaidUpEquityShares,4148728,0,shares,Number of fully paid up equity shares,DetailsOfSharesHeldByBodiesCorporate_Context17,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShares,4148728,0,shares,Total number of shares,DetailsOfSharesHeldByBodiesCorporate_Context17,2025-2-13 00:00:00,2025-2-13 00:00:00
+ShareholdingAsAPercentageOfTotalNumberOfShares,8.77,0,pure,Shareholding as a percentage of total number of shares,DetailsOfSharesHeldByBodiesCorporate_Context17,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfVotingRightsHeldBySameClassOfSecurities,4148728,0,pure,Number of voting rights held by same class of securities,DetailsOfSharesHeldByBodiesCorporate_Context17,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfVotingRights,4148728,0,pure,Number of voting rights,DetailsOfSharesHeldByBodiesCorporate_Context17,2025-2-13 00:00:00,2025-2-13 00:00:00
+PercentageOfTotalVotingRights,8.77,0,pure,Percentage of total voting rights,DetailsOfSharesHeldByBodiesCorporate_Context17,2025-2-13 00:00:00,2025-2-13 00:00:00
+ShareholdingAsAPercentageAssumingFullConversionOfConvertibleSecuritiesAndWarrants,8.33,0,pure,Total shareholding as a percentage assuming full conversion of convertible securities and warrants and warrants,DetailsOfSharesHeldByBodiesCorporate_Context17,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfEquitySharesHeldInDematerializedForm,4148728,0,shares,Number of equity shares held in dematerialized form,DetailsOfSharesHeldByBodiesCorporate_Context17,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareUnderSubCategoryOne,0,0,shares,Number of share under sub category one,DetailsOfSharesHeldByBodiesCorporate_Context17,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareUnderSubCategoryTwo,0,0,shares,Number of share under sub category two,DetailsOfSharesHeldByBodiesCorporate_Context17,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareUnderSubCategoryThree,0,0,shares,Number of share under sub category three,DetailsOfSharesHeldByBodiesCorporate_Context17,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareholders,1,0,pure,Number of shareholders,DetailsOfSharesHeldByBodiesCorporate_Context17,2025-2-13 00:00:00,2025-2-13 00:00:00
+NameOfTheShareholder,Eclipse Trades Private Ltd.,0,,Name of the shareholder,D_DetailsOfSharesHeldByBodiesCorporate_Context18,2024-11-14 00:00:00,2025-2-13 00:00:00
+NumberOfFullyPaidUpEquityShares,1029432,0,shares,Number of fully paid up equity shares,DetailsOfSharesHeldByBodiesCorporate_Context18,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShares,1029432,0,shares,Total number of shares,DetailsOfSharesHeldByBodiesCorporate_Context18,2025-2-13 00:00:00,2025-2-13 00:00:00
+ShareholdingAsAPercentageOfTotalNumberOfShares,2.18,0,pure,Shareholding as a percentage of total number of shares,DetailsOfSharesHeldByBodiesCorporate_Context18,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfVotingRightsHeldBySameClassOfSecurities,1029432,0,pure,Number of voting rights held by same class of securities,DetailsOfSharesHeldByBodiesCorporate_Context18,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfVotingRights,1029432,0,pure,Number of voting rights,DetailsOfSharesHeldByBodiesCorporate_Context18,2025-2-13 00:00:00,2025-2-13 00:00:00
+PercentageOfTotalVotingRights,2.18,0,pure,Percentage of total voting rights,DetailsOfSharesHeldByBodiesCorporate_Context18,2025-2-13 00:00:00,2025-2-13 00:00:00
+ShareholdingAsAPercentageAssumingFullConversionOfConvertibleSecuritiesAndWarrants,2.07,0,pure,Total shareholding as a percentage assuming full conversion of convertible securities and warrants and warrants,DetailsOfSharesHeldByBodiesCorporate_Context18,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfEquitySharesHeldInDematerializedForm,1029432,0,shares,Number of equity shares held in dematerialized form,DetailsOfSharesHeldByBodiesCorporate_Context18,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareUnderSubCategoryOne,0,0,shares,Number of share under sub category one,DetailsOfSharesHeldByBodiesCorporate_Context18,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareUnderSubCategoryTwo,0,0,shares,Number of share under sub category two,DetailsOfSharesHeldByBodiesCorporate_Context18,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareUnderSubCategoryThree,0,0,shares,Number of share under sub category three,DetailsOfSharesHeldByBodiesCorporate_Context18,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareholders,1,0,pure,Number of shareholders,DetailsOfSharesHeldByBodiesCorporate_Context18,2025-2-13 00:00:00,2025-2-13 00:00:00
+NameOfTheShareholder,Merlin Enclaves Private Ltd.,0,,Name of the shareholder,D_DetailsOfSharesHeldByBodiesCorporate_Context19,2024-11-14 00:00:00,2025-2-13 00:00:00
+NumberOfFullyPaidUpEquityShares,895626,0,shares,Number of fully paid up equity shares,DetailsOfSharesHeldByBodiesCorporate_Context19,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShares,895626,0,shares,Total number of shares,DetailsOfSharesHeldByBodiesCorporate_Context19,2025-2-13 00:00:00,2025-2-13 00:00:00
+ShareholdingAsAPercentageOfTotalNumberOfShares,1.89,0,pure,Shareholding as a percentage of total number of shares,DetailsOfSharesHeldByBodiesCorporate_Context19,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfVotingRightsHeldBySameClassOfSecurities,895626,0,pure,Number of voting rights held by same class of securities,DetailsOfSharesHeldByBodiesCorporate_Context19,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfVotingRights,895626,0,pure,Number of voting rights,DetailsOfSharesHeldByBodiesCorporate_Context19,2025-2-13 00:00:00,2025-2-13 00:00:00
+PercentageOfTotalVotingRights,1.89,0,pure,Percentage of total voting rights,DetailsOfSharesHeldByBodiesCorporate_Context19,2025-2-13 00:00:00,2025-2-13 00:00:00
+ShareholdingAsAPercentageAssumingFullConversionOfConvertibleSecuritiesAndWarrants,1.8,0,pure,Total shareholding as a percentage assuming full conversion of convertible securities and warrants and warrants,DetailsOfSharesHeldByBodiesCorporate_Context19,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfEquitySharesHeldInDematerializedForm,895626,0,shares,Number of equity shares held in dematerialized form,DetailsOfSharesHeldByBodiesCorporate_Context19,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareUnderSubCategoryOne,0,0,shares,Number of share under sub category one,DetailsOfSharesHeldByBodiesCorporate_Context19,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareUnderSubCategoryTwo,0,0,shares,Number of share under sub category two,DetailsOfSharesHeldByBodiesCorporate_Context19,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareUnderSubCategoryThree,0,0,shares,Number of share under sub category three,DetailsOfSharesHeldByBodiesCorporate_Context19,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareholders,1,0,pure,Number of shareholders,DetailsOfSharesHeldByBodiesCorporate_Context19,2025-2-13 00:00:00,2025-2-13 00:00:00
+NameOfTheShareholder,Coppola Holdings Private Ltd.,0,,Name of the shareholder,D_DetailsOfSharesHeldByBodiesCorporate_Context20,2024-11-14 00:00:00,2025-2-13 00:00:00
+NumberOfFullyPaidUpEquityShares,827181,0,shares,Number of fully paid up equity shares,DetailsOfSharesHeldByBodiesCorporate_Context20,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShares,827181,0,shares,Total number of shares,DetailsOfSharesHeldByBodiesCorporate_Context20,2025-2-13 00:00:00,2025-2-13 00:00:00
+ShareholdingAsAPercentageOfTotalNumberOfShares,1.75,0,pure,Shareholding as a percentage of total number of shares,DetailsOfSharesHeldByBodiesCorporate_Context20,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfVotingRightsHeldBySameClassOfSecurities,827181,0,pure,Number of voting rights held by same class of securities,DetailsOfSharesHeldByBodiesCorporate_Context20,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfVotingRights,827181,0,pure,Number of voting rights,DetailsOfSharesHeldByBodiesCorporate_Context20,2025-2-13 00:00:00,2025-2-13 00:00:00
+PercentageOfTotalVotingRights,1.75,0,pure,Percentage of total voting rights,DetailsOfSharesHeldByBodiesCorporate_Context20,2025-2-13 00:00:00,2025-2-13 00:00:00
+ShareholdingAsAPercentageAssumingFullConversionOfConvertibleSecuritiesAndWarrants,1.66,0,pure,Total shareholding as a percentage assuming full conversion of convertible securities and warrants and warrants,DetailsOfSharesHeldByBodiesCorporate_Context20,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfEquitySharesHeldInDematerializedForm,827181,0,shares,Number of equity shares held in dematerialized form,DetailsOfSharesHeldByBodiesCorporate_Context20,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareUnderSubCategoryOne,0,0,shares,Number of share under sub category one,DetailsOfSharesHeldByBodiesCorporate_Context20,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareUnderSubCategoryTwo,0,0,shares,Number of share under sub category two,DetailsOfSharesHeldByBodiesCorporate_Context20,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareUnderSubCategoryThree,0,0,shares,Number of share under sub category three,DetailsOfSharesHeldByBodiesCorporate_Context20,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareholders,1,0,pure,Number of shareholders,DetailsOfSharesHeldByBodiesCorporate_Context20,2025-2-13 00:00:00,2025-2-13 00:00:00
+NameOfTheShareholder,Hardik B. Patel,0,,Name of the shareholder,D_DetailsOfSharesHeldByResidentIndividualShareholdersHoldingNominalShareCapitalInExcessOfRsTwoLakh_Context15,2024-11-14 00:00:00,2025-2-13 00:00:00
+NumberOfFullyPaidUpEquityShares,763758,0,shares,Number of fully paid up equity shares,DetailsOfSharesHeldByResidentIndividualShareholdersHoldingNominalShareCapitalInExcessOfRsTwoLakh_Context15,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShares,763758,0,shares,Total number of shares,DetailsOfSharesHeldByResidentIndividualShareholdersHoldingNominalShareCapitalInExcessOfRsTwoLakh_Context15,2025-2-13 00:00:00,2025-2-13 00:00:00
+ShareholdingAsAPercentageOfTotalNumberOfShares,1.61,0,pure,Shareholding as a percentage of total number of shares,DetailsOfSharesHeldByResidentIndividualShareholdersHoldingNominalShareCapitalInExcessOfRsTwoLakh_Context15,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfVotingRightsHeldBySameClassOfSecurities,763758,0,pure,Number of voting rights held by same class of securities,DetailsOfSharesHeldByResidentIndividualShareholdersHoldingNominalShareCapitalInExcessOfRsTwoLakh_Context15,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfVotingRights,763758,0,pure,Number of voting rights,DetailsOfSharesHeldByResidentIndividualShareholdersHoldingNominalShareCapitalInExcessOfRsTwoLakh_Context15,2025-2-13 00:00:00,2025-2-13 00:00:00
+PercentageOfTotalVotingRights,1.61,0,pure,Percentage of total voting rights,DetailsOfSharesHeldByResidentIndividualShareholdersHoldingNominalShareCapitalInExcessOfRsTwoLakh_Context15,2025-2-13 00:00:00,2025-2-13 00:00:00
+ShareholdingAsAPercentageAssumingFullConversionOfConvertibleSecuritiesAndWarrants,1.53,0,pure,Total shareholding as a percentage assuming full conversion of convertible securities and warrants and warrants,DetailsOfSharesHeldByResidentIndividualShareholdersHoldingNominalShareCapitalInExcessOfRsTwoLakh_Context15,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfEquitySharesHeldInDematerializedForm,763758,0,shares,Number of equity shares held in dematerialized form,DetailsOfSharesHeldByResidentIndividualShareholdersHoldingNominalShareCapitalInExcessOfRsTwoLakh_Context15,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareUnderSubCategoryOne,0,0,shares,Number of share under sub category one,DetailsOfSharesHeldByResidentIndividualShareholdersHoldingNominalShareCapitalInExcessOfRsTwoLakh_Context15,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareUnderSubCategoryTwo,0,0,shares,Number of share under sub category two,DetailsOfSharesHeldByResidentIndividualShareholdersHoldingNominalShareCapitalInExcessOfRsTwoLakh_Context15,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareUnderSubCategoryThree,0,0,shares,Number of share under sub category three,DetailsOfSharesHeldByResidentIndividualShareholdersHoldingNominalShareCapitalInExcessOfRsTwoLakh_Context15,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareholders,1,0,pure,Number of shareholders,DetailsOfSharesHeldByResidentIndividualShareholdersHoldingNominalShareCapitalInExcessOfRsTwoLakh_Context15,2025-2-13 00:00:00,2025-2-13 00:00:00
+NameOfTheShareholder,Sanjay Dhanuka,0,,Name of the shareholder,D_DetailsOfSharesHeldByResidentIndividualShareholdersHoldingNominalShareCapitalInExcessOfRsTwoLakh_Context16,2024-11-14 00:00:00,2025-2-13 00:00:00
+NumberOfFullyPaidUpEquityShares,700000,0,shares,Number of fully paid up equity shares,DetailsOfSharesHeldByResidentIndividualShareholdersHoldingNominalShareCapitalInExcessOfRsTwoLakh_Context16,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShares,700000,0,shares,Total number of shares,DetailsOfSharesHeldByResidentIndividualShareholdersHoldingNominalShareCapitalInExcessOfRsTwoLakh_Context16,2025-2-13 00:00:00,2025-2-13 00:00:00
+ShareholdingAsAPercentageOfTotalNumberOfShares,1.48,0,pure,Shareholding as a percentage of total number of shares,DetailsOfSharesHeldByResidentIndividualShareholdersHoldingNominalShareCapitalInExcessOfRsTwoLakh_Context16,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfVotingRightsHeldBySameClassOfSecurities,700000,0,pure,Number of voting rights held by same class of securities,DetailsOfSharesHeldByResidentIndividualShareholdersHoldingNominalShareCapitalInExcessOfRsTwoLakh_Context16,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfVotingRights,700000,0,pure,Number of voting rights,DetailsOfSharesHeldByResidentIndividualShareholdersHoldingNominalShareCapitalInExcessOfRsTwoLakh_Context16,2025-2-13 00:00:00,2025-2-13 00:00:00
+PercentageOfTotalVotingRights,1.48,0,pure,Percentage of total voting rights,DetailsOfSharesHeldByResidentIndividualShareholdersHoldingNominalShareCapitalInExcessOfRsTwoLakh_Context16,2025-2-13 00:00:00,2025-2-13 00:00:00
+ShareholdingAsAPercentageAssumingFullConversionOfConvertibleSecuritiesAndWarrants,1.41,0,pure,Total shareholding as a percentage assuming full conversion of convertible securities and warrants and warrants,DetailsOfSharesHeldByResidentIndividualShareholdersHoldingNominalShareCapitalInExcessOfRsTwoLakh_Context16,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfEquitySharesHeldInDematerializedForm,700000,0,shares,Number of equity shares held in dematerialized form,DetailsOfSharesHeldByResidentIndividualShareholdersHoldingNominalShareCapitalInExcessOfRsTwoLakh_Context16,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareUnderSubCategoryOne,0,0,shares,Number of share under sub category one,DetailsOfSharesHeldByResidentIndividualShareholdersHoldingNominalShareCapitalInExcessOfRsTwoLakh_Context16,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareUnderSubCategoryTwo,0,0,shares,Number of share under sub category two,DetailsOfSharesHeldByResidentIndividualShareholdersHoldingNominalShareCapitalInExcessOfRsTwoLakh_Context16,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareUnderSubCategoryThree,0,0,shares,Number of share under sub category three,DetailsOfSharesHeldByResidentIndividualShareholdersHoldingNominalShareCapitalInExcessOfRsTwoLakh_Context16,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareholders,1,0,pure,Number of shareholders,DetailsOfSharesHeldByResidentIndividualShareholdersHoldingNominalShareCapitalInExcessOfRsTwoLakh_Context16,2025-2-13 00:00:00,2025-2-13 00:00:00
+NameOfTheShareholder,Rajesh Joseph,0,,Name of the shareholder,D_DetailsOfSharesHeldByResidentIndividualShareholdersHoldingNominalShareCapitalInExcessOfRsTwoLakh_Context17,2024-11-14 00:00:00,2025-2-13 00:00:00
+NumberOfFullyPaidUpEquityShares,511000,0,shares,Number of fully paid up equity shares,DetailsOfSharesHeldByResidentIndividualShareholdersHoldingNominalShareCapitalInExcessOfRsTwoLakh_Context17,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShares,511000,0,shares,Total number of shares,DetailsOfSharesHeldByResidentIndividualShareholdersHoldingNominalShareCapitalInExcessOfRsTwoLakh_Context17,2025-2-13 00:00:00,2025-2-13 00:00:00
+ShareholdingAsAPercentageOfTotalNumberOfShares,1.08,0,pure,Shareholding as a percentage of total number of shares,DetailsOfSharesHeldByResidentIndividualShareholdersHoldingNominalShareCapitalInExcessOfRsTwoLakh_Context17,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfVotingRightsHeldBySameClassOfSecurities,511000,0,pure,Number of voting rights held by same class of securities,DetailsOfSharesHeldByResidentIndividualShareholdersHoldingNominalShareCapitalInExcessOfRsTwoLakh_Context17,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfVotingRights,511000,0,pure,Number of voting rights,DetailsOfSharesHeldByResidentIndividualShareholdersHoldingNominalShareCapitalInExcessOfRsTwoLakh_Context17,2025-2-13 00:00:00,2025-2-13 00:00:00
+PercentageOfTotalVotingRights,1.08,0,pure,Percentage of total voting rights,DetailsOfSharesHeldByResidentIndividualShareholdersHoldingNominalShareCapitalInExcessOfRsTwoLakh_Context17,2025-2-13 00:00:00,2025-2-13 00:00:00
+ShareholdingAsAPercentageAssumingFullConversionOfConvertibleSecuritiesAndWarrants,1.03,0,pure,Total shareholding as a percentage assuming full conversion of convertible securities and warrants and warrants,DetailsOfSharesHeldByResidentIndividualShareholdersHoldingNominalShareCapitalInExcessOfRsTwoLakh_Context17,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfEquitySharesHeldInDematerializedForm,511000,0,shares,Number of equity shares held in dematerialized form,DetailsOfSharesHeldByResidentIndividualShareholdersHoldingNominalShareCapitalInExcessOfRsTwoLakh_Context17,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareUnderSubCategoryOne,0,0,shares,Number of share under sub category one,DetailsOfSharesHeldByResidentIndividualShareholdersHoldingNominalShareCapitalInExcessOfRsTwoLakh_Context17,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareUnderSubCategoryTwo,0,0,shares,Number of share under sub category two,DetailsOfSharesHeldByResidentIndividualShareholdersHoldingNominalShareCapitalInExcessOfRsTwoLakh_Context17,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareUnderSubCategoryThree,0,0,shares,Number of share under sub category three,DetailsOfSharesHeldByResidentIndividualShareholdersHoldingNominalShareCapitalInExcessOfRsTwoLakh_Context17,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareholders,1,0,pure,Number of shareholders,DetailsOfSharesHeldByResidentIndividualShareholdersHoldingNominalShareCapitalInExcessOfRsTwoLakh_Context17,2025-2-13 00:00:00,2025-2-13 00:00:00
+CategoryOfOtherNonInstitutions,LLP,0,,Category of other non-institutions,D_OtherNonInstitutions_Context15,2024-11-14 00:00:00,2025-2-13 00:00:00
+WhetherACategoryOrMoreThan1PercentageOfShareHolding,More than 1 percentage of shareholding,0,,Whether a category or more than 1 percentage of share holding,D_OtherNonInstitutions_Context15,2024-11-14 00:00:00,2025-2-13 00:00:00
+NameOfTheShareholder,Darshita Landed Property Llp,0,,Name of the shareholder,D_OtherNonInstitutions_Context15,2024-11-14 00:00:00,2025-2-13 00:00:00
+NumberOfShareholders,1,0,pure,Number of shareholders,OtherNonInstitutions_Context15,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfFullyPaidUpEquityShares,3333924,0,shares,Number of fully paid up equity shares,OtherNonInstitutions_Context15,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShares,3333924,0,shares,Total number of shares,OtherNonInstitutions_Context15,2025-2-13 00:00:00,2025-2-13 00:00:00
+ShareholdingAsAPercentageOfTotalNumberOfShares,7.05,0,pure,Shareholding as a percentage of total number of shares,OtherNonInstitutions_Context15,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfVotingRightsHeldBySameClassOfSecurities,3333924,0,pure,Number of voting rights held by same class of securities,OtherNonInstitutions_Context15,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfVotingRights,3333924,0,pure,Number of voting rights,OtherNonInstitutions_Context15,2025-2-13 00:00:00,2025-2-13 00:00:00
+PercentageOfTotalVotingRights,7.05,0,pure,Percentage of total voting rights,OtherNonInstitutions_Context15,2025-2-13 00:00:00,2025-2-13 00:00:00
+ShareholdingAsAPercentageAssumingFullConversionOfConvertibleSecuritiesAndWarrants,6.7,0,pure,Total shareholding as a percentage assuming full conversion of convertible securities and warrants and warrants,OtherNonInstitutions_Context15,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfEquitySharesHeldInDematerializedForm,3333924,0,shares,Number of equity shares held in dematerialized form,OtherNonInstitutions_Context15,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareUnderSubCategoryOne,0,0,shares,Number of share under sub category one,OtherNonInstitutions_Context15,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareUnderSubCategoryTwo,0,0,shares,Number of share under sub category two,OtherNonInstitutions_Context15,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareUnderSubCategoryThree,0,0,shares,Number of share under sub category three,OtherNonInstitutions_Context15,2025-2-13 00:00:00,2025-2-13 00:00:00
+CategoryOfOtherNonInstitutions,LLP,0,,Category of other non-institutions,D_OtherNonInstitutions_Context16,2024-11-14 00:00:00,2025-2-13 00:00:00
+WhetherACategoryOrMoreThan1PercentageOfShareHolding,Category,0,,Whether a category or more than 1 percentage of share holding,D_OtherNonInstitutions_Context16,2024-11-14 00:00:00,2025-2-13 00:00:00
+NumberOfShareholders,3,0,pure,Number of shareholders,OtherNonInstitutions_Context16,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfFullyPaidUpEquityShares,3340383,0,shares,Number of fully paid up equity shares,OtherNonInstitutions_Context16,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShares,3340383,0,shares,Total number of shares,OtherNonInstitutions_Context16,2025-2-13 00:00:00,2025-2-13 00:00:00
+ShareholdingAsAPercentageOfTotalNumberOfShares,7.06,0,pure,Shareholding as a percentage of total number of shares,OtherNonInstitutions_Context16,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfVotingRightsHeldBySameClassOfSecurities,3340383,0,pure,Number of voting rights held by same class of securities,OtherNonInstitutions_Context16,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfVotingRights,3340383,0,pure,Number of voting rights,OtherNonInstitutions_Context16,2025-2-13 00:00:00,2025-2-13 00:00:00
+PercentageOfTotalVotingRights,7.06,0,pure,Percentage of total voting rights,OtherNonInstitutions_Context16,2025-2-13 00:00:00,2025-2-13 00:00:00
+ShareholdingAsAPercentageAssumingFullConversionOfConvertibleSecuritiesAndWarrants,6.71,0,pure,Total shareholding as a percentage assuming full conversion of convertible securities and warrants and warrants,OtherNonInstitutions_Context16,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfEquitySharesHeldInDematerializedForm,3340383,0,shares,Number of equity shares held in dematerialized form,OtherNonInstitutions_Context16,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareUnderSubCategoryOne,0,0,shares,Number of share under sub category one,OtherNonInstitutions_Context16,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareUnderSubCategoryTwo,0,0,shares,Number of share under sub category two,OtherNonInstitutions_Context16,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareUnderSubCategoryThree,0,0,shares,Number of share under sub category three,OtherNonInstitutions_Context16,2025-2-13 00:00:00,2025-2-13 00:00:00
+CategoryOfOtherNonInstitutions,HUF,0,,Category of other non-institutions,D_OtherNonInstitutions_Context17,2024-11-14 00:00:00,2025-2-13 00:00:00
+WhetherACategoryOrMoreThan1PercentageOfShareHolding,Category,0,,Whether a category or more than 1 percentage of share holding,D_OtherNonInstitutions_Context17,2024-11-14 00:00:00,2025-2-13 00:00:00
+NumberOfShareholders,111,0,pure,Number of shareholders,OtherNonInstitutions_Context17,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfFullyPaidUpEquityShares,548550,0,shares,Number of fully paid up equity shares,OtherNonInstitutions_Context17,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShares,548550,0,shares,Total number of shares,OtherNonInstitutions_Context17,2025-2-13 00:00:00,2025-2-13 00:00:00
+ShareholdingAsAPercentageOfTotalNumberOfShares,1.16,0,pure,Shareholding as a percentage of total number of shares,OtherNonInstitutions_Context17,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfVotingRightsHeldBySameClassOfSecurities,548550,0,pure,Number of voting rights held by same class of securities,OtherNonInstitutions_Context17,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfVotingRights,548550,0,pure,Number of voting rights,OtherNonInstitutions_Context17,2025-2-13 00:00:00,2025-2-13 00:00:00
+PercentageOfTotalVotingRights,1.16,0,pure,Percentage of total voting rights,OtherNonInstitutions_Context17,2025-2-13 00:00:00,2025-2-13 00:00:00
+ShareholdingAsAPercentageAssumingFullConversionOfConvertibleSecuritiesAndWarrants,1.1,0,pure,Total shareholding as a percentage assuming full conversion of convertible securities and warrants and warrants,OtherNonInstitutions_Context17,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfEquitySharesHeldInDematerializedForm,548550,0,shares,Number of equity shares held in dematerialized form,OtherNonInstitutions_Context17,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareUnderSubCategoryOne,0,0,shares,Number of share under sub category one,OtherNonInstitutions_Context17,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareUnderSubCategoryTwo,0,0,shares,Number of share under sub category two,OtherNonInstitutions_Context17,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareUnderSubCategoryThree,0,0,shares,Number of share under sub category three,OtherNonInstitutions_Context17,2025-2-13 00:00:00,2025-2-13 00:00:00
+CategoryOfOtherNonInstitutions,Clearing Members,0,,Category of other non-institutions,D_OtherNonInstitutions_Context18,2024-11-14 00:00:00,2025-2-13 00:00:00
+WhetherACategoryOrMoreThan1PercentageOfShareHolding,Category,0,,Whether a category or more than 1 percentage of share holding,D_OtherNonInstitutions_Context18,2024-11-14 00:00:00,2025-2-13 00:00:00
+NumberOfShareholders,1,0,pure,Number of shareholders,OtherNonInstitutions_Context18,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfFullyPaidUpEquityShares,300,0,shares,Number of fully paid up equity shares,OtherNonInstitutions_Context18,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShares,300,0,shares,Total number of shares,OtherNonInstitutions_Context18,2025-2-13 00:00:00,2025-2-13 00:00:00
+ShareholdingAsAPercentageOfTotalNumberOfShares,0,0,pure,Shareholding as a percentage of total number of shares,OtherNonInstitutions_Context18,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfVotingRightsHeldBySameClassOfSecurities,300,0,pure,Number of voting rights held by same class of securities,OtherNonInstitutions_Context18,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfVotingRights,300,0,pure,Number of voting rights,OtherNonInstitutions_Context18,2025-2-13 00:00:00,2025-2-13 00:00:00
+PercentageOfTotalVotingRights,0,0,pure,Percentage of total voting rights,OtherNonInstitutions_Context18,2025-2-13 00:00:00,2025-2-13 00:00:00
+ShareholdingAsAPercentageAssumingFullConversionOfConvertibleSecuritiesAndWarrants,0,0,pure,Total shareholding as a percentage assuming full conversion of convertible securities and warrants and warrants,OtherNonInstitutions_Context18,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfEquitySharesHeldInDematerializedForm,300,0,shares,Number of equity shares held in dematerialized form,OtherNonInstitutions_Context18,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareUnderSubCategoryOne,0,0,shares,Number of share under sub category one,OtherNonInstitutions_Context18,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareUnderSubCategoryTwo,0,0,shares,Number of share under sub category two,OtherNonInstitutions_Context18,2025-2-13 00:00:00,2025-2-13 00:00:00
+NumberOfShareUnderSubCategoryThree,0,0,shares,Number of share under sub category three,OtherNonInstitutions_Context18,2025-2-13 00:00:00,2025-2-13 00:00:00
+NameOfSignificantBeneficialOwners,VivekBiyani,0,,Name of significant beneficial owners,D_DetailsOfSBO15,2024-11-14 00:00:00,2025-2-13 00:00:00
+NationalityOfSignificantBeneficialOwners,India,0,,Nationality of significant beneficial owners,D_DetailsOfSBO15,2024-11-14 00:00:00,2025-2-13 00:00:00
+NameOfRegisteredOwner,Future Enterprises Limited,0,,Name of registered owner,D_DetailsOfSBO15,2024-11-14 00:00:00,2025-2-13 00:00:00
+NationalityOfRegisteredOwner,India,0,,Nationality of registered owner,D_DetailsOfSBO15,2024-11-14 00:00:00,2025-2-13 00:00:00
+DetailsOfHoldingExerciseOfRightOfTheSBOInTheReportingCompanyWhetherByVirtueOfShares,0,0,pure,Details of holding exercise of right of the sbo in the reporting company whether by virtue of shares,DetailsOfSBO15,2025-2-13 00:00:00,2025-2-13 00:00:00
+DetailsOfHoldingExerciseOfRightOfTheSBOInTheReportingCompanyWhetherByVirtueOfVotingRights,0,0,pure,Details of holding exercise of right of the sbo in the reporting company whether by virtue of voting rights,DetailsOfSBO15,2025-2-13 00:00:00,2025-2-13 00:00:00
+DetailsOfHoldingExerciseOfRightOfTheSBOInTheReportingCompanyWhetherByVirtueOfExerciseOfControl,false,0,,Details of holding exercise of right of the sbo in the reporting company whether by virtue of exercise of control,DetailsOfSBO15,2025-2-13 00:00:00,2025-2-13 00:00:00
+DetailsOfHoldingExerciseOfRightOfTheSBOInTheReportingCompanyWhetherByVirtueOfExerciseOfSignificantInfluence,true,0,,Details of holding exercise of right of the sbo in the reporting company whether by virtue of exercise of significant influence,DetailsOfSBO15,2025-2-13 00:00:00,2025-2-13 00:00:00
+DateOfCreationOrAcquisitionOfSignificantBeneficialInterest,2023-06-26,0,,Date of creation or acquisition of significant beneficial interest,DetailsOfSBO15,2025-2-13 00:00:00,2025-2-13 00:00:00
+NameOfSignificantBeneficialOwners,VivekBiyani,0,,Name of significant beneficial owners,D_DetailsOfSBO16,2024-11-14 00:00:00,2025-2-13 00:00:00
+NationalityOfSignificantBeneficialOwners,India,0,,Nationality of significant beneficial owners,D_DetailsOfSBO16,2024-11-14 00:00:00,2025-2-13 00:00:00
+NameOfRegisteredOwner,Niyman Mall Management Company Private Limited,0,,Name of registered owner,D_DetailsOfSBO16,2024-11-14 00:00:00,2025-2-13 00:00:00
+NationalityOfRegisteredOwner,India,0,,Nationality of registered owner,D_DetailsOfSBO16,2024-11-14 00:00:00,2025-2-13 00:00:00
+DetailsOfHoldingExerciseOfRightOfTheSBOInTheReportingCompanyWhetherByVirtueOfShares,0,0,pure,Details of holding exercise of right of the sbo in the reporting company whether by virtue of shares,DetailsOfSBO16,2025-2-13 00:00:00,2025-2-13 00:00:00
+DetailsOfHoldingExerciseOfRightOfTheSBOInTheReportingCompanyWhetherByVirtueOfVotingRights,0,0,pure,Details of holding exercise of right of the sbo in the reporting company whether by virtue of voting rights,DetailsOfSBO16,2025-2-13 00:00:00,2025-2-13 00:00:00
+DetailsOfHoldingExerciseOfRightOfTheSBOInTheReportingCompanyWhetherByVirtueOfExerciseOfControl,false,0,,Details of holding exercise of right of the sbo in the reporting company whether by virtue of exercise of control,DetailsOfSBO16,2025-2-13 00:00:00,2025-2-13 00:00:00
+DetailsOfHoldingExerciseOfRightOfTheSBOInTheReportingCompanyWhetherByVirtueOfExerciseOfSignificantInfluence,true,0,,Details of holding exercise of right of the sbo in the reporting company whether by virtue of exercise of significant influence,DetailsOfSBO16,2025-2-13 00:00:00,2025-2-13 00:00:00
+DateOfCreationOrAcquisitionOfSignificantBeneficialInterest,2023-11-29,0,,Date of creation or acquisition of significant beneficial interest,DetailsOfSBO16,2025-2-13 00:00:00,2025-2-13 00:00:00
+NameOfSignificantBeneficialOwners,Subhash Rathod,0,,Name of significant beneficial owners,D_DetailsOfSBO17,2024-11-14 00:00:00,2025-2-13 00:00:00
+NationalityOfSignificantBeneficialOwners,India,0,,Nationality of significant beneficial owners,D_DetailsOfSBO17,2024-11-14 00:00:00,2025-2-13 00:00:00
+NameOfRegisteredOwner,Abacus Realty Logistics Private Limited,0,,Name of registered owner,D_DetailsOfSBO17,2024-11-14 00:00:00,2025-2-13 00:00:00
+NationalityOfRegisteredOwner,India,0,,Nationality of registered owner,D_DetailsOfSBO17,2024-11-14 00:00:00,2025-2-13 00:00:00
+DetailsOfHoldingExerciseOfRightOfTheSBOInTheReportingCompanyWhetherByVirtueOfShares,0,0,pure,Details of holding exercise of right of the sbo in the reporting company whether by virtue of shares,DetailsOfSBO17,2025-2-13 00:00:00,2025-2-13 00:00:00
+DetailsOfHoldingExerciseOfRightOfTheSBOInTheReportingCompanyWhetherByVirtueOfVotingRights,0,0,pure,Details of holding exercise of right of the sbo in the reporting company whether by virtue of voting rights,DetailsOfSBO17,2025-2-13 00:00:00,2025-2-13 00:00:00
+DetailsOfHoldingExerciseOfRightOfTheSBOInTheReportingCompanyWhetherByVirtueOfExerciseOfControl,false,0,,Details of holding exercise of right of the sbo in the reporting company whether by virtue of exercise of control,DetailsOfSBO17,2025-2-13 00:00:00,2025-2-13 00:00:00
+DetailsOfHoldingExerciseOfRightOfTheSBOInTheReportingCompanyWhetherByVirtueOfExerciseOfSignificantInfluence,true,0,,Details of holding exercise of right of the sbo in the reporting company whether by virtue of exercise of significant influence,DetailsOfSBO17,2025-2-13 00:00:00,2025-2-13 00:00:00
+DateOfCreationOrAcquisitionOfSignificantBeneficialInterest,2024-09-05,0,,Date of creation or acquisition of significant beneficial interest,DetailsOfSBO17,2025-2-13 00:00:00,2025-2-13 00:00:00
+NameOfSignificantBeneficialOwners,Mangala Rathod,0,,Name of significant beneficial owners,D_DetailsOfSBO18,2024-11-14 00:00:00,2025-2-13 00:00:00
+NationalityOfSignificantBeneficialOwners,India,0,,Nationality of significant beneficial owners,D_DetailsOfSBO18,2024-11-14 00:00:00,2025-2-13 00:00:00
+NameOfRegisteredOwner,Abacus Realty Logistics Private Limited,0,,Name of registered owner,D_DetailsOfSBO18,2024-11-14 00:00:00,2025-2-13 00:00:00
+NationalityOfRegisteredOwner,India,0,,Nationality of registered owner,D_DetailsOfSBO18,2024-11-14 00:00:00,2025-2-13 00:00:00
+DetailsOfHoldingExerciseOfRightOfTheSBOInTheReportingCompanyWhetherByVirtueOfShares,0,0,pure,Details of holding exercise of right of the sbo in the reporting company whether by virtue of shares,DetailsOfSBO18,2025-2-13 00:00:00,2025-2-13 00:00:00
+DetailsOfHoldingExerciseOfRightOfTheSBOInTheReportingCompanyWhetherByVirtueOfVotingRights,0,0,pure,Details of holding exercise of right of the sbo in the reporting company whether by virtue of voting rights,DetailsOfSBO18,2025-2-13 00:00:00,2025-2-13 00:00:00
+DetailsOfHoldingExerciseOfRightOfTheSBOInTheReportingCompanyWhetherByVirtueOfExerciseOfControl,false,0,,Details of holding exercise of right of the sbo in the reporting company whether by virtue of exercise of control,DetailsOfSBO18,2025-2-13 00:00:00,2025-2-13 00:00:00
+DetailsOfHoldingExerciseOfRightOfTheSBOInTheReportingCompanyWhetherByVirtueOfExerciseOfSignificantInfluence,true,0,,Details of holding exercise of right of the sbo in the reporting company whether by virtue of exercise of significant influence,DetailsOfSBO18,2025-2-13 00:00:00,2025-2-13 00:00:00
+DateOfCreationOrAcquisitionOfSignificantBeneficialInterest,2024-09-05,0,,Date of creation or acquisition of significant beneficial interest,DetailsOfSBO18,2025-2-13 00:00:00,2025-2-13 00:00:00
+PercentageOfBoardApprovedLimits,51,0,pure,Board approved limits (%),MainI,2025-2-13 00:00:00,2025-2-13 00:00:00
+PercentageOfLimitsUtilized,0,0,pure,Limits utilized (%),MainI,2025-2-13 00:00:00,2025-2-13 00:00:00
+PercentageOfBoardApprovedLimits,51,0,pure,Board approved limits (%),MainPYI,2024-11-13 00:00:00,2024-11-13 00:00:00
+PercentageOfLimitsUtilized,0,0,pure,Limits utilized (%),MainPYI,2024-11-13 00:00:00,2024-11-13 00:00:00
+PercentageOfBoardApprovedLimits,51,0,pure,Board approved limits (%),MainPPYI,2024-8-13 00:00:00,2024-8-13 00:00:00
+PercentageOfLimitsUtilized,0,0,pure,Limits utilized (%),MainPPYI,2024-8-13 00:00:00,2024-8-13 00:00:00
+PercentageOfBoardApprovedLimits,51,0,pure,Board approved limits (%),MainPPPYI,2024-5-13 00:00:00,2024-5-13 00:00:00
+PercentageOfLimitsUtilized,0,0,pure,Limits utilized (%),MainPPPYI,2024-5-13 00:00:00,2024-5-13 00:00:00
+PercentageOfBoardApprovedLimits,51,0,pure,Board approved limits (%),MainPPPPYI,2024-2-13 00:00:00,2024-2-13 00:00:00
+PercentageOfLimitsUtilized,0,0,pure,Limits utilized (%),MainPPPPYI,2024-2-13 00:00:00,2024-2-13 00:00:00
+XbrlUrl,http://www.bseindia.com/XBRL1/506186_2822025172732_SHP.xml,0,,XbrlUrl,,,
+ReceivedAt,,0,,Received At DateTime,,,
+SavedAt,2025-4-02 14:21:44,0,,Saved At DateTim,,,

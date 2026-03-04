@@ -47,6 +47,30 @@ export function scoreVPT(vol: number, price: number): number {
   return 30 // Fallback: near-zero/flat
 }
 
+/**
+ * Score VPT using V4 rules — cleaner structure, 0-100 scale.
+ * vol = avg(5D vol) / avg(50D vol) — ratio, >1 means above-avg volume
+ * price = 5D price change %
+ *
+ * Rules (from CSV, converted to 0-100):
+ *   Vol > 1.5 & Price < -2%  → 0   (heavy selling)
+ *   Vol > 1.5 & Price > +2%  → 100 (strong accumulation)
+ *   Vol > 1.0 & Price < -1%  → 10  (distribution)
+ *   Vol 1.2-1.5 & Price 0-2% → 80  (quiet accumulation)
+ *   Vol 0.5-0.8 & Price > 0  → 20  (light buying)
+ *   Vol 0.8-1.2              → 30  (neutral)
+ *   Fallback                 → 30
+ */
+export function scoreVPTV4(vol: number, price: number): number {
+  if (vol > 1.5 && price < -2)                                return 0
+  if (vol > 1.5 && price > 2)                                 return 100
+  if (vol > 1.0 && price < -1)                                return 10
+  if (vol >= 1.2 && vol <= 1.5 && price >= 0 && price <= 2)   return 80
+  if (vol >= 0.5 && vol < 0.8 && price > 0)                   return 20
+  if (vol >= 0.8 && vol <= 1.2)                                return 30
+  return 30
+}
+
 // ─────────────────────────────────────────────────
 // Metric Scoring
 // ─────────────────────────────────────────────────
@@ -139,7 +163,9 @@ const sortedBandsCache = new WeakMap<ScoreBand[], ScoreBand[]>()
 function getSortedBands(scoreBands: ScoreBand[]): ScoreBand[] {
   let sorted = sortedBandsCache.get(scoreBands)
   if (!sorted) {
-    sorted = [...scoreBands].sort((a, b) => b.score - a.score)
+    // Sort by min descending — first match on `rawValue >= band.min` wins
+    // This eliminates gaps between adjacent bands (same pattern as getVerdict)
+    sorted = [...scoreBands].sort((a, b) => b.min - a.min)
     sortedBandsCache.set(scoreBands, sorted)
   }
   return sorted
@@ -149,21 +175,17 @@ function lookupScoreBand(rawValue: number, scoreBands: ScoreBand[]): number {
   // Guard: no bands defined → return 0
   if (!scoreBands || scoreBands.length === 0) return 0
 
-  // Sort bands by score descending for priority (cached)
+  // Sort bands by min descending (cached) — first match wins, no gaps
   const sorted = getSortedBands(scoreBands)
 
   for (const band of sorted) {
-    if (rawValue >= band.min && rawValue <= band.max) {
+    if (rawValue >= band.min) {
       return band.score
     }
   }
 
-  // If no band matches, find the nearest band
-  if (rawValue > sorted[0].max) return sorted[0].score              // Above highest band
-  if (rawValue < sorted[sorted.length - 1].min) return sorted[sorted.length - 1].score  // Below lowest band
-
-  console.warn(`[ScoringEngine] No score band matched for value ${rawValue} across ${scoreBands.length} bands — possible gap in band configuration`)
-  return 0
+  // Below all bands → lowest band's score
+  return sorted[sorted.length - 1].score
 }
 
 /**
@@ -253,10 +275,15 @@ export function scoreMetric(
 
 /**
  * Score a segment by aggregating its metric scores (weighted average).
+ *
+ * naHandling controls how excluded/NA metrics affect the denominator:
+ *   'exclude' (default): weights of excluded metrics are redistributed to active metrics.
+ *   'zero': excluded metrics contribute 0 but denominator stays at total weight (penalizes missing data).
  */
 export function scoreSegment(
   metricScores: MetricScore[],
-  segment: ScorecardSegment
+  segment: ScorecardSegment,
+  naHandling?: 'exclude' | 'zero'
 ): SegmentResult {
   // Filter out excluded metrics
   const activeScores = metricScores.filter(ms => !ms.isExcluded)
@@ -273,22 +300,31 @@ export function scoreSegment(
 
   // Build weight map from segment metrics
   const weightMap = new Map<string, number>()
-  let totalWeight = 0
+  let activeWeight = 0
+  let fullWeight = 0
   for (const metric of segment.metrics) {
     const weight = metric.weight ?? (1 / segment.metrics.length)
     weightMap.set(metric.id, weight)
-    // Only count weight for active (non-excluded) metrics
+    fullWeight += weight
     if (activeScores.some(s => s.metricId === metric.id)) {
-      totalWeight += weight
+      activeWeight += weight
     }
   }
 
-  // Weighted average (re-normalize weights for active metrics only)
   let weightedSum = 0
-  for (const score of activeScores) {
-    const weight = weightMap.get(score.metricId) ?? 0
-    const normalizedWeight = totalWeight > 0 ? weight / totalWeight : 0
-    weightedSum += score.normalizedScore * normalizedWeight
+  if (naHandling === 'zero') {
+    // Zero-NA mode: sum(score × weight) / fullWeight. Missing metrics contribute 0.
+    for (const score of activeScores) {
+      weightedSum += score.normalizedScore * (weightMap.get(score.metricId) ?? 0)
+    }
+    weightedSum = fullWeight > 0 ? weightedSum / fullWeight : 0
+  } else {
+    // Exclude mode (default): re-normalize weights for active metrics only
+    for (const score of activeScores) {
+      const weight = weightMap.get(score.metricId) ?? 0
+      const normalizedWeight = activeWeight > 0 ? weight / activeWeight : 0
+      weightedSum += score.normalizedScore * normalizedWeight
+    }
   }
 
   const segmentScore = Math.round(weightedSum * 100) / 100
@@ -328,11 +364,11 @@ function scoreValuationSegmentConditional(
   segment: ScorecardSegment,
   stockData: Record<string, number | null>
 ): SegmentResult {
-  // Extract scored metrics — pass null for excluded ones so computeValuationScore
-  // treats them as "not available" rather than "score 0"
-  const pe = metricScores.find(m => m.metricId === 'v2_pe_vs_5y')
-  const pb = metricScores.find(m => m.metricId === 'v2_pb_vs_5y')
-  const ev = metricScores.find(m => m.metricId === 'v2_ev_vs_5y')
+  // Extract scored metrics by suffix (works for v2_pe_vs_5y, v4_pe_vs_5y, etc.)
+  // Pass null for excluded ones so computeValuationScore treats them as "not available"
+  const pe = metricScores.find(m => m.metricId.endsWith('_pe_vs_5y'))
+  const pb = metricScores.find(m => m.metricId.endsWith('_pb_vs_5y'))
+  const ev = metricScores.find(m => m.metricId.endsWith('_ev_vs_5y'))
 
   // Pass configurable thresholds/weights from segment if available
   const valConfig = segment.valuationConditionals?.enabled ? {
@@ -385,35 +421,65 @@ function scoreValuationSegmentConditional(
  * Formula structure:
  *   (base_segment_1 × w1 + base_segment_2 × w2) × baseWeight
  *   + overlay_segment_1 × ow1 + overlay_segment_2 × ow2
+ *
+ * When adaptiveReNorm is true (V4 zero-NA mode):
+ *   - If a valuation segment is N/A → returns NaN (composite not applicable)
+ *   - If any other segment is N/A → re-normalizes remaining weights to sum to 100%
  */
 export function computeComposite(
   segmentResults: SegmentResult[],
-  formula: CompositeFormula
+  formula: CompositeFormula,
+  options?: { adaptiveReNorm?: boolean }
 ): number {
   const scoreMap = new Map<string, number>()
+  const naSegmentIds = new Set<string>()
   for (const sr of segmentResults) {
     scoreMap.set(sr.segmentId, sr.segmentScore)
+    if (sr.verdict === 'N/A' || sr.naReason) naSegmentIds.add(sr.segmentId)
   }
 
-  // Base segments: weighted sum
+  // Adaptive re-normalization (V4): handle N/A segments
+  if (options?.adaptiveReNorm && naSegmentIds.size > 0) {
+    const allEntries = [...formula.baseSegments, ...(formula.overlaySegments ?? [])]
+
+    // If valuation segment is N/A → entire composite is N/A
+    for (const { segmentId } of allEntries) {
+      if (naSegmentIds.has(segmentId) && segmentId.includes('valuation')) return NaN
+    }
+
+    // Re-normalize: compute effective weights and scale active weights to original total
+    let activeWeightedSum = 0
+    let activeTotalEffWeight = 0
+    for (const { segmentId, weight } of formula.baseSegments) {
+      const effWeight = weight * formula.baseWeight
+      if (naSegmentIds.has(segmentId)) continue
+      activeWeightedSum += (scoreMap.get(segmentId) ?? 0) * effWeight
+      activeTotalEffWeight += effWeight
+    }
+    if (formula.overlaySegments) {
+      for (const { segmentId, weight } of formula.overlaySegments) {
+        if (naSegmentIds.has(segmentId)) continue
+        activeWeightedSum += (scoreMap.get(segmentId) ?? 0) * weight
+        activeTotalEffWeight += weight
+      }
+    }
+    if (activeTotalEffWeight === 0) return NaN
+    return Math.round((activeWeightedSum / activeTotalEffWeight) * 100) / 100
+  }
+
+  // Default behavior: straight weighted calculation (N/A segments contribute 0)
   let baseSum = 0
   for (const { segmentId, weight } of formula.baseSegments) {
-    const segScore = scoreMap.get(segmentId) ?? 0
-    baseSum += segScore * weight
+    baseSum += (scoreMap.get(segmentId) ?? 0) * weight
   }
-
-  // Apply base weight
   let composite = baseSum * formula.baseWeight
 
-  // Overlay segments: added directly
   if (formula.overlaySegments) {
     for (const { segmentId, weight } of formula.overlaySegments) {
-      const segScore = scoreMap.get(segmentId) ?? 0
-      composite += segScore * weight
+      composite += (scoreMap.get(segmentId) ?? 0) * weight
     }
   }
 
-  // Round to 2 decimal places (no clamp — negative technical scores flow through)
   return Math.round(composite * 100) / 100
 }
 
@@ -545,7 +611,9 @@ export function getVerdict(
   const sorted = [...thresholds].sort((a, b) => b.minScore - a.minScore)
 
   for (const t of sorted) {
-    if (score >= t.minScore && score <= t.maxScore) {
+    // Use >= only (first match wins, sorted descending). This avoids gaps
+    // between integer maxScore boundaries when scores are fractional (e.g. 64.17).
+    if (score >= t.minScore) {
       return {
         verdict: t.verdict,
         altVerdict: t.altVerdict,
@@ -585,29 +653,60 @@ export function scoreStock(
   // Score each segment
   const segmentResults: SegmentResult[] = scorecard.segments.map(segment => {
     const metricScores: MetricScore[] = segment.metrics.map(metric => {
-      // VPT two-input conditional scoring — uses volume_change + price_change instead of band lookup
+      // V2 VPT two-input conditional scoring
       if (metric.scoringMethod === 'conditional_vpt') {
         const volChange = stockData['v2_volume_change'] ?? null
         const priceChangeVal = stockData['v2_price_change'] ?? null
         if (volChange != null && priceChangeVal != null) {
-          const vptScore = scoreVPT(volChange, priceChangeVal)
           return {
-            metricId: metric.id,
-            metricName: metric.name,
+            metricId: metric.id, metricName: metric.name,
             rawValue: stockData[metric.id] ?? null,
-            normalizedScore: vptScore,
+            normalizedScore: scoreVPT(volChange, priceChangeVal),
             isExcluded: false,
             evidence: { startValue: volChange, endValue: priceChangeVal },
           }
         }
-        // No volume/price data → excluded
         return {
-          metricId: metric.id,
-          metricName: metric.name,
-          rawValue: null,
-          normalizedScore: 0,
-          isExcluded: true,
+          metricId: metric.id, metricName: metric.name, rawValue: null,
+          normalizedScore: 0, isExcluded: true,
           excludeReason: 'No volume/price change data for VPT conditional scoring',
+        }
+      }
+
+      // V4 VPT conditional scoring — reads data keys from calculationParams
+      if (metric.scoringMethod === 'conditional_vpt_v4') {
+        const volKey = (metric.calculationParams?.volumeKey as string) ?? 'v4_volume_change'
+        const priceKey = (metric.calculationParams?.priceKey as string) ?? 'v4_price_change'
+        const volChange = stockData[volKey] ?? null
+        const priceChangeVal = stockData[priceKey] ?? null
+        if (volChange != null && priceChangeVal != null) {
+          return {
+            metricId: metric.id, metricName: metric.name,
+            rawValue: stockData[metric.id] ?? null,
+            normalizedScore: scoreVPTV4(volChange, priceChangeVal),
+            isExcluded: false,
+            evidence: { startValue: volChange, endValue: priceChangeVal },
+          }
+        }
+        return {
+          metricId: metric.id, metricName: metric.name, rawValue: null,
+          normalizedScore: 0, isExcluded: true,
+          excludeReason: 'No volume/price data for V4 VPT scoring',
+        }
+      }
+
+      // EBITDA floor: if metric has ebitdaFloor param and EBITDA ≤ 0, return floor score
+      // Convention: metricContext[metricId].endValue = EBITDA (denominator) for Debt/EBITDA
+      if (metric.calculationParams?.ebitdaFloor != null) {
+        const ctx = metricContext?.[metric.id]
+        if (ctx?.endValue != null && ctx.endValue <= 0) {
+          const floor = Number(metric.calculationParams.ebitdaFloor)
+          return {
+            metricId: metric.id, metricName: metric.name,
+            rawValue: stockData[metric.id] ?? null,
+            normalizedScore: floor, isExcluded: false,
+            evidence: ctx,
+          }
         }
       }
 
@@ -615,16 +714,34 @@ export function scoreStock(
       const context = metricContext?.[metric.id]
       return scoreMetric(rawValue, metric, scorecard.negativeHandlingRules, context)
     })
-    // Use PB-anchored conditional weights for valuation segment (V2.2 CSV spec)
-    if (segment.id === 'v2_valuation') {
+
+    // PB-anchored conditional weights for valuation segments (any version)
+    if (segment.valuationConditionals?.enabled) {
       return scoreValuationSegmentConditional(metricScores, segment, stockData)
     }
 
-    return scoreSegment(metricScores, segment)
+    return scoreSegment(metricScores, segment, segment.naHandling ?? scorecard.naHandling)
   })
 
-  // Compute composite
-  const rawComposite = computeComposite(segmentResults, scorecard.compositeFormula)
+  // Compute composite (with adaptive re-normalization for V4 zero-NA mode)
+  const adaptiveReNorm = scorecard.naHandling === 'zero'
+  const rawComposite = computeComposite(segmentResults, scorecard.compositeFormula, { adaptiveReNorm })
+
+  // Handle N/A composite (e.g., valuation not meaningful in V4)
+  if (isNaN(rawComposite)) {
+    return {
+      stockId: stockInfo.id,
+      stockName: stockInfo.name,
+      stockSymbol: stockInfo.symbol,
+      sector: stockInfo.sector,
+      marketCap: stockInfo.marketCap,
+      segmentResults,
+      rawComposite: 0,
+      normalizedScore: 0,
+      verdict: 'N/A',
+      verdictColor: 'text-neutral-500',
+    }
+  }
 
   // Apply custom factors
   const adjustedScore = applyCustomFactors(rawComposite, scorecard.customFactors)

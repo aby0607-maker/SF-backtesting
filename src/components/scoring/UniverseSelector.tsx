@@ -45,16 +45,18 @@ export function UniverseSelector() {
   // Full company list from API (cached)
   const [allCompanies, setAllCompanies] = useState<CMOTSCompany[]>([])
   const [loading, setLoading] = useState(false)
-  const [loadError, setLoadError] = useState(false)
+  const [loadError, setLoadError] = useState<string | null>(null)
 
   // ── Load company master on mount ──
   useEffect(() => {
     setLoading(true)
-    setLoadError(false)
+    setLoadError(null)
     getCompanyMaster().then(companies => {
       setAllCompanies(companies)  // Already BSE-filtered by getCompanyMaster()
       setLoading(false)
-      setLoadError(companies.length === 0)
+      if (companies.length === 0) {
+        setLoadError('The CMOTS company master API returned no data. Check browser console for [CMOTS] logs.')
+      }
 
       // Auto-resolve cohort filters into customSymbols on initial load.
       // Without this, the default state (mcapTypes: ['Large Cap'], customSymbols: [])
@@ -213,7 +215,7 @@ export function UniverseSelector() {
             <span className="text-xs font-medium text-red-400">Failed to load stock data</span>
           </div>
           <p className="text-[11px] text-neutral-400 leading-relaxed">
-            The CMOTS company master API returned no data. Check that CMOTS_API_TOKEN is set in your environment.
+            {loadError}
           </p>
         </div>
       )}

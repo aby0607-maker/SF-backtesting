@@ -21,17 +21,33 @@ const ALLOWED_ORIGINS = [
   'http://localhost:4173',
 ]
 
+/** Check if an origin is allowed — supports exact matches and Vercel preview URLs */
+function isAllowedOrigin(origin: string): boolean {
+  if (ALLOWED_ORIGINS.includes(origin)) return true
+  // Allow Vercel preview deployments for this project (e.g. sf-backtesting-abc123.vercel.app)
+  if (/^https:\/\/sf-backtesting[a-z0-9-]*\.vercel\.app$/.test(origin)) return true
+  return false
+}
+
 // Allowed CMOTS endpoint prefixes (whitelist for security)
 const ALLOWED_PREFIXES = [
   '/companymaster',
+  '/CompanyProfile',
+  '/CompanyBackground',
   '/TTMData',
   '/FinData',
   '/ProftandLoss',
+  '/BalanceSheet',
   '/CashFlow',
   '/QuarterlyResults',
   '/AdjustedPriceChart',
   '/Aggregate-Share-Holding',
+  '/ShareHoldingPatternDetailed',
+  '/ShareholdingMorethanOnePercent',
   '/BSEDelayedPriceFeed',
+  '/BSEAnnouncement',
+  '/NSEAnnouncement',
+  '/Exchange-Holidays',
 ]
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -64,6 +80,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const targetUrl = `${CMOTS_BASE}${cmotPath}`
 
   try {
+    console.log(`[CMOTS Proxy] ${cmotPath} → fetching`)
     const upstream = await fetch(targetUrl, {
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -71,12 +88,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       },
     })
 
+    console.log(`[CMOTS Proxy] ${cmotPath} → ${upstream.status}`)
+
     const contentType = upstream.headers.get('content-type') || 'application/json'
     const body = await upstream.text()
 
     // CORS: restrict to allowed origins only
     const origin = req.headers?.origin ?? ''
-    if (ALLOWED_ORIGINS.includes(origin)) {
+    if (isAllowedOrigin(origin)) {
       res.setHeader('Access-Control-Allow-Origin', origin)
     }
     res.setHeader('Access-Control-Allow-Methods', 'GET')
@@ -93,7 +112,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     return res.status(upstream.status).send(body)
   } catch (error) {
-    console.error(`[CMOTS Proxy] Failed to fetch ${targetUrl}:`, error)
+    console.error(`[CMOTS Proxy] Failed to fetch ${cmotPath}:`, error)
     return res.status(502).json({ error: 'Upstream API error' })
   }
 }

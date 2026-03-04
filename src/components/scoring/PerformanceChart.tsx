@@ -14,6 +14,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from 'recharts'
+import { InfoTooltip } from '@/components/ui/InfoTooltip'
 
 const STOCK_COLORS = [
   '#06b6d4', '#8b5cf6', '#f59e0b', '#ef4444', '#10b981',
@@ -60,7 +61,10 @@ export function PerformanceChart() {
 
   return (
     <div className="rounded-xl bg-dark-800/60 border border-white/5 p-4">
-      <div className="text-sm font-medium text-white mb-3">Cumulative Returns</div>
+      <div className="flex items-center gap-1.5 text-sm font-medium text-white mb-3">
+        Cumulative Returns
+        <InfoTooltip text="Each line tracks a stock's total return from day one. Dashed line = cohort average benchmark" position="right" />
+      </div>
 
       <ResponsiveContainer width="100%" height={300}>
         <LineChart data={chartData} margin={{ top: 5, right: 10, left: -10, bottom: 5 }}>

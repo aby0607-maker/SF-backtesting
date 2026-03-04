@@ -6,6 +6,7 @@ import { useState } from 'react'
 import { cn } from '@/lib/utils'
 import { useCurrentScores } from '@/store/useScoringStore'
 import { NaExplainer } from './NaExplainer'
+import { InfoTooltip } from '@/components/ui/InfoTooltip'
 
 export function MetricContributionWaterfall() {
   const currentRun = useCurrentScores()
@@ -21,7 +22,10 @@ export function MetricContributionWaterfall() {
       <div className="flex items-center justify-between mb-3">
         <div>
           <div className="text-sm font-medium text-white">Metric Contribution</div>
-          <div className="text-[10px] text-neutral-500">Segment scores for selected stock</div>
+          <div className="flex items-center gap-1 text-[10px] text-neutral-500">
+            Segment scores for selected stock
+            <InfoTooltip text="Segment bars show category strength. Individual metrics show raw values and normalized scores (0-100) feeding each segment" position="bottom" />
+          </div>
         </div>
 
         {/* Stock selector */}

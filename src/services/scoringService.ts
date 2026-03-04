@@ -32,6 +32,35 @@ import { getBatchPrices } from '@/services/cmots/priceData'
 import type { CMOTSOHLCVRecord } from '@/types/scoring'
 import { getAllFundamentals, getYearColumns } from '@/services/cmots/fundamentals'
 import type { FundamentalsBundle } from '@/services/cmots/fundamentals'
+import { getIndianAPIFundamentals, mergeFundamentals } from '@/services/indianapi'
+import { pMapSettled } from '@/services/batchQueue'
+
+// ─────────────────────────────────────────────────
+// Stock Data Cache — survives across runs for crash recovery & re-runs
+// ─────────────────────────────────────────────────
+
+type CachedStockData = {
+  stockId: string
+  fundamentals: FundamentalsBundle
+  info: { id: string; name: string; symbol: string; sector: string; marketCap: number }
+}
+
+/** In-memory cache for fetched stock data (fundamentals + info).
+ *  Survives across runs within the same browser session.
+ *  Key: stock ID → Value: { fundamentals, info }
+ *  Prices are NOT cached here (date-range-dependent). */
+const stockDataCache = new Map<string, CachedStockData>()
+
+/** Clear all cached stock data (e.g., when user wants a fresh fetch) */
+export function clearStockDataCache(): void {
+  stockDataCache.clear()
+  console.log('[Cache] Stock data cache cleared')
+}
+
+/** Get cache stats for UI display */
+export function getStockDataCacheStats(): { size: number; stockIds: string[] } {
+  return { size: stockDataCache.size, stockIds: [...stockDataCache.keys()] }
+}
 
 // ─────────────────────────────────────────────────
 // Combined Scoring + Backtest (new 5-stage pipeline)
@@ -342,6 +371,9 @@ export async function scoreWithScorecard(
   const total = stockIds.length
   const resConfig = extractResolutionConfig(scorecard, options?.customMetrics)
 
+  // Track stocks that failed due to network/fetch errors for automatic retry
+  const failedStockIds: { stockId: string; name: string }[] = []
+
   for (let i = 0; i < stockIds.length; i++) {
     if (options?.signal?.aborted) {
       console.log(`[Scoring] Cancelled after ${i}/${total} stocks`)
@@ -356,9 +388,16 @@ export async function scoreWithScorecard(
       continue
     }
 
-    const resolved = await resolveMetricValues(stockId, resConfig)
+    let resolved: Awaited<ReturnType<typeof resolveMetricValues>>
+    try {
+      resolved = await resolveMetricValues(stockId, resConfig)
+    } catch (err) {
+      failedStockIds.push({ stockId, name: info.name })
+      options?.onProgress?.(i + 1, total)
+      continue
+    }
     if (!resolved) {
-      warnings.push(`${info.name} (${stockId}): No fundamental data from API`)
+      failedStockIds.push({ stockId, name: info.name })
       options?.onProgress?.(i + 1, total)
       continue
     }
@@ -367,6 +406,35 @@ export async function scoreWithScorecard(
     stocks.push({ ...scored, rank: 0 })
 
     options?.onProgress?.(i + 1, total)
+  }
+
+  // ── Automatic retry pass for failed stocks ──
+  if (failedStockIds.length > 0 && !options?.signal?.aborted) {
+    console.log(`[Scoring] Retrying ${failedStockIds.length} failed stocks...`)
+    let recovered = 0
+    for (const { stockId, name } of failedStockIds) {
+      if (options?.signal?.aborted) break
+      try {
+        const info = await getStockInfo(stockId)
+        if (!info) continue
+        const resolved = await resolveMetricValues(stockId, resConfig)
+        if (!resolved) {
+          warnings.push(`${name} (${stockId}): No fundamental data from API (after retry)`)
+          continue
+        }
+        const scored = scoreStock(resolved.data, scorecard, info, resolved.context)
+        stocks.push({ ...scored, rank: 0 })
+        recovered++
+      } catch {
+        warnings.push(`${name} (${stockId}): Data fetch failed after retry`)
+      }
+    }
+    if (recovered > 0) {
+      console.log(`[Scoring] Recovered ${recovered}/${failedStockIds.length} stocks on retry`)
+    }
+    if (failedStockIds.length - recovered > 0) {
+      console.warn(`[Scoring] ${failedStockIds.length - recovered} stocks could not be recovered`)
+    }
   }
 
   stocks.sort((a, b) => b.normalizedScore - a.normalizedScore)
@@ -463,7 +531,7 @@ function buildReviewSnapshot(
         weight: seg.segmentWeight,
         metricCount: seg.metrics.length,
       })),
-      compositeFormula: scorecard.compositeFormula.baseSegments
+      compositeFormula: (scorecard.compositeFormula.baseSegments ?? [])
         .map(bs => {
           const seg = scorecard.segments.find(s => s.id === bs.segmentId)
           return seg ? `${seg.name}(${(bs.weight * 100).toFixed(0)}%)` : ''
@@ -536,12 +604,8 @@ export async function backtestScorecard(
     }
   }
 
-  // Fetch fundamentals + stock info for each stock (parallel)
-  const stockData: {
-    stockId: string
-    fundamentals: FundamentalsBundle
-    info: { id: string; name: string; symbol: string; sector: string; marketCap: number }
-  }[] = []
+  // Fetch fundamentals + stock info for each stock (with cache + retry)
+  const stockData: CachedStockData[] = []
   const backtestWarnings: string[] = []
 
   // Track which stocks had no price data from the API
@@ -553,32 +617,96 @@ export async function backtestScorecard(
     }
   }
 
-  const settled = await Promise.allSettled(targetStockIds.map(async (stockId) => {
-    const [fundamentals, info] = await Promise.all([
-      getAllFundamentals(stockId),
-      getStockInfo(stockId),
-    ])
-    return { stockId, fundamentals, info }
-  }))
+  // ── Separate cached vs uncached stocks ──
+  const uncachedIds: string[] = []
+  for (const stockId of targetStockIds) {
+    const cached = stockDataCache.get(stockId)
+    if (cached) {
+      stockData.push(cached)
+    } else {
+      uncachedIds.push(stockId)
+    }
+  }
+  if (stockDataCache.size > 0 && uncachedIds.length < targetStockIds.length) {
+    const hitCount = targetStockIds.length - uncachedIds.length
+    console.log(`[Backtest] Cache hit: ${hitCount}/${targetStockIds.length} stocks (${uncachedIds.length} to fetch)`)
+  }
 
-  for (const result of settled) {
-    if (result.status === 'rejected') {
-      const reason = result.reason instanceof Error ? result.reason.message : String(result.reason)
-      backtestWarnings.push(`Stock data fetch failed: ${reason}`)
-      continue
+  // Concurrency-limited: each stock fires ~8 parallel endpoints (7 fundamentals + 1 info),
+  // so 4 concurrent stocks ≈ 32 logical requests — keeps pipeline full without flooding
+  const fetchStockData = async (ids: string[]) =>
+    pMapSettled(ids, async (stockId) => {
+      const [fundamentals, info] = await Promise.all([
+        getAllFundamentals(stockId),
+        getStockInfo(stockId),
+      ])
+
+      // ── IndianAPI Fallback: enrich CMOTS fundamentals with deeper historical data ──
+      // CMOTS provides ~5 recent fiscal years. IndianAPI provides ~12 years.
+      // Merge when CMOTS has fewer than 5 P&L year columns (insufficient for 5Y CAGR).
+      let enriched = fundamentals
+      try {
+        const needsEnrichment = fundamentals.pnl.length === 0 ||
+          (fundamentals.pnl[0] && getYearColumns(fundamentals.pnl[0]).length < 5)
+        if (needsEnrichment) {
+          const iaFundamentals = await getIndianAPIFundamentals(stockId)
+          enriched = mergeFundamentals(fundamentals, iaFundamentals)
+          const iaYears = enriched.pnl[0] ? getYearColumns(enriched.pnl[0]).length : 0
+          if (iaYears > (fundamentals.pnl[0] ? getYearColumns(fundamentals.pnl[0]).length : 0)) {
+            console.log(`[Backtest] ${stockId}: IndianAPI enriched P&L from ${fundamentals.pnl[0] ? getYearColumns(fundamentals.pnl[0]).length : 0} → ${iaYears} year columns`)
+          }
+        }
+      } catch (err) {
+        // IndianAPI failure is non-fatal — continue with CMOTS data only
+        console.warn(`[Backtest] ${stockId}: IndianAPI fallback failed:`, err instanceof Error ? err.message : err)
+      }
+
+      return { stockId, fundamentals: enriched, info }
+    }, 4)
+
+  const processResults = (results: Awaited<ReturnType<typeof fetchStockData>>) => {
+    for (const result of results) {
+      if (result.status === 'rejected') {
+        continue
+      }
+      const { stockId, fundamentals, info } = result.value
+      if (!info) {
+        backtestWarnings.push(`Stock ${stockId}: Company not found in BSE master`)
+        continue
+      }
+      if (noPriceStocks.includes(stockId)) {
+        backtestWarnings.push(`${info.name}: No price data from API for ${config.dateRange.from} → ${config.dateRange.to}`)
+      }
+      if (!fundamentals.ttm && fundamentals.pnl.length === 0) {
+        backtestWarnings.push(`${info.name}: No fundamental data (TTM/P&L) from API`)
+      }
+      const entry: CachedStockData = { stockId, fundamentals, info }
+      stockData.push(entry)
+      stockDataCache.set(stockId, entry) // Cache for future runs
     }
-    const { stockId, fundamentals, info } = result.value
-    if (!info) {
-      backtestWarnings.push(`Stock ${stockId}: Company not found in BSE master`)
-      continue
+  }
+
+  if (uncachedIds.length > 0) {
+    const settled = await fetchStockData(uncachedIds)
+    processResults(settled)
+
+    // ── Automatic retry for stocks that failed on first pass ──
+    const succeededIds = new Set(stockData.map(d => d.stockId))
+    const retryIds = uncachedIds.filter(id => !succeededIds.has(id))
+    if (retryIds.length > 0 && !signal?.aborted) {
+      console.log(`[Backtest] Retrying ${retryIds.length} failed stock data fetches...`)
+      const retrySettled = await fetchStockData(retryIds)
+      const beforeCount = stockData.length
+      processResults(retrySettled)
+      const recovered = stockData.length - beforeCount
+      if (recovered > 0) {
+        console.log(`[Backtest] Recovered ${recovered}/${retryIds.length} stocks on retry`)
+      }
+      const stillFailed = retryIds.length - recovered
+      if (stillFailed > 0) {
+        backtestWarnings.push(`${stillFailed} stocks failed data fetch even after retry`)
+      }
     }
-    if (noPriceStocks.includes(stockId)) {
-      backtestWarnings.push(`${info.name}: No price data from API for ${config.dateRange.from} → ${config.dateRange.to}`)
-    }
-    if (!fundamentals.ttm && fundamentals.pnl.length === 0) {
-      backtestWarnings.push(`${info.name}: No fundamental data (TTM/P&L) from API`)
-    }
-    stockData.push({ stockId, fundamentals, info })
   }
 
   // ── Data Coverage Check ──
@@ -602,6 +730,9 @@ export async function backtestScorecard(
 
   const resConfig = extractResolutionConfig(scorecard, customMetrics)
 
+  // Track stocks that crash during scoring computation (not network — deterministic bugs)
+  const scoringCrashIds = new Set<string>()
+
   const scoreAtDate = (asOfDate: string): StockScoreResult[] => {
     const stocks: StockScoreResult[] = []
 
@@ -609,9 +740,19 @@ export async function backtestScorecard(
       const prices = priceHistoryWithVolume[stockId]
       if (!prices || prices.length === 0) continue
 
-      const resolved = resolveMetricsAtDate(fundamentals, prices, asOfDate, resConfig)
-      const scored = scoreStock(resolved.data, scorecard, info, resolved.context)
-      stocks.push({ ...scored, rank: 0 })
+      try {
+        const resolved = resolveMetricsAtDate(fundamentals, prices, asOfDate, resConfig)
+        const scored = scoreStock(resolved.data, scorecard, info, resolved.context)
+        stocks.push({ ...scored, rank: 0 })
+      } catch (err) {
+        // Log once per stock (not per interval) to avoid spam
+        if (!scoringCrashIds.has(stockId)) {
+          scoringCrashIds.add(stockId)
+          const msg = err instanceof Error ? err.message : String(err)
+          backtestWarnings.push(`${info.name} (${stockId}): Scoring crashed at ${asOfDate} — ${msg}`)
+          console.error(`[Backtest] scoreAtDate crash for ${info.name} (${stockId}) at ${asOfDate}:`, err)
+        }
+      }
     }
 
     // Rank by score descending
@@ -635,6 +776,17 @@ export async function backtestScorecard(
     snapshots.push({
       date,
       stockScores: scoreAtDate(date),
+    })
+  }
+
+  // Ensure the user's end date is always the final snapshot (not just the last interval boundary)
+  const lastSnapshotDate = snapshots[snapshots.length - 1]?.date
+  const endTradeDates = allTradeDates.filter(d => d <= config.dateRange.to)
+  const closestEndDate = endTradeDates[endTradeDates.length - 1]
+  if (closestEndDate && closestEndDate !== lastSnapshotDate) {
+    snapshots.push({
+      date: closestEndDate,
+      stockScores: scoreAtDate(closestEndDate),
     })
   }
 

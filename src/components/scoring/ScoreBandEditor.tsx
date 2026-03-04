@@ -12,7 +12,7 @@ interface ScoreBandEditorProps {
   bands: ScoreBand[]
   onChange: (bands: ScoreBand[]) => void
   metricName?: string
-  scoringMethod?: 'band_lookup' | 'conditional_vpt'
+  scoringMethod?: 'band_lookup' | 'conditional_vpt' | 'conditional_vpt_v4'
 }
 
 const VPT_RULES = [

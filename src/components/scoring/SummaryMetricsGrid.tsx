@@ -11,6 +11,7 @@ import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
 import { useBacktestResult, useCombinedResult } from '@/store/useScoringStore'
 import { Target, TrendingUp, Award, AlertTriangle, Hash, BarChart3 } from 'lucide-react'
+import { InfoTooltip } from '@/components/ui/InfoTooltip'
 
 interface SummaryMetricsGridProps {
   selectedStockId?: string | null
@@ -62,6 +63,7 @@ export function SummaryMetricsGrid({ selectedStockId }: SummaryMetricsGridProps)
         icon: BarChart3,
         color: deltaRow.score >= 65 ? 'text-success-400' : deltaRow.score >= 50 ? 'text-warning-400' : 'text-destructive-400',
         bgColor: deltaRow.score >= 65 ? 'bg-success-500/10' : deltaRow.score >= 50 ? 'bg-warning-500/10' : 'bg-destructive-500/10',
+        explainer: 'Overall scorecard score for this stock (0-100)',
       },
       {
         label: 'Total Return',
@@ -70,6 +72,7 @@ export function SummaryMetricsGrid({ selectedStockId }: SummaryMetricsGridProps)
         icon: TrendingUp,
         color: totalReturn >= 0 ? 'text-success-400' : 'text-destructive-400',
         bgColor: totalReturn >= 0 ? 'bg-success-500/10' : 'bg-destructive-500/10',
+        explainer: 'Cumulative price change from backtest start to end',
       },
       {
         label: 'Alpha vs Avg',
@@ -78,6 +81,7 @@ export function SummaryMetricsGrid({ selectedStockId }: SummaryMetricsGridProps)
         icon: Target,
         color: alpha >= 0 ? 'text-success-400' : 'text-destructive-400',
         bgColor: alpha >= 0 ? 'bg-success-500/10' : 'bg-destructive-500/10',
+        explainer: 'How much this stock\'s return exceeded or lagged the cohort average',
       },
       {
         label: 'Rank',
@@ -86,6 +90,7 @@ export function SummaryMetricsGrid({ selectedStockId }: SummaryMetricsGridProps)
         icon: Hash,
         color: rank <= 3 ? 'text-success-400' : rank <= Math.ceil(allScores.length / 2) ? 'text-warning-400' : 'text-destructive-400',
         bgColor: rank <= 3 ? 'bg-success-500/10' : rank <= Math.ceil(allScores.length / 2) ? 'bg-warning-500/10' : 'bg-destructive-500/10',
+        explainer: 'Position when all cohort stocks are sorted by score',
       },
     ]
   }, [selectedStockId, combinedResult, result])
@@ -103,6 +108,7 @@ export function SummaryMetricsGrid({ selectedStockId }: SummaryMetricsGridProps)
         icon: Target,
         color: summaryMetrics.hitRate >= 50 ? 'text-success-400' : 'text-destructive-400',
         bgColor: summaryMetrics.hitRate >= 50 ? 'bg-success-500/10' : 'bg-destructive-500/10',
+        explainer: 'Of all scored stocks, what % beat the cohort average return',
       },
       {
         label: 'Avg Alpha',
@@ -111,6 +117,7 @@ export function SummaryMetricsGrid({ selectedStockId }: SummaryMetricsGridProps)
         icon: TrendingUp,
         color: summaryMetrics.avgAlpha >= 0 ? 'text-success-400' : 'text-destructive-400',
         bgColor: summaryMetrics.avgAlpha >= 0 ? 'bg-success-500/10' : 'bg-destructive-500/10',
+        explainer: 'Average excess return of scored stocks over the cohort average',
       },
       {
         label: 'Best Performer',
@@ -119,6 +126,7 @@ export function SummaryMetricsGrid({ selectedStockId }: SummaryMetricsGridProps)
         icon: Award,
         color: 'text-success-400',
         bgColor: 'bg-success-500/10',
+        explainer: 'Stock with the highest cumulative return over the backtest period',
       },
       {
         label: 'Score-Return Corr.',
@@ -131,6 +139,7 @@ export function SummaryMetricsGrid({ selectedStockId }: SummaryMetricsGridProps)
         bgColor: summaryMetrics.correlationScoreVsReturn > 0.3 ? 'bg-success-500/10'
           : summaryMetrics.correlationScoreVsReturn > 0 ? 'bg-warning-500/10'
           : 'bg-destructive-500/10',
+        explainer: 'Pearson r between score and return. >0.7 strong, 0.3-0.7 moderate, <0.3 weak',
       },
     ]
   }, [result])
@@ -166,6 +175,7 @@ export function SummaryMetricsGrid({ selectedStockId }: SummaryMetricsGridProps)
                   <Icon className={cn('w-3.5 h-3.5', card.color)} />
                 </div>
                 <span className="text-[10px] text-neutral-500">{card.label}</span>
+                {card.explainer && <InfoTooltip text={card.explainer} />}
               </div>
               <div className={cn('text-xl font-bold font-mono', card.color)}>{card.value}</div>
               <div className="text-[10px] text-neutral-500 mt-0.5">{card.description}</div>
