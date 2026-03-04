@@ -1,0 +1,2261 @@
+{
+  "date": "2026-03-04",
+  "targetDate": "2026-02-28",
+  "periods": [
+    {
+      "period": "5Y (Mar 2021 → Feb 2026)",
+      "baseYearCol": "Y202103",
+      "targetDate": "2026-02-28",
+      "stockCount": 46,
+      "avgReturn": 123.77380930479538,
+      "sigMetrics": 9,
+      "totalMetrics": 59,
+      "segmentWeights": {
+        "Profitability": {
+          "weight": 0.3086946390996526,
+          "avgAbsR": 0.2781361005897965,
+          "sigFrac": 0.38461538461538464,
+          "metricCount": 13,
+          "topMetric": "roce",
+          "topMetricR": -0.5948108676232933
+        },
+        "Income Statement": {
+          "weight": 0.20775936216255125,
+          "avgAbsR": 0.1552738121521491,
+          "sigFrac": 0.3333333333333333,
+          "metricCount": 6,
+          "topMetric": "pat",
+          "topMetricR": -0.2930540980782928
+        },
+        "Financial Ratios": {
+          "weight": 0.15461573724636865,
+          "avgAbsR": 0.16064631749246877,
+          "sigFrac": 0.14285714285714285,
+          "metricCount": 14,
+          "topMetric": "debt_to_equity",
+          "topMetricR": 0.3558794495443378
+        },
+        "Cash Flow": {
+          "weight": 0.10145535710614584,
+          "avgAbsR": 0.14558661612177423,
+          "sigFrac": 0,
+          "metricCount": 6,
+          "topMetric": "dividends_paid",
+          "topMetricR": -0.27660102122816377
+        },
+        "Balance Sheet": {
+          "weight": 0.09603170309932882,
+          "avgAbsR": 0.1378037699873737,
+          "sigFrac": 0,
+          "metricCount": 7,
+          "topMetric": "receivables_turnover",
+          "topMetricR": 0.2766871320776885
+        },
+        "Valuation": {
+          "weight": 0.0697097587772828,
+          "avgAbsR": 0.10003225241651603,
+          "sigFrac": 0,
+          "metricCount": 7,
+          "topMetric": "price_to_fcf",
+          "topMetricR": 0.23694678737547342
+        },
+        "Ownership": {
+          "weight": 0.05996975335827317,
+          "avgAbsR": 0.08605551949271602,
+          "sigFrac": 0,
+          "metricCount": 5,
+          "topMetric": "dii_holding",
+          "topMetricR": 0.15426325936548652
+        },
+        "Growth": {
+          "weight": 0.001763689150396988,
+          "avgAbsR": 0.002530862269089881,
+          "sigFrac": 0,
+          "metricCount": 1,
+          "topMetric": "earnings_momentum",
+          "topMetricR": 0.002530862269089881
+        }
+      },
+      "topMetrics": [
+        {
+          "name": "roce",
+          "segment": "Profitability",
+          "pearson": -0.5948108676232933,
+          "spearman": -0.6520242914979757,
+          "tStat": -4.5008679278635935,
+          "n": 39,
+          "significant": true,
+          "direction": "negative"
+        },
+        {
+          "name": "roa",
+          "segment": "Profitability",
+          "pearson": -0.5546881348425903,
+          "spearman": -0.5050065876152833,
+          "tStat": -4.371488381048635,
+          "n": 45,
+          "significant": true,
+          "direction": "negative"
+        },
+        {
+          "name": "net_profit_margin",
+          "segment": "Profitability",
+          "pearson": -0.5050910832414577,
+          "spearman": -0.539262187088274,
+          "tStat": -3.8376017080160283,
+          "n": 45,
+          "significant": true,
+          "direction": "negative"
+        },
+        {
+          "name": "roe",
+          "segment": "Profitability",
+          "pearson": -0.46643737649567446,
+          "spearman": -0.4873517786561265,
+          "tStat": -3.4578258082240736,
+          "n": 45,
+          "significant": true,
+          "direction": "negative"
+        },
+        {
+          "name": "roa_5y_avg",
+          "segment": "Profitability",
+          "pearson": -0.3616343166033197,
+          "spearman": -0.33873517786561264,
+          "tStat": -2.543541645224214,
+          "n": 45,
+          "significant": true,
+          "direction": "negative"
+        },
+        {
+          "name": "debt_to_equity",
+          "segment": "Financial Ratios",
+          "pearson": 0.3558794495443378,
+          "spearman": 0.5220026350461133,
+          "tStat": 2.497140745612765,
+          "n": 45,
+          "significant": true,
+          "direction": "positive"
+        },
+        {
+          "name": "cash_conversion_cycle",
+          "segment": "Financial Ratios",
+          "pearson": 0.34516437917093956,
+          "spearman": -0.01098901098901099,
+          "tStat": 1.8388324014855537,
+          "n": 27,
+          "significant": false,
+          "direction": "positive"
+        },
+        {
+          "name": "dpo",
+          "segment": "Financial Ratios",
+          "pearson": -0.34505872204948473,
+          "spearman": 0.07509157509157509,
+          "tStat": -1.8381934316875028,
+          "n": 27,
+          "significant": false,
+          "direction": "negative"
+        },
+        {
+          "name": "capex_to_revenue",
+          "segment": "Financial Ratios",
+          "pearson": 0.30197959607602615,
+          "spearman": 0.327931488801054,
+          "tStat": 2.077187400606037,
+          "n": 45,
+          "significant": true,
+          "direction": "positive"
+        },
+        {
+          "name": "pat",
+          "segment": "Income Statement",
+          "pearson": -0.2930540980782928,
+          "spearman": -0.23441258094357076,
+          "tStat": -2.033165347019483,
+          "n": 46,
+          "significant": true,
+          "direction": "negative"
+        },
+        {
+          "name": "exceptional_items",
+          "segment": "Income Statement",
+          "pearson": -0.29144094871728493,
+          "spearman": -0.19753314831945729,
+          "tStat": -2.020931572102138,
+          "n": 46,
+          "significant": true,
+          "direction": "negative"
+        },
+        {
+          "name": "debt_to_ebitda",
+          "segment": "Financial Ratios",
+          "pearson": 0.27896083086968454,
+          "spearman": 0.5220474868948505,
+          "tStat": 1.9269103758317818,
+          "n": 46,
+          "significant": false,
+          "direction": "positive"
+        },
+        {
+          "name": "receivables_turnover",
+          "segment": "Balance Sheet",
+          "pearson": 0.2766871320776885,
+          "spearman": 0.16963562753036437,
+          "tStat": 1.7513965409347985,
+          "n": 39,
+          "significant": false,
+          "direction": "positive"
+        },
+        {
+          "name": "dividends_paid",
+          "segment": "Cash Flow",
+          "pearson": -0.27660102122816377,
+          "spearman": -0.2833976833976834,
+          "tStat": -1.6783274521435976,
+          "n": 36,
+          "significant": false,
+          "direction": "negative"
+        },
+        {
+          "name": "operating_profit_margin",
+          "segment": "Profitability",
+          "pearson": 0.2738015846918063,
+          "spearman": 0.23016194331983805,
+          "tStat": 1.7316426687773938,
+          "n": 39,
+          "significant": false,
+          "direction": "positive"
+        },
+        {
+          "name": "total_debt",
+          "segment": "Balance Sheet",
+          "pearson": 0.27248795143076476,
+          "spearman": 0.4502621029910577,
+          "tStat": 1.8785670803365755,
+          "n": 46,
+          "significant": false,
+          "direction": "positive"
+        },
+        {
+          "name": "fcf_margin",
+          "segment": "Cash Flow",
+          "pearson": -0.25300565811851244,
+          "spearman": -0.3144927536231884,
+          "tStat": -1.7148624440212539,
+          "n": 45,
+          "significant": false,
+          "direction": "negative"
+        },
+        {
+          "name": "asset_turnover",
+          "segment": "Financial Ratios",
+          "pearson": -0.25104282367478775,
+          "spearman": -0.28563899868247694,
+          "tStat": -1.7006598456435393,
+          "n": 45,
+          "significant": false,
+          "direction": "negative"
+        },
+        {
+          "name": "price_to_fcf",
+          "segment": "Valuation",
+          "pearson": 0.23694678737547342,
+          "spearman": -0.08111174134997164,
+          "tStat": 1.5425096842551205,
+          "n": 42,
+          "significant": false,
+          "direction": "positive"
+        },
+        {
+          "name": "roe_5y_avg",
+          "segment": "Profitability",
+          "pearson": -0.2325201830175854,
+          "spearman": -0.29907773386034253,
+          "tStat": -1.567705140421028,
+          "n": 45,
+          "significant": false,
+          "direction": "negative"
+        },
+        {
+          "name": "tax_rate",
+          "segment": "Income Statement",
+          "pearson": 0.23042976149174157,
+          "spearman": 0.15785764622973925,
+          "tStat": 1.534654686328766,
+          "n": 44,
+          "significant": false,
+          "direction": "positive"
+        },
+        {
+          "name": "ocf_to_ebitda",
+          "segment": "Cash Flow",
+          "pearson": -0.2206432108726208,
+          "spearman": 0.057415972864631515,
+          "tStat": -1.500563490569994,
+          "n": 46,
+          "significant": false,
+          "direction": "negative"
+        },
+        {
+          "name": "net_debt",
+          "segment": "Balance Sheet",
+          "pearson": 0.18341053239575617,
+          "spearman": 0.38933086648165277,
+          "tStat": 1.23760201453736,
+          "n": 46,
+          "significant": false,
+          "direction": "positive"
+        },
+        {
+          "name": "fcf_to_pat",
+          "segment": "Profitability",
+          "pearson": -0.17455275800541192,
+          "spearman": -0.05408572309589886,
+          "tStat": -1.1759047064373134,
+          "n": 46,
+          "significant": false,
+          "direction": "negative"
+        },
+        {
+          "name": "cash_flow_margin",
+          "segment": "Profitability",
+          "pearson": -0.15936261230832796,
+          "spearman": -0.08866930171277998,
+          "tStat": -1.058538532747349,
+          "n": 45,
+          "significant": false,
+          "direction": "negative"
+        },
+        {
+          "name": "dii_holding",
+          "segment": "Ownership",
+          "pearson": 0.15426325936548652,
+          "spearman": 0.13919210607462226,
+          "tStat": 1.0356638239873175,
+          "n": 46,
+          "significant": false,
+          "direction": "positive"
+        },
+        {
+          "name": "price_to_sales",
+          "segment": "Valuation",
+          "pearson": -0.15369363233876723,
+          "spearman": -0.2662714097496706,
+          "tStat": -1.0199550918254738,
+          "n": 45,
+          "significant": false,
+          "direction": "negative"
+        },
+        {
+          "name": "pb_ratio",
+          "segment": "Valuation",
+          "pearson": -0.13428161736758149,
+          "spearman": -0.1523056653491436,
+          "tStat": -0.8885912342325708,
+          "n": 45,
+          "significant": false,
+          "direction": "negative"
+        },
+        {
+          "name": "earnings_quality",
+          "segment": "Profitability",
+          "pearson": -0.12842529722095203,
+          "spearman": 0.14449583718778908,
+          "tStat": -0.8589901872789516,
+          "n": 46,
+          "significant": false,
+          "direction": "negative"
+        },
+        {
+          "name": "retail_holding",
+          "segment": "Ownership",
+          "pearson": -0.11801179890034726,
+          "spearman": -0.2579710144927536,
+          "tStat": -0.7883102756874338,
+          "n": 46,
+          "significant": false,
+          "direction": "negative"
+        }
+      ],
+      "quintileBacktest": [
+        {
+          "quintile": "Q1",
+          "avgScore": "67.7",
+          "avgReturn": "233.2",
+          "medReturn": "266.6",
+          "n": 9,
+          "stocks": [
+            "BHARTIARTL",
+            "SHRIRAMFIN",
+            "TRENT",
+            "HINDALCO",
+            "NTPC",
+            "BAJFINANCE",
+            "GRASIM",
+            "M&M",
+            "APOLLOHOSP"
+          ]
+        },
+        {
+          "quintile": "Q2",
+          "avgScore": "58.0",
+          "avgReturn": "151.3",
+          "medReturn": "173.6",
+          "n": 9,
+          "stocks": [
+            "ADANIENT",
+            "TATASTEEL",
+            "SUNPHARMA",
+            "ONGC",
+            "BAJAJFINSV",
+            "JSWSTEEL",
+            "LT",
+            "AXISBANK",
+            "ULTRACEMCO"
+          ]
+        },
+        {
+          "quintile": "Q3",
+          "avgScore": "51.5",
+          "avgReturn": "108.8",
+          "medReturn": "116.4",
+          "n": 9,
+          "stocks": [
+            "RELIANCE",
+            "DRREDDY",
+            "POWERGRID",
+            "ADANIPORTS",
+            "TITAN",
+            "INDUSINDBK",
+            "MARUTI",
+            "SBIN",
+            "CIPLA"
+          ]
+        },
+        {
+          "quintile": "Q4",
+          "avgScore": "44.0",
+          "avgReturn": "99.4",
+          "medReturn": "81.8",
+          "n": 9,
+          "stocks": [
+            "KOTAKBANK",
+            "COALINDIA",
+            "EICHERMOT",
+            "BPCL",
+            "TECHM",
+            "DIVISLAB",
+            "BRITANNIA",
+            "HDFCBANK",
+            "ICICIBANK"
+          ]
+        },
+        {
+          "quintile": "Q5",
+          "avgScore": "34.8",
+          "avgReturn": "39.3",
+          "medReturn": "2.7",
+          "n": 9,
+          "stocks": [
+            "HEROMOTOCO",
+            "BAJAJ-AUTO",
+            "HCLTECH",
+            "ASIANPAINT",
+            "ITC",
+            "HINDUNILVR",
+            "WIPRO",
+            "INFY",
+            "TCS"
+          ]
+        }
+      ],
+      "q1q5Spread": 193.89999999999998,
+      "stockScores": [
+        {
+          "symbol": "BHARTIARTL",
+          "score": 81.9,
+          "forwardReturn": 266.7
+        },
+        {
+          "symbol": "SHRIRAMFIN",
+          "score": 69.5,
+          "forwardReturn": 278
+        },
+        {
+          "symbol": "TRENT",
+          "score": 69.5,
+          "forwardReturn": 413
+        },
+        {
+          "symbol": "HINDALCO",
+          "score": 66.9,
+          "forwardReturn": 183
+        },
+        {
+          "symbol": "NTPC",
+          "score": 65.9,
+          "forwardReturn": 266.6
+        },
+        {
+          "symbol": "BAJFINANCE",
+          "score": 65.7,
+          "forwardReturn": 92.3
+        },
+        {
+          "symbol": "GRASIM",
+          "score": 64.3,
+          "forwardReturn": 100.1
+        },
+        {
+          "symbol": "M&M",
+          "score": 64.1,
+          "forwardReturn": 324.5
+        },
+        {
+          "symbol": "APOLLOHOSP",
+          "score": 61.3,
+          "forwardReturn": 174.5
+        },
+        {
+          "symbol": "ADANIENT",
+          "score": 61.1,
+          "forwardReturn": 126.5
+        },
+        {
+          "symbol": "TATASTEEL",
+          "score": 61,
+          "forwardReturn": 177
+        },
+        {
+          "symbol": "SUNPHARMA",
+          "score": 59.8,
+          "forwardReturn": 196
+        },
+        {
+          "symbol": "ONGC",
+          "score": 58.6,
+          "forwardReturn": 173.6
+        },
+        {
+          "symbol": "BAJAJFINSV",
+          "score": 58.4,
+          "forwardReturn": 110.5
+        },
+        {
+          "symbol": "JSWSTEEL",
+          "score": 58.3,
+          "forwardReturn": 184.9
+        },
+        {
+          "symbol": "LT",
+          "score": 55.9,
+          "forwardReturn": 206.3
+        },
+        {
+          "symbol": "AXISBANK",
+          "score": 55,
+          "forwardReturn": 98.3
+        },
+        {
+          "symbol": "ULTRACEMCO",
+          "score": 53.8,
+          "forwardReturn": 88.2
+        },
+        {
+          "symbol": "RELIANCE",
+          "score": 53.7,
+          "forwardReturn": 54
+        },
+        {
+          "symbol": "DRREDDY",
+          "score": 53.2,
+          "forwardReturn": 46.1
+        },
+        {
+          "symbol": "POWERGRID",
+          "score": 53,
+          "forwardReturn": 147.5
+        },
+        {
+          "symbol": "ADANIPORTS",
+          "score": 51.7,
+          "forwardReturn": 116.4
+        },
+        {
+          "symbol": "TITAN",
+          "score": 51.4,
+          "forwardReturn": 187.4
+        },
+        {
+          "symbol": "INDUSINDBK",
+          "score": 50.5,
+          "forwardReturn": 0.7
+        },
+        {
+          "symbol": "MARUTI",
+          "score": 50.3,
+          "forwardReturn": 119.1
+        },
+        {
+          "symbol": "SBIN",
+          "score": 50.3,
+          "forwardReturn": 236.6
+        },
+        {
+          "symbol": "CIPLA",
+          "score": 49.7,
+          "forwardReturn": 71.1
+        },
+        {
+          "symbol": "KOTAKBANK",
+          "score": 48.3,
+          "forwardReturn": 17.1
+        },
+        {
+          "symbol": "COALINDIA",
+          "score": 47.5,
+          "forwardReturn": 232.5
+        },
+        {
+          "symbol": "EICHERMOT",
+          "score": 46.4,
+          "forwardReturn": 213.1
+        },
+        {
+          "symbol": "BPCL",
+          "score": 44.2,
+          "forwardReturn": 81.8
+        },
+        {
+          "symbol": "TECHM",
+          "score": 43.6,
+          "forwardReturn": 36.9
+        },
+        {
+          "symbol": "DIVISLAB",
+          "score": 42.5,
+          "forwardReturn": 84.9
+        },
+        {
+          "symbol": "BRITANNIA",
+          "score": 41.6,
+          "forwardReturn": 71.1
+        },
+        {
+          "symbol": "HDFCBANK",
+          "score": 41,
+          "forwardReturn": 18.9
+        },
+        {
+          "symbol": "ICICIBANK",
+          "score": 40.6,
+          "forwardReturn": 138.4
+        },
+        {
+          "symbol": "HEROMOTOCO",
+          "score": 40.3,
+          "forwardReturn": 94.3
+        },
+        {
+          "symbol": "BAJAJ-AUTO",
+          "score": 38.1,
+          "forwardReturn": 176.9
+        },
+        {
+          "symbol": "HCLTECH",
+          "score": 37.9,
+          "forwardReturn": 45
+        },
+        {
+          "symbol": "ASIANPAINT",
+          "score": 37.5,
+          "forwardReturn": -5.1
+        },
+        {
+          "symbol": "ITC",
+          "score": 36.2,
+          "forwardReturn": 57.2
+        },
+        {
+          "symbol": "HINDUNILVR",
+          "score": 36.2,
+          "forwardReturn": 2.7
+        },
+        {
+          "symbol": "WIPRO",
+          "score": 35.4,
+          "forwardReturn": -0.5
+        },
+        {
+          "symbol": "INFY",
+          "score": 27.4,
+          "forwardReturn": -2.7
+        },
+        {
+          "symbol": "TCS",
+          "score": 24.2,
+          "forwardReturn": -14.1
+        },
+        {
+          "symbol": "HDFCLIFE",
+          "score": 20.9,
+          "forwardReturn": 6.5
+        }
+      ]
+    },
+    {
+      "period": "3Y (Mar 2023 → Feb 2026)",
+      "baseYearCol": "Y202303",
+      "targetDate": "2026-02-28",
+      "stockCount": 47,
+      "avgReturn": 89.35357999488416,
+      "sigMetrics": 18,
+      "totalMetrics": 104,
+      "segmentWeights": {
+        "Profitability": {
+          "weight": 0.17891530300920228,
+          "avgAbsR": 0.2610169808706246,
+          "sigFrac": 0.46153846153846156,
+          "metricCount": 13,
+          "topMetric": "roce",
+          "topMetricR": -0.5051737511848234
+        },
+        "Financial Ratios": {
+          "weight": 0.13863856866313923,
+          "avgAbsR": 0.26369481088400704,
+          "sigFrac": 0.21428571428571427,
+          "metricCount": 14,
+          "topMetric": "quick_ratio",
+          "topMetricR": 0.49646586726558684
+        },
+        "Balance Sheet": {
+          "weight": 0.12440052650462667,
+          "avgAbsR": 0.21187595476047005,
+          "sigFrac": 0.25,
+          "metricCount": 8,
+          "topMetric": "gross_block_growth",
+          "topMetricR": 0.6290199550489564
+        },
+        "Growth": {
+          "weight": 0.10650709605131291,
+          "avgAbsR": 0.2119075313961278,
+          "sigFrac": 0.14285714285714285,
+          "metricCount": 7,
+          "topMetric": "revenue_growth_1y",
+          "topMetricR": 0.45321263409029383
+        },
+        "Price & Volume": {
+          "weight": 0.10351654303035257,
+          "avgAbsR": 0.17022480510304205,
+          "sigFrac": 0.2222222222222222,
+          "metricCount": 9,
+          "topMetric": "avg_volume_3m",
+          "topMetricR": 0.47696755130055124
+        },
+        "Valuation": {
+          "weight": 0.09763769601346405,
+          "avgAbsR": 0.17246481877674805,
+          "sigFrac": 0.18181818181818182,
+          "metricCount": 11,
+          "topMetric": "ev_ebitda",
+          "topMetricR": -0.4277571500500863
+        },
+        "Cash Flow": {
+          "weight": 0.09671390794842367,
+          "avgAbsR": 0.17658931784528442,
+          "sigFrac": 0.16666666666666666,
+          "metricCount": 6,
+          "topMetric": "dividends_paid",
+          "topMetricR": -0.3333371443710931
+        },
+        "Technical": {
+          "weight": 0.060518011245906195,
+          "avgAbsR": 0.13571483691295322,
+          "sigFrac": 0.045454545454545456,
+          "metricCount": 22,
+          "topMetric": "volatility",
+          "topMetricR": 0.38956181473340884
+        },
+        "Ownership": {
+          "weight": 0.05181154149502214,
+          "avgAbsR": 0.13286805831973034,
+          "sigFrac": 0,
+          "metricCount": 8,
+          "topMetric": "fii_holding",
+          "topMetricR": 0.2585860231448454
+        },
+        "Income Statement": {
+          "weight": 0.04134080603855031,
+          "avgAbsR": 0.10601639073491952,
+          "sigFrac": 0,
+          "metricCount": 6,
+          "topMetric": "pat",
+          "topMetricR": -0.2521365672870941
+        }
+      },
+      "topMetrics": [
+        {
+          "name": "gross_block_growth",
+          "segment": "Balance Sheet",
+          "pearson": 0.6290199550489564,
+          "spearman": 0.12546253469010177,
+          "tStat": 5.427904565539878,
+          "n": 47,
+          "significant": true,
+          "direction": "positive"
+        },
+        {
+          "name": "roce",
+          "segment": "Profitability",
+          "pearson": -0.5051737511848234,
+          "spearman": -0.44052532833020636,
+          "tStat": -3.6083851939768596,
+          "n": 40,
+          "significant": true,
+          "direction": "negative"
+        },
+        {
+          "name": "quick_ratio",
+          "segment": "Financial Ratios",
+          "pearson": 0.49646586726558684,
+          "spearman": -0.12570356472795496,
+          "tStat": 3.5256023622194355,
+          "n": 40,
+          "significant": true,
+          "direction": "positive"
+        },
+        {
+          "name": "receivables_turnover",
+          "segment": "Balance Sheet",
+          "pearson": 0.4910616945897996,
+          "spearman": 0.33470919324577864,
+          "tStat": 3.4749413592175538,
+          "n": 40,
+          "significant": true,
+          "direction": "positive"
+        },
+        {
+          "name": "avg_volume_3m",
+          "segment": "Price & Volume",
+          "pearson": 0.47696755130055124,
+          "spearman": -0.0190795559666975,
+          "tStat": 3.640368080614872,
+          "n": 47,
+          "significant": true,
+          "direction": "positive"
+        },
+        {
+          "name": "revenue_growth_1y",
+          "segment": "Growth",
+          "pearson": 0.45321263409029383,
+          "spearman": 0.17372802960222017,
+          "tStat": 3.372519956685533,
+          "n": 46,
+          "significant": true,
+          "direction": "positive"
+        },
+        {
+          "name": "current_ratio",
+          "segment": "Financial Ratios",
+          "pearson": 0.44943329324186326,
+          "spearman": -0.09843205574912892,
+          "tStat": 3.141907936895678,
+          "n": 41,
+          "significant": true,
+          "direction": "positive"
+        },
+        {
+          "name": "ev_ebitda",
+          "segment": "Valuation",
+          "pearson": -0.4277571500500863,
+          "spearman": -0.12638760407030528,
+          "tStat": -3.1745792637788037,
+          "n": 47,
+          "significant": true,
+          "direction": "negative"
+        },
+        {
+          "name": "roa",
+          "segment": "Profitability",
+          "pearson": -0.40875493005268226,
+          "spearman": -0.2638914585260561,
+          "tStat": -2.9708987522128907,
+          "n": 46,
+          "significant": true,
+          "direction": "negative"
+        },
+        {
+          "name": "avg_volume_20d",
+          "segment": "Price & Volume",
+          "pearson": 0.3916691841450167,
+          "spearman": 0.01561054579093432,
+          "tStat": 2.8555367018507303,
+          "n": 47,
+          "significant": true,
+          "direction": "positive"
+        },
+        {
+          "name": "volatility",
+          "segment": "Technical",
+          "pearson": 0.38956181473340884,
+          "spearman": 0.40622109158186864,
+          "tStat": 2.837414967271994,
+          "n": 47,
+          "significant": true,
+          "direction": "positive"
+        },
+        {
+          "name": "roa_5y_avg",
+          "segment": "Profitability",
+          "pearson": -0.38048069157865083,
+          "spearman": -0.22590194264569843,
+          "tStat": -2.7290806427306404,
+          "n": 46,
+          "significant": true,
+          "direction": "negative"
+        },
+        {
+          "name": "roe_5y_avg",
+          "segment": "Profitability",
+          "pearson": -0.3637751510385617,
+          "spearman": -0.24983040394696268,
+          "tStat": -2.590494459654002,
+          "n": 46,
+          "significant": true,
+          "direction": "negative"
+        },
+        {
+          "name": "debt_to_ebitda",
+          "segment": "Financial Ratios",
+          "pearson": 0.35335616686106647,
+          "spearman": 0.3356845513413506,
+          "tStat": 2.5338465405627537,
+          "n": 47,
+          "significant": true,
+          "direction": "positive"
+        },
+        {
+          "name": "roe",
+          "segment": "Profitability",
+          "pearson": -0.34852665123465987,
+          "spearman": -0.3005242059821153,
+          "tStat": -2.4665177084485292,
+          "n": 46,
+          "significant": true,
+          "direction": "negative"
+        },
+        {
+          "name": "net_profit_margin",
+          "segment": "Profitability",
+          "pearson": -0.3421626743016909,
+          "spearman": -0.275609004008634,
+          "tStat": -2.415444903284042,
+          "n": 46,
+          "significant": true,
+          "direction": "negative"
+        },
+        {
+          "name": "dpo",
+          "segment": "Financial Ratios",
+          "pearson": -0.3371492949174271,
+          "spearman": -0.29367521367521365,
+          "tStat": -1.754405844722642,
+          "n": 26,
+          "significant": false,
+          "direction": "negative"
+        },
+        {
+          "name": "cash_conversion_cycle",
+          "segment": "Financial Ratios",
+          "pearson": 0.3349417540973985,
+          "spearman": -0.01264957264957265,
+          "tStat": 1.741461635828812,
+          "n": 26,
+          "significant": false,
+          "direction": "positive"
+        },
+        {
+          "name": "dividends_paid",
+          "segment": "Cash Flow",
+          "pearson": -0.3333371443710931,
+          "spearman": -0.2152832674571805,
+          "tStat": -2.3184344438433784,
+          "n": 45,
+          "significant": true,
+          "direction": "negative"
+        },
+        {
+          "name": "dio",
+          "segment": "Financial Ratios",
+          "pearson": -0.32995745759183814,
+          "spearman": -0.4365811965811966,
+          "tStat": -1.7123538162205565,
+          "n": 26,
+          "significant": false,
+          "direction": "negative"
+        },
+        {
+          "name": "dividend_yield",
+          "segment": "Valuation",
+          "pearson": 0.3276075783400469,
+          "spearman": 0.05568917668825162,
+          "tStat": 2.300032704237105,
+          "n": 46,
+          "significant": true,
+          "direction": "positive"
+        },
+        {
+          "name": "book_value_growth",
+          "segment": "Growth",
+          "pearson": 0.2877453545053702,
+          "spearman": 0.1135368485969781,
+          "tStat": 1.9929757666291084,
+          "n": 46,
+          "significant": false,
+          "direction": "positive"
+        },
+        {
+          "name": "debt_to_equity",
+          "segment": "Financial Ratios",
+          "pearson": 0.27445363201886624,
+          "spearman": 0.37280296022201664,
+          "tStat": 1.8932183919298613,
+          "n": 46,
+          "significant": false,
+          "direction": "positive"
+        },
+        {
+          "name": "sma10_dev",
+          "segment": "Technical",
+          "pearson": -0.2741493480006986,
+          "spearman": -0.3675994449583719,
+          "tStat": -1.9123160516470905,
+          "n": 47,
+          "significant": false,
+          "direction": "negative"
+        },
+        {
+          "name": "working_capital_to_sales",
+          "segment": "Financial Ratios",
+          "pearson": 0.2712645356539444,
+          "spearman": -0.06529080675422139,
+          "tStat": 1.737328319228715,
+          "n": 40,
+          "significant": false,
+          "direction": "positive"
+        },
+        {
+          "name": "ebitda_growth_1y",
+          "segment": "Growth",
+          "pearson": 0.2682949266957595,
+          "spearman": 0.07065217391304347,
+          "tStat": 1.8682739427481538,
+          "n": 47,
+          "significant": false,
+          "direction": "positive"
+        },
+        {
+          "name": "fii_holding",
+          "segment": "Ownership",
+          "pearson": 0.2585860231448454,
+          "spearman": -0.006128584643848288,
+          "tStat": 1.7957235046101834,
+          "n": 47,
+          "significant": false,
+          "direction": "positive"
+        },
+        {
+          "name": "earnings_yield",
+          "segment": "Profitability",
+          "pearson": 0.25738171931075354,
+          "spearman": 0.024745605920444034,
+          "tStat": 1.7867655302980952,
+          "n": 47,
+          "significant": false,
+          "direction": "positive"
+        },
+        {
+          "name": "pat",
+          "segment": "Income Statement",
+          "pearson": -0.2521365672870941,
+          "spearman": -0.2894310823311748,
+          "tStat": -1.7478537635131433,
+          "n": 47,
+          "significant": false,
+          "direction": "negative"
+        },
+        {
+          "name": "price_to_fcf",
+          "segment": "Valuation",
+          "pearson": 0.2503357348558805,
+          "spearman": -0.06537966537966539,
+          "tStat": 1.5077022417698265,
+          "n": 36,
+          "significant": false,
+          "direction": "positive"
+        }
+      ],
+      "quintileBacktest": [
+        {
+          "quintile": "Q1",
+          "avgScore": "63.2",
+          "avgReturn": "167.7",
+          "medReturn": "156.3",
+          "n": 9,
+          "stocks": [
+            "SHRIRAMFIN",
+            "ETERNAL",
+            "ADANIENT",
+            "BAJFINANCE",
+            "M&M",
+            "ADANIPORTS",
+            "RELIANCE",
+            "BAJAJFINSV",
+            "TRENT"
+          ]
+        },
+        {
+          "quintile": "Q2",
+          "avgScore": "53.3",
+          "avgReturn": "98.9",
+          "medReturn": "122.1",
+          "n": 9,
+          "stocks": [
+            "BPCL",
+            "HINDALCO",
+            "TATASTEEL",
+            "GRASIM",
+            "SBIN",
+            "INDUSINDBK",
+            "WIPRO",
+            "NTPC",
+            "EICHERMOT"
+          ]
+        },
+        {
+          "quintile": "Q3",
+          "avgScore": "48.7",
+          "avgReturn": "80.5",
+          "medReturn": "81.2",
+          "n": 9,
+          "stocks": [
+            "ONGC",
+            "MARUTI",
+            "TITAN",
+            "BHARTIARTL",
+            "JSWSTEEL",
+            "COALINDIA",
+            "KOTAKBANK",
+            "TECHM",
+            "APOLLOHOSP"
+          ]
+        },
+        {
+          "quintile": "Q4",
+          "avgScore": "45.3",
+          "avgReturn": "65.6",
+          "medReturn": "66.1",
+          "n": 9,
+          "stocks": [
+            "HEROMOTOCO",
+            "CIPLA",
+            "DRREDDY",
+            "BRITANNIA",
+            "SUNPHARMA",
+            "LT",
+            "AXISBANK",
+            "ASIANPAINT",
+            "ULTRACEMCO"
+          ]
+        },
+        {
+          "quintile": "Q5",
+          "avgScore": "39.7",
+          "avgReturn": "50.6",
+          "medReturn": "33.6",
+          "n": 9,
+          "stocks": [
+            "HDFCBANK",
+            "ICICIBANK",
+            "ITC",
+            "BAJAJ-AUTO",
+            "DIVISLAB",
+            "HCLTECH",
+            "POWERGRID",
+            "INFY",
+            "HINDUNILVR"
+          ]
+        }
+      ],
+      "q1q5Spread": 117.1,
+      "stockScores": [
+        {
+          "symbol": "SHRIRAMFIN",
+          "score": 79.6,
+          "forwardReturn": 340.3
+        },
+        {
+          "symbol": "ETERNAL",
+          "score": 78.2,
+          "forwardReturn": 390.6
+        },
+        {
+          "symbol": "ADANIENT",
+          "score": 64.8,
+          "forwardReturn": 39.4
+        },
+        {
+          "symbol": "BAJFINANCE",
+          "score": 61.8,
+          "forwardReturn": 80.1
+        },
+        {
+          "symbol": "M&M",
+          "score": 58.8,
+          "forwardReturn": 201.4
+        },
+        {
+          "symbol": "ADANIPORTS",
+          "score": 57.9,
+          "forwardReturn": 156.3
+        },
+        {
+          "symbol": "RELIANCE",
+          "score": 56.1,
+          "forwardReturn": 36.6
+        },
+        {
+          "symbol": "BAJAJFINSV",
+          "score": 56,
+          "forwardReturn": 62.9
+        },
+        {
+          "symbol": "TRENT",
+          "score": 56,
+          "forwardReturn": 202
+        },
+        {
+          "symbol": "BPCL",
+          "score": 55.7,
+          "forwardReturn": 127.2
+        },
+        {
+          "symbol": "HINDALCO",
+          "score": 55.7,
+          "forwardReturn": 135.7
+        },
+        {
+          "symbol": "TATASTEEL",
+          "score": 55.4,
+          "forwardReturn": 107.2
+        },
+        {
+          "symbol": "GRASIM",
+          "score": 53.5,
+          "forwardReturn": 74.6
+        },
+        {
+          "symbol": "SBIN",
+          "score": 53.3,
+          "forwardReturn": 136.6
+        },
+        {
+          "symbol": "INDUSINDBK",
+          "score": 52.8,
+          "forwardReturn": -7.4
+        },
+        {
+          "symbol": "WIPRO",
+          "score": 51.4,
+          "forwardReturn": 12.8
+        },
+        {
+          "symbol": "NTPC",
+          "score": 51,
+          "forwardReturn": 122.1
+        },
+        {
+          "symbol": "EICHERMOT",
+          "score": 50.9,
+          "forwardReturn": 181
+        },
+        {
+          "symbol": "ONGC",
+          "score": 50.1,
+          "forwardReturn": 90.3
+        },
+        {
+          "symbol": "MARUTI",
+          "score": 49.9,
+          "forwardReturn": 81.2
+        },
+        {
+          "symbol": "TITAN",
+          "score": 49.7,
+          "forwardReturn": 73.2
+        },
+        {
+          "symbol": "BHARTIARTL",
+          "score": 49.2,
+          "forwardReturn": 151.3
+        },
+        {
+          "symbol": "JSWSTEEL",
+          "score": 49.1,
+          "forwardReturn": 92.2
+        },
+        {
+          "symbol": "COALINDIA",
+          "score": 48.6,
+          "forwardReturn": 106.2
+        },
+        {
+          "symbol": "KOTAKBANK",
+          "score": 47.8,
+          "forwardReturn": 22.3
+        },
+        {
+          "symbol": "TECHM",
+          "score": 47,
+          "forwardReturn": 26.8
+        },
+        {
+          "symbol": "APOLLOHOSP",
+          "score": 46.7,
+          "forwardReturn": 80.6
+        },
+        {
+          "symbol": "HEROMOTOCO",
+          "score": 46.7,
+          "forwardReturn": 153.8
+        },
+        {
+          "symbol": "CIPLA",
+          "score": 46.4,
+          "forwardReturn": 51.5
+        },
+        {
+          "symbol": "DRREDDY",
+          "score": 46.4,
+          "forwardReturn": 42.1
+        },
+        {
+          "symbol": "BRITANNIA",
+          "score": 46.1,
+          "forwardReturn": 42.7
+        },
+        {
+          "symbol": "SUNPHARMA",
+          "score": 45.7,
+          "forwardReturn": 76.6
+        },
+        {
+          "symbol": "LT",
+          "score": 45.5,
+          "forwardReturn": 100.7
+        },
+        {
+          "symbol": "AXISBANK",
+          "score": 44.2,
+          "forwardReturn": 66.1
+        },
+        {
+          "symbol": "ASIANPAINT",
+          "score": 43.3,
+          "forwardReturn": -14.6
+        },
+        {
+          "symbol": "ULTRACEMCO",
+          "score": 43.1,
+          "forwardReturn": 71.2
+        },
+        {
+          "symbol": "HDFCBANK",
+          "score": 42.2,
+          "forwardReturn": 12.3
+        },
+        {
+          "symbol": "ICICIBANK",
+          "score": 41.6,
+          "forwardReturn": 61.3
+        },
+        {
+          "symbol": "ITC",
+          "score": 41.4,
+          "forwardReturn": -12.7
+        },
+        {
+          "symbol": "BAJAJ-AUTO",
+          "score": 41,
+          "forwardReturn": 162.9
+        },
+        {
+          "symbol": "DIVISLAB",
+          "score": 40.3,
+          "forwardReturn": 128.6
+        },
+        {
+          "symbol": "HCLTECH",
+          "score": 39.5,
+          "forwardReturn": 33.6
+        },
+        {
+          "symbol": "POWERGRID",
+          "score": 38.4,
+          "forwardReturn": 79.3
+        },
+        {
+          "symbol": "INFY",
+          "score": 37.6,
+          "forwardReturn": -5.6
+        },
+        {
+          "symbol": "HINDUNILVR",
+          "score": 35.1,
+          "forwardReturn": -4.2
+        },
+        {
+          "symbol": "HDFCLIFE",
+          "score": 30.1,
+          "forwardReturn": 46
+        },
+        {
+          "symbol": "TCS",
+          "score": 27.9,
+          "forwardReturn": -15.4
+        }
+      ]
+    },
+    {
+      "period": "1Y (Mar 2025 → Feb 2026)",
+      "baseYearCol": "Y202503",
+      "targetDate": "2026-02-28",
+      "stockCount": 48,
+      "avgReturn": 13.392974714785856,
+      "sigMetrics": 10,
+      "totalMetrics": 110,
+      "segmentWeights": {
+        "Financial Ratios": {
+          "weight": 0.18562841811270486,
+          "avgAbsR": 0.2031737833269677,
+          "sigFrac": 0.2857142857142857,
+          "metricCount": 14,
+          "topMetric": "dio",
+          "topMetricR": -0.4870086478182286
+        },
+        "Profitability": {
+          "weight": 0.18118239566228841,
+          "avgAbsR": 0.21892260970790345,
+          "sigFrac": 0.23076923076923078,
+          "metricCount": 13,
+          "topMetric": "gross_profit_margin",
+          "topMetricR": -0.5441189680804149
+        },
+        "Balance Sheet": {
+          "weight": 0.1740185635828638,
+          "avgAbsR": 0.19811431225568718,
+          "sigFrac": 0.25,
+          "metricCount": 8,
+          "topMetric": "inventory_turnover",
+          "topMetricR": 0.5183678054911762
+        },
+        "Cash Flow": {
+          "weight": 0.14700766710197552,
+          "avgAbsR": 0.18644704491660083,
+          "sigFrac": 0.16666666666666666,
+          "metricCount": 6,
+          "topMetric": "dividends_paid",
+          "topMetricR": -0.41244450672721394
+        },
+        "Valuation": {
+          "weight": 0.07337976012275865,
+          "avgAbsR": 0.12872016298164213,
+          "sigFrac": 0,
+          "metricCount": 11,
+          "topMetric": "price_to_sales",
+          "topMetricR": -0.23997842167076067
+        },
+        "Price & Volume": {
+          "weight": 0.05127753109752878,
+          "avgAbsR": 0.08994921963669658,
+          "sigFrac": 0,
+          "metricCount": 10,
+          "topMetric": "price_return_3m",
+          "topMetricR": 0.15842555417696064
+        },
+        "Growth": {
+          "weight": 0.05036528752220109,
+          "avgAbsR": 0.08834899443156242,
+          "sigFrac": 0,
+          "metricCount": 12,
+          "topMetric": "eps_growth_3y_cagr",
+          "topMetricR": -0.24255505071953035
+        },
+        "Ownership": {
+          "weight": 0.047806383320285695,
+          "avgAbsR": 0.08386025577428245,
+          "sigFrac": 0,
+          "metricCount": 8,
+          "topMetric": "mf_change_3m",
+          "topMetricR": -0.1792014200203017
+        },
+        "Income Statement": {
+          "weight": 0.04606257160365432,
+          "avgAbsR": 0.08080132333843669,
+          "sigFrac": 0,
+          "metricCount": 6,
+          "topMetric": "tax_rate",
+          "topMetricR": 0.1572410267788016
+        },
+        "Technical": {
+          "weight": 0.04327142187373902,
+          "avgAbsR": 0.07590518784358334,
+          "sigFrac": 0,
+          "metricCount": 22,
+          "topMetric": "volatility",
+          "topMetricR": 0.2747202869263875
+        }
+      },
+      "topMetrics": [
+        {
+          "name": "gross_profit_margin",
+          "segment": "Profitability",
+          "pearson": -0.5441189680804149,
+          "spearman": -0.48832752613240415,
+          "tStat": -4.050046681359114,
+          "n": 41,
+          "significant": true,
+          "direction": "negative"
+        },
+        {
+          "name": "inventory_turnover",
+          "segment": "Balance Sheet",
+          "pearson": 0.5183678054911762,
+          "spearman": 0.5727833096254149,
+          "tStat": 3.5861280665857436,
+          "n": 37,
+          "significant": true,
+          "direction": "positive"
+        },
+        {
+          "name": "dio",
+          "segment": "Financial Ratios",
+          "pearson": -0.4870086478182286,
+          "spearman": -0.6135531135531136,
+          "tStat": -2.7880137307035606,
+          "n": 27,
+          "significant": true,
+          "direction": "negative"
+        },
+        {
+          "name": "dpo",
+          "segment": "Financial Ratios",
+          "pearson": -0.43900671567038085,
+          "spearman": -0.5989010989010989,
+          "tStat": -2.4430419628016438,
+          "n": 27,
+          "significant": true,
+          "direction": "negative"
+        },
+        {
+          "name": "cash_conversion_cycle",
+          "segment": "Financial Ratios",
+          "pearson": 0.43481472180637554,
+          "spearman": -0.10134310134310134,
+          "tStat": 2.414242615491508,
+          "n": 27,
+          "significant": true,
+          "direction": "positive"
+        },
+        {
+          "name": "dividends_paid",
+          "segment": "Cash Flow",
+          "pearson": -0.41244450672721394,
+          "spearman": -0.25871106999691645,
+          "tStat": -3.0031824646777467,
+          "n": 46,
+          "significant": true,
+          "direction": "negative"
+        },
+        {
+          "name": "dso",
+          "segment": "Financial Ratios",
+          "pearson": -0.4001903233858641,
+          "spearman": -0.3849444958371878,
+          "tStat": -2.929358806916878,
+          "n": 47,
+          "significant": true,
+          "direction": "negative"
+        },
+        {
+          "name": "roa",
+          "segment": "Profitability",
+          "pearson": -0.345180421286914,
+          "spearman": -0.2924375578168363,
+          "tStat": -2.467182719256021,
+          "n": 47,
+          "significant": true,
+          "direction": "negative"
+        },
+        {
+          "name": "roa_5y_avg",
+          "segment": "Profitability",
+          "pearson": -0.33208062651207143,
+          "spearman": -0.2532839962997225,
+          "tStat": -2.3352995820393785,
+          "n": 46,
+          "significant": true,
+          "direction": "negative"
+        },
+        {
+          "name": "receivables_turnover",
+          "segment": "Balance Sheet",
+          "pearson": 0.3304363876836651,
+          "spearman": 0.4832752613240418,
+          "tStat": 2.1863877744957683,
+          "n": 41,
+          "significant": true,
+          "direction": "positive"
+        },
+        {
+          "name": "volatility",
+          "segment": "Technical",
+          "pearson": 0.2747202869263875,
+          "spearman": 0.341511072514112,
+          "tStat": 1.9378021503841791,
+          "n": 48,
+          "significant": false,
+          "direction": "positive"
+        },
+        {
+          "name": "fcf_margin",
+          "segment": "Cash Flow",
+          "pearson": -0.262054083804281,
+          "spearman": -0.34019426456984275,
+          "tStat": -1.821570309236459,
+          "n": 47,
+          "significant": false,
+          "direction": "negative"
+        },
+        {
+          "name": "max_drawdown_1y",
+          "segment": "Technical",
+          "pearson": -0.2578773977245477,
+          "spearman": -0.21971341728180635,
+          "tStat": -1.8102360471137586,
+          "n": 48,
+          "significant": false,
+          "direction": "negative"
+        },
+        {
+          "name": "cash_flow_margin",
+          "segment": "Profitability",
+          "pearson": -0.24841060103740642,
+          "spearman": -0.33337187789084183,
+          "tStat": -1.7203124630349529,
+          "n": 47,
+          "significant": false,
+          "direction": "negative"
+        },
+        {
+          "name": "eps_growth_3y_cagr",
+          "segment": "Growth",
+          "pearson": -0.24255505071953035,
+          "spearman": -0.12759790317607153,
+          "tStat": -1.6584535186680853,
+          "n": 46,
+          "significant": false,
+          "direction": "negative"
+        },
+        {
+          "name": "price_to_sales",
+          "segment": "Valuation",
+          "pearson": -0.23997842167076067,
+          "spearman": -0.2644542090656799,
+          "tStat": -1.6582821439353677,
+          "n": 47,
+          "significant": false,
+          "direction": "negative"
+        },
+        {
+          "name": "roce",
+          "segment": "Profitability",
+          "pearson": -0.23242208439393314,
+          "spearman": -0.19738675958188154,
+          "tStat": -1.4923432435768826,
+          "n": 41,
+          "significant": false,
+          "direction": "negative"
+        },
+        {
+          "name": "debt_to_ebitda",
+          "segment": "Financial Ratios",
+          "pearson": 0.2271761658359635,
+          "spearman": 0.23881893182805036,
+          "tStat": 1.5821511516022295,
+          "n": 48,
+          "significant": false,
+          "direction": "positive"
+        },
+        {
+          "name": "pe_vs_5y_avg",
+          "segment": "Valuation",
+          "pearson": 0.22107119567129155,
+          "spearman": 0.12234042553191489,
+          "tStat": 1.537417076666624,
+          "n": 48,
+          "significant": false,
+          "direction": "positive"
+        },
+        {
+          "name": "ebitda_margin",
+          "segment": "Profitability",
+          "pearson": -0.22018054855048147,
+          "spearman": -0.37650323774283073,
+          "tStat": -1.5141751890052604,
+          "n": 47,
+          "significant": false,
+          "direction": "negative"
+        },
+        {
+          "name": "pat_growth_3y_cagr",
+          "segment": "Growth",
+          "pearson": -0.21209164471098196,
+          "spearman": 0.013629355534998458,
+          "tStat": -1.4396082156952517,
+          "n": 46,
+          "significant": false,
+          "direction": "negative"
+        },
+        {
+          "name": "net_profit_margin",
+          "segment": "Profitability",
+          "pearson": -0.20810193964509094,
+          "spearman": -0.29937557816836263,
+          "tStat": -1.4272365356113874,
+          "n": 47,
+          "significant": false,
+          "direction": "negative"
+        },
+        {
+          "name": "book_value_per_share",
+          "segment": "Balance Sheet",
+          "pearson": 0.2047111094196307,
+          "spearman": 0.263413506012951,
+          "tStat": 1.4029550390313212,
+          "n": 47,
+          "significant": false,
+          "direction": "positive"
+        },
+        {
+          "name": "roe",
+          "segment": "Profitability",
+          "pearson": -0.204531564894608,
+          "spearman": -0.17506938020351526,
+          "tStat": -1.401670812334226,
+          "n": 47,
+          "significant": false,
+          "direction": "negative"
+        },
+        {
+          "name": "pb_vs_5y_avg",
+          "segment": "Valuation",
+          "pearson": 0.20330069301995435,
+          "spearman": 0.05434782608695652,
+          "tStat": 1.3928707322827594,
+          "n": 47,
+          "significant": false,
+          "direction": "positive"
+        },
+        {
+          "name": "roe_5y_avg",
+          "segment": "Profitability",
+          "pearson": -0.20299682037241035,
+          "spearman": -0.20111008325624422,
+          "tStat": -1.375160239442446,
+          "n": 46,
+          "significant": false,
+          "direction": "negative"
+        },
+        {
+          "name": "pb_ratio",
+          "segment": "Valuation",
+          "pearson": -0.1983529001428084,
+          "spearman": -0.2309204440333025,
+          "tStat": -1.3575656264537237,
+          "n": 47,
+          "significant": false,
+          "direction": "negative"
+        },
+        {
+          "name": "fcf_val",
+          "segment": "Cash Flow",
+          "pearson": -0.19671264627418694,
+          "spearman": -0.2798523664785063,
+          "tStat": -1.3607576716352978,
+          "n": 48,
+          "significant": false,
+          "direction": "negative"
+        },
+        {
+          "name": "operating_profit_margin",
+          "segment": "Profitability",
+          "pearson": -0.1951889369237828,
+          "spearman": -0.26480836236933797,
+          "tStat": -1.2428601150141119,
+          "n": 41,
+          "significant": false,
+          "direction": "negative"
+        },
+        {
+          "name": "ev_to_revenue",
+          "segment": "Valuation",
+          "pearson": -0.1860236232425992,
+          "spearman": -0.211840888066605,
+          "tStat": -1.2700528275821132,
+          "n": 47,
+          "significant": false,
+          "direction": "negative"
+        }
+      ],
+      "quintileBacktest": [
+        {
+          "quintile": "Q1",
+          "avgScore": "65.7",
+          "avgReturn": "29.0",
+          "medReturn": "35.7",
+          "n": 9,
+          "stocks": [
+            "SHRIRAMFIN",
+            "INDUSINDBK",
+            "BPCL",
+            "GRASIM",
+            "TATASTEEL",
+            "BAJFINANCE",
+            "JSWSTEEL",
+            "HINDALCO",
+            "BAJAJFINSV"
+          ]
+        },
+        {
+          "quintile": "Q2",
+          "avgScore": "58.7",
+          "avgReturn": "29.0",
+          "medReturn": "27.5",
+          "n": 9,
+          "stocks": [
+            "BAJAJ-AUTO",
+            "M&M",
+            "TITAN",
+            "KOTAKBANK",
+            "HEROMOTOCO",
+            "SBIN",
+            "LT",
+            "RELIANCE",
+            "MARUTI"
+          ]
+        },
+        {
+          "quintile": "Q3",
+          "avgScore": "50.9",
+          "avgReturn": "13.2",
+          "medReturn": "14.7",
+          "n": 9,
+          "stocks": [
+            "AXISBANK",
+            "BRITANNIA",
+            "ONGC",
+            "APOLLOHOSP",
+            "ADANIENT",
+            "ULTRACEMCO",
+            "ETERNAL",
+            "NESTLEIND",
+            "HDFCBANK"
+          ]
+        },
+        {
+          "quintile": "Q4",
+          "avgScore": "45.4",
+          "avgReturn": "6.3",
+          "medReturn": "5.2",
+          "n": 9,
+          "stocks": [
+            "NTPC",
+            "EICHERMOT",
+            "TRENT",
+            "ASIANPAINT",
+            "DRREDDY",
+            "ICICIBANK",
+            "DIVISLAB",
+            "CIPLA",
+            "HINDUNILVR"
+          ]
+        },
+        {
+          "quintile": "Q5",
+          "avgScore": "37.8",
+          "avgReturn": "-1.7",
+          "medReturn": "0.2",
+          "n": 9,
+          "stocks": [
+            "TECHM",
+            "WIPRO",
+            "POWERGRID",
+            "ITC",
+            "ADANIPORTS",
+            "COALINDIA",
+            "BHARTIARTL",
+            "SUNPHARMA",
+            "HCLTECH"
+          ]
+        }
+      ],
+      "q1q5Spread": 30.7,
+      "stockScores": [
+        {
+          "symbol": "SHRIRAMFIN",
+          "score": 72.3,
+          "forwardReturn": 64.6
+        },
+        {
+          "symbol": "INDUSINDBK",
+          "score": 67.3,
+          "forwardReturn": 47.6
+        },
+        {
+          "symbol": "BPCL",
+          "score": 66.7,
+          "forwardReturn": 38.5
+        },
+        {
+          "symbol": "GRASIM",
+          "score": 65,
+          "forwardReturn": 7.1
+        },
+        {
+          "symbol": "TATASTEEL",
+          "score": 64.9,
+          "forwardReturn": 37.7
+        },
+        {
+          "symbol": "BAJFINANCE",
+          "score": 64.2,
+          "forwardReturn": 11.4
+        },
+        {
+          "symbol": "JSWSTEEL",
+          "score": 63.7,
+          "forwardReturn": 19.3
+        },
+        {
+          "symbol": "HINDALCO",
+          "score": 63.6,
+          "forwardReturn": 35.7
+        },
+        {
+          "symbol": "BAJAJFINSV",
+          "score": 63.5,
+          "forwardReturn": -0.7
+        },
+        {
+          "symbol": "BAJAJ-AUTO",
+          "score": 62.8,
+          "forwardReturn": 26.6
+        },
+        {
+          "symbol": "M&M",
+          "score": 61.8,
+          "forwardReturn": 27.5
+        },
+        {
+          "symbol": "TITAN",
+          "score": 61.3,
+          "forwardReturn": 41.3
+        },
+        {
+          "symbol": "KOTAKBANK",
+          "score": 58.5,
+          "forwardReturn": -4.4
+        },
+        {
+          "symbol": "HEROMOTOCO",
+          "score": 57.8,
+          "forwardReturn": 53.4
+        },
+        {
+          "symbol": "SBIN",
+          "score": 57.8,
+          "forwardReturn": 55.8
+        },
+        {
+          "symbol": "LT",
+          "score": 56.9,
+          "forwardReturn": 22.6
+        },
+        {
+          "symbol": "RELIANCE",
+          "score": 56.8,
+          "forwardReturn": 9.4
+        },
+        {
+          "symbol": "MARUTI",
+          "score": 54.6,
+          "forwardReturn": 29.1
+        },
+        {
+          "symbol": "AXISBANK",
+          "score": 54.3,
+          "forwardReturn": 25.6
+        },
+        {
+          "symbol": "BRITANNIA",
+          "score": 53.2,
+          "forwardReturn": 21.4
+        },
+        {
+          "symbol": "ONGC",
+          "score": 51.4,
+          "forwardReturn": 13.6
+        },
+        {
+          "symbol": "APOLLOHOSP",
+          "score": 51,
+          "forwardReturn": 18.1
+        },
+        {
+          "symbol": "ADANIENT",
+          "score": 50.5,
+          "forwardReturn": -3.8
+        },
+        {
+          "symbol": "ULTRACEMCO",
+          "score": 50.1,
+          "forwardReturn": 10.2
+        },
+        {
+          "symbol": "ETERNAL",
+          "score": 50,
+          "forwardReturn": 22.3
+        },
+        {
+          "symbol": "NESTLEIND",
+          "score": 48.9,
+          "forwardReturn": 14.7
+        },
+        {
+          "symbol": "HDFCBANK",
+          "score": 48.7,
+          "forwardReturn": -2.9
+        },
+        {
+          "symbol": "NTPC",
+          "score": 48.4,
+          "forwardReturn": 6.8
+        },
+        {
+          "symbol": "EICHERMOT",
+          "score": 48.2,
+          "forwardReturn": 49.9
+        },
+        {
+          "symbol": "TRENT",
+          "score": 47.3,
+          "forwardReturn": -26.6
+        },
+        {
+          "symbol": "ASIANPAINT",
+          "score": 47.1,
+          "forwardReturn": 1.6
+        },
+        {
+          "symbol": "DRREDDY",
+          "score": 45.7,
+          "forwardReturn": 12.5
+        },
+        {
+          "symbol": "ICICIBANK",
+          "score": 45.5,
+          "forwardReturn": 2.3
+        },
+        {
+          "symbol": "DIVISLAB",
+          "score": 43.6,
+          "forwardReturn": 11.1
+        },
+        {
+          "symbol": "CIPLA",
+          "score": 41.9,
+          "forwardReturn": -6.5
+        },
+        {
+          "symbol": "HINDUNILVR",
+          "score": 41.1,
+          "forwardReturn": 5.2
+        },
+        {
+          "symbol": "TECHM",
+          "score": 40.5,
+          "forwardReturn": -4.3
+        },
+        {
+          "symbol": "WIPRO",
+          "score": 40.2,
+          "forwardReturn": -23.3
+        },
+        {
+          "symbol": "POWERGRID",
+          "score": 39.5,
+          "forwardReturn": 2.9
+        },
+        {
+          "symbol": "ITC",
+          "score": 39,
+          "forwardReturn": -23.5
+        },
+        {
+          "symbol": "ADANIPORTS",
+          "score": 38.7,
+          "forwardReturn": 28.7
+        },
+        {
+          "symbol": "COALINDIA",
+          "score": 38.7,
+          "forwardReturn": 8.1
+        },
+        {
+          "symbol": "BHARTIARTL",
+          "score": 37.4,
+          "forwardReturn": 8.6
+        },
+        {
+          "symbol": "SUNPHARMA",
+          "score": 34.7,
+          "forwardReturn": 0.2
+        },
+        {
+          "symbol": "HCLTECH",
+          "score": 31.4,
+          "forwardReturn": -12.6
+        },
+        {
+          "symbol": "INFY",
+          "score": 30,
+          "forwardReturn": -17.2
+        },
+        {
+          "symbol": "TCS",
+          "score": 25.9,
+          "forwardReturn": -26.9
+        },
+        {
+          "symbol": "HDFCLIFE",
+          "score": 25.6,
+          "forwardReturn": 4.3
+        }
+      ]
+    }
+  ],
+  "blendedWeights": {
+    "Profitability": 0.2229307792570477,
+    "Income Statement": 0.0983875799349186,
+    "Financial Ratios": 0.15962757467407088,
+    "Cash Flow": 0.11505897738551497,
+    "Balance Sheet": 0.13148359772893975,
+    "Valuation": 0.0802424049711685,
+    "Ownership": 0.05319589272452698,
+    "Growth": 0.05287869090797031,
+    "Price & Volume": 0.05159802470929377,
+    "Technical": 0.034596477706548404
+  },
+  "consistentMetrics": {
+    "roa": {
+      "count": 3,
+      "directions": [
+        "negative",
+        "negative",
+        "negative"
+      ],
+      "rs": [
+        -0.5546881348425903,
+        -0.40875493005268226,
+        -0.345180421286914
+      ],
+      "segment": "Profitability"
+    },
+    "roa_5y_avg": {
+      "count": 3,
+      "directions": [
+        "negative",
+        "negative",
+        "negative"
+      ],
+      "rs": [
+        -0.3616343166033197,
+        -0.38048069157865083,
+        -0.33208062651207143
+      ],
+      "segment": "Profitability"
+    },
+    "roce": {
+      "count": 2,
+      "directions": [
+        "negative",
+        "negative"
+      ],
+      "rs": [
+        -0.5948108676232933,
+        -0.5051737511848234
+      ],
+      "segment": "Profitability"
+    },
+    "net_profit_margin": {
+      "count": 2,
+      "directions": [
+        "negative",
+        "negative"
+      ],
+      "rs": [
+        -0.5050910832414577,
+        -0.3421626743016909
+      ],
+      "segment": "Profitability"
+    },
+    "roe": {
+      "count": 2,
+      "directions": [
+        "negative",
+        "negative"
+      ],
+      "rs": [
+        -0.46643737649567446,
+        -0.34852665123465987
+      ],
+      "segment": "Profitability"
+    },
+    "receivables_turnover": {
+      "count": 2,
+      "directions": [
+        "positive",
+        "positive"
+      ],
+      "rs": [
+        0.4910616945897996,
+        0.3304363876836651
+      ],
+      "segment": "Balance Sheet"
+    },
+    "dividends_paid": {
+      "count": 2,
+      "directions": [
+        "negative",
+        "negative"
+      ],
+      "rs": [
+        -0.3333371443710931,
+        -0.41244450672721394
+      ],
+      "segment": "Cash Flow"
+    }
+  }
+}
