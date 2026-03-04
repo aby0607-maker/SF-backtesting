@@ -20,6 +20,7 @@ import type { FundamentalsBundle } from '@/services/cmots/fundamentals'
 import { getAllFundamentals, findStatementRow, getStatementValue, getYearColumns } from '@/services/cmots/fundamentals'
 import { getCompanyBySymbol } from '@/services/cmots/companyMaster'
 import { getHistoricalPrices } from '@/services/cmots/priceData'
+import { getIndianAPIFundamentals, mergeFundamentals } from '@/services/indianapi'
 import { ema, rsi, volumePriceTrend, priceVsEMA } from '@/lib/technicalCalc'
 
 // ─────────────────────────────────────────────────
@@ -1329,6 +1330,19 @@ export async function resolveMetricValues(
     console.warn(`[MetricResolver] Failed to fetch data for ${stockId}:`, err instanceof Error ? err.message : err)
     return null
   }
+
+  // ── IndianAPI Fallback: enrich with deeper historical data when needed ──
+  try {
+    const needsEnrichment = fundamentals.pnl.length === 0 ||
+      (fundamentals.pnl[0] && getYearColumns(fundamentals.pnl[0]).length < 5)
+    if (needsEnrichment) {
+      const iaFundamentals = await getIndianAPIFundamentals(stockId)
+      fundamentals = mergeFundamentals(fundamentals, iaFundamentals)
+    }
+  } catch {
+    // Non-fatal: continue with CMOTS-only data
+  }
+
   const technicalData = priceResult.technicalData
 
   const { ttm, finData, pnl, cashFlow, balanceSheet, quarterly, shareholding } = fundamentals

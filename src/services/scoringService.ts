@@ -32,6 +32,7 @@ import { getBatchPrices } from '@/services/cmots/priceData'
 import type { CMOTSOHLCVRecord } from '@/types/scoring'
 import { getAllFundamentals, getYearColumns } from '@/services/cmots/fundamentals'
 import type { FundamentalsBundle } from '@/services/cmots/fundamentals'
+import { getIndianAPIFundamentals, mergeFundamentals } from '@/services/indianapi'
 import { pMapSettled } from '@/services/batchQueue'
 
 // ─────────────────────────────────────────────────
@@ -639,7 +640,28 @@ export async function backtestScorecard(
         getAllFundamentals(stockId),
         getStockInfo(stockId),
       ])
-      return { stockId, fundamentals, info }
+
+      // ── IndianAPI Fallback: enrich CMOTS fundamentals with deeper historical data ──
+      // CMOTS provides ~5 recent fiscal years. IndianAPI provides ~12 years.
+      // Merge when CMOTS has fewer than 5 P&L year columns (insufficient for 5Y CAGR).
+      let enriched = fundamentals
+      try {
+        const needsEnrichment = fundamentals.pnl.length === 0 ||
+          (fundamentals.pnl[0] && getYearColumns(fundamentals.pnl[0]).length < 5)
+        if (needsEnrichment) {
+          const iaFundamentals = await getIndianAPIFundamentals(stockId)
+          enriched = mergeFundamentals(fundamentals, iaFundamentals)
+          const iaYears = enriched.pnl[0] ? getYearColumns(enriched.pnl[0]).length : 0
+          if (iaYears > (fundamentals.pnl[0] ? getYearColumns(fundamentals.pnl[0]).length : 0)) {
+            console.log(`[Backtest] ${stockId}: IndianAPI enriched P&L from ${fundamentals.pnl[0] ? getYearColumns(fundamentals.pnl[0]).length : 0} → ${iaYears} year columns`)
+          }
+        }
+      } catch (err) {
+        // IndianAPI failure is non-fatal — continue with CMOTS data only
+        console.warn(`[Backtest] ${stockId}: IndianAPI fallback failed:`, err instanceof Error ? err.message : err)
+      }
+
+      return { stockId, fundamentals: enriched, info }
     }, 4)
 
   const processResults = (results: Awaited<ReturnType<typeof fetchStockData>>) => {

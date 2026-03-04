@@ -36,6 +36,15 @@ export default defineConfig(({ mode }) => {
             'Content-Type': 'application/json',
           },
         },
+        '/api/indianapi': {
+          target: 'https://stock.indianapi.in',
+          changeOrigin: true,
+          rewrite: (p) => p.replace(/^\/api\/indianapi/, ''),
+          secure: true,
+          headers: {
+            'X-Api-Key': env.INDIANAPI_KEY || '',
+          },
+        },
       },
     },
     build: {
