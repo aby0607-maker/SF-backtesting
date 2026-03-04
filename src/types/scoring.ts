@@ -523,6 +523,28 @@ export interface CMOTSDelayedPrice {
   Tr_Date: string       // ISO datetime "2026-02-20T00:00:00"
 }
 
+// ─────────────────────────────────────────────────
+// DhanHQ Types (fallback data source)
+// ─────────────────────────────────────────────────
+
+/** DhanHQ instrument from scrip master CSV */
+export interface DhanSecurity {
+  securityId: string
+  exchangeSegment: string  // 'NSE_EQ' | 'BSE'
+  tradingSymbol: string
+  isin: string
+}
+
+/** DhanHQ /v2/charts/historical response — parallel arrays */
+export interface DhanHistoricalResponse {
+  open: number[]
+  high: number[]
+  low: number[]
+  close: number[]
+  volume: number[]
+  timestamp: number[]   // Unix epoch seconds
+}
+
 /** /TTMData/{co_code}/{type} */
 export interface CMOTSTTMRecord {
   co_code: number

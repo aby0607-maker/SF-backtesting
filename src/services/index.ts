@@ -37,3 +37,13 @@ export {
   getStockInfo,
 } from './metricResolver'
 export type { ResolvedMetrics } from './metricResolver'
+
+// IndianAPI services (fundamental data fallback)
+export {
+  getIndianAPIFundamentals,
+  mergeFundamentals,
+  getAnnualPnL,
+  getBalanceSheet as getIndianAPIBalanceSheet,
+  getCashFlow as getIndianAPICashFlow,
+  getQuarterlyResults as getIndianAPIQuarterlyResults,
+} from './indianapi'
