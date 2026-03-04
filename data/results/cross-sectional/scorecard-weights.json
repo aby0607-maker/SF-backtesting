@@ -1,0 +1,6957 @@
+{
+  "date": "2026-03-04",
+  "universe": {
+    "name": "Nifty 50",
+    "stockCount": 48,
+    "horizons": [
+      "1M",
+      "1Y",
+      "3M",
+      "6M"
+    ]
+  },
+  "segmentWeights": {
+    "Price & Volume": {
+      "rawWeight": 0.17113820494998777,
+      "avgAbsR": 0.19677055817998557,
+      "sigFrac": 0.7,
+      "metricCount": 10
+    },
+    "Technical": {
+      "rawWeight": 0.14872797622894235,
+      "avgAbsR": 0.17847262694554555,
+      "sigFrac": 0.5909090909090909,
+      "metricCount": 22
+    },
+    "Profitability": {
+      "rawWeight": 0.10645730001153289,
+      "avgAbsR": 0.1771502568926833,
+      "sigFrac": 0.3076923076923077,
+      "metricCount": 13
+    },
+    "Balance Sheet": {
+      "rawWeight": 0.10529964875774044,
+      "avgAbsR": 0.14494373672918792,
+      "sigFrac": 0.375,
+      "metricCount": 8
+    },
+    "Growth": {
+      "rawWeight": 0.09939315128235965,
+      "avgAbsR": 0.14565582393618498,
+      "sigFrac": 0.3333333333333333,
+      "metricCount": 12
+    },
+    "Financial Ratios": {
+      "rawWeight": 0.09881759263564813,
+      "avgAbsR": 0.16439328725301525,
+      "sigFrac": 0.2857142857142857,
+      "metricCount": 14
+    },
+    "Ownership": {
+      "rawWeight": 0.0838681756372493,
+      "avgAbsR": 0.13630506517833804,
+      "sigFrac": 0.25,
+      "metricCount": 8
+    },
+    "Valuation": {
+      "rawWeight": 0.07596171392791642,
+      "avgAbsR": 0.14257540269194982,
+      "sigFrac": 0.18181818181818182,
+      "metricCount": 11
+    },
+    "Cash Flow": {
+      "rawWeight": 0.07422116363213083,
+      "avgAbsR": 0.14401653562438949,
+      "sigFrac": 0.16666666666666666,
+      "metricCount": 6
+    },
+    "Income Statement": {
+      "rawWeight": 0.036115072936492264,
+      "avgAbsR": 0.10483284516519897,
+      "sigFrac": 0,
+      "metricCount": 6
+    }
+  },
+  "segmentScores": [
+    {
+      "segment": "Price & Volume",
+      "avgAbsR": 0.19677055817998557,
+      "sigFrac": 0.7,
+      "composite": 0.3477393907259899,
+      "metricCount": 10,
+      "sigMetricCount": 7,
+      "weight": 0.17113820494998777,
+      "topMetric": "price_return_6m"
+    },
+    {
+      "segment": "Technical",
+      "avgAbsR": 0.17847262694554555,
+      "sigFrac": 0.5909090909090909,
+      "composite": 0.30220356613460914,
+      "metricCount": 22,
+      "sigMetricCount": 13,
+      "weight": 0.14872797622894235,
+      "topMetric": "sma20_dev"
+    },
+    {
+      "segment": "Profitability",
+      "avgAbsR": 0.1771502568926833,
+      "sigFrac": 0.3076923076923077,
+      "composite": 0.2163128721325706,
+      "metricCount": 13,
+      "sigMetricCount": 4,
+      "weight": 0.10645730001153289,
+      "topMetric": "gross_profit_margin"
+    },
+    {
+      "segment": "Balance Sheet",
+      "avgAbsR": 0.14494373672918792,
+      "sigFrac": 0.375,
+      "composite": 0.2139606157104315,
+      "metricCount": 8,
+      "sigMetricCount": 3,
+      "weight": 0.10529964875774044,
+      "topMetric": "inventory_turnover"
+    },
+    {
+      "segment": "Growth",
+      "avgAbsR": 0.14565582393618498,
+      "sigFrac": 0.3333333333333333,
+      "composite": 0.20195907675532948,
+      "metricCount": 12,
+      "sigMetricCount": 4,
+      "weight": 0.09939315128235965,
+      "topMetric": "revenue_growth_3y_cagr"
+    },
+    {
+      "segment": "Financial Ratios",
+      "avgAbsR": 0.16439328725301525,
+      "sigFrac": 0.2857142857142857,
+      "composite": 0.20078958679139636,
+      "metricCount": 14,
+      "sigMetricCount": 4,
+      "weight": 0.09881759263564813,
+      "topMetric": "dpo"
+    },
+    {
+      "segment": "Ownership",
+      "avgAbsR": 0.13630506517833804,
+      "sigFrac": 0.25,
+      "composite": 0.17041354562483663,
+      "metricCount": 8,
+      "sigMetricCount": 2,
+      "weight": 0.0838681756372493,
+      "topMetric": "mf_holding"
+    },
+    {
+      "segment": "Valuation",
+      "avgAbsR": 0.14257540269194982,
+      "sigFrac": 0.18181818181818182,
+      "composite": 0.1543482364298194,
+      "metricCount": 11,
+      "sigMetricCount": 2,
+      "weight": 0.07596171392791642,
+      "topMetric": "pe_ratio"
+    },
+    {
+      "segment": "Cash Flow",
+      "avgAbsR": 0.14401653562438949,
+      "sigFrac": 0.16666666666666666,
+      "composite": 0.15081157493707262,
+      "metricCount": 6,
+      "sigMetricCount": 1,
+      "weight": 0.07422116363213083,
+      "topMetric": "dividends_paid"
+    },
+    {
+      "segment": "Income Statement",
+      "avgAbsR": 0.10483284516519897,
+      "sigFrac": 0,
+      "composite": 0.07338299161563927,
+      "metricCount": 6,
+      "sigMetricCount": 0,
+      "weight": 0.036115072936492264,
+      "topMetric": "tax_rate"
+    }
+  ],
+  "metricRankings": [
+    {
+      "name": "dpo",
+      "segment": "Financial Ratios",
+      "avgAbsR": 0.3837601430493039,
+      "maxAbsR": 0.4453605297886318,
+      "direction": "negative",
+      "sigCount": 2,
+      "horizonCount": 4,
+      "coverage": 27
+    },
+    {
+      "name": "cash_conversion_cycle",
+      "segment": "Financial Ratios",
+      "avgAbsR": 0.38104833547891287,
+      "maxAbsR": 0.4414411157032851,
+      "direction": "positive",
+      "sigCount": 2,
+      "horizonCount": 4,
+      "coverage": 27
+    },
+    {
+      "name": "dividends_paid",
+      "segment": "Cash Flow",
+      "avgAbsR": 0.3748776144096381,
+      "maxAbsR": 0.4113323555454505,
+      "direction": "negative",
+      "sigCount": 3,
+      "horizonCount": 4,
+      "coverage": 46
+    },
+    {
+      "name": "gross_profit_margin",
+      "segment": "Profitability",
+      "avgAbsR": 0.3687391065544313,
+      "maxAbsR": 0.546453005448349,
+      "direction": "negative",
+      "sigCount": 2,
+      "horizonCount": 4,
+      "coverage": 41
+    },
+    {
+      "name": "dio",
+      "segment": "Financial Ratios",
+      "avgAbsR": 0.3172117824420918,
+      "maxAbsR": 0.5602928378635177,
+      "direction": "negative",
+      "sigCount": 2,
+      "horizonCount": 4,
+      "coverage": 27
+    },
+    {
+      "name": "dso",
+      "segment": "Financial Ratios",
+      "avgAbsR": 0.27627340621110436,
+      "maxAbsR": 0.39890794684071,
+      "direction": "negative",
+      "sigCount": 1,
+      "horizonCount": 4,
+      "coverage": 47
+    },
+    {
+      "name": "price_return_6m",
+      "segment": "Price & Volume",
+      "avgAbsR": 0.2730643309826872,
+      "maxAbsR": 0.38096540845421617,
+      "direction": "negative",
+      "sigCount": 2,
+      "horizonCount": 4,
+      "coverage": 48
+    },
+    {
+      "name": "price_return_1m",
+      "segment": "Price & Volume",
+      "avgAbsR": 0.268533125099527,
+      "maxAbsR": 0.43135189335684604,
+      "direction": "negative",
+      "sigCount": 2,
+      "horizonCount": 4,
+      "coverage": 48
+    },
+    {
+      "name": "inventory_turnover",
+      "segment": "Balance Sheet",
+      "avgAbsR": 0.2681986072123766,
+      "maxAbsR": 0.48831973825204,
+      "direction": "positive",
+      "sigCount": 2,
+      "horizonCount": 4,
+      "coverage": 37
+    },
+    {
+      "name": "sma20_dev",
+      "segment": "Technical",
+      "avgAbsR": 0.2622133460887844,
+      "maxAbsR": 0.4302711301966354,
+      "direction": "negative",
+      "sigCount": 2,
+      "horizonCount": 4,
+      "coverage": 48
+    },
+    {
+      "name": "pe_ratio",
+      "segment": "Valuation",
+      "avgAbsR": 0.25899560428982826,
+      "maxAbsR": 0.4507547321625861,
+      "direction": "positive",
+      "sigCount": 2,
+      "horizonCount": 4,
+      "coverage": 48
+    },
+    {
+      "name": "ema50_dev",
+      "segment": "Technical",
+      "avgAbsR": 0.25873547721923085,
+      "maxAbsR": 0.4499610054698272,
+      "direction": "negative",
+      "sigCount": 2,
+      "horizonCount": 4,
+      "coverage": 48
+    },
+    {
+      "name": "roa_5y_avg",
+      "segment": "Profitability",
+      "avgAbsR": 0.2582870491300221,
+      "maxAbsR": 0.3334202486464425,
+      "direction": "negative",
+      "sigCount": 1,
+      "horizonCount": 4,
+      "coverage": 46
+    },
+    {
+      "name": "sma50_dev",
+      "segment": "Technical",
+      "avgAbsR": 0.25737246546687315,
+      "maxAbsR": 0.4172643850380971,
+      "direction": "negative",
+      "sigCount": 2,
+      "horizonCount": 4,
+      "coverage": 48
+    },
+    {
+      "name": "sma200_dev",
+      "segment": "Technical",
+      "avgAbsR": 0.25313689192024547,
+      "maxAbsR": 0.40520424533261507,
+      "direction": "negative",
+      "sigCount": 2,
+      "horizonCount": 4,
+      "coverage": 48
+    },
+    {
+      "name": "ema20_dev",
+      "segment": "Technical",
+      "avgAbsR": 0.2526698894418059,
+      "maxAbsR": 0.4328441370347673,
+      "direction": "negative",
+      "sigCount": 2,
+      "horizonCount": 4,
+      "coverage": 48
+    },
+    {
+      "name": "sma100_dev",
+      "segment": "Technical",
+      "avgAbsR": 0.2523033842763339,
+      "maxAbsR": 0.4316532231830819,
+      "direction": "negative",
+      "sigCount": 2,
+      "horizonCount": 4,
+      "coverage": 48
+    },
+    {
+      "name": "price_52w_high_dist",
+      "segment": "Price & Volume",
+      "avgAbsR": 0.25116765499296134,
+      "maxAbsR": 0.3913515066099461,
+      "direction": "negative",
+      "sigCount": 2,
+      "horizonCount": 4,
+      "coverage": 48
+    },
+    {
+      "name": "avg_volume_20d",
+      "segment": "Price & Volume",
+      "avgAbsR": 0.24912775451508817,
+      "maxAbsR": 0.37883274588114024,
+      "direction": "positive",
+      "sigCount": 2,
+      "horizonCount": 4,
+      "coverage": 48
+    },
+    {
+      "name": "ema200_dev",
+      "segment": "Technical",
+      "avgAbsR": 0.2459677493009039,
+      "maxAbsR": 0.4109104490232793,
+      "direction": "negative",
+      "sigCount": 2,
+      "horizonCount": 4,
+      "coverage": 48
+    },
+    {
+      "name": "volatility",
+      "segment": "Technical",
+      "avgAbsR": 0.24312306833791583,
+      "maxAbsR": 0.37180165651489533,
+      "direction": "positive",
+      "sigCount": 1,
+      "horizonCount": 4,
+      "coverage": 48
+    },
+    {
+      "name": "max_drawdown_1y",
+      "segment": "Technical",
+      "avgAbsR": 0.23973419932508644,
+      "maxAbsR": 0.2970687787491139,
+      "direction": "negative",
+      "sigCount": 1,
+      "horizonCount": 4,
+      "coverage": 48
+    },
+    {
+      "name": "price_return_3m",
+      "segment": "Price & Volume",
+      "avgAbsR": 0.23758513515809834,
+      "maxAbsR": 0.4194001386359395,
+      "direction": "negative",
+      "sigCount": 2,
+      "horizonCount": 4,
+      "coverage": 48
+    },
+    {
+      "name": "revenue_growth_3y_cagr",
+      "segment": "Growth",
+      "avgAbsR": 0.22769816423041972,
+      "maxAbsR": 0.3643449670936519,
+      "direction": "positive",
+      "sigCount": 2,
+      "horizonCount": 4,
+      "coverage": 46
+    },
+    {
+      "name": "revenue_growth_5y_cagr",
+      "segment": "Growth",
+      "avgAbsR": 0.22379772431731831,
+      "maxAbsR": 0.3833069254539145,
+      "direction": "positive",
+      "sigCount": 2,
+      "horizonCount": 4,
+      "coverage": 46
+    },
+    {
+      "name": "revenue_growth_1y",
+      "segment": "Growth",
+      "avgAbsR": 0.21539033620532028,
+      "maxAbsR": 0.36287011979604694,
+      "direction": "positive",
+      "sigCount": 2,
+      "horizonCount": 4,
+      "coverage": 47
+    },
+    {
+      "name": "avg_volume_3m",
+      "segment": "Price & Volume",
+      "avgAbsR": 0.2108394101074339,
+      "maxAbsR": 0.3975559158161196,
+      "direction": "positive",
+      "sigCount": 1,
+      "horizonCount": 4,
+      "coverage": 48
+    },
+    {
+      "name": "roe_5y_avg",
+      "segment": "Profitability",
+      "avgAbsR": 0.2096639235327157,
+      "maxAbsR": 0.26171340266848164,
+      "direction": "negative",
+      "sigCount": 0,
+      "horizonCount": 4,
+      "coverage": 46
+    },
+    {
+      "name": "net_profit_margin",
+      "segment": "Profitability",
+      "avgAbsR": 0.20903598164236165,
+      "maxAbsR": 0.2916826560501247,
+      "direction": "negative",
+      "sigCount": 1,
+      "horizonCount": 4,
+      "coverage": 47
+    },
+    {
+      "name": "roa",
+      "segment": "Profitability",
+      "avgAbsR": 0.2077146693083201,
+      "maxAbsR": 0.34645049040365367,
+      "direction": "negative",
+      "sigCount": 1,
+      "horizonCount": 4,
+      "coverage": 47
+    },
+    {
+      "name": "book_value_growth",
+      "segment": "Growth",
+      "avgAbsR": 0.20363430245609274,
+      "maxAbsR": 0.3206473255105756,
+      "direction": "positive",
+      "sigCount": 2,
+      "horizonCount": 4,
+      "coverage": 47
+    },
+    {
+      "name": "ebitda_growth_1y",
+      "segment": "Growth",
+      "avgAbsR": 0.2007559788074479,
+      "maxAbsR": 0.2777793516710351,
+      "direction": "negative",
+      "sigCount": 0,
+      "horizonCount": 4,
+      "coverage": 48
+    },
+    {
+      "name": "sma10_dev",
+      "segment": "Technical",
+      "avgAbsR": 0.19854936874504764,
+      "maxAbsR": 0.3196768062964536,
+      "direction": "negative",
+      "sigCount": 1,
+      "horizonCount": 4,
+      "coverage": 48
+    },
+    {
+      "name": "pe_vs_5y_avg",
+      "segment": "Valuation",
+      "avgAbsR": 0.19277874327730238,
+      "maxAbsR": 0.23019656438293615,
+      "direction": "negative",
+      "sigCount": 0,
+      "horizonCount": 4,
+      "coverage": 48
+    },
+    {
+      "name": "mf_holding",
+      "segment": "Ownership",
+      "avgAbsR": 0.192032549160715,
+      "maxAbsR": 0.3351931621950484,
+      "direction": "positive",
+      "sigCount": 1,
+      "horizonCount": 4,
+      "coverage": 48
+    },
+    {
+      "name": "gross_block_growth",
+      "segment": "Balance Sheet",
+      "avgAbsR": 0.1892311002665525,
+      "maxAbsR": 0.2733115287300754,
+      "direction": "positive",
+      "sigCount": 0,
+      "horizonCount": 4,
+      "coverage": 48
+    },
+    {
+      "name": "ebitda_margin",
+      "segment": "Profitability",
+      "avgAbsR": 0.18800979882970043,
+      "maxAbsR": 0.2518510974323788,
+      "direction": "negative",
+      "sigCount": 0,
+      "horizonCount": 4,
+      "coverage": 47
+    },
+    {
+      "name": "receivables_turnover",
+      "segment": "Balance Sheet",
+      "avgAbsR": 0.18589344756111947,
+      "maxAbsR": 0.3208304470029792,
+      "direction": "positive",
+      "sigCount": 1,
+      "horizonCount": 4,
+      "coverage": 41
+    },
+    {
+      "name": "ev_ebitda",
+      "segment": "Valuation",
+      "avgAbsR": 0.17784430854838484,
+      "maxAbsR": 0.3163721793260587,
+      "direction": "positive",
+      "sigCount": 1,
+      "horizonCount": 4,
+      "coverage": 48
+    },
+    {
+      "name": "promoter_change_3m",
+      "segment": "Ownership",
+      "avgAbsR": 0.1772245839826968,
+      "maxAbsR": 0.3261726708989008,
+      "direction": "negative",
+      "sigCount": 1,
+      "horizonCount": 4,
+      "coverage": 48
+    },
+    {
+      "name": "rsi_14",
+      "segment": "Technical",
+      "avgAbsR": 0.17530792621446736,
+      "maxAbsR": 0.33245629415142464,
+      "direction": "negative",
+      "sigCount": 1,
+      "horizonCount": 4,
+      "coverage": 48
+    },
+    {
+      "name": "promoter_holding",
+      "segment": "Ownership",
+      "avgAbsR": 0.17167100726422513,
+      "maxAbsR": 0.23593584464385403,
+      "direction": "negative",
+      "sigCount": 0,
+      "horizonCount": 4,
+      "coverage": 48
+    },
+    {
+      "name": "return_1y_ann",
+      "segment": "Technical",
+      "avgAbsR": 0.17140223267116556,
+      "maxAbsR": 0.3077333057670444,
+      "direction": "negative",
+      "sigCount": 1,
+      "horizonCount": 4,
+      "coverage": 48
+    },
+    {
+      "name": "price_return_1y",
+      "segment": "Price & Volume",
+      "avgAbsR": 0.17140223267116556,
+      "maxAbsR": 0.3077333057670444,
+      "direction": "negative",
+      "sigCount": 1,
+      "horizonCount": 4,
+      "coverage": 48
+    },
+    {
+      "name": "fii_holding",
+      "segment": "Ownership",
+      "avgAbsR": 0.17050357725622853,
+      "maxAbsR": 0.24382487154782892,
+      "direction": "positive",
+      "sigCount": 0,
+      "horizonCount": 4,
+      "coverage": 48
+    },
+    {
+      "name": "debt_to_ebitda",
+      "segment": "Financial Ratios",
+      "avgAbsR": 0.16206130435764626,
+      "maxAbsR": 0.2176745914914261,
+      "direction": "negative",
+      "sigCount": 0,
+      "horizonCount": 4,
+      "coverage": 48
+    },
+    {
+      "name": "tax_rate",
+      "segment": "Income Statement",
+      "avgAbsR": 0.16088038860701936,
+      "maxAbsR": 0.24449041177349634,
+      "direction": "negative",
+      "sigCount": 0,
+      "horizonCount": 4,
+      "coverage": 48
+    },
+    {
+      "name": "book_value_per_share",
+      "segment": "Balance Sheet",
+      "avgAbsR": 0.1598402205752747,
+      "maxAbsR": 0.3026359659311341,
+      "direction": "positive",
+      "sigCount": 1,
+      "horizonCount": 4,
+      "coverage": 47
+    },
+    {
+      "name": "fii_change_3m",
+      "segment": "Ownership",
+      "avgAbsR": 0.15192382192186935,
+      "maxAbsR": 0.27639054349284153,
+      "direction": "positive",
+      "sigCount": 0,
+      "horizonCount": 4,
+      "coverage": 48
+    },
+    {
+      "name": "volume_surge_20d",
+      "segment": "Price & Volume",
+      "avgAbsR": 0.14584283934959147,
+      "maxAbsR": 0.19391984580438995,
+      "direction": "positive",
+      "sigCount": 0,
+      "horizonCount": 4,
+      "coverage": 48
+    }
+  ],
+  "scorecardMetrics": {
+    "Price & Volume": [
+      {
+        "name": "price_return_6m",
+        "avgAbsR": 0.2730643309826872,
+        "direction": "negative",
+        "sigCount": 2,
+        "coverage": 48
+      },
+      {
+        "name": "price_return_1m",
+        "avgAbsR": 0.268533125099527,
+        "direction": "negative",
+        "sigCount": 2,
+        "coverage": 48
+      },
+      {
+        "name": "price_52w_high_dist",
+        "avgAbsR": 0.25116765499296134,
+        "direction": "negative",
+        "sigCount": 2,
+        "coverage": 48
+      },
+      {
+        "name": "avg_volume_20d",
+        "avgAbsR": 0.24912775451508817,
+        "direction": "positive",
+        "sigCount": 2,
+        "coverage": 48
+      },
+      {
+        "name": "price_return_3m",
+        "avgAbsR": 0.23758513515809834,
+        "direction": "negative",
+        "sigCount": 2,
+        "coverage": 48
+      },
+      {
+        "name": "avg_volume_3m",
+        "avgAbsR": 0.2108394101074339,
+        "direction": "positive",
+        "sigCount": 1,
+        "coverage": 48
+      },
+      {
+        "name": "price_return_1y",
+        "avgAbsR": 0.17140223267116556,
+        "direction": "negative",
+        "sigCount": 1,
+        "coverage": 48
+      },
+      {
+        "name": "volume_surge_20d",
+        "avgAbsR": 0.14584283934959147,
+        "direction": "positive",
+        "sigCount": 0,
+        "coverage": 48
+      }
+    ],
+    "Technical": [
+      {
+        "name": "sma20_dev",
+        "avgAbsR": 0.2622133460887844,
+        "direction": "negative",
+        "sigCount": 2,
+        "coverage": 48
+      },
+      {
+        "name": "ema50_dev",
+        "avgAbsR": 0.25873547721923085,
+        "direction": "negative",
+        "sigCount": 2,
+        "coverage": 48
+      },
+      {
+        "name": "sma50_dev",
+        "avgAbsR": 0.25737246546687315,
+        "direction": "negative",
+        "sigCount": 2,
+        "coverage": 48
+      },
+      {
+        "name": "sma200_dev",
+        "avgAbsR": 0.25313689192024547,
+        "direction": "negative",
+        "sigCount": 2,
+        "coverage": 48
+      },
+      {
+        "name": "ema20_dev",
+        "avgAbsR": 0.2526698894418059,
+        "direction": "negative",
+        "sigCount": 2,
+        "coverage": 48
+      },
+      {
+        "name": "sma100_dev",
+        "avgAbsR": 0.2523033842763339,
+        "direction": "negative",
+        "sigCount": 2,
+        "coverage": 48
+      },
+      {
+        "name": "ema200_dev",
+        "avgAbsR": 0.2459677493009039,
+        "direction": "negative",
+        "sigCount": 2,
+        "coverage": 48
+      },
+      {
+        "name": "volatility",
+        "avgAbsR": 0.24312306833791583,
+        "direction": "positive",
+        "sigCount": 1,
+        "coverage": 48
+      }
+    ],
+    "Profitability": [
+      {
+        "name": "gross_profit_margin",
+        "avgAbsR": 0.3687391065544313,
+        "direction": "negative",
+        "sigCount": 2,
+        "coverage": 41
+      },
+      {
+        "name": "roa_5y_avg",
+        "avgAbsR": 0.2582870491300221,
+        "direction": "negative",
+        "sigCount": 1,
+        "coverage": 46
+      },
+      {
+        "name": "roe_5y_avg",
+        "avgAbsR": 0.2096639235327157,
+        "direction": "negative",
+        "sigCount": 0,
+        "coverage": 46
+      },
+      {
+        "name": "net_profit_margin",
+        "avgAbsR": 0.20903598164236165,
+        "direction": "negative",
+        "sigCount": 1,
+        "coverage": 47
+      },
+      {
+        "name": "roa",
+        "avgAbsR": 0.2077146693083201,
+        "direction": "negative",
+        "sigCount": 1,
+        "coverage": 47
+      },
+      {
+        "name": "ebitda_margin",
+        "avgAbsR": 0.18800979882970043,
+        "direction": "negative",
+        "sigCount": 0,
+        "coverage": 47
+      },
+      {
+        "name": "roe",
+        "avgAbsR": 0.14386595697914462,
+        "direction": "negative",
+        "sigCount": 0,
+        "coverage": 47
+      },
+      {
+        "name": "cash_flow_margin",
+        "avgAbsR": 0.13695941115498705,
+        "direction": "negative",
+        "sigCount": 0,
+        "coverage": 47
+      }
+    ],
+    "Balance Sheet": [
+      {
+        "name": "inventory_turnover",
+        "avgAbsR": 0.2681986072123766,
+        "direction": "positive",
+        "sigCount": 2,
+        "coverage": 37
+      },
+      {
+        "name": "gross_block_growth",
+        "avgAbsR": 0.1892311002665525,
+        "direction": "positive",
+        "sigCount": 0,
+        "coverage": 48
+      },
+      {
+        "name": "receivables_turnover",
+        "avgAbsR": 0.18589344756111947,
+        "direction": "positive",
+        "sigCount": 1,
+        "coverage": 41
+      },
+      {
+        "name": "book_value_per_share",
+        "avgAbsR": 0.1598402205752747,
+        "direction": "positive",
+        "sigCount": 1,
+        "coverage": 47
+      },
+      {
+        "name": "total_debt",
+        "avgAbsR": 0.0996026298044114,
+        "direction": "negative",
+        "sigCount": 0,
+        "coverage": 48
+      },
+      {
+        "name": "total_assets",
+        "avgAbsR": 0.08966377041229491,
+        "direction": "positive",
+        "sigCount": 0,
+        "coverage": 47
+      },
+      {
+        "name": "net_debt",
+        "avgAbsR": 0.08469928249914774,
+        "direction": "negative",
+        "sigCount": 0,
+        "coverage": 48
+      },
+      {
+        "name": "cash_and_equivalents",
+        "avgAbsR": 0.08242083550232605,
+        "direction": "positive",
+        "sigCount": 0,
+        "coverage": 48
+      }
+    ],
+    "Growth": [
+      {
+        "name": "revenue_growth_3y_cagr",
+        "avgAbsR": 0.22769816423041972,
+        "direction": "positive",
+        "sigCount": 2,
+        "coverage": 46
+      },
+      {
+        "name": "revenue_growth_5y_cagr",
+        "avgAbsR": 0.22379772431731831,
+        "direction": "positive",
+        "sigCount": 2,
+        "coverage": 46
+      },
+      {
+        "name": "revenue_growth_1y",
+        "avgAbsR": 0.21539033620532028,
+        "direction": "positive",
+        "sigCount": 2,
+        "coverage": 47
+      },
+      {
+        "name": "book_value_growth",
+        "avgAbsR": 0.20363430245609274,
+        "direction": "positive",
+        "sigCount": 2,
+        "coverage": 47
+      },
+      {
+        "name": "ebitda_growth_1y",
+        "avgAbsR": 0.2007559788074479,
+        "direction": "negative",
+        "sigCount": 0,
+        "coverage": 48
+      },
+      {
+        "name": "pat_growth_3y_cagr",
+        "avgAbsR": 0.1230086253725408,
+        "direction": "negative",
+        "sigCount": 0,
+        "coverage": 46
+      },
+      {
+        "name": "pat_growth_1y",
+        "avgAbsR": 0.1144747089107803,
+        "direction": "negative",
+        "sigCount": 0,
+        "coverage": 48
+      },
+      {
+        "name": "eps_growth_1y",
+        "avgAbsR": 0.11009400391668013,
+        "direction": "negative",
+        "sigCount": 0,
+        "coverage": 48
+      }
+    ],
+    "Financial Ratios": [
+      {
+        "name": "dpo",
+        "avgAbsR": 0.3837601430493039,
+        "direction": "negative",
+        "sigCount": 2,
+        "coverage": 27
+      },
+      {
+        "name": "cash_conversion_cycle",
+        "avgAbsR": 0.38104833547891287,
+        "direction": "positive",
+        "sigCount": 2,
+        "coverage": 27
+      },
+      {
+        "name": "dio",
+        "avgAbsR": 0.3172117824420918,
+        "direction": "negative",
+        "sigCount": 2,
+        "coverage": 27
+      },
+      {
+        "name": "dso",
+        "avgAbsR": 0.27627340621110436,
+        "direction": "negative",
+        "sigCount": 1,
+        "coverage": 47
+      },
+      {
+        "name": "debt_to_ebitda",
+        "avgAbsR": 0.16206130435764626,
+        "direction": "negative",
+        "sigCount": 0,
+        "coverage": 48
+      },
+      {
+        "name": "fixed_asset_turnover",
+        "avgAbsR": 0.1344658491853884,
+        "direction": "positive",
+        "sigCount": 0,
+        "coverage": 47
+      },
+      {
+        "name": "debt_to_equity",
+        "avgAbsR": 0.1165873082559475,
+        "direction": "positive",
+        "sigCount": 0,
+        "coverage": 47
+      },
+      {
+        "name": "quick_ratio",
+        "avgAbsR": 0.1069158526451873,
+        "direction": "negative",
+        "sigCount": 0,
+        "coverage": 41
+      }
+    ],
+    "Ownership": [
+      {
+        "name": "mf_holding",
+        "avgAbsR": 0.192032549160715,
+        "direction": "positive",
+        "sigCount": 1,
+        "coverage": 48
+      },
+      {
+        "name": "promoter_change_3m",
+        "avgAbsR": 0.1772245839826968,
+        "direction": "negative",
+        "sigCount": 1,
+        "coverage": 48
+      },
+      {
+        "name": "promoter_holding",
+        "avgAbsR": 0.17167100726422513,
+        "direction": "negative",
+        "sigCount": 0,
+        "coverage": 48
+      },
+      {
+        "name": "fii_holding",
+        "avgAbsR": 0.17050357725622853,
+        "direction": "positive",
+        "sigCount": 0,
+        "coverage": 48
+      },
+      {
+        "name": "fii_change_3m",
+        "avgAbsR": 0.15192382192186935,
+        "direction": "positive",
+        "sigCount": 0,
+        "coverage": 48
+      },
+      {
+        "name": "mf_change_3m",
+        "avgAbsR": 0.10190438091207209,
+        "direction": "negative",
+        "sigCount": 0,
+        "coverage": 48
+      },
+      {
+        "name": "dii_holding",
+        "avgAbsR": 0.09173506051078362,
+        "direction": "positive",
+        "sigCount": 0,
+        "coverage": 48
+      },
+      {
+        "name": "retail_holding",
+        "avgAbsR": 0.03344554041811385,
+        "direction": "positive",
+        "sigCount": 0,
+        "coverage": 48
+      }
+    ],
+    "Valuation": [
+      {
+        "name": "pe_ratio",
+        "avgAbsR": 0.25899560428982826,
+        "direction": "positive",
+        "sigCount": 2,
+        "coverage": 48
+      },
+      {
+        "name": "pe_vs_5y_avg",
+        "avgAbsR": 0.19277874327730238,
+        "direction": "negative",
+        "sigCount": 0,
+        "coverage": 48
+      },
+      {
+        "name": "ev_ebitda",
+        "avgAbsR": 0.17784430854838484,
+        "direction": "positive",
+        "sigCount": 1,
+        "coverage": 48
+      },
+      {
+        "name": "dividend_yield",
+        "avgAbsR": 0.1433028902934978,
+        "direction": "negative",
+        "sigCount": 0,
+        "coverage": 46
+      },
+      {
+        "name": "pb_vs_5y_avg",
+        "avgAbsR": 0.12991511306918585,
+        "direction": "negative",
+        "sigCount": 0,
+        "coverage": 47
+      },
+      {
+        "name": "ev_ebitda_vs_5y_avg",
+        "avgAbsR": 0.1268108139404218,
+        "direction": "positive",
+        "sigCount": 0,
+        "coverage": 48
+      },
+      {
+        "name": "pb_ratio",
+        "avgAbsR": 0.11704252638275404,
+        "direction": "negative",
+        "sigCount": 0,
+        "coverage": 47
+      },
+      {
+        "name": "price_to_sales",
+        "avgAbsR": 0.1138493069456291,
+        "direction": "negative",
+        "sigCount": 0,
+        "coverage": 47
+      }
+    ],
+    "Cash Flow": [
+      {
+        "name": "dividends_paid",
+        "avgAbsR": 0.3748776144096381,
+        "direction": "negative",
+        "sigCount": 3,
+        "coverage": 46
+      },
+      {
+        "name": "ocf_to_ebitda",
+        "avgAbsR": 0.14223567903790715,
+        "direction": "positive",
+        "sigCount": 0,
+        "coverage": 48
+      },
+      {
+        "name": "fcf_margin",
+        "avgAbsR": 0.14216268251149208,
+        "direction": "negative",
+        "sigCount": 0,
+        "coverage": 47
+      },
+      {
+        "name": "fcf_val",
+        "avgAbsR": 0.1029054383591082,
+        "direction": "negative",
+        "sigCount": 0,
+        "coverage": 48
+      },
+      {
+        "name": "ocf_val",
+        "avgAbsR": 0.08558235021883547,
+        "direction": "negative",
+        "sigCount": 0,
+        "coverage": 48
+      },
+      {
+        "name": "capex_val",
+        "avgAbsR": 0.016335449209355882,
+        "direction": "positive",
+        "sigCount": 0,
+        "coverage": 45
+      }
+    ],
+    "Income Statement": [
+      {
+        "name": "tax_rate",
+        "avgAbsR": 0.16088038860701936,
+        "direction": "negative",
+        "sigCount": 0,
+        "coverage": 48
+      },
+      {
+        "name": "pat",
+        "avgAbsR": 0.14289164265484436,
+        "direction": "negative",
+        "sigCount": 0,
+        "coverage": 48
+      },
+      {
+        "name": "ebitda",
+        "avgAbsR": 0.12796114918855916,
+        "direction": "negative",
+        "sigCount": 0,
+        "coverage": 48
+      },
+      {
+        "name": "other_income_ratio",
+        "avgAbsR": 0.07461171634242976,
+        "direction": "positive",
+        "sigCount": 0,
+        "coverage": 47
+      },
+      {
+        "name": "exceptional_items",
+        "avgAbsR": 0.06464227412371179,
+        "direction": "positive",
+        "sigCount": 0,
+        "coverage": 48
+      },
+      {
+        "name": "revenue",
+        "avgAbsR": 0.058009900074629334,
+        "direction": "positive",
+        "sigCount": 0,
+        "coverage": 47
+      }
+    ]
+  },
+  "normalizationParams": {
+    "roce": {
+      "segment": "Profitability",
+      "n": 41,
+      "p5": 7.489062604099581,
+      "p25": 10.982959241701094,
+      "p50": 18.77688911236467,
+      "p75": 24.90315571116138,
+      "p95": 58.720300979447515,
+      "mean": 21.195170430730045,
+      "std": 13.73500356326295,
+      "min": 2.63491965198006,
+      "max": 62.01654349701767,
+      "direction": "negative",
+      "avgAbsR": 0.13366725120335543,
+      "sigCount": 0
+    },
+    "roe": {
+      "segment": "Profitability",
+      "n": 47,
+      "p5": 3.9722198176822583,
+      "p25": 14.074676757992338,
+      "p50": 16.96205453388452,
+      "p75": 22.70548421443708,
+      "p95": 50,
+      "mean": 19.89620154651158,
+      "std": 13.266936974117375,
+      "min": 1.7382986443249662,
+      "max": 79.98558678971925,
+      "direction": "negative",
+      "avgAbsR": 0.14386595697914462,
+      "sigCount": 0
+    },
+    "roa": {
+      "segment": "Profitability",
+      "n": 47,
+      "p5": 1.1359481278821224,
+      "p25": 3.2082393783295067,
+      "p50": 7.286008887856167,
+      "p75": 13.514608584980314,
+      "p95": 24.640467044933846,
+      "mean": 9.072230362871101,
+      "std": 7.267108954051388,
+      "min": 0.4647866678776913,
+      "max": 30.56900688471393,
+      "direction": "negative",
+      "avgAbsR": 0.2077146693083201,
+      "sigCount": 1
+    },
+    "net_profit_margin": {
+      "segment": "Profitability",
+      "n": 47,
+      "p5": 2.471857410881801,
+      "p25": 7.482901423483147,
+      "p50": 13.12013290478435,
+      "p75": 18.81975887629876,
+      "p95": 25.73627513277261,
+      "mean": 13.727271318355541,
+      "std": 7.739106313554126,
+      "min": 1.442082951962132,
+      "max": 34.15752917881807,
+      "direction": "negative",
+      "avgAbsR": 0.20903598164236165,
+      "sigCount": 1
+    },
+    "operating_profit_margin": {
+      "segment": "Profitability",
+      "n": 41,
+      "p5": 33.05003233777218,
+      "p25": 44.156767609168476,
+      "p50": 54.13663372583499,
+      "p75": 87.21721738277895,
+      "p95": 96.38580444766781,
+      "mean": 61.7932952470027,
+      "std": 22.281449822315555,
+      "min": 18.17793968035181,
+      "max": 97.51374607583489,
+      "direction": "negative",
+      "avgAbsR": 0.11085168965162101,
+      "sigCount": 0
+    },
+    "ebitda_margin": {
+      "segment": "Profitability",
+      "n": 47,
+      "p5": 8.039399624765478,
+      "p25": 16.21472299706544,
+      "p50": 21.245252841627167,
+      "p75": 28.123595319732946,
+      "p95": 54.26987681521824,
+      "mean": 24.18368729398696,
+      "std": 13.89405758649276,
+      "min": 6.340598891205092,
+      "max": 85.8258788884305,
+      "direction": "negative",
+      "avgAbsR": 0.18800979882970043,
+      "sigCount": 0
+    },
+    "gross_profit_margin": {
+      "segment": "Profitability",
+      "n": 41,
+      "p5": 38.6412271178998,
+      "p25": 54.19161598492731,
+      "p50": 83.15560798074758,
+      "p75": 100,
+      "p95": 100,
+      "mean": 75.8271483909407,
+      "std": 23.94315007636055,
+      "min": 21.715729710216273,
+      "max": 100,
+      "direction": "negative",
+      "avgAbsR": 0.3687391065544313,
+      "sigCount": 2
+    },
+    "cash_flow_margin": {
+      "segment": "Profitability",
+      "n": 47,
+      "p5": -46.414785537697355,
+      "p25": 7.309381632130391,
+      "p50": 13.915941866483788,
+      "p75": 19.72674440217593,
+      "p95": 53.195310637530454,
+      "mean": 11.081131245069429,
+      "std": 29.50291531865061,
+      "min": -104.28201790419229,
+      "max": 76.32482767368643,
+      "direction": "negative",
+      "avgAbsR": 0.13695941115498705,
+      "sigCount": 0
+    },
+    "fcf_to_pat": {
+      "segment": "Profitability",
+      "n": 48,
+      "p5": -409.65828500048866,
+      "p25": 26.809382277430416,
+      "p50": 71.55324594786006,
+      "p75": 121.57595264095637,
+      "p95": 247.06469887641867,
+      "mean": 62.558591517210594,
+      "std": 211.7239654157907,
+      "min": -465.6059282778557,
+      "max": 844.7189670977789,
+      "direction": "positive",
+      "avgAbsR": 0.12838570832879032,
+      "sigCount": 0
+    },
+    "earnings_quality": {
+      "segment": "Profitability",
+      "n": 48,
+      "p5": -3.5376764758817245,
+      "p25": 0.7707981070547385,
+      "p50": 1.1390309753611343,
+      "p75": 1.7672295037452563,
+      "p95": 7.097026189167109,
+      "mean": 1.3217000903921943,
+      "std": 2.3440669975812503,
+      "min": -4.6323319512994905,
+      "max": 8.613258081973912,
+      "direction": "positive",
+      "avgAbsR": 0.08830812842586987,
+      "sigCount": 0
+    },
+    "earnings_yield": {
+      "segment": "Profitability",
+      "n": 48,
+      "p5": 1.2267522427248196,
+      "p25": 2.1262674574325615,
+      "p50": 4.032810584870675,
+      "p75": 6.755207605200615,
+      "p95": 14.398293386874137,
+      "mean": 5.561446710169826,
+      "std": 5.663316443161294,
+      "min": 0.2977667493796526,
+      "max": 30.0531914893617,
+      "direction": "negative",
+      "avgAbsR": 0.1194646648635635,
+      "sigCount": 0
+    },
+    "roe_5y_avg": {
+      "segment": "Profitability",
+      "n": 46,
+      "p5": 7.2993228214418195,
+      "p25": 11.83642812340846,
+      "p50": 14.993555019398912,
+      "p75": 19.346707945515977,
+      "p95": 41.59900782651003,
+      "mean": 17.470730515671566,
+      "std": 9.963438429956062,
+      "min": -3.8038367285568286,
+      "max": 56.222323088755864,
+      "direction": "negative",
+      "avgAbsR": 0.2096639235327157,
+      "sigCount": 0
+    },
+    "roa_5y_avg": {
+      "segment": "Profitability",
+      "n": 46,
+      "p5": 1.1671830267766157,
+      "p25": 2.74456699320436,
+      "p50": 6.345479727867231,
+      "p75": 12.209137562501528,
+      "p95": 21.121423000130033,
+      "mean": 8.064200938629295,
+      "std": 6.59614048006015,
+      "min": -3.589793675121303,
+      "max": 28.713473069645534,
+      "direction": "negative",
+      "avgAbsR": 0.2582870491300221,
+      "sigCount": 1
+    },
+    "current_ratio": {
+      "segment": "Financial Ratios",
+      "n": 42,
+      "p5": 0.4773126448527789,
+      "p25": 0.8693196133206341,
+      "p50": 1.4013557714227132,
+      "p75": 2.087114600619317,
+      "p95": 4.239449230118382,
+      "mean": 1.8086304383750402,
+      "std": 1.5751777462092662,
+      "min": 0.22803092329541777,
+      "max": 8.485728122617399,
+      "direction": "negative",
+      "avgAbsR": 0.09466439882477139,
+      "sigCount": 0
+    },
+    "quick_ratio": {
+      "segment": "Financial Ratios",
+      "n": 41,
+      "p5": 0.24231380607141473,
+      "p25": 0.6423908077027382,
+      "p50": 1.066457035738042,
+      "p75": 1.8652201357109042,
+      "p95": 3.4651232711966324,
+      "mean": 1.4566711134362795,
+      "std": 1.4776996827366478,
+      "min": 0.1886774734011333,
+      "max": 8.485728122617399,
+      "direction": "negative",
+      "avgAbsR": 0.1069158526451873,
+      "sigCount": 0
+    },
+    "debt_to_equity": {
+      "segment": "Financial Ratios",
+      "n": 47,
+      "p5": 0,
+      "p25": 0.00013360945954973613,
+      "p50": 0.1878554988392129,
+      "p75": 0.9758053202585114,
+      "p95": 3.736042274885418,
+      "mean": 0.673360717413749,
+      "std": 1.0903676524423662,
+      "min": 0,
+      "max": 4.894651877310837,
+      "direction": "positive",
+      "avgAbsR": 0.1165873082559475,
+      "sigCount": 0
+    },
+    "interest_coverage": {
+      "segment": "Financial Ratios",
+      "n": 41,
+      "p5": 1.0243047014154845,
+      "p25": 4.354754779602738,
+      "p50": 11.12987012987013,
+      "p75": 43.4611801242236,
+      "p95": 129.65242018537592,
+      "mean": 85.32076150087401,
+      "std": 268.3040474517631,
+      "min": 0.6282760160350438,
+      "max": 1660,
+      "direction": "negative",
+      "avgAbsR": 0.08105145865741686,
+      "sigCount": 0
+    },
+    "debt_to_ebitda": {
+      "segment": "Financial Ratios",
+      "n": 48,
+      "p5": 0,
+      "p25": 0.0006024096385542169,
+      "p50": 0.3587240498617555,
+      "p75": 2.532829794754948,
+      "p95": 14.230608653466952,
+      "mean": 2.13962121148616,
+      "std": 4.1117236643327635,
+      "min": 0,
+      "max": 20.198873265675225,
+      "direction": "negative",
+      "avgAbsR": 0.16206130435764626,
+      "sigCount": 0
+    },
+    "dso": {
+      "segment": "Financial Ratios",
+      "n": 47,
+      "p5": 0,
+      "p25": 8.723624955380478,
+      "p50": 22.127328249138152,
+      "p75": 50.05280913691274,
+      "p95": 87.00742348527774,
+      "mean": 32.06950979243222,
+      "std": 29.676467590113013,
+      "min": 0,
+      "max": 102.63745881383855,
+      "direction": "negative",
+      "avgAbsR": 0.27627340621110436,
+      "sigCount": 1
+    },
+    "dio": {
+      "segment": "Financial Ratios",
+      "n": 27,
+      "p5": 27.6193169710156,
+      "p25": 63.713331397037464,
+      "p50": 144.45609347402745,
+      "p75": 295.2605627607489,
+      "p95": 456.51491158617046,
+      "mean": 186.9069097979449,
+      "std": 147.6382668049111,
+      "min": 23.55187609239024,
+      "max": 579.7422043385899,
+      "direction": "negative",
+      "avgAbsR": 0.3172117824420918,
+      "sigCount": 2
+    },
+    "dpo": {
+      "segment": "Financial Ratios",
+      "n": 27,
+      "p5": 49.624805514979826,
+      "p25": 85.69850191769652,
+      "p50": 134.52153435079933,
+      "p75": 212.25074519477852,
+      "p95": 784.3740261880122,
+      "mean": 4085.0786322607105,
+      "std": 19941.88302813286,
+      "min": 15.018340739498617,
+      "max": 105766.35416666666,
+      "direction": "negative",
+      "avgAbsR": 0.3837601430493039,
+      "sigCount": 2
+    },
+    "cash_conversion_cycle": {
+      "segment": "Financial Ratios",
+      "n": 27,
+      "p5": -362.7193352575978,
+      "p25": -33.9140517917168,
+      "p50": 24.69479917998001,
+      "p75": 112.0214883530597,
+      "p95": 324.8279848541422,
+      "mean": -3862.535989447168,
+      "std": 19937.987547352666,
+      "min": -105523.54690701902,
+      "max": 384.2836321155967,
+      "direction": "positive",
+      "avgAbsR": 0.38104833547891287,
+      "sigCount": 2
+    },
+    "asset_turnover": {
+      "segment": "Financial Ratios",
+      "n": 47,
+      "p5": 0.10170975736096113,
+      "p25": 0.29955291900258063,
+      "p50": 0.684697677960372,
+      "p75": 1.1187820258826215,
+      "p95": 1.8422328241843637,
+      "mean": 0.7570308275103754,
+      "std": 0.5297298037709989,
+      "min": 0.0906927137462237,
+      "max": 2.0557399120896527,
+      "direction": "positive",
+      "avgAbsR": 0.08764019483941694,
+      "sigCount": 0
+    },
+    "fixed_asset_turnover": {
+      "segment": "Financial Ratios",
+      "n": 47,
+      "p5": 0.44888650706442673,
+      "p25": 1.708553945086897,
+      "p50": 3.7014730680483265,
+      "p75": 11.247386457294061,
+      "p95": 24.4107282009852,
+      "mean": 6.853333976565265,
+      "std": 7.908376976346387,
+      "min": 0.27490922403164336,
+      "max": 30.863663771125065,
+      "direction": "positive",
+      "avgAbsR": 0.1344658491853884,
+      "sigCount": 0
+    },
+    "working_capital_to_sales": {
+      "segment": "Financial Ratios",
+      "n": 41,
+      "p5": -0.2965072102056112,
+      "p25": -0.04694818764862725,
+      "p50": 0.13325138474120518,
+      "p75": 0.2700107217512708,
+      "p95": 0.6253195675107156,
+      "mean": 0.10924867360401212,
+      "std": 0.33716589849216094,
+      "min": -1.1585857405337774,
+      "max": 0.8884884678747941,
+      "direction": "negative",
+      "avgAbsR": 0.05353273273677396,
+      "sigCount": 0
+    },
+    "capex_to_revenue": {
+      "segment": "Financial Ratios",
+      "n": 47,
+      "p5": 0,
+      "p25": 0.011250125344214497,
+      "p50": 0.03889308430757289,
+      "p75": 0.08151458750726116,
+      "p95": 0.21716280292783696,
+      "mean": 0.06529415895491235,
+      "std": 0.08805663855700968,
+      "min": 0,
+      "max": 0.5085199174536204,
+      "direction": "negative",
+      "avgAbsR": 0.03686314875915451,
+      "sigCount": 0
+    },
+    "icr_trend": {
+      "segment": "Financial Ratios",
+      "n": 40,
+      "p5": -15.674910743265174,
+      "p25": -1.1529731608866378,
+      "p50": 0.05864674992161922,
+      "p75": 1.0988114578589245,
+      "p95": 25.18234093563607,
+      "mean": -14.712281645038312,
+      "std": 75.22106637272012,
+      "min": -424.7988505747127,
+      "max": 48.053839385081886,
+      "direction": "negative",
+      "avgAbsR": 0.06943010609909779,
+      "sigCount": 0
+    },
+    "revenue_growth_1y": {
+      "segment": "Growth",
+      "n": 47,
+      "p5": -4.710705588777393,
+      "p25": 2.20172050354889,
+      "p50": 9.705581615473486,
+      "p75": 15.282945598205764,
+      "p95": 26.812653696602784,
+      "mean": 10.560904060520793,
+      "std": 12.209756794513886,
+      "min": -17.445424855909398,
+      "max": 64.49348044132397,
+      "direction": "positive",
+      "avgAbsR": 0.21539033620532028,
+      "sigCount": 2
+    },
+    "ebitda_growth_1y": {
+      "segment": "Growth",
+      "n": 48,
+      "p5": -20.477847053163696,
+      "p25": 2.878456447361041,
+      "p50": 11.367296095713698,
+      "p75": 20.802487037444113,
+      "p95": 36.049353516240934,
+      "mean": 10.524400593707236,
+      "std": 22.4628754697797,
+      "min": -67.38507617493902,
+      "max": 92.80089988751406,
+      "direction": "negative",
+      "avgAbsR": 0.2007559788074479,
+      "sigCount": 0
+    },
+    "pat_growth_1y": {
+      "segment": "Growth",
+      "n": 48,
+      "p5": -50.345770703425764,
+      "p25": -0.7644563222296001,
+      "p50": 12.214052699533203,
+      "p75": 22.077937754671286,
+      "p95": 128.03850124491404,
+      "mean": 19.531744611952664,
+      "std": 60.7668737206095,
+      "min": -71.31090354675189,
+      "max": 337.96798317363874,
+      "direction": "negative",
+      "avgAbsR": 0.1144747089107803,
+      "sigCount": 0
+    },
+    "eps_growth_1y": {
+      "segment": "Growth",
+      "n": 48,
+      "p5": -50.49175126903553,
+      "p25": 0.03887269193390869,
+      "p50": 12.581547064305681,
+      "p75": 27.894221351616082,
+      "p95": 122.2834067547724,
+      "mean": 21.039643207507428,
+      "std": 62.16919231603557,
+      "min": -71.37787779124113,
+      "max": 343.0863254392666,
+      "direction": "negative",
+      "avgAbsR": 0.11009400391668013,
+      "sigCount": 0
+    },
+    "ocf_growth_1y": {
+      "segment": "Growth",
+      "n": 48,
+      "p5": -60.174656438415475,
+      "p25": -12.709142872232151,
+      "p50": 2.6089041996966054,
+      "p75": 24.631740648075624,
+      "p95": 207.99460581035936,
+      "mean": 35.73461372668337,
+      "std": 159.37537764044924,
+      "min": -131.9174041297935,
+      "max": 899.0336059567894,
+      "direction": "positive",
+      "avgAbsR": 0.09340715610467776,
+      "sigCount": 0
+    },
+    "book_value_growth": {
+      "segment": "Growth",
+      "n": 47,
+      "p5": -0.9410798585245455,
+      "p25": 6.331623197216684,
+      "p50": 14.536740786639138,
+      "p75": 19.793525378648415,
+      "p95": 34.26964358587324,
+      "mean": 14.31342410752587,
+      "std": 10.51117276868863,
+      "min": -6.008764277182006,
+      "max": 48.51810121001323,
+      "direction": "positive",
+      "avgAbsR": 0.20363430245609274,
+      "sigCount": 2
+    },
+    "revenue_growth_3y_cagr": {
+      "segment": "Growth",
+      "n": 46,
+      "p5": 3.5869823411050605,
+      "p25": 8.161846078990154,
+      "p50": 13.035326163513083,
+      "p75": 20.998416458551183,
+      "p95": 41.082802293187996,
+      "mean": 16.095846468747304,
+      "std": 12.654908465187443,
+      "min": -3.4783348895061517,
+      "max": 65.68689145272187,
+      "direction": "positive",
+      "avgAbsR": 0.22769816423041972,
+      "sigCount": 2
+    },
+    "ebitda_growth_3y_cagr": {
+      "segment": "Growth",
+      "n": 46,
+      "p5": -15.74578199355069,
+      "p25": 6.557649558166756,
+      "p50": 14.12785634610283,
+      "p75": 25.507786780608367,
+      "p95": 50.06302828641975,
+      "mean": 15.824188203427253,
+      "std": 16.850433598601377,
+      "min": -25.25622976150814,
+      "max": 58.39836600827739,
+      "direction": "positive",
+      "avgAbsR": 0.06807926318603913,
+      "sigCount": 0
+    },
+    "pat_growth_3y_cagr": {
+      "segment": "Growth",
+      "n": 46,
+      "p5": -18.76768041657112,
+      "p25": 4.515722730025629,
+      "p50": 12.83543189037517,
+      "p75": 28.300069189595312,
+      "p95": 65.25509192941585,
+      "mean": 21.937017978774428,
+      "std": 45.947378965007076,
+      "min": -57.63806355930083,
+      "max": 253.96075039794295,
+      "direction": "negative",
+      "avgAbsR": 0.1230086253725408,
+      "sigCount": 0
+    },
+    "eps_growth_3y_cagr": {
+      "segment": "Growth",
+      "n": 46,
+      "p5": -21.521272027038684,
+      "p25": -8.819890295091948,
+      "p50": 11.054704664655613,
+      "p75": 26.755263076673643,
+      "p95": 96.28067516945092,
+      "mean": 14.75340753007048,
+      "std": 35.16637717564263,
+      "min": -56.47923548130449,
+      "max": 144.4129838738748,
+      "direction": "negative",
+      "avgAbsR": 0.10273449888393352,
+      "sigCount": 0
+    },
+    "revenue_growth_5y_cagr": {
+      "segment": "Growth",
+      "n": 46,
+      "p5": 7.811408172009426,
+      "p25": 11.867111794557195,
+      "p50": 16.00170285515683,
+      "p75": 20.991808532583267,
+      "p95": 31.8361672268717,
+      "mean": 18.218276044630016,
+      "std": 12.398967035787575,
+      "min": 3.8371778893462327,
+      "max": 78.11266760402277,
+      "direction": "positive",
+      "avgAbsR": 0.22379772431731831,
+      "sigCount": 2
+    },
+    "pe_ratio": {
+      "segment": "Valuation",
+      "n": 48,
+      "p5": 6.945267561443263,
+      "p25": 16.85152452496686,
+      "p50": 24.98146140503036,
+      "p75": 49.03905560458958,
+      "p95": 81.51605231866824,
+      "mean": 38.9769833134701,
+      "std": 49.646179165078834,
+      "min": 3.327433628318584,
+      "max": 335.83333333333337,
+      "direction": "positive",
+      "avgAbsR": 0.25899560428982826,
+      "sigCount": 2
+    },
+    "pb_ratio": {
+      "segment": "Valuation",
+      "n": 47,
+      "p5": 0.7804881189098469,
+      "p25": 2.0462257406249997,
+      "p50": 3.863611338618393,
+      "p75": 6.884519274396859,
+      "p95": 27.060622967246104,
+      "mean": 6.494347201607924,
+      "std": 7.380309668302704,
+      "min": 0.5482311775600334,
+      "max": 34.56795233284723,
+      "direction": "negative",
+      "avgAbsR": 0.11704252638275404,
+      "sigCount": 0
+    },
+    "ev_ebitda": {
+      "segment": "Valuation",
+      "n": 48,
+      "p5": 2.996560504843771,
+      "p25": 9.834338689461186,
+      "p50": 14.424015338666377,
+      "p75": 23.33580077941988,
+      "p95": 63.18020697760672,
+      "mean": 21.030407137036793,
+      "std": 24.342176128790207,
+      "min": -2.161645280750453,
+      "max": 140.15449968169042,
+      "direction": "positive",
+      "avgAbsR": 0.17784430854838484,
+      "sigCount": 1
+    },
+    "peg_ratio": {
+      "segment": "Valuation",
+      "n": 36,
+      "p5": 0.16434960377743252,
+      "p25": 0.5684587063278176,
+      "p50": 1.702397143721263,
+      "p75": 4.198194898626555,
+      "p95": 30.205680935757176,
+      "mean": 21.956184356324492,
+      "std": 104.25515592234156,
+      "min": 0.08698675319988637,
+      "max": 637.2522828833598,
+      "direction": "positive",
+      "avgAbsR": 0.10523551116692267,
+      "sigCount": 0
+    },
+    "dividend_yield": {
+      "segment": "Valuation",
+      "n": 46,
+      "p5": 0.09075233687267446,
+      "p25": 0.575691981762078,
+      "p50": 1.1717275169358023,
+      "p75": 2.6668698567509908,
+      "p95": 4.971590909090909,
+      "mean": 1.80094116228245,
+      "std": 1.6113112436067771,
+      "min": 0.04985169121862459,
+      "max": 6.650771740494416,
+      "direction": "negative",
+      "avgAbsR": 0.1433028902934978,
+      "sigCount": 0
+    },
+    "price_to_sales": {
+      "segment": "Valuation",
+      "n": 47,
+      "p5": 0.6358819913090786,
+      "p25": 1.606618352133173,
+      "p50": 2.9461667042081516,
+      "p75": 5.65428586106068,
+      "p95": 8.572256097560976,
+      "mean": 3.8505541445754567,
+      "std": 3.07524740829057,
+      "min": 0.2685819134158251,
+      "max": 15.780237429962932,
+      "direction": "negative",
+      "avgAbsR": 0.1138493069456291,
+      "sigCount": 0
+    },
+    "price_to_fcf": {
+      "segment": "Valuation",
+      "n": 40,
+      "p5": 5.680176757825113,
+      "p25": 16.334531856983592,
+      "p50": 30.299144948345226,
+      "p75": 56.46987798092886,
+      "p95": 480.76485950040734,
+      "mean": 70.6525098226772,
+      "std": 132.5202207107747,
+      "min": 2.8839147232206046,
+      "max": 712.8263531153489,
+      "direction": "positive",
+      "avgAbsR": 0.11140726326435138,
+      "sigCount": 0
+    },
+    "ev_to_revenue": {
+      "segment": "Valuation",
+      "n": 47,
+      "p5": 0.3085808225639859,
+      "p25": 1.586476279682135,
+      "p50": 3.4519118993485027,
+      "p75": 6.3841672936315765,
+      "p95": 8.929865658045033,
+      "mean": 4.080435994883802,
+      "std": 3.1326722252077985,
+      "min": -0.15564775293250965,
+      "max": 15.391234135070016,
+      "direction": "negative",
+      "avgAbsR": 0.09114734843316963,
+      "sigCount": 0
+    },
+    "pe_vs_5y_avg": {
+      "segment": "Valuation",
+      "n": 48,
+      "p5": 0.5755305539630666,
+      "p25": 0.8249744074304487,
+      "p50": 0.9873240725545059,
+      "p75": 1.2806715275996545,
+      "p95": 2.0514135027191984,
+      "mean": 1.088821159724262,
+      "std": 0.47175166753849135,
+      "min": 0.31075406181816734,
+      "max": 2.9698958213294886,
+      "direction": "negative",
+      "avgAbsR": 0.19277874327730238,
+      "sigCount": 0
+    },
+    "pb_vs_5y_avg": {
+      "segment": "Valuation",
+      "n": 47,
+      "p5": 0.7414237427796615,
+      "p25": 0.9748613099714912,
+      "p50": 1.118105056895717,
+      "p75": 1.3825173737078689,
+      "p95": 1.8496610403684997,
+      "mean": 1.2112889672755156,
+      "std": 0.4504090189818706,
+      "min": 0.5302709484738319,
+      "max": 3.287499516420717,
+      "direction": "negative",
+      "avgAbsR": 0.12991511306918585,
+      "sigCount": 0
+    },
+    "ev_ebitda_vs_5y_avg": {
+      "segment": "Valuation",
+      "n": 48,
+      "p5": 0.6242432061569225,
+      "p25": 0.9268145232419575,
+      "p50": 1.0915866938567822,
+      "p75": 1.3176727789855285,
+      "p95": 1.7874725990861762,
+      "mean": 1.1345087207049522,
+      "std": 0.5388101795584506,
+      "min": -0.942898841604872,
+      "max": 3.2397387844074856,
+      "direction": "positive",
+      "avgAbsR": 0.1268108139404218,
+      "sigCount": 0
+    },
+    "revenue": {
+      "segment": "Income Statement",
+      "n": 47,
+      "p5": 18169.76,
+      "p25": 41859.47,
+      "p50": 92911.8,
+      "p75": 174558.9,
+      "p95": 624458.944,
+      "mean": 158482.73120425534,
+      "std": 191135.61959872753,
+      "min": 9712,
+      "max": 982671,
+      "direction": "positive",
+      "avgAbsR": 0.058009900074629334,
+      "sigCount": 0
+    },
+    "ebitda": {
+      "segment": "Income Statement",
+      "n": 48,
+      "p5": 2977.01,
+      "p25": 7819.2,
+      "p50": 23598,
+      "p75": 38489.13,
+      "p95": 101254.288,
+      "mean": 32256.28540416666,
+      "std": 35586.13554221824,
+      "min": 1053.11,
+      "max": 183422,
+      "direction": "negative",
+      "avgAbsR": 0.12796114918855916,
+      "sigCount": 0
+    },
+    "pat": {
+      "segment": "Income Statement",
+      "n": 48,
+      "p5": 1534.41,
+      "p25": 4253,
+      "p50": 11061.26,
+      "p75": 20251.23,
+      "p95": 73440.17,
+      "mean": 17601.095029166667,
+      "std": 19824.420521916072,
+      "min": 527,
+      "max": 80787,
+      "direction": "negative",
+      "avgAbsR": 0.14289164265484436,
+      "sigCount": 0
+    },
+    "other_income_ratio": {
+      "segment": "Income Statement",
+      "n": 47,
+      "p5": 0.05984308926988326,
+      "p25": 0.9731024904938363,
+      "p50": 1.9846899654623253,
+      "p75": 3.9294882184055586,
+      "p95": 28.571660338608634,
+      "mean": 5.325548814089925,
+      "std": 9.02509912877943,
+      "min": 0.0007995688605142409,
+      "max": 38.68172516307213,
+      "direction": "positive",
+      "avgAbsR": 0.07461171634242976,
+      "sigCount": 0
+    },
+    "tax_rate": {
+      "segment": "Income Statement",
+      "n": 48,
+      "p5": 15.106810482577387,
+      "p25": 24.29639964881057,
+      "p50": 25.448271371834103,
+      "p75": 26.65091875065311,
+      "p95": 28.934100821822824,
+      "mean": 24.990989731837573,
+      "std": 7.519981100586947,
+      "min": 2.3886349727202885,
+      "max": 62.274705302708824,
+      "direction": "negative",
+      "avgAbsR": 0.16088038860701936,
+      "sigCount": 0
+    },
+    "exceptional_items": {
+      "segment": "Income Statement",
+      "n": 48,
+      "p5": -677.85,
+      "p25": 0,
+      "p50": 0,
+      "p75": 0,
+      "p95": 1553.66,
+      "mean": 194.70362500000002,
+      "std": 1226.796542913063,
+      "min": -879,
+      "max": 7286.8,
+      "direction": "positive",
+      "avgAbsR": 0.06464227412371179,
+      "sigCount": 0
+    },
+    "total_assets": {
+      "segment": "Balance Sheet",
+      "n": 47,
+      "p5": 12193.32,
+      "p25": 44494.5,
+      "p50": 159629,
+      "p75": 500535.7,
+      "p95": 2642241.4134,
+      "mean": 576708.2833829786,
+      "std": 1260566.4722552246,
+      "min": 8838.55,
+      "max": 7314185.3408,
+      "direction": "positive",
+      "avgAbsR": 0.08966377041229491,
+      "sigCount": 0
+    },
+    "total_debt": {
+      "segment": "Balance Sheet",
+      "n": 48,
+      "p5": 0,
+      "p25": 2,
+      "p50": 4184.5,
+      "p75": 93364.64,
+      "p95": 347530,
+      "mean": 60289.132583333325,
+      "std": 99183.38767959867,
+      "min": 0,
+      "max": 361248.64999999997,
+      "direction": "negative",
+      "avgAbsR": 0.0996026298044114,
+      "sigCount": 0
+    },
+    "net_debt": {
+      "segment": "Balance Sheet",
+      "n": 48,
+      "p5": -214023.4637,
+      "p25": -15738,
+      "p50": 0,
+      "p75": 57296.020000000004,
+      "p95": 197043.55000000002,
+      "mean": 9875.269439583331,
+      "std": 106269.76877178223,
+      "min": -357932.9428,
+      "max": 313264.27,
+      "direction": "negative",
+      "avgAbsR": 0.08469928249914774,
+      "sigCount": 0
+    },
+    "book_value_per_share": {
+      "segment": "Balance Sheet",
+      "n": 47,
+      "p5": 55.96082762954337,
+      "p25": 190.4797269101599,
+      "p50": 326.27098024937277,
+      "p75": 681.879605988006,
+      "p95": 1555.9770166503363,
+      "mean": 537.9308360941013,
+      "std": 580.4996396196707,
+      "min": 33.425578831312016,
+      "max": 3061.0404608201457,
+      "direction": "positive",
+      "avgAbsR": 0.1598402205752747,
+      "sigCount": 1
+    },
+    "cash_and_equivalents": {
+      "segment": "Balance Sheet",
+      "n": 48,
+      "p5": 1212.26,
+      "p25": 7613,
+      "p50": 21380,
+      "p75": 47984.38,
+      "p95": 230174,
+      "mean": 50413.86314374999,
+      "std": 76499.66471401659,
+      "min": 0,
+      "max": 357932.9428,
+      "direction": "positive",
+      "avgAbsR": 0.08242083550232605,
+      "sigCount": 0
+    },
+    "receivables_turnover": {
+      "segment": "Balance Sheet",
+      "n": 41,
+      "p5": 4.1950443465523435,
+      "p25": 5.958677924605292,
+      "p50": 13.02139977080769,
+      "p75": 24.688719285532795,
+      "p95": 57.061797752808985,
+      "mean": 43.87676969213424,
+      "std": 130.34108496013621,
+      "min": 3.5562065177590627,
+      "max": 823.681031090122,
+      "direction": "positive",
+      "avgAbsR": 0.18589344756111947,
+      "sigCount": 1
+    },
+    "inventory_turnover": {
+      "segment": "Balance Sheet",
+      "n": 37,
+      "p5": 0,
+      "p25": 0,
+      "p50": 1.6927334657961963,
+      "p75": 4.333842573851762,
+      "p95": 13.215388359641194,
+      "mean": 3.1434123648268324,
+      "std": 4.06284612389357,
+      "min": 0,
+      "max": 15.497703816382332,
+      "direction": "positive",
+      "avgAbsR": 0.2681986072123766,
+      "sigCount": 2
+    },
+    "gross_block_growth": {
+      "segment": "Balance Sheet",
+      "n": 48,
+      "p5": -2.9457323462579192,
+      "p25": 4.091404731427491,
+      "p50": 12.994149771640362,
+      "p75": 21.058636470386617,
+      "p95": 58.18539122895744,
+      "mean": 16.43132377483339,
+      "std": 19.595816921366076,
+      "min": -21.59876025053271,
+      "max": 74.31650768541724,
+      "direction": "positive",
+      "avgAbsR": 0.1892311002665525,
+      "sigCount": 0
+    },
+    "ocf_val": {
+      "segment": "Cash Flow",
+      "n": 48,
+      "p5": -43651.9,
+      "p25": 3175.81,
+      "p50": 15597.06,
+      "p75": 29199.66,
+      "p95": 122805.2582,
+      "mean": 21760.81295,
+      "std": 42620.06817013803,
+      "min": -68154.47,
+      "max": 178703,
+      "direction": "negative",
+      "avgAbsR": 0.08558235021883547,
+      "sigCount": 0
+    },
+    "capex_val": {
+      "segment": "Cash Flow",
+      "n": 45,
+      "p5": 374.85,
+      "p25": 1162.16,
+      "p50": 2278.7,
+      "p75": 10391.95,
+      "p95": 41030.802,
+      "mean": 10394.753975555555,
+      "std": 22169.776107376187,
+      "min": 223.59,
+      "max": 139967,
+      "direction": "positive",
+      "avgAbsR": 0.016335449209355882,
+      "sigCount": 0
+    },
+    "fcf_val": {
+      "segment": "Cash Flow",
+      "n": 48,
+      "p5": -43875.49,
+      "p25": 1544.1000000000004,
+      "p50": 7841.290000000001,
+      "p75": 16396.08,
+      "p95": 60424.5,
+      "mean": 12015.731097916667,
+      "std": 32808.85082033637,
+      "min": -68738.53,
+      "max": 123165.95,
+      "direction": "negative",
+      "avgAbsR": 0.1029054383591082,
+      "sigCount": 0
+    },
+    "fcf_margin": {
+      "segment": "Cash Flow",
+      "n": 47,
+      "p5": -47.40357573172507,
+      "p25": 2.013186561024677,
+      "p50": 6.459561644179759,
+      "p75": 17.695332106407896,
+      "p95": 31.13448254394054,
+      "mean": 4.551715349578195,
+      "std": 26.537989050821082,
+      "min": -104.8161622686575,
+      "max": 40.06805426740204,
+      "direction": "negative",
+      "avgAbsR": 0.14216268251149208,
+      "sigCount": 0
+    },
+    "dividends_paid": {
+      "segment": "Cash Flow",
+      "n": 46,
+      "p5": 278.4,
+      "p25": 1336.28,
+      "p50": 2806.43,
+      "p75": 7180,
+      "p95": 17782.22,
+      "mean": 6076.233284782608,
+      "std": 7987.576286696599,
+      "min": 113.59,
+      "max": 44962,
+      "direction": "negative",
+      "avgAbsR": 0.3748776144096381,
+      "sigCount": 3
+    },
+    "ocf_to_ebitda": {
+      "segment": "Cash Flow",
+      "n": 48,
+      "p5": -249.44539355371407,
+      "p25": 49.78915662650603,
+      "p50": 68.52835264610685,
+      "p75": 87.60321740990157,
+      "p95": 162.6972177796905,
+      "mean": 79.35661086496111,
+      "std": 234.0053834745952,
+      "min": -376.48571702098485,
+      "max": 1481.0475638822156,
+      "direction": "positive",
+      "avgAbsR": 0.14223567903790715,
+      "sigCount": 0
+    },
+    "earnings_momentum": {
+      "segment": "Growth",
+      "n": 47,
+      "p5": -57.406612279948476,
+      "p25": -5.6213862434107975,
+      "p50": 5.69808368339717,
+      "p75": 25.23945073212943,
+      "p95": 120.91000334560053,
+      "mean": -682.3495206153043,
+      "std": 4842.534329077803,
+      "min": -33514.87303506651,
+      "max": 824.014349047345,
+      "direction": "positive",
+      "avgAbsR": 0.06479512484296877,
+      "sigCount": 0
+    },
+    "rsi_14": {
+      "segment": "Technical",
+      "n": 48,
+      "p5": 34.61007315964214,
+      "p25": 46.294113478703835,
+      "p50": 59.54693872877057,
+      "p75": 64.15014519617787,
+      "p95": 72.16451406711667,
+      "mean": 55.718585894776744,
+      "std": 11.828162668318967,
+      "min": 25.778066382446937,
+      "max": 72.28019693672623,
+      "direction": "negative",
+      "avgAbsR": 0.17530792621446736,
+      "sigCount": 1
+    },
+    "macd_signal": {
+      "segment": "Technical",
+      "n": 48,
+      "p5": -91.45170225117688,
+      "p25": -17.959162926193137,
+      "p50": 4.285956377309706,
+      "p75": 14.97966553054334,
+      "p95": 23.896322096125996,
+      "mean": -11.083724216738544,
+      "std": 41.799005194147405,
+      "min": -151.3166579402306,
+      "max": 66.19138044609943,
+      "direction": "negative",
+      "avgAbsR": 0.11656572539566304,
+      "sigCount": 0
+    },
+    "macd_line": {
+      "segment": "Technical",
+      "n": 48,
+      "p5": -77.740897991358,
+      "p25": -4.7244924695684745,
+      "p50": 9.860641883326366,
+      "p75": 23.079525717251272,
+      "p95": 46.940677523742124,
+      "mean": 3.711524019409204,
+      "std": 41.619102162490016,
+      "min": -128.09975519606814,
+      "max": 123.99584226332081,
+      "direction": "negative",
+      "avgAbsR": 0.12242168973429007,
+      "sigCount": 0
+    },
+    "macd_histogram": {
+      "segment": "Technical",
+      "n": 48,
+      "p5": -2.3978126111640385,
+      "p25": 2.3834742516844765,
+      "p50": 5.998749545219496,
+      "p75": 15.64262988015641,
+      "p95": 58.927116124547155,
+      "mean": 14.795248236147748,
+      "std": 23.579515690766254,
+      "min": -3.9722363594728733,
+      "max": 130.32872422764984,
+      "direction": "negative",
+      "avgAbsR": 0.02834588061574949,
+      "sigCount": 0
+    },
+    "ema_crossover": {
+      "segment": "Technical",
+      "n": 48,
+      "p5": 0,
+      "p25": 0,
+      "p50": 0,
+      "p75": 1,
+      "p95": 1,
+      "mean": 0.4375,
+      "std": 0.49607837082461076,
+      "min": 0,
+      "max": 1,
+      "direction": "positive",
+      "avgAbsR": 0.10532557822122465,
+      "sigCount": 0
+    },
+    "bb_position": {
+      "segment": "Technical",
+      "n": 48,
+      "p5": 0.17797586297198137,
+      "p25": 0.6120889587424176,
+      "p50": 0.7892082408417549,
+      "p75": 0.8736420511680991,
+      "p95": 0.9825993489021776,
+      "mean": 0.6918213695232804,
+      "std": 0.24400193246358523,
+      "min": 0.13335468766439632,
+      "max": 1.0706311517509302,
+      "direction": "negative",
+      "avgAbsR": 0.13246686259750787,
+      "sigCount": 0
+    },
+    "adx_14": {
+      "segment": "Technical",
+      "n": 48,
+      "p5": 13.334464280759045,
+      "p25": 17.614081248868093,
+      "p50": 24.30643484666631,
+      "p75": 31.194367706715305,
+      "p95": 39.37893762891519,
+      "mean": 25.23506469024848,
+      "std": 8.735688141945198,
+      "min": 11.148910211002315,
+      "max": 50.95567137314407,
+      "direction": "negative",
+      "avgAbsR": 0.14116000631197356,
+      "sigCount": 1
+    },
+    "stochastic_k": {
+      "segment": "Technical",
+      "n": 48,
+      "p5": 11.561382598331404,
+      "p25": 52.82258064516135,
+      "p50": 71.59450897571269,
+      "p75": 82.66129032258065,
+      "p95": 92.13621204142528,
+      "mean": 62.43750306237055,
+      "std": 25.825075706034372,
+      "min": 6.706706706706746,
+      "max": 96.59168370824813,
+      "direction": "negative",
+      "avgAbsR": 0.14450116568076987,
+      "sigCount": 0
+    },
+    "obv_trend": {
+      "segment": "Technical",
+      "n": 48,
+      "p5": -0.4434066449319903,
+      "p25": 0.025889323625895393,
+      "p50": 0.22409922705111818,
+      "p75": 0.5080054403287632,
+      "p95": 2.5361383311618373,
+      "mean": 0.6804017189324956,
+      "std": 2.0716108682983734,
+      "min": -1.4712240416190288,
+      "max": 11.261254151796031,
+      "direction": "positive",
+      "avgAbsR": 0.0751507589300156,
+      "sigCount": 0
+    },
+    "ema20_dev": {
+      "segment": "Technical",
+      "n": 48,
+      "p5": -4.513819914343945,
+      "p25": -0.43705180082427064,
+      "p50": 2.3135373325822486,
+      "p75": 3.891848723641931,
+      "p95": 5.131598439321899,
+      "mean": 1.189660036764978,
+      "std": 3.6265172917814463,
+      "min": -14.142108048434778,
+      "max": 6.301212630016456,
+      "direction": "negative",
+      "avgAbsR": 0.2526698894418059,
+      "sigCount": 2
+    },
+    "ema50_dev": {
+      "segment": "Technical",
+      "n": 48,
+      "p5": -9.371810006421653,
+      "p25": -3.411902663879444,
+      "p50": 2.018427595749755,
+      "p75": 5.441406194798983,
+      "p95": 7.573633801814387,
+      "mean": 0.6988135689326879,
+      "std": 6.289588121630204,
+      "min": -25.373537901939947,
+      "max": 10.274495291769508,
+      "direction": "negative",
+      "avgAbsR": 0.25873547721923085,
+      "sigCount": 2
+    },
+    "ema200_dev": {
+      "segment": "Technical",
+      "n": 48,
+      "p5": -12.366910407151847,
+      "p25": -7.292498849889426,
+      "p50": -2.411798369905396,
+      "p75": 6.047913382762214,
+      "p95": 15.721023794563955,
+      "mean": -1.1180818078332166,
+      "std": 10.1281717868142,
+      "min": -41.22998941659005,
+      "max": 18.622890112716643,
+      "direction": "negative",
+      "avgAbsR": 0.2459677493009039,
+      "sigCount": 2
+    },
+    "sma10_dev": {
+      "segment": "Technical",
+      "n": 48,
+      "p5": -3.276416836255327,
+      "p25": -0.7581291167901126,
+      "p50": 1.0459374650667315,
+      "p75": 2.3119777158774455,
+      "p95": 3.5752617644954348,
+      "mean": 0.6420851633785137,
+      "std": 2.2226098888936137,
+      "min": -5.874109541048693,
+      "max": 5.2967252742061195,
+      "direction": "negative",
+      "avgAbsR": 0.19854936874504764,
+      "sigCount": 1
+    },
+    "sma20_dev": {
+      "segment": "Technical",
+      "n": 48,
+      "p5": -3.999364234200234,
+      "p25": 1.0746959234463127,
+      "p50": 3.3237910010707687,
+      "p75": 5.125826140258421,
+      "p95": 6.836237678010108,
+      "mean": 2.2987660595359043,
+      "std": 4.126872365039725,
+      "min": -15.971061082848484,
+      "max": 7.739713792350586,
+      "direction": "negative",
+      "avgAbsR": 0.2622133460887844,
+      "sigCount": 2
+    },
+    "sma50_dev": {
+      "segment": "Technical",
+      "n": 48,
+      "p5": -10.84730773155549,
+      "p25": -3.5788061319176787,
+      "p50": 2.4130934537550592,
+      "p75": 6.915369103311869,
+      "p95": 9.912177652313819,
+      "mean": 1.2488326014737219,
+      "std": 7.456511513755432,
+      "min": -29.138247782126992,
+      "max": 11.407056601273664,
+      "direction": "negative",
+      "avgAbsR": 0.25737246546687315,
+      "sigCount": 2
+    },
+    "sma100_dev": {
+      "segment": "Technical",
+      "n": 48,
+      "p5": -14.39146335048067,
+      "p25": -6.674247340659267,
+      "p50": -0.4022993916580209,
+      "p75": 5.316782221149011,
+      "p95": 15.671516995371837,
+      "mean": -1.0332107137759439,
+      "std": 9.284673556270898,
+      "min": -31.888616312862506,
+      "max": 17.5243041989382,
+      "direction": "negative",
+      "avgAbsR": 0.2523033842763339,
+      "sigCount": 2
+    },
+    "sma200_dev": {
+      "segment": "Technical",
+      "n": 48,
+      "p5": -18.115477495471488,
+      "p25": -10.08058933518742,
+      "p50": -5.26007971112109,
+      "p75": 3.1500172521370406,
+      "p95": 16.33897184465801,
+      "mean": -4.377814350156605,
+      "std": 11.351999729533578,
+      "min": -44.59049277609909,
+      "max": 21.839856996649175,
+      "direction": "negative",
+      "avgAbsR": 0.25313689192024547,
+      "sigCount": 2
+    },
+    "sharpe_ratio": {
+      "segment": "Technical",
+      "n": 48,
+      "p5": -1.0691495763668522,
+      "p25": -0.4213710328826698,
+      "p50": -0.05438859554274195,
+      "p75": 0.6690494758373182,
+      "p95": 1.167909374768478,
+      "mean": 0.03920746287035084,
+      "std": 0.7586649384798261,
+      "min": -1.3804018481415887,
+      "max": 2.3825331915788803,
+      "direction": "negative",
+      "avgAbsR": 0.12337734104756917,
+      "sigCount": 0
+    },
+    "max_drawdown_1y": {
+      "segment": "Technical",
+      "n": 48,
+      "p5": -42.5829562914357,
+      "p25": -32.69013766644099,
+      "p50": -22.273865850264407,
+      "p75": -18.825183565067956,
+      "p95": -13.688188624070175,
+      "mean": -25.64953569442918,
+      "std": 9.813186116090446,
+      "min": -59.37918286697686,
+      "max": -11.106982274906176,
+      "direction": "negative",
+      "avgAbsR": 0.23973419932508644,
+      "sigCount": 1
+    },
+    "volatility": {
+      "segment": "Technical",
+      "n": 48,
+      "p5": 19.791037966237358,
+      "p25": 22.79549206543069,
+      "p50": 25.7444677147651,
+      "p75": 29.767408012336038,
+      "p95": 41.88573032730723,
+      "mean": 27.28518121505034,
+      "std": 6.845989791355203,
+      "min": 18.719985400395434,
+      "max": 47.763773313243256,
+      "direction": "positive",
+      "avgAbsR": 0.24312306833791583,
+      "sigCount": 1
+    },
+    "return_1y_ann": {
+      "segment": "Technical",
+      "n": 48,
+      "p5": -20.29423101631762,
+      "p25": -7.032317969616464,
+      "p50": 5.222955542899266,
+      "p75": 23.72432263027435,
+      "p95": 42.34200896344724,
+      "mean": 7.212887627117088,
+      "std": 21.556490945933167,
+      "min": -57.24816533385988,
+      "max": 70.27784332232186,
+      "direction": "negative",
+      "avgAbsR": 0.17140223267116556,
+      "sigCount": 1
+    },
+    "avg_volume_20d": {
+      "segment": "Price & Volume",
+      "n": 48,
+      "p5": 7509.8,
+      "p25": 35245.4,
+      "p50": 110327.95,
+      "p75": 330461.35,
+      "p95": 968676.5,
+      "mean": 260521.38854166667,
+      "std": 431548.2087110628,
+      "min": 3442.1,
+      "max": 2526577.85,
+      "direction": "positive",
+      "avgAbsR": 0.24912775451508817,
+      "sigCount": 2
+    },
+    "avg_volume_3m": {
+      "segment": "Price & Volume",
+      "n": 48,
+      "p5": 8941.55,
+      "p25": 39426.416666666664,
+      "p50": 93933.1,
+      "p75": 379488.85,
+      "p95": 681147.35,
+      "mean": 259734.23020833335,
+      "std": 453004.1989759024,
+      "min": 6674.033333333334,
+      "max": 2834904.216666667,
+      "direction": "positive",
+      "avgAbsR": 0.2108394101074339,
+      "sigCount": 1
+    },
+    "rvol": {
+      "segment": "Technical",
+      "n": 48,
+      "p5": 0.5157451016626627,
+      "p25": 0.7870910352196511,
+      "p50": 0.9907315111016007,
+      "p75": 1.1534515673070087,
+      "p95": 1.4100612307055427,
+      "mean": 1.0141037751793953,
+      "std": 0.3646549080656778,
+      "min": 0.27169565020030834,
+      "max": 2.336297906634814,
+      "direction": "positive",
+      "avgAbsR": 0.1265667852593779,
+      "sigCount": 0
+    },
+    "volume_surge_20d": {
+      "segment": "Price & Volume",
+      "n": 48,
+      "p5": 0.32937508850841407,
+      "p25": 0.5540634063299136,
+      "p50": 0.9063453732109902,
+      "p75": 1.4295038452731257,
+      "p95": 2.834817458529471,
+      "mean": 1.1169574818997665,
+      "std": 0.8093746939319413,
+      "min": 0.10070434773085639,
+      "max": 3.754676569772877,
+      "direction": "positive",
+      "avgAbsR": 0.14584283934959147,
+      "sigCount": 0
+    },
+    "price_52w_high_dist": {
+      "segment": "Price & Volume",
+      "n": 48,
+      "p5": -37.912274200288586,
+      "p25": -23.41260607188844,
+      "p50": -17.131764134918704,
+      "p75": -9.554148911229706,
+      "p95": -0.3236394518787213,
+      "mean": -17.67244331006136,
+      "std": 12.067633220430569,
+      "min": -58.59838103129582,
+      "max": 0,
+      "direction": "negative",
+      "avgAbsR": 0.25116765499296134,
+      "sigCount": 2
+    },
+    "price_52w_low_dist": {
+      "segment": "Price & Volume",
+      "n": 48,
+      "p5": 3.4602026464594196,
+      "p25": 9.630220179614037,
+      "p50": 17.08309122603138,
+      "p75": 28.12821231660593,
+      "p95": 45.19592649988932,
+      "mean": 19.64609647212757,
+      "std": 14.344466636722593,
+      "min": 1.8127440392124345,
+      "max": 71.57589716918048,
+      "direction": "negative",
+      "avgAbsR": 0.07776790189532706,
+      "sigCount": 0
+    },
+    "price_return_1m": {
+      "segment": "Price & Volume",
+      "n": 48,
+      "p5": -11.077665945505288,
+      "p25": -0.7339373743493693,
+      "p50": 5.905806130077251,
+      "p75": 9.87093790726028,
+      "p95": 12.55016417365924,
+      "mean": 3.187258195935161,
+      "std": 9.116689953972541,
+      "min": -37.16565900846434,
+      "max": 14.229730906557524,
+      "direction": "negative",
+      "avgAbsR": 0.268533125099527,
+      "sigCount": 2
+    },
+    "price_return_3m": {
+      "segment": "Price & Volume",
+      "n": 48,
+      "p5": -25.366244387765846,
+      "p25": -10.432102812930289,
+      "p50": -2.8967777170944897,
+      "p75": 6.880687046314282,
+      "p95": 21.5529306387505,
+      "mean": -1.3467095059218461,
+      "std": 13.176726157094414,
+      "min": -32.35615725071597,
+      "max": 31.187146333597205,
+      "direction": "negative",
+      "avgAbsR": 0.23758513515809834,
+      "sigCount": 2
+    },
+    "price_return_6m": {
+      "segment": "Price & Volume",
+      "n": 48,
+      "p5": -37.487298774804124,
+      "p25": -18.820822745690545,
+      "p50": -13.753290260827944,
+      "p75": -3.868435806391324,
+      "p95": 6.109308709757921,
+      "mean": -13.131358083110692,
+      "std": 13.546443890963053,
+      "min": -55.58480631816472,
+      "max": 15.929416161670096,
+      "direction": "negative",
+      "avgAbsR": 0.2730643309826872,
+      "sigCount": 2
+    },
+    "price_return_1y": {
+      "segment": "Price & Volume",
+      "n": 48,
+      "p5": -20.29423101631762,
+      "p25": -7.032317969616464,
+      "p50": 5.222955542899266,
+      "p75": 23.72432263027435,
+      "p95": 42.34200896344724,
+      "mean": 7.212887627117088,
+      "std": 21.556490945933167,
+      "min": -57.24816533385988,
+      "max": 70.27784332232186,
+      "direction": "negative",
+      "avgAbsR": 0.17140223267116556,
+      "sigCount": 1
+    },
+    "price_return_3y": {
+      "segment": "Price & Volume",
+      "n": 48,
+      "p5": -14.6127287061958,
+      "p25": 27.69350249218605,
+      "p50": 53.21994972223083,
+      "p75": 93.36057933605795,
+      "p95": 200.72447154844332,
+      "mean": 67.5519989773628,
+      "std": 71.21735718053176,
+      "min": -27.501534683855134,
+      "max": 357.9083502177007,
+      "direction": "positive",
+      "avgAbsR": 0.08237519702797552,
+      "sigCount": 0
+    },
+    "promoter_holding": {
+      "segment": "Ownership",
+      "n": 48,
+      "p5": 0,
+      "p25": 29.196399999999997,
+      "p50": 50.5475,
+      "p75": 58.284,
+      "p95": 71.7661,
+      "mean": 41.938791666666674,
+      "std": 21.053789436849144,
+      "min": 0,
+      "max": 73.97200000000001,
+      "direction": "negative",
+      "avgAbsR": 0.17167100726422513,
+      "sigCount": 0
+    },
+    "fii_holding": {
+      "segment": "Ownership",
+      "n": 48,
+      "p5": 7.7402,
+      "p25": 14.5818,
+      "p50": 19.6575,
+      "p75": 29.5338,
+      "p95": 45.8248,
+      "mean": 23.190218749999996,
+      "std": 11.941208633876784,
+      "min": 7.1152,
+      "max": 53.5794,
+      "direction": "positive",
+      "avgAbsR": 0.17050357725622853,
+      "sigCount": 0
+    },
+    "mf_holding": {
+      "segment": "Ownership",
+      "n": 48,
+      "p5": 4.0783,
+      "p25": 8.1724,
+      "p50": 12.0417,
+      "p75": 16.2653,
+      "p95": 27.5525,
+      "mean": 12.680697916666666,
+      "std": 6.7136271243174255,
+      "min": 2.4883,
+      "max": 32.0244,
+      "direction": "positive",
+      "avgAbsR": 0.192032549160715,
+      "sigCount": 1
+    },
+    "dii_holding": {
+      "segment": "Ownership",
+      "n": 48,
+      "p5": 9.0052,
+      "p25": 15.4803,
+      "p50": 19.9385,
+      "p75": 27.9018,
+      "p95": 42.7127,
+      "mean": 22.153883333333336,
+      "std": 9.734063947172265,
+      "min": 6.8644,
+      "max": 45.1853,
+      "direction": "positive",
+      "avgAbsR": 0.09173506051078362,
+      "sigCount": 0
+    },
+    "retail_holding": {
+      "segment": "Ownership",
+      "n": 48,
+      "p5": 2.9613,
+      "p25": 5.2973,
+      "p50": 7.3556,
+      "p75": 11.2298,
+      "p95": 15.0806,
+      "mean": 8.165187500000004,
+      "std": 4.213514073026665,
+      "min": 1.8441,
+      "max": 20.0461,
+      "direction": "positive",
+      "avgAbsR": 0.03344554041811385,
+      "sigCount": 0
+    },
+    "promoter_change_3m": {
+      "segment": "Ownership",
+      "n": 48,
+      "p5": -0.46199999999999797,
+      "p25": -0.0020000000000024443,
+      "p50": 0,
+      "p75": 0,
+      "p95": 0.004899999999999238,
+      "mean": -0.039222916666666476,
+      "std": 0.1618123826632546,
+      "min": -0.7736999999999981,
+      "max": 0.1684000000000001,
+      "direction": "negative",
+      "avgAbsR": 0.1772245839826968,
+      "sigCount": 1
+    },
+    "fii_change_3m": {
+      "segment": "Ownership",
+      "n": 48,
+      "p5": -2.9436999999999998,
+      "p25": -0.8442000000000007,
+      "p50": -0.40109999999999957,
+      "p75": -0.020100000000001117,
+      "p95": 0.8362999999999996,
+      "mean": -0.5535479166666665,
+      "std": 1.2749452272531792,
+      "min": -3.5778999999999996,
+      "max": 4.795999999999999,
+      "direction": "positive",
+      "avgAbsR": 0.15192382192186935,
+      "sigCount": 0
+    },
+    "mf_change_3m": {
+      "segment": "Ownership",
+      "n": 48,
+      "p5": -0.5222999999999995,
+      "p25": -0.03610000000000024,
+      "p50": 0.2575000000000003,
+      "p75": 0.5720999999999989,
+      "p95": 2.648299999999999,
+      "mean": 0.37658125000000003,
+      "std": 0.9106144934548889,
+      "min": -2.7621,
+      "max": 2.9908,
+      "direction": "negative",
+      "avgAbsR": 0.10190438091207209,
+      "sigCount": 0
+    }
+  },
+  "allMetricCorrelations": {
+    "roce": {
+      "segment": "Profitability",
+      "avgAbsR": 0.13366725120335543,
+      "direction": "negative",
+      "sigCount": 0,
+      "horizonResults": {
+        "1M": {
+          "pearson": 0.02945208970913706,
+          "spearman": 0.029965156794425088,
+          "tStat": 0.18400806524842317,
+          "n": 41,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": -0.23233579635867388,
+          "spearman": -0.18885017421602787,
+          "tStat": -1.491757582771295,
+          "n": 41,
+          "significant": false
+        },
+        "3M": {
+          "pearson": -0.0672394385038244,
+          "spearman": -0.029442508710801393,
+          "tStat": -0.4208626265172799,
+          "n": 41,
+          "significant": false
+        },
+        "6M": {
+          "pearson": -0.20564168024178642,
+          "spearman": -0.139198606271777,
+          "tStat": -1.3122787497639359,
+          "n": 41,
+          "significant": false
+        }
+      }
+    },
+    "roe": {
+      "segment": "Profitability",
+      "avgAbsR": 0.14386595697914462,
+      "direction": "negative",
+      "sigCount": 0,
+      "horizonResults": {
+        "1M": {
+          "pearson": -0.0684059198155117,
+          "spearman": -0.04278445883441258,
+          "tStat": -0.45995827965817887,
+          "n": 47,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": -0.20740699488463582,
+          "spearman": -0.17506938020351526,
+          "tStat": -1.4222557379655691,
+          "n": 47,
+          "significant": false
+        },
+        "3M": {
+          "pearson": -0.10164836136569813,
+          "spearman": -0.024514338575393153,
+          "tStat": -0.6854281873563338,
+          "n": 47,
+          "significant": false
+        },
+        "6M": {
+          "pearson": -0.1980025518507328,
+          "spearman": -0.0768963922294172,
+          "tStat": -1.3550698410958641,
+          "n": 47,
+          "significant": false
+        }
+      }
+    },
+    "roa": {
+      "segment": "Profitability",
+      "avgAbsR": 0.2077146693083201,
+      "direction": "negative",
+      "sigCount": 1,
+      "horizonResults": {
+        "1M": {
+          "pearson": -0.1481265556308876,
+          "spearman": -0.09620721554116558,
+          "tStat": -1.0047470971909653,
+          "n": 47,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": -0.34645049040365367,
+          "spearman": -0.2902405180388529,
+          "tStat": -2.477496195995846,
+          "n": 47,
+          "significant": true
+        },
+        "3M": {
+          "pearson": -0.16958218392311936,
+          "spearman": -0.09424144310823311,
+          "tStat": -1.1543108549013337,
+          "n": 47,
+          "significant": false
+        },
+        "6M": {
+          "pearson": -0.16669944727561975,
+          "spearman": -0.186054579093432,
+          "tStat": -1.134122811213452,
+          "n": 47,
+          "significant": false
+        }
+      }
+    },
+    "net_profit_margin": {
+      "segment": "Profitability",
+      "avgAbsR": 0.20903598164236165,
+      "direction": "negative",
+      "sigCount": 1,
+      "horizonResults": {
+        "1M": {
+          "pearson": -0.10967017075662058,
+          "spearman": -0.10557354301572618,
+          "tStat": -0.7401544568817161,
+          "n": 47,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": -0.2109102714174019,
+          "spearman": -0.2851526364477336,
+          "tStat": -1.4473874771708886,
+          "n": 47,
+          "significant": false
+        },
+        "3M": {
+          "pearson": -0.22388082834529943,
+          "spearman": -0.23496762257169287,
+          "tStat": -1.5409529917799438,
+          "n": 47,
+          "significant": false
+        },
+        "6M": {
+          "pearson": -0.2916826560501247,
+          "spearman": -0.33822849213691025,
+          "tStat": -2.0456202336741915,
+          "n": 47,
+          "significant": true
+        }
+      }
+    },
+    "operating_profit_margin": {
+      "segment": "Profitability",
+      "avgAbsR": 0.11085168965162101,
+      "direction": "negative",
+      "sigCount": 0,
+      "horizonResults": {
+        "1M": {
+          "pearson": 0.03694061380930561,
+          "spearman": -0.01986062717770035,
+          "tStat": 0.23085162416674893,
+          "n": 41,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": -0.19438664592645333,
+          "spearman": -0.27526132404181186,
+          "tStat": -1.2375505055953984,
+          "n": 41,
+          "significant": false
+        },
+        "3M": {
+          "pearson": -0.058306598545871106,
+          "spearman": -0.11376306620209059,
+          "tStat": -0.3647451236614696,
+          "n": 41,
+          "significant": false
+        },
+        "6M": {
+          "pearson": -0.153772900324854,
+          "spearman": -0.26480836236933797,
+          "tStat": -0.9718706741048894,
+          "n": 41,
+          "significant": false
+        }
+      }
+    },
+    "ebitda_margin": {
+      "segment": "Profitability",
+      "avgAbsR": 0.18800979882970043,
+      "direction": "negative",
+      "sigCount": 0,
+      "horizonResults": {
+        "1M": {
+          "pearson": -0.09634718516437213,
+          "spearman": -0.1255781683626272,
+          "tStat": -0.649337421476957,
+          "n": 47,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": -0.2191586277562354,
+          "spearman": -0.35962072155411656,
+          "tStat": -1.5067920256778453,
+          "n": 47,
+          "significant": false
+        },
+        "3M": {
+          "pearson": -0.18468228496581526,
+          "spearman": -0.28792784458834414,
+          "tStat": -1.2605704131174293,
+          "n": 47,
+          "significant": false
+        },
+        "6M": {
+          "pearson": -0.2518510974323788,
+          "spearman": -0.40367715078630895,
+          "tStat": -1.7457407344775455,
+          "n": 47,
+          "significant": false
+        }
+      }
+    },
+    "gross_profit_margin": {
+      "segment": "Profitability",
+      "avgAbsR": 0.3687391065544313,
+      "direction": "negative",
+      "sigCount": 2,
+      "horizonResults": {
+        "1M": {
+          "pearson": -0.28427141905586056,
+          "spearman": -0.31567944250871083,
+          "tStat": -1.8516671082488558,
+          "n": 41,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": -0.546453005448349,
+          "spearman": -0.4926829268292683,
+          "tStat": -4.074793570497527,
+          "n": 41,
+          "significant": true
+        },
+        "3M": {
+          "pearson": -0.19515022685664069,
+          "spearman": -0.1362369337979094,
+          "tStat": -1.2426038700387698,
+          "n": 41,
+          "significant": false
+        },
+        "6M": {
+          "pearson": -0.44908177485687506,
+          "spearman": -0.5214285714285715,
+          "tStat": -3.138829436813811,
+          "n": 41,
+          "significant": true
+        }
+      }
+    },
+    "cash_flow_margin": {
+      "segment": "Profitability",
+      "avgAbsR": 0.13695941115498705,
+      "direction": "negative",
+      "sigCount": 0,
+      "horizonResults": {
+        "1M": {
+          "pearson": 0.20635341795397272,
+          "spearman": 0.07227104532839963,
+          "tStat": 1.414708845587673,
+          "n": 47,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": -0.23508470231483697,
+          "spearman": -0.31406105457909345,
+          "tStat": -1.6224659136220416,
+          "n": 47,
+          "significant": false
+        },
+        "3M": {
+          "pearson": 0.06290273915991633,
+          "spearman": -0.1696345975948196,
+          "tStat": 0.42280169252611854,
+          "n": 47,
+          "significant": false
+        },
+        "6M": {
+          "pearson": -0.04349678519122221,
+          "spearman": -0.3398473635522664,
+          "tStat": -0.2920617223312775,
+          "n": 47,
+          "significant": false
+        }
+      }
+    },
+    "fcf_to_pat": {
+      "segment": "Profitability",
+      "avgAbsR": 0.12838570832879032,
+      "direction": "positive",
+      "sigCount": 0,
+      "horizonResults": {
+        "1M": {
+          "pearson": 0.2372620743511189,
+          "spearman": -0.03180633955709944,
+          "tStat": 1.656489616261024,
+          "n": 48,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": -0.05789889667046389,
+          "spearman": -0.20364741641337386,
+          "tStat": -0.3933492852641382,
+          "n": 48,
+          "significant": false
+        },
+        "3M": {
+          "pearson": 0.19727317418421136,
+          "spearman": -0.07099435518888407,
+          "tStat": 1.364791893162529,
+          "n": 48,
+          "significant": false
+        },
+        "6M": {
+          "pearson": -0.021108688109367137,
+          "spearman": -0.15316977854971775,
+          "tStat": -0.1431979946691202,
+          "n": 48,
+          "significant": false
+        }
+      }
+    },
+    "earnings_quality": {
+      "segment": "Profitability",
+      "avgAbsR": 0.08830812842586987,
+      "direction": "positive",
+      "sigCount": 0,
+      "horizonResults": {
+        "1M": {
+          "pearson": 0.15554806152983738,
+          "spearman": 0.03690838037342597,
+          "tStat": 1.0679773543181665,
+          "n": 48,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": 0.015946897923404084,
+          "spearman": -0.06708640903169778,
+          "tStat": 0.10817087891772358,
+          "n": 48,
+          "significant": false
+        },
+        "3M": {
+          "pearson": 0.14800634199893237,
+          "spearman": -0.01107251411202779,
+          "tStat": 1.0150067170321087,
+          "n": 48,
+          "significant": false
+        },
+        "6M": {
+          "pearson": 0.03373121225130564,
+          "spearman": -0.08673469387755102,
+          "tStat": 0.22890647356631913,
+          "n": 48,
+          "significant": false
+        }
+      }
+    },
+    "earnings_yield": {
+      "segment": "Profitability",
+      "avgAbsR": 0.1194646648635635,
+      "direction": "negative",
+      "sigCount": 0,
+      "horizonResults": {
+        "1M": {
+          "pearson": -0.0783094521468083,
+          "spearman": -0.10247503256621798,
+          "tStat": -0.5327565876554515,
+          "n": 48,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": 0.04974473347886128,
+          "spearman": 0.08239253148067738,
+          "tStat": 0.3378034100306139,
+          "n": 48,
+          "significant": false
+        },
+        "3M": {
+          "pearson": -0.22758512600811132,
+          "spearman": -0.21081198436821538,
+          "tStat": -1.5851547555211742,
+          "n": 48,
+          "significant": false
+        },
+        "6M": {
+          "pearson": -0.12221934782047308,
+          "spearman": -0.1265740338688667,
+          "tStat": -0.8351932962894382,
+          "n": 48,
+          "significant": false
+        }
+      }
+    },
+    "roe_5y_avg": {
+      "segment": "Profitability",
+      "avgAbsR": 0.2096639235327157,
+      "direction": "negative",
+      "sigCount": 0,
+      "horizonResults": {
+        "1M": {
+          "pearson": -0.12805867408784616,
+          "spearman": -0.11748381128584644,
+          "tStat": -0.8564970344466595,
+          "n": 46,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": -0.20618263447623844,
+          "spearman": -0.19592969472710453,
+          "tStat": -1.3976923536230508,
+          "n": 46,
+          "significant": false
+        },
+        "3M": {
+          "pearson": -0.24270098289829659,
+          "spearman": -0.1765649090348443,
+          "tStat": -1.659513752946365,
+          "n": 46,
+          "significant": false
+        },
+        "6M": {
+          "pearson": -0.26171340266848164,
+          "spearman": -0.1375886524822695,
+          "tStat": -1.7987029701312671,
+          "n": 46,
+          "significant": false
+        }
+      }
+    },
+    "roa_5y_avg": {
+      "segment": "Profitability",
+      "avgAbsR": 0.2582870491300221,
+      "direction": "negative",
+      "sigCount": 1,
+      "horizonResults": {
+        "1M": {
+          "pearson": -0.20584100705352332,
+          "spearman": -0.1856922602528523,
+          "tStat": -1.3952739395081963,
+          "n": 46,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": -0.3334202486464425,
+          "spearman": -0.24798026518655567,
+          "tStat": -2.345895854910335,
+          "n": 46,
+          "significant": true
+        },
+        "3M": {
+          "pearson": -0.2594063447867487,
+          "spearman": -0.20444033302497688,
+          "tStat": -1.7816976225651824,
+          "n": 46,
+          "significant": false
+        },
+        "6M": {
+          "pearson": -0.23448059603337373,
+          "spearman": -0.17890841813135985,
+          "tStat": -1.5999743191212057,
+          "n": 46,
+          "significant": false
+        }
+      }
+    },
+    "current_ratio": {
+      "segment": "Financial Ratios",
+      "avgAbsR": 0.09466439882477139,
+      "direction": "negative",
+      "sigCount": 0,
+      "horizonResults": {
+        "1M": {
+          "pearson": -0.12386037173065695,
+          "spearman": -0.09666963779272345,
+          "tStat": -0.7894407378525372,
+          "n": 42,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": 0.08754603391525716,
+          "spearman": -0.18515517381087432,
+          "tStat": 0.5558238340814916,
+          "n": 42,
+          "significant": false
+        },
+        "3M": {
+          "pearson": 0.006043526089428924,
+          "spearman": -0.08532533830321692,
+          "tStat": 0.03822331312697741,
+          "n": 42,
+          "significant": false
+        },
+        "6M": {
+          "pearson": -0.1612076635637425,
+          "spearman": -0.2924398346973503,
+          "tStat": -1.0330789338711142,
+          "n": 42,
+          "significant": false
+        }
+      }
+    },
+    "quick_ratio": {
+      "segment": "Financial Ratios",
+      "avgAbsR": 0.1069158526451873,
+      "direction": "negative",
+      "sigCount": 0,
+      "horizonResults": {
+        "1M": {
+          "pearson": -0.1875615695229924,
+          "spearman": -0.12996515679442508,
+          "tStat": -1.19248483574316,
+          "n": 41,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": 0.08962264110835438,
+          "spearman": -0.21202090592334494,
+          "tStat": 0.5619546355583496,
+          "n": 41,
+          "significant": false
+        },
+        "3M": {
+          "pearson": 0.006843641803542772,
+          "spearman": -0.06480836236933799,
+          "tStat": 0.042739530238804786,
+          "n": 41,
+          "significant": false
+        },
+        "6M": {
+          "pearson": -0.1436355581458596,
+          "spearman": -0.2641114982578397,
+          "tStat": -0.9064025773031885,
+          "n": 41,
+          "significant": false
+        }
+      }
+    },
+    "debt_to_equity": {
+      "segment": "Financial Ratios",
+      "avgAbsR": 0.1165873082559475,
+      "direction": "positive",
+      "sigCount": 0,
+      "horizonResults": {
+        "1M": {
+          "pearson": -0.16027833880041908,
+          "spearman": -0.11875578168362627,
+          "tStat": -1.0892619146503195,
+          "n": 47,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": 0.16536069502413406,
+          "spearman": 0.21669750231267346,
+          "tStat": 1.124757625963565,
+          "n": 47,
+          "significant": false
+        },
+        "3M": {
+          "pearson": -0.0792768824686751,
+          "spearman": 0.06672062904717854,
+          "tStat": -0.5334845653818853,
+          "n": 47,
+          "significant": false
+        },
+        "6M": {
+          "pearson": -0.061433316730561745,
+          "spearman": 0.13818223866790008,
+          "tStat": -0.4128870821296302,
+          "n": 47,
+          "significant": false
+        }
+      }
+    },
+    "interest_coverage": {
+      "segment": "Financial Ratios",
+      "avgAbsR": 0.08105145865741686,
+      "direction": "negative",
+      "sigCount": 0,
+      "horizonResults": {
+        "1M": {
+          "pearson": 0.06622124875100957,
+          "spearman": 0.09581881533101046,
+          "tStat": 0.41446132342061287,
+          "n": 41,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": -0.10508484940965357,
+          "spearman": -0.20871080139372822,
+          "tStat": -0.6599084159013908,
+          "n": 41,
+          "significant": false
+        },
+        "3M": {
+          "pearson": 0.053719148516708136,
+          "spearman": -0.08867595818815331,
+          "tStat": 0.33596107450152635,
+          "n": 41,
+          "significant": false
+        },
+        "6M": {
+          "pearson": -0.09918058795229619,
+          "spearman": -0.10505226480836237,
+          "tStat": -0.6224516017839001,
+          "n": 41,
+          "significant": false
+        }
+      }
+    },
+    "debt_to_ebitda": {
+      "segment": "Financial Ratios",
+      "avgAbsR": 0.16206130435764626,
+      "direction": "negative",
+      "sigCount": 0,
+      "horizonResults": {
+        "1M": {
+          "pearson": -0.2176745914914261,
+          "spearman": -0.17162396873643074,
+          "tStat": -1.5126112083627337,
+          "n": 48,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": 0.21339289923595367,
+          "spearman": 0.2175423360833695,
+          "tStat": 1.481423480676194,
+          "n": 48,
+          "significant": false
+        },
+        "3M": {
+          "pearson": -0.12372732617595605,
+          "spearman": 0.0033651758575770734,
+          "tStat": -0.8456573701474384,
+          "n": 48,
+          "significant": false
+        },
+        "6M": {
+          "pearson": -0.09345040052724914,
+          "spearman": 0.09943551888840643,
+          "tStat": -0.6365972434853027,
+          "n": 48,
+          "significant": false
+        }
+      }
+    },
+    "dso": {
+      "segment": "Financial Ratios",
+      "avgAbsR": 0.27627340621110436,
+      "direction": "negative",
+      "sigCount": 1,
+      "horizonResults": {
+        "1M": {
+          "pearson": -0.24053454927802315,
+          "spearman": -0.25,
+          "tStat": -1.6623607613832407,
+          "n": 47,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": -0.39890794684071,
+          "spearman": -0.3926919518963922,
+          "tStat": -2.918192139210345,
+          "n": 47,
+          "significant": true
+        },
+        "3M": {
+          "pearson": -0.18261144997104045,
+          "spearman": -0.1977335800185014,
+          "tStat": -1.2459452166008778,
+          "n": 47,
+          "significant": false
+        },
+        "6M": {
+          "pearson": -0.2830396787546438,
+          "spearman": -0.271854764107308,
+          "tStat": -1.979638882351155,
+          "n": 47,
+          "significant": false
+        }
+      }
+    },
+    "dio": {
+      "segment": "Financial Ratios",
+      "avgAbsR": 0.3172117824420918,
+      "direction": "negative",
+      "sigCount": 2,
+      "horizonResults": {
+        "1M": {
+          "pearson": 0.01714952693893666,
+          "spearman": -0.03663003663003663,
+          "tStat": 0.08576024693543781,
+          "n": 27,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": -0.45247265126281916,
+          "spearman": -0.5824175824175825,
+          "tStat": -2.536912266445035,
+          "n": 27,
+          "significant": true
+        },
+        "3M": {
+          "pearson": -0.23893211370309356,
+          "spearman": -0.25274725274725274,
+          "tStat": -1.230294481004873,
+          "n": 27,
+          "significant": false
+        },
+        "6M": {
+          "pearson": -0.5602928378635177,
+          "spearman": -0.7045177045177046,
+          "tStat": -3.38220749812265,
+          "n": 27,
+          "significant": true
+        }
+      }
+    },
+    "dpo": {
+      "segment": "Financial Ratios",
+      "avgAbsR": 0.3837601430493039,
+      "direction": "negative",
+      "sigCount": 2,
+      "horizonResults": {
+        "1M": {
+          "pearson": -0.31794735040279976,
+          "spearman": -0.31684981684981683,
+          "tStat": -1.6767458249887952,
+          "n": 27,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": -0.4453605297886318,
+          "spearman": -0.57997557997558,
+          "tStat": -2.487071367568667,
+          "n": 27,
+          "significant": true
+        },
+        "3M": {
+          "pearson": -0.33732915861155777,
+          "spearman": -0.4474969474969475,
+          "tStat": -1.7916608329418384,
+          "n": 27,
+          "significant": false
+        },
+        "6M": {
+          "pearson": -0.4344035333942265,
+          "spearman": -0.47985347985347987,
+          "tStat": -2.4114282057720176,
+          "n": 27,
+          "significant": true
+        }
+      }
+    },
+    "cash_conversion_cycle": {
+      "segment": "Financial Ratios",
+      "avgAbsR": 0.38104833547891287,
+      "direction": "positive",
+      "sigCount": 2,
+      "horizonResults": {
+        "1M": {
+          "pearson": 0.31788739807922584,
+          "spearman": 0.1813186813186813,
+          "tStat": 1.676394112112222,
+          "n": 27,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": 0.4414411157032851,
+          "spearman": -0.07997557997557997,
+          "tStat": 2.459856940317316,
+          "n": 27,
+          "significant": true
+        },
+        "3M": {
+          "pearson": 0.33526597331371183,
+          "spearman": -0.07814407814407814,
+          "tStat": 1.779310070062706,
+          "n": 27,
+          "significant": false
+        },
+        "6M": {
+          "pearson": 0.42959885481942867,
+          "spearman": -0.4133089133089133,
+          "tStat": 2.378678949035732,
+          "n": 27,
+          "significant": true
+        }
+      }
+    },
+    "asset_turnover": {
+      "segment": "Financial Ratios",
+      "avgAbsR": 0.08764019483941694,
+      "direction": "positive",
+      "sigCount": 0,
+      "horizonResults": {
+        "1M": {
+          "pearson": -0.07581799181651468,
+          "spearman": -0.08603145235892692,
+          "tStat": -0.510070700782276,
+          "n": 47,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": -0.09514442053367164,
+          "spearman": -0.06648936170212766,
+          "tStat": -0.6411567968601845,
+          "n": 47,
+          "significant": false
+        },
+        "3M": {
+          "pearson": 0.08411914784396092,
+          "spearman": 0.014685476410730805,
+          "tStat": 0.56629551760674,
+          "n": 47,
+          "significant": false
+        },
+        "6M": {
+          "pearson": 0.09547921916352055,
+          "spearman": 0.048219241443108234,
+          "tStat": 0.6434336493737808,
+          "n": 47,
+          "significant": false
+        }
+      }
+    },
+    "fixed_asset_turnover": {
+      "segment": "Financial Ratios",
+      "avgAbsR": 0.1344658491853884,
+      "direction": "positive",
+      "sigCount": 0,
+      "horizonResults": {
+        "1M": {
+          "pearson": 0.23477180139897608,
+          "spearman": 0.09632284921369103,
+          "tStat": 1.6201803292303831,
+          "n": 47,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": 0.1288017881094895,
+          "spearman": 0.1593432007400555,
+          "tStat": 0.8712861631324461,
+          "n": 47,
+          "significant": false
+        },
+        "3M": {
+          "pearson": 0.07404828530050424,
+          "spearman": 0.09643848288621647,
+          "tStat": 0.49809844960578886,
+          "n": 47,
+          "significant": false
+        },
+        "6M": {
+          "pearson": -0.10024152193258383,
+          "spearman": 0.06637372802960222,
+          "tStat": -0.6758447111254341,
+          "n": 47,
+          "significant": false
+        }
+      }
+    },
+    "working_capital_to_sales": {
+      "segment": "Financial Ratios",
+      "avgAbsR": 0.05353273273677396,
+      "direction": "negative",
+      "sigCount": 0,
+      "horizonResults": {
+        "1M": {
+          "pearson": -0.06765345184068373,
+          "spearman": -0.07717770034843205,
+          "tStat": -0.42346588222230586,
+          "n": 41,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": -0.04249070312754513,
+          "spearman": -0.1445993031358885,
+          "tStat": -0.265594224153413,
+          "n": 41,
+          "significant": false
+        },
+        "3M": {
+          "pearson": -0.004733578151352374,
+          "spearman": -0.09111498257839722,
+          "tStat": -0.029561517271255815,
+          "n": 41,
+          "significant": false
+        },
+        "6M": {
+          "pearson": -0.09925319782751461,
+          "spearman": -0.2841463414634146,
+          "tStat": -0.6229118292712843,
+          "n": 41,
+          "significant": false
+        }
+      }
+    },
+    "capex_to_revenue": {
+      "segment": "Financial Ratios",
+      "avgAbsR": 0.03686314875915451,
+      "direction": "negative",
+      "sigCount": 0,
+      "horizonResults": {
+        "1M": {
+          "pearson": 0.04400521650551729,
+          "spearman": 0.12361239592969472,
+          "tStat": 0.29548219964387523,
+          "n": 47,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": -0.03765836413542217,
+          "spearman": 0.06001387604070305,
+          "tStat": -0.2527993039506591,
+          "n": 47,
+          "significant": false
+        },
+        "3M": {
+          "pearson": -0.012858610115274137,
+          "spearman": -0.0033533765032377426,
+          "tStat": -0.08626531095607312,
+          "n": 47,
+          "significant": false
+        },
+        "6M": {
+          "pearson": -0.05293040428040444,
+          "spearman": 0.0316836262719704,
+          "tStat": -0.35556637779856437,
+          "n": 47,
+          "significant": false
+        }
+      }
+    },
+    "icr_trend": {
+      "segment": "Financial Ratios",
+      "avgAbsR": 0.06943010609909779,
+      "direction": "negative",
+      "sigCount": 0,
+      "horizonResults": {
+        "1M": {
+          "pearson": -0.026399698099667957,
+          "spearman": 0.03470919324577861,
+          "tStat": -0.16279540817388097,
+          "n": 40,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": -0.07244182163570065,
+          "spearman": -0.14859287054409007,
+          "tStat": -0.4477377480632069,
+          "n": 40,
+          "significant": false
+        },
+        "3M": {
+          "pearson": -0.10629449694501224,
+          "spearman": 0.009568480300187617,
+          "tStat": -0.6589765906896682,
+          "n": 40,
+          "significant": false
+        },
+        "6M": {
+          "pearson": 0.07258440771601032,
+          "spearman": -0.04108818011257036,
+          "tStat": 0.4486236860970779,
+          "n": 40,
+          "significant": false
+        }
+      }
+    },
+    "revenue_growth_1y": {
+      "segment": "Growth",
+      "avgAbsR": 0.21539033620532028,
+      "direction": "positive",
+      "sigCount": 2,
+      "horizonResults": {
+        "1M": {
+          "pearson": 0.11459037505758762,
+          "spearman": 0.08695652173913043,
+          "tStat": 0.7737927106119649,
+          "n": 47,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": 0.029490776904771934,
+          "spearman": 0.12037465309898242,
+          "tStat": 0.19791622878404744,
+          "n": 47,
+          "significant": false
+        },
+        "3M": {
+          "pearson": 0.36287011979604694,
+          "spearman": 0.32967160037002774,
+          "tStat": 2.612259055920436,
+          "n": 47,
+          "significant": true
+        },
+        "6M": {
+          "pearson": 0.35461007306287456,
+          "spearman": 0.16547178538390378,
+          "tStat": 2.5441287347282864,
+          "n": 47,
+          "significant": true
+        }
+      }
+    },
+    "ebitda_growth_1y": {
+      "segment": "Growth",
+      "avgAbsR": 0.2007559788074479,
+      "direction": "negative",
+      "sigCount": 0,
+      "horizonResults": {
+        "1M": {
+          "pearson": -0.2777793516710351,
+          "spearman": -0.12082066869300911,
+          "tStat": -1.961173392456025,
+          "n": 48,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": -0.14786067134583228,
+          "spearman": -0.08478072079895788,
+          "tStat": -1.0139853880535112,
+          "n": 48,
+          "significant": false
+        },
+        "3M": {
+          "pearson": 0.1302980507613479,
+          "spearman": 0.2656317846287451,
+          "tStat": 0.8913230209906451,
+          "n": 48,
+          "significant": false
+        },
+        "6M": {
+          "pearson": 0.24708584145157625,
+          "spearman": 0.09270516717325228,
+          "tStat": 1.7294414738194783,
+          "n": 48,
+          "significant": false
+        }
+      }
+    },
+    "pat_growth_1y": {
+      "segment": "Growth",
+      "avgAbsR": 0.1144747089107803,
+      "direction": "negative",
+      "sigCount": 0,
+      "horizonResults": {
+        "1M": {
+          "pearson": -0.22198695798251522,
+          "spearman": -0.18671298306556666,
+          "tStat": -1.5441150348905943,
+          "n": 48,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": -0.016888876529913433,
+          "spearman": 0.017585757707338254,
+          "tStat": -0.11456227337173476,
+          "n": 48,
+          "significant": false
+        },
+        "3M": {
+          "pearson": 0.1352690938135487,
+          "spearman": 0.19116369952236215,
+          "tStat": 0.9259501329258285,
+          "n": 48,
+          "significant": false
+        },
+        "6M": {
+          "pearson": 0.0837539073171439,
+          "spearman": 0.1286365610073817,
+          "tStat": 0.570049523441924,
+          "n": 48,
+          "significant": false
+        }
+      }
+    },
+    "eps_growth_1y": {
+      "segment": "Growth",
+      "avgAbsR": 0.11009400391668013,
+      "direction": "negative",
+      "sigCount": 0,
+      "horizonResults": {
+        "1M": {
+          "pearson": -0.22793573134234377,
+          "spearman": -0.22210160660008685,
+          "tStat": -1.5877304771115275,
+          "n": 48,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": -0.048603483240554454,
+          "spearman": -0.04157620495006513,
+          "tStat": -0.3300349126604466,
+          "n": 48,
+          "significant": false
+        },
+        "3M": {
+          "pearson": 0.10115448703314112,
+          "spearman": 0.09759009986973513,
+          "tStat": 0.6896002561195916,
+          "n": 48,
+          "significant": false
+        },
+        "6M": {
+          "pearson": 0.06268231405068121,
+          "spearman": 0.07316543638732088,
+          "tStat": 0.4259697947129046,
+          "n": 48,
+          "significant": false
+        }
+      }
+    },
+    "ocf_growth_1y": {
+      "segment": "Growth",
+      "avgAbsR": 0.09340715610467776,
+      "direction": "positive",
+      "sigCount": 0,
+      "horizonResults": {
+        "1M": {
+          "pearson": 0.19801532478567696,
+          "spearman": -0.0034737299174989146,
+          "tStat": 1.3701354298112738,
+          "n": 48,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": 0.043557957642981815,
+          "spearman": -0.06828050369083803,
+          "tStat": 0.29570509530847383,
+          "n": 48,
+          "significant": false
+        },
+        "3M": {
+          "pearson": 0.07137246925221732,
+          "spearman": -0.07435953104646113,
+          "tStat": 0.48530930630006747,
+          "n": 48,
+          "significant": false
+        },
+        "6M": {
+          "pearson": -0.06068287273783489,
+          "spearman": -0.12516283108988277,
+          "tStat": -0.4123311538281528,
+          "n": 48,
+          "significant": false
+        }
+      }
+    },
+    "book_value_growth": {
+      "segment": "Growth",
+      "avgAbsR": 0.20363430245609274,
+      "direction": "positive",
+      "sigCount": 2,
+      "horizonResults": {
+        "1M": {
+          "pearson": 0.11900164425347286,
+          "spearman": 0.16408418131359853,
+          "tStat": 0.8040004794371037,
+          "n": 47,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": 0.06582983872128112,
+          "spearman": 0.08753469010175763,
+          "tStat": 0.4425599558995885,
+          "n": 47,
+          "significant": false
+        },
+        "3M": {
+          "pearson": 0.3206473255105756,
+          "spearman": 0.2505781683626272,
+          "tStat": 2.2708727866651093,
+          "n": 47,
+          "significant": true
+        },
+        "6M": {
+          "pearson": 0.3090584013390413,
+          "spearman": 0.1887141535615171,
+          "tStat": 2.179950485384884,
+          "n": 47,
+          "significant": true
+        }
+      }
+    },
+    "revenue_growth_3y_cagr": {
+      "segment": "Growth",
+      "avgAbsR": 0.22769816423041972,
+      "direction": "positive",
+      "sigCount": 2,
+      "horizonResults": {
+        "1M": {
+          "pearson": 0.18114921318681168,
+          "spearman": 0.19457292630280604,
+          "tStat": 1.221822229922225,
+          "n": 46,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": 0.039494931191895045,
+          "spearman": 0.20678384212149245,
+          "tStat": 0.26218429960828216,
+          "n": 46,
+          "significant": false
+        },
+        "3M": {
+          "pearson": 0.3643449670936519,
+          "spearman": 0.35220474868948504,
+          "tStat": 2.595172744527515,
+          "n": 46,
+          "significant": true
+        },
+        "6M": {
+          "pearson": 0.32580354544932016,
+          "spearman": 0.2534073388837496,
+          "tStat": 2.2858584003215126,
+          "n": 46,
+          "significant": true
+        }
+      }
+    },
+    "ebitda_growth_3y_cagr": {
+      "segment": "Growth",
+      "avgAbsR": 0.06807926318603913,
+      "direction": "positive",
+      "sigCount": 0,
+      "horizonResults": {
+        "1M": {
+          "pearson": -0.05198676882811853,
+          "spearman": 0.09651557200123342,
+          "tStat": -0.34530814729850584,
+          "n": 46,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": 0.008854297064844288,
+          "spearman": 0.11156336725254394,
+          "tStat": 0.058735064710727015,
+          "n": 46,
+          "significant": false
+        },
+        "3M": {
+          "pearson": 0.05723022921603612,
+          "spearman": 0.171754548257786,
+          "tStat": 0.3802456137427063,
+          "n": 46,
+          "significant": false
+        },
+        "6M": {
+          "pearson": 0.1542457576351576,
+          "spearman": 0.19457292630280604,
+          "tStat": 1.0355434603177518,
+          "n": 46,
+          "significant": false
+        }
+      }
+    },
+    "pat_growth_3y_cagr": {
+      "segment": "Growth",
+      "avgAbsR": 0.1230086253725408,
+      "direction": "negative",
+      "sigCount": 0,
+      "horizonResults": {
+        "1M": {
+          "pearson": -0.0745074681144483,
+          "spearman": 0.05346901017576318,
+          "tStat": -0.49560418543640095,
+          "n": 46,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": -0.2264602489454688,
+          "spearman": 0.0064754856614246065,
+          "tStat": -1.5422339600622157,
+          "n": 46,
+          "significant": false
+        },
+        "3M": {
+          "pearson": 0.14032577902210522,
+          "spearman": 0.13388837496145545,
+          "tStat": 0.9401180196109522,
+          "n": 46,
+          "significant": false
+        },
+        "6M": {
+          "pearson": -0.050741005408140895,
+          "spearman": 0.12167745914276903,
+          "tStat": -0.3370118762085359,
+          "n": 46,
+          "significant": false
+        }
+      }
+    },
+    "eps_growth_3y_cagr": {
+      "segment": "Growth",
+      "avgAbsR": 0.10273449888393352,
+      "direction": "negative",
+      "sigCount": 0,
+      "horizonResults": {
+        "1M": {
+          "pearson": 0.012807265910256924,
+          "spearman": 0.10502621029910576,
+          "tStat": 0.08496075940432964,
+          "n": 46,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": -0.25468843201064373,
+          "spearman": -0.127104532839963,
+          "tStat": -1.7470232308088904,
+          "n": 46,
+          "significant": false
+        },
+        "3M": {
+          "pearson": 0.0897573247550115,
+          "spearman": 0.03484427998766574,
+          "tStat": 0.5977956400658996,
+          "n": 46,
+          "significant": false
+        },
+        "6M": {
+          "pearson": 0.05368497285982189,
+          "spearman": 0.14548257786000618,
+          "tStat": 0.3566200976922525,
+          "n": 46,
+          "significant": false
+        }
+      }
+    },
+    "revenue_growth_5y_cagr": {
+      "segment": "Growth",
+      "avgAbsR": 0.22379772431731831,
+      "direction": "positive",
+      "sigCount": 2,
+      "horizonResults": {
+        "1M": {
+          "pearson": 0.11610465368119136,
+          "spearman": 0.036077705827937095,
+          "tStat": 0.7753951540080183,
+          "n": 46,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": 0.015078342466766157,
+          "spearman": 0.2104841196423065,
+          "tStat": 0.1000297806978866,
+          "n": 46,
+          "significant": false
+        },
+        "3M": {
+          "pearson": 0.38070097566740124,
+          "spearman": 0.275609004008634,
+          "tStat": 2.7309284026929506,
+          "n": 46,
+          "significant": true
+        },
+        "6M": {
+          "pearson": 0.3833069254539145,
+          "spearman": 0.2601911810052421,
+          "tStat": 2.752828735102948,
+          "n": 46,
+          "significant": true
+        }
+      }
+    },
+    "pe_ratio": {
+      "segment": "Valuation",
+      "avgAbsR": 0.25899560428982826,
+      "direction": "positive",
+      "sigCount": 2,
+      "horizonResults": {
+        "1M": {
+          "pearson": 0.17911457627000887,
+          "spearman": 0.10247503256621798,
+          "tStat": 1.234782795449288,
+          "n": 48,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": -0.020833323999019382,
+          "spearman": -0.08239253148067738,
+          "tStat": -0.14132915169671845,
+          "n": 48,
+          "significant": false
+        },
+        "3M": {
+          "pearson": 0.38527978472769875,
+          "spearman": 0.21081198436821538,
+          "tStat": 2.8317026189008,
+          "n": 48,
+          "significant": true
+        },
+        "6M": {
+          "pearson": 0.4507547321625861,
+          "spearman": 0.1265740338688667,
+          "tStat": 3.4248302500253547,
+          "n": 48,
+          "significant": true
+        }
+      }
+    },
+    "pb_ratio": {
+      "segment": "Valuation",
+      "avgAbsR": 0.11704252638275404,
+      "direction": "negative",
+      "sigCount": 0,
+      "horizonResults": {
+        "1M": {
+          "pearson": 0.04313710284978231,
+          "spearman": 0.06140148011100833,
+          "tStat": 0.28964209285470344,
+          "n": 47,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": -0.1996958581074849,
+          "spearman": -0.23543015726179464,
+          "tStat": -1.3671375193890696,
+          "n": 47,
+          "significant": false
+        },
+        "3M": {
+          "pearson": 0.14214139160423633,
+          "spearman": 0.10696114708603145,
+          "tStat": 0.9632943824223237,
+          "n": 47,
+          "significant": false
+        },
+        "6M": {
+          "pearson": -0.08319575296951258,
+          "spearman": -0.03364939870490287,
+          "tStat": -0.5600355951550481,
+          "n": 47,
+          "significant": false
+        }
+      }
+    },
+    "ev_ebitda": {
+      "segment": "Valuation",
+      "avgAbsR": 0.17784430854838484,
+      "direction": "positive",
+      "sigCount": 1,
+      "horizonResults": {
+        "1M": {
+          "pearson": 0.065541010233584,
+          "spearman": 0.010638297872340425,
+          "tStat": 0.4454785928347005,
+          "n": 48,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": -0.10107145450396432,
+          "spearman": -0.17194963091619628,
+          "tStat": -0.6890283540150719,
+          "n": 48,
+          "significant": false
+        },
+        "3M": {
+          "pearson": 0.3163721793260587,
+          "spearman": 0.13363004776378637,
+          "tStat": 2.2619239040864714,
+          "n": 48,
+          "significant": true
+        },
+        "6M": {
+          "pearson": 0.22839259012993238,
+          "spearman": 0.00803300043421624,
+          "tStat": 1.5910877672361186,
+          "n": 48,
+          "significant": false
+        }
+      }
+    },
+    "peg_ratio": {
+      "segment": "Valuation",
+      "avgAbsR": 0.10523551116692267,
+      "direction": "positive",
+      "sigCount": 0,
+      "horizonResults": {
+        "1M": {
+          "pearson": 0.15957134652458843,
+          "spearman": 0.1945945945945946,
+          "tStat": 0.9425300498482903,
+          "n": 36,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": -0.04212787268168568,
+          "spearman": -0.17966537966537965,
+          "tStat": -0.24586387031991658,
+          "n": 36,
+          "significant": false
+        },
+        "3M": {
+          "pearson": 0.21894150312325422,
+          "spearman": 0.15135135135135136,
+          "tStat": 1.3083813382481753,
+          "n": 36,
+          "significant": false
+        },
+        "6M": {
+          "pearson": 0.00030132233816240604,
+          "spearman": -0.06048906048906049,
+          "tStat": 0.0017569961384306639,
+          "n": 36,
+          "significant": false
+        }
+      }
+    },
+    "dividend_yield": {
+      "segment": "Valuation",
+      "avgAbsR": 0.1433028902934978,
+      "direction": "negative",
+      "sigCount": 0,
+      "horizonResults": {
+        "1M": {
+          "pearson": -0.1724757407930284,
+          "spearman": -0.17582485353068147,
+          "tStat": -1.1614808594636739,
+          "n": 46,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": -0.055385862791145414,
+          "spearman": -0.03385753931544866,
+          "tStat": -0.36795304985931276,
+          "n": 46,
+          "significant": false
+        },
+        "3M": {
+          "pearson": -0.27889105447703455,
+          "spearman": -0.26635831020659884,
+          "tStat": -1.9263877426853786,
+          "n": 46,
+          "significant": false
+        },
+        "6M": {
+          "pearson": -0.06645890311278281,
+          "spearman": -0.11267345050878816,
+          "tStat": -0.4418152726715017,
+          "n": 46,
+          "significant": false
+        }
+      }
+    },
+    "price_to_sales": {
+      "segment": "Valuation",
+      "avgAbsR": 0.1138493069456291,
+      "direction": "negative",
+      "sigCount": 0,
+      "horizonResults": {
+        "1M": {
+          "pearson": 0.06719909148783347,
+          "spearman": 0.15263644773358,
+          "tStat": 0.4518064793271914,
+          "n": 47,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": -0.24025943403330585,
+          "spearman": -0.2651480111008326,
+          "tStat": -1.6603428604167991,
+          "n": 47,
+          "significant": false
+        },
+        "3M": {
+          "pearson": 0.13809817723085996,
+          "spearman": 0.09412580943570768,
+          "tStat": 0.9353527765022361,
+          "n": 47,
+          "significant": false
+        },
+        "6M": {
+          "pearson": -0.009840525030517064,
+          "spearman": -0.11505550416281221,
+          "tStat": -0.06601544511856289,
+          "n": 47,
+          "significant": false
+        }
+      }
+    },
+    "price_to_fcf": {
+      "segment": "Valuation",
+      "avgAbsR": 0.11140726326435138,
+      "direction": "positive",
+      "sigCount": 0,
+      "horizonResults": {
+        "1M": {
+          "pearson": -0.04015342969896143,
+          "spearman": -0.06153846153846154,
+          "tStat": -0.24772214581261368,
+          "n": 40,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": -0.13086317670589323,
+          "spearman": -0.016697936210131333,
+          "tStat": -0.8136921952289063,
+          "n": 40,
+          "significant": false
+        },
+        "3M": {
+          "pearson": 0.14191265130558398,
+          "spearman": -0.00225140712945591,
+          "tStat": 0.8837526324738082,
+          "n": 40,
+          "significant": false
+        },
+        "6M": {
+          "pearson": -0.13269979534696683,
+          "spearman": 0.08217636022514072,
+          "tStat": -0.8253153373258992,
+          "n": 40,
+          "significant": false
+        }
+      }
+    },
+    "ev_to_revenue": {
+      "segment": "Valuation",
+      "avgAbsR": 0.09114734843316963,
+      "direction": "negative",
+      "sigCount": 0,
+      "horizonResults": {
+        "1M": {
+          "pearson": -0.029766550014728284,
+          "spearman": 0.024861239592969472,
+          "tStat": -0.19976860971731333,
+          "n": 47,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": -0.19027767142730792,
+          "spearman": -0.21750693802035154,
+          "tStat": -1.300175217816043,
+          "n": 47,
+          "significant": false
+        },
+        "3M": {
+          "pearson": 0.08530375281596059,
+          "spearman": 0.03469010175763182,
+          "tStat": 0.5743284018106865,
+          "n": 47,
+          "significant": false
+        },
+        "6M": {
+          "pearson": -0.059241419474681735,
+          "spearman": -0.12083718778908419,
+          "tStat": -0.3981027169447126,
+          "n": 47,
+          "significant": false
+        }
+      }
+    },
+    "pe_vs_5y_avg": {
+      "segment": "Valuation",
+      "avgAbsR": 0.19277874327730238,
+      "direction": "negative",
+      "sigCount": 0,
+      "horizonResults": {
+        "1M": {
+          "pearson": -0.23019656438293615,
+          "spearman": -0.10953104646113765,
+          "tStat": -1.6043553839890516,
+          "n": 48,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": 0.22922441348412784,
+          "spearman": 0.11452453321754233,
+          "tStat": 1.597203386146786,
+          "n": 48,
+          "significant": false
+        },
+        "3M": {
+          "pearson": -0.17293257126091555,
+          "spearman": -0.12364307425097698,
+          "tStat": -1.190827163276738,
+          "n": 48,
+          "significant": false
+        },
+        "6M": {
+          "pearson": -0.13876142398123006,
+          "spearman": -0.19811115935735996,
+          "tStat": -0.9503193084449734,
+          "n": 48,
+          "significant": false
+        }
+      }
+    },
+    "pb_vs_5y_avg": {
+      "segment": "Valuation",
+      "avgAbsR": 0.12991511306918585,
+      "direction": "negative",
+      "sigCount": 0,
+      "horizonResults": {
+        "1M": {
+          "pearson": -0.26661282344655934,
+          "spearman": -0.0856845513413506,
+          "tStat": -1.855661232248321,
+          "n": 47,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": 0.20095145708503098,
+          "spearman": 0.046022201665124884,
+          "tStat": 1.3760940207703711,
+          "n": 47,
+          "significant": false
+        },
+        "3M": {
+          "pearson": 0.003461567796115298,
+          "spearman": 0.01769195189639223,
+          "tStat": 0.023221041825435534,
+          "n": 47,
+          "significant": false
+        },
+        "6M": {
+          "pearson": -0.048634603949037764,
+          "spearman": -0.08903792784458835,
+          "tStat": -0.32663737189134173,
+          "n": 47,
+          "significant": false
+        }
+      }
+    },
+    "ev_ebitda_vs_5y_avg": {
+      "segment": "Valuation",
+      "avgAbsR": 0.1268108139404218,
+      "direction": "positive",
+      "sigCount": 0,
+      "horizonResults": {
+        "1M": {
+          "pearson": -0.2142003889323174,
+          "spearman": 0.002713851498046027,
+          "tStat": -1.4872983026780424,
+          "n": 48,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": -0.022673018497520122,
+          "spearman": 0.059921841076856275,
+          "tStat": -0.15381543387052388,
+          "n": 48,
+          "significant": false
+        },
+        "3M": {
+          "pearson": -0.013969978307448765,
+          "spearman": -0.05243161094224924,
+          "tStat": -0.09475824971333417,
+          "n": 48,
+          "significant": false
+        },
+        "6M": {
+          "pearson": 0.25639987002440084,
+          "spearman": -0.05557967867998263,
+          "tStat": 1.7991320765814875,
+          "n": 48,
+          "significant": false
+        }
+      }
+    },
+    "revenue": {
+      "segment": "Income Statement",
+      "avgAbsR": 0.058009900074629334,
+      "direction": "positive",
+      "sigCount": 0,
+      "horizonResults": {
+        "1M": {
+          "pearson": -0.03348555608315834,
+          "spearman": -0.2244449583718779,
+          "tStat": -0.2247539806898431,
+          "n": 47,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": 0.07459036484001338,
+          "spearman": -0.023936170212765957,
+          "tStat": 0.5017651667651343,
+          "n": 47,
+          "significant": false
+        },
+        "3M": {
+          "pearson": -0.06552556274517517,
+          "spearman": -0.2639916743755782,
+          "tStat": -0.4405055320993981,
+          "n": 47,
+          "significant": false
+        },
+        "6M": {
+          "pearson": -0.05843811663017045,
+          "spearman": -0.08695652173913043,
+          "tStat": -0.392685891024045,
+          "n": 47,
+          "significant": false
+        }
+      }
+    },
+    "ebitda": {
+      "segment": "Income Statement",
+      "avgAbsR": 0.12796114918855916,
+      "direction": "negative",
+      "sigCount": 0,
+      "horizonResults": {
+        "1M": {
+          "pearson": -0.07894675163460745,
+          "spearman": -0.21765089014329136,
+          "tStat": -0.5371193591670839,
+          "n": 48,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": -0.08586410279656861,
+          "spearman": -0.13960052105948761,
+          "tStat": -0.5845173844111664,
+          "n": 48,
+          "significant": false
+        },
+        "3M": {
+          "pearson": -0.16032466179872026,
+          "spearman": -0.38091619626574036,
+          "tStat": -1.1016250120881335,
+          "n": 48,
+          "significant": false
+        },
+        "6M": {
+          "pearson": -0.18670908052434035,
+          "spearman": -0.27257924446374293,
+          "tStat": -1.2889891496554362,
+          "n": 48,
+          "significant": false
+        }
+      }
+    },
+    "pat": {
+      "segment": "Income Statement",
+      "avgAbsR": 0.14289164265484436,
+      "direction": "negative",
+      "sigCount": 0,
+      "horizonResults": {
+        "1M": {
+          "pearson": -0.06492400833665173,
+          "spearman": -0.21396005210594876,
+          "tStat": -0.44126702870463314,
+          "n": 48,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": -0.10832080117860433,
+          "spearman": -0.21830221450282242,
+          "tStat": -0.7390157930324048,
+          "n": 48,
+          "significant": false
+        },
+        "3M": {
+          "pearson": -0.18463377380895382,
+          "spearman": -0.37592270950933565,
+          "tStat": -1.2741531965728072,
+          "n": 48,
+          "significant": false
+        },
+        "6M": {
+          "pearson": -0.21368798729516758,
+          "spearman": -0.3125271385149805,
+          "tStat": -1.4835699989250464,
+          "n": 48,
+          "significant": false
+        }
+      }
+    },
+    "other_income_ratio": {
+      "segment": "Income Statement",
+      "avgAbsR": 0.07461171634242976,
+      "direction": "positive",
+      "sigCount": 0,
+      "horizonResults": {
+        "1M": {
+          "pearson": 0.20116014204335844,
+          "spearman": 0.16362164662349676,
+          "tStat": 1.377583306256274,
+          "n": 47,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": 0.013122674897806823,
+          "spearman": -0.10777058279370953,
+          "tStat": 0.08803715988253907,
+          "n": 47,
+          "significant": false
+        },
+        "3M": {
+          "pearson": 0.00017171425676976954,
+          "spearman": 0.012372802960222017,
+          "tStat": 0.001151894269511428,
+          "n": 47,
+          "significant": false
+        },
+        "6M": {
+          "pearson": -0.083992334171784,
+          "spearman": -0.06891766882516188,
+          "tStat": -0.565435729667846,
+          "n": 47,
+          "significant": false
+        }
+      }
+    },
+    "tax_rate": {
+      "segment": "Income Statement",
+      "avgAbsR": 0.16088038860701936,
+      "direction": "negative",
+      "sigCount": 0,
+      "horizonResults": {
+        "1M": {
+          "pearson": -0.24449041177349634,
+          "spearman": -0.19170646982197134,
+          "tStat": -1.7101136762753657,
+          "n": 48,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": 0.1650384011171274,
+          "spearman": 0.2217759444203213,
+          "tStat": 1.1349077249215587,
+          "n": 48,
+          "significant": false
+        },
+        "3M": {
+          "pearson": -0.21909283341127828,
+          "spearman": -0.17129830655666523,
+          "tStat": -1.5229617445731438,
+          "n": 48,
+          "significant": false
+        },
+        "6M": {
+          "pearson": -0.014899908126175507,
+          "spearman": 0.13395570994355188,
+          "tStat": -0.10106731309144405,
+          "n": 48,
+          "significant": false
+        }
+      }
+    },
+    "exceptional_items": {
+      "segment": "Income Statement",
+      "avgAbsR": 0.06464227412371179,
+      "direction": "positive",
+      "sigCount": 0,
+      "horizonResults": {
+        "1M": {
+          "pearson": 0.014649265763413044,
+          "spearman": 0.025835866261398176,
+          "tStat": 0.09936681709858529,
+          "n": 48,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": -0.05434357806156038,
+          "spearman": 0.003256621797655232,
+          "tStat": -0.3691215312562829,
+          "n": 48,
+          "significant": false
+        },
+        "3M": {
+          "pearson": 0.18452762392890723,
+          "spearman": 0.27768128528006947,
+          "tStat": 1.2733948286317545,
+          "n": 48,
+          "significant": false
+        },
+        "6M": {
+          "pearson": 0.005048628740966496,
+          "spearman": 0.10703430308293531,
+          "tStat": 0.034241902476276634,
+          "n": 48,
+          "significant": false
+        }
+      }
+    },
+    "total_assets": {
+      "segment": "Balance Sheet",
+      "avgAbsR": 0.08966377041229491,
+      "direction": "positive",
+      "sigCount": 0,
+      "horizonResults": {
+        "1M": {
+          "pearson": 0.11138236892677414,
+          "spearman": -0.10962072155411656,
+          "tStat": 0.7518539625681003,
+          "n": 47,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": 0.17538288431630308,
+          "spearman": 0.048334875115633676,
+          "tStat": 1.1950267077911052,
+          "n": 47,
+          "significant": false
+        },
+        "3M": {
+          "pearson": -0.04380485236671304,
+          "spearman": -0.1763413506012951,
+          "tStat": -0.2941342203595832,
+          "n": 47,
+          "significant": false
+        },
+        "6M": {
+          "pearson": -0.028084976039389375,
+          "spearman": -0.11771507863089732,
+          "tStat": -0.18847409234136803,
+          "n": 47,
+          "significant": false
+        }
+      }
+    },
+    "total_debt": {
+      "segment": "Balance Sheet",
+      "avgAbsR": 0.0996026298044114,
+      "direction": "negative",
+      "sigCount": 0,
+      "horizonResults": {
+        "1M": {
+          "pearson": -0.13513450265910024,
+          "spearman": -0.1807425097698654,
+          "tStat": -0.9250116774715103,
+          "n": 48,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": 0.05865874586872046,
+          "spearman": 0.16891011723838473,
+          "tStat": 0.3985292009851734,
+          "n": 48,
+          "significant": false
+        },
+        "3M": {
+          "pearson": -0.12110744749474023,
+          "spearman": -0.058619192357794184,
+          "tStat": -0.8274814289074688,
+          "n": 48,
+          "significant": false
+        },
+        "6M": {
+          "pearson": -0.08350982319508467,
+          "spearman": 0.030829353017802867,
+          "tStat": -0.5683765431350163,
+          "n": 48,
+          "significant": false
+        }
+      }
+    },
+    "net_debt": {
+      "segment": "Balance Sheet",
+      "avgAbsR": 0.08469928249914774,
+      "direction": "negative",
+      "sigCount": 0,
+      "horizonResults": {
+        "1M": {
+          "pearson": -0.20901532111339632,
+          "spearman": -0.1825879287885367,
+          "tStat": -1.4496297711675707,
+          "n": 48,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": -0.01924831821020886,
+          "spearman": 0.11832392531480677,
+          "tStat": -0.13057263639694522,
+          "n": 48,
+          "significant": false
+        },
+        "3M": {
+          "pearson": -0.06712043223345243,
+          "spearman": 0.00303951367781155,
+          "tStat": -0.456261844768935,
+          "n": 48,
+          "significant": false
+        },
+        "6M": {
+          "pearson": -0.04341305843953333,
+          "spearman": 0.056990881458966566,
+          "tStat": -0.2947195469234259,
+          "n": 48,
+          "significant": false
+        }
+      }
+    },
+    "book_value_per_share": {
+      "segment": "Balance Sheet",
+      "avgAbsR": 0.1598402205752747,
+      "direction": "positive",
+      "sigCount": 1,
+      "horizonResults": {
+        "1M": {
+          "pearson": 0.10044152480128567,
+          "spearman": 0.08938482886216466,
+          "tStat": 0.6772068918059747,
+          "n": 47,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": 0.18893613855576685,
+          "spearman": 0.2602913968547641,
+          "tStat": 1.2906678809253038,
+          "n": 47,
+          "significant": false
+        },
+        "3M": {
+          "pearson": 0.047347253012912115,
+          "spearman": 0.14708603145235893,
+          "tStat": 0.31797163724943145,
+          "n": 47,
+          "significant": false
+        },
+        "6M": {
+          "pearson": 0.3026359659311341,
+          "spearman": 0.3137141535615171,
+          "tStat": 2.1300288761145083,
+          "n": 47,
+          "significant": true
+        }
+      }
+    },
+    "cash_and_equivalents": {
+      "segment": "Balance Sheet",
+      "avgAbsR": 0.08242083550232605,
+      "direction": "positive",
+      "sigCount": 0,
+      "horizonResults": {
+        "1M": {
+          "pearson": 0.11514968217552382,
+          "spearman": -0.09650455927051672,
+          "tStat": 0.7862129108984611,
+          "n": 48,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": 0.10279113623749198,
+          "spearman": 0.12168910117238385,
+          "tStat": 0.7008759720662691,
+          "n": 48,
+          "significant": false
+        },
+        "3M": {
+          "pearson": -0.06377771877413799,
+          "spearman": -0.17672600955275727,
+          "tStat": -0.43344397034620913,
+          "n": 48,
+          "significant": false
+        },
+        "6M": {
+          "pearson": -0.047964804822150445,
+          "spearman": -0.048849326964828486,
+          "tStat": -0.3256879921676679,
+          "n": 48,
+          "significant": false
+        }
+      }
+    },
+    "receivables_turnover": {
+      "segment": "Balance Sheet",
+      "avgAbsR": 0.18589344756111947,
+      "direction": "positive",
+      "sigCount": 1,
+      "horizonResults": {
+        "1M": {
+          "pearson": -0.23809405118432272,
+          "spearman": 0.13048780487804879,
+          "tStat": -1.530922998874392,
+          "n": 41,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": 0.3208304470029792,
+          "spearman": 0.4761324041811847,
+          "tStat": 2.115413346073088,
+          "n": 41,
+          "significant": true
+        },
+        "3M": {
+          "pearson": 0.021185207266115974,
+          "spearman": 0.21341463414634146,
+          "tStat": 0.13233127630429803,
+          "n": 41,
+          "significant": false
+        },
+        "6M": {
+          "pearson": -0.16346408479106006,
+          "spearman": 0.3662020905923345,
+          "tStat": -1.0347510227783179,
+          "n": 41,
+          "significant": false
+        }
+      }
+    },
+    "inventory_turnover": {
+      "segment": "Balance Sheet",
+      "avgAbsR": 0.2681986072123766,
+      "direction": "positive",
+      "sigCount": 2,
+      "horizonResults": {
+        "1M": {
+          "pearson": 0.05383470348133624,
+          "spearman": 0.1818397344713134,
+          "tStat": 0.3189529270059791,
+          "n": 37,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": 0.48831973825204,
+          "spearman": 0.5587956377430061,
+          "tStat": 3.3104790853893973,
+          "n": 37,
+          "significant": true
+        },
+        "3M": {
+          "pearson": 0.06858428400024433,
+          "spearman": 0.10929350403034614,
+          "tStat": 0.406707760303209,
+          "n": 37,
+          "significant": false
+        },
+        "6M": {
+          "pearson": 0.4620557031158858,
+          "spearman": 0.604551920341394,
+          "tStat": 3.0823201389257786,
+          "n": 37,
+          "significant": true
+        }
+      }
+    },
+    "gross_block_growth": {
+      "segment": "Balance Sheet",
+      "avgAbsR": 0.1892311002665525,
+      "direction": "positive",
+      "sigCount": 0,
+      "horizonResults": {
+        "1M": {
+          "pearson": 0.16701154395555404,
+          "spearman": 0.1799826313504125,
+          "tStat": 1.1488632551716322,
+          "n": 48,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": -0.18226204765024642,
+          "spearman": -0.10052105948762484,
+          "tStat": -1.2572197926484217,
+          "n": 48,
+          "significant": false
+        },
+        "3M": {
+          "pearson": 0.2733115287300754,
+          "spearman": 0.29396439426834564,
+          "tStat": 1.9270607080195468,
+          "n": 48,
+          "significant": false
+        },
+        "6M": {
+          "pearson": 0.13433928073033402,
+          "spearman": 0.15881458966565348,
+          "tStat": 0.9194679450677437,
+          "n": 48,
+          "significant": false
+        }
+      }
+    },
+    "ocf_val": {
+      "segment": "Cash Flow",
+      "avgAbsR": 0.08558235021883547,
+      "direction": "negative",
+      "sigCount": 0,
+      "horizonResults": {
+        "1M": {
+          "pearson": 0.06605552583275241,
+          "spearman": -0.0996526270082501,
+          "tStat": 0.44899099276196514,
+          "n": 48,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": -0.1397702446033164,
+          "spearman": -0.1601172383847156,
+          "tStat": -0.9573654563626258,
+          "n": 48,
+          "significant": false
+        },
+        "3M": {
+          "pearson": 0.00896689199342761,
+          "spearman": -0.24348675640468953,
+          "tStat": 0.06081886554668613,
+          "n": 48,
+          "significant": false
+        },
+        "6M": {
+          "pearson": -0.12753673844584543,
+          "spearman": -0.2505427702996092,
+          "tStat": -0.8721180947790167,
+          "n": 48,
+          "significant": false
+        }
+      }
+    },
+    "capex_val": {
+      "segment": "Cash Flow",
+      "avgAbsR": 0.016335449209355882,
+      "direction": "positive",
+      "sigCount": 0,
+      "horizonResults": {
+        "1M": {
+          "pearson": 0.009438506244357651,
+          "spearman": -0.077733860342556,
+          "tStat": 0.06189518149852499,
+          "n": 45,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": -0.003209887139596779,
+          "spearman": 0.0453227931488801,
+          "tStat": -0.021048746024699288,
+          "n": 45,
+          "significant": false
+        },
+        "3M": {
+          "pearson": 0.040748187167642495,
+          "spearman": -0.2367588932806324,
+          "tStat": 0.26742584347454157,
+          "n": 45,
+          "significant": false
+        },
+        "6M": {
+          "pearson": -0.011945216285826597,
+          "spearman": -0.05230566534914361,
+          "tStat": -0.07833561043649222,
+          "n": 45,
+          "significant": false
+        }
+      }
+    },
+    "fcf_val": {
+      "segment": "Cash Flow",
+      "avgAbsR": 0.1029054383591082,
+      "direction": "negative",
+      "sigCount": 0,
+      "horizonResults": {
+        "1M": {
+          "pearson": 0.06993744423399847,
+          "spearman": -0.06708640903169778,
+          "tStat": 0.4755031519392405,
+          "n": 48,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": -0.18254496966791595,
+          "spearman": -0.2706252713851498,
+          "tStat": -1.2592385707004627,
+          "n": 48,
+          "significant": false
+        },
+        "3M": {
+          "pearson": -0.010242218926144592,
+          "spearman": -0.20625271385149804,
+          "tStat": -0.06946975240649389,
+          "n": 48,
+          "significant": false
+        },
+        "6M": {
+          "pearson": -0.14889712060837387,
+          "spearman": -0.29515848892748586,
+          "tStat": -1.0212536337893527,
+          "n": 48,
+          "significant": false
+        }
+      }
+    },
+    "fcf_margin": {
+      "segment": "Cash Flow",
+      "avgAbsR": 0.14216268251149208,
+      "direction": "negative",
+      "sigCount": 0,
+      "horizonResults": {
+        "1M": {
+          "pearson": 0.21480648967970203,
+          "spearman": 0.08695652173913043,
+          "tStat": 1.4754067040934704,
+          "n": 47,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": -0.24885371519769992,
+          "spearman": -0.3227335800185014,
+          "tStat": -1.723583543455802,
+          "n": 47,
+          "significant": false
+        },
+        "3M": {
+          "pearson": 0.07419713608676308,
+          "spearman": -0.12361239592969472,
+          "tStat": 0.49910525699699987,
+          "n": 47,
+          "significant": false
+        },
+        "6M": {
+          "pearson": -0.030793389081803273,
+          "spearman": -0.27035152636447735,
+          "tStat": -0.20666634087513122,
+          "n": 47,
+          "significant": false
+        }
+      }
+    },
+    "dividends_paid": {
+      "segment": "Cash Flow",
+      "avgAbsR": 0.3748776144096381,
+      "direction": "negative",
+      "sigCount": 3,
+      "horizonResults": {
+        "1M": {
+          "pearson": -0.27532632332034684,
+          "spearman": -0.19321615787850754,
+          "tStat": -1.8997312576787482,
+          "n": 46,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": -0.411258324121462,
+          "spearman": -0.2630280604378662,
+          "tStat": -2.9927841249868865,
+          "n": 46,
+          "significant": true
+        },
+        "3M": {
+          "pearson": -0.4015934546512931,
+          "spearman": -0.3716928769657724,
+          "tStat": -2.90873238442841,
+          "n": 46,
+          "significant": true
+        },
+        "6M": {
+          "pearson": -0.4113323555454505,
+          "spearman": -0.2765957446808511,
+          "tStat": -2.993432564349628,
+          "n": 46,
+          "significant": true
+        }
+      }
+    },
+    "ocf_to_ebitda": {
+      "segment": "Cash Flow",
+      "avgAbsR": 0.14223567903790715,
+      "direction": "positive",
+      "sigCount": 0,
+      "horizonResults": {
+        "1M": {
+          "pearson": 0.19645223282373533,
+          "spearman": 0.09085974815458098,
+          "tStat": 1.3588839010594738,
+          "n": 48,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": -0.0888002059772147,
+          "spearman": -0.13091619626574033,
+          "tStat": -0.6046610381407622,
+          "n": 48,
+          "significant": false
+        },
+        "3M": {
+          "pearson": 0.24031704927573333,
+          "spearman": -0.009444203213200175,
+          "tStat": 1.6791169747276713,
+          "n": 48,
+          "significant": false
+        },
+        "6M": {
+          "pearson": 0.04337322807494523,
+          "spearman": -0.13406426400347374,
+          "tStat": 0.2944486394437888,
+          "n": 48,
+          "significant": false
+        }
+      }
+    },
+    "earnings_momentum": {
+      "segment": "Growth",
+      "avgAbsR": 0.06479512484296877,
+      "direction": "positive",
+      "sigCount": 0,
+      "horizonResults": {
+        "1M": {
+          "pearson": 0.029441443653423806,
+          "spearman": 0.3127890841813136,
+          "tStat": 0.19758485979943663,
+          "n": 47,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": 0.12907115118189022,
+          "spearman": 0.3484042553191489,
+          "tStat": 0.8731391200306602,
+          "n": 47,
+          "significant": false
+        },
+        "3M": {
+          "pearson": -0.09319670468750654,
+          "spearman": 0.12257169287696577,
+          "tStat": -0.6279153669299005,
+          "n": 47,
+          "significant": false
+        },
+        "6M": {
+          "pearson": -0.007471199849054524,
+          "spearman": 0.37604070305272896,
+          "tStat": -0.05011973103973951,
+          "n": 47,
+          "significant": false
+        }
+      }
+    },
+    "rsi_14": {
+      "segment": "Technical",
+      "avgAbsR": 0.17530792621446736,
+      "direction": "negative",
+      "sigCount": 1,
+      "horizonResults": {
+        "1M": {
+          "pearson": -0.15778698050292594,
+          "spearman": -0.02627008250108554,
+          "tStat": -1.0837391812866461,
+          "n": 48,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": 0.05549279127344256,
+          "spearman": 0.016500217108119844,
+          "tStat": 0.3769512708932455,
+          "n": 48,
+          "significant": false
+        },
+        "3M": {
+          "pearson": -0.33245629415142464,
+          "spearman": -0.26118106817194964,
+          "tStat": -2.390821410271492,
+          "n": 48,
+          "significant": true
+        },
+        "6M": {
+          "pearson": -0.15549563893007637,
+          "spearman": -0.06415544941380807,
+          "tStat": -1.0676085061744764,
+          "n": 48,
+          "significant": false
+        }
+      }
+    },
+    "macd_signal": {
+      "segment": "Technical",
+      "avgAbsR": 0.11656572539566304,
+      "direction": "negative",
+      "sigCount": 0,
+      "horizonResults": {
+        "1M": {
+          "pearson": -0.10500416247319415,
+          "spearman": -0.10627442466348241,
+          "tStat": -0.7161318120276303,
+          "n": 48,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": 0.005794339060942365,
+          "spearman": 0.04895788102475033,
+          "tStat": 0.03929977928353096,
+          "n": 48,
+          "significant": false
+        },
+        "3M": {
+          "pearson": -0.20470550906592033,
+          "spearman": -0.22459834997828917,
+          "tStat": -1.4184172727756785,
+          "n": 48,
+          "significant": false
+        },
+        "6M": {
+          "pearson": -0.15075889098259532,
+          "spearman": -0.04429005644811116,
+          "tStat": -1.0343182221408007,
+          "n": 48,
+          "significant": false
+        }
+      }
+    },
+    "macd_line": {
+      "segment": "Technical",
+      "avgAbsR": 0.12242168973429007,
+      "direction": "negative",
+      "sigCount": 0,
+      "horizonResults": {
+        "1M": {
+          "pearson": -0.12103201231640319,
+          "spearman": -0.0026052974381241857,
+          "tStat": -0.8269583439084357,
+          "n": 48,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": -0.012851292487666303,
+          "spearman": 0.022904906643508468,
+          "tStat": -0.08716890487980569,
+          "n": 48,
+          "significant": false
+        },
+        "3M": {
+          "pearson": -0.21998832093889384,
+          "spearman": -0.13753799392097266,
+          "tStat": -1.529502360378011,
+          "n": 48,
+          "significant": false
+        },
+        "6M": {
+          "pearson": -0.13581513319419694,
+          "spearman": -0.026812852800694745,
+          "tStat": -0.9297580043006578,
+          "n": 48,
+          "significant": false
+        }
+      }
+    },
+    "macd_histogram": {
+      "segment": "Technical",
+      "avgAbsR": 0.02834588061574949,
+      "direction": "negative",
+      "sigCount": 0,
+      "horizonResults": {
+        "1M": {
+          "pearson": -0.02748886624324618,
+          "spearman": 0.05959617889709075,
+          "tStat": -0.18650904167845483,
+          "n": 48,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": -0.03295474231362186,
+          "spearman": -0.06046461137646548,
+          "tStat": -0.22363140340128246,
+          "n": 48,
+          "significant": false
+        },
+        "3M": {
+          "pearson": -0.025413149907405855,
+          "spearman": 0.11039947894051237,
+          "tStat": -0.17241605314838548,
+          "n": 48,
+          "significant": false
+        },
+        "6M": {
+          "pearson": 0.02752676399872405,
+          "spearman": 0.10008684324793747,
+          "tStat": 0.18676636877787675,
+          "n": 48,
+          "significant": false
+        }
+      }
+    },
+    "ema_crossover": {
+      "segment": "Technical",
+      "avgAbsR": 0.10532557822122465,
+      "direction": "positive",
+      "sigCount": 0,
+      "horizonResults": {
+        "1M": {
+          "pearson": -0.10709904828336198,
+          "spearman": 0.041033434650455926,
+          "tStat": -0.7305831403072434,
+          "n": 48,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": 0.1525611589032233,
+          "spearman": 0.2730134607034303,
+          "tStat": 1.0469759902005848,
+          "n": 48,
+          "significant": false
+        },
+        "3M": {
+          "pearson": -0.10838912796273821,
+          "spearman": 0.13905775075987842,
+          "tStat": -0.7394874905565524,
+          "n": 48,
+          "significant": false
+        },
+        "6M": {
+          "pearson": -0.05325297773557515,
+          "spearman": 0.1720581849761181,
+          "tStat": -0.36169248988778535,
+          "n": 48,
+          "significant": false
+        }
+      }
+    },
+    "bb_position": {
+      "segment": "Technical",
+      "avgAbsR": 0.13246686259750787,
+      "direction": "negative",
+      "sigCount": 0,
+      "horizonResults": {
+        "1M": {
+          "pearson": -0.04007251035415739,
+          "spearman": 0.09042553191489362,
+          "tStat": -0.27200346863121205,
+          "n": 48,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": -0.0032669348796837212,
+          "spearman": -0.038428137212331744,
+          "tStat": -0.02215754862995823,
+          "n": 48,
+          "significant": false
+        },
+        "3M": {
+          "pearson": -0.28133439019433454,
+          "spearman": -0.14893617021276595,
+          "tStat": -1.9884151636704703,
+          "n": 48,
+          "significant": false
+        },
+        "6M": {
+          "pearson": -0.2051936149618558,
+          "spearman": 0.00401650021710812,
+          "tStat": -1.4219478658255047,
+          "n": 48,
+          "significant": false
+        }
+      }
+    },
+    "adx_14": {
+      "segment": "Technical",
+      "avgAbsR": 0.14116000631197356,
+      "direction": "negative",
+      "sigCount": 1,
+      "horizonResults": {
+        "1M": {
+          "pearson": -0.14931561551421224,
+          "spearman": -0.3416196265740339,
+          "tStat": -1.0241893619941043,
+          "n": 48,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": 0.04263053496929624,
+          "spearman": -0.026052974381241857,
+          "tStat": 0.28939744513948823,
+          "n": 48,
+          "significant": false
+        },
+        "3M": {
+          "pearson": -0.08155665580188799,
+          "spearman": -0.1873643074250977,
+          "tStat": -0.5549929961455006,
+          "n": 48,
+          "significant": false
+        },
+        "6M": {
+          "pearson": -0.2911372189624978,
+          "spearman": -0.2802865827181937,
+          "tStat": -2.063998406390327,
+          "n": 48,
+          "significant": true
+        }
+      }
+    },
+    "stochastic_k": {
+      "segment": "Technical",
+      "avgAbsR": 0.14450116568076987,
+      "direction": "negative",
+      "sigCount": 0,
+      "horizonResults": {
+        "1M": {
+          "pearson": -0.05777625714588086,
+          "spearman": 0.08174120712114633,
+          "tStat": -0.3925133123212369,
+          "n": 48,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": -0.046581001469440775,
+          "spearman": -0.05449413808076422,
+          "tStat": -0.31627103004876234,
+          "n": 48,
+          "significant": false
+        },
+        "3M": {
+          "pearson": -0.26109032237554436,
+          "spearman": -0.15208423795049936,
+          "tStat": -1.834429038540054,
+          "n": 48,
+          "significant": false
+        },
+        "6M": {
+          "pearson": -0.21255708173221344,
+          "spearman": -0.01715154146765089,
+          "tStat": -1.4753459122495558,
+          "n": 48,
+          "significant": false
+        }
+      }
+    },
+    "obv_trend": {
+      "segment": "Technical",
+      "avgAbsR": 0.0751507589300156,
+      "direction": "positive",
+      "sigCount": 0,
+      "horizonResults": {
+        "1M": {
+          "pearson": 0.0625975249720396,
+          "spearman": 0.04841511072514112,
+          "tStat": 0.42539132588516426,
+          "n": 48,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": 0.010902563158458134,
+          "spearman": 0.0261615284411637,
+          "tStat": 0.07394917615021544,
+          "n": 48,
+          "significant": false
+        },
+        "3M": {
+          "pearson": 0.13427078420963146,
+          "spearman": -0.04027355623100304,
+          "tStat": 0.9189905199098015,
+          "n": 48,
+          "significant": false
+        },
+        "6M": {
+          "pearson": -0.09283216337993322,
+          "spearman": -0.23849326964828485,
+          "tStat": -0.6323489927405515,
+          "n": 48,
+          "significant": false
+        }
+      }
+    },
+    "ema20_dev": {
+      "segment": "Technical",
+      "avgAbsR": 0.2526698894418059,
+      "direction": "negative",
+      "sigCount": 2,
+      "horizonResults": {
+        "1M": {
+          "pearson": -0.3204885246203992,
+          "spearman": -0.006404689535388624,
+          "tStat": -2.294698788079352,
+          "n": 48,
+          "significant": true
+        },
+        "1Y": {
+          "pearson": -0.05050061244487384,
+          "spearman": -0.002930959617889709,
+          "tStat": -0.3429494111037167,
+          "n": 48,
+          "significant": false
+        },
+        "3M": {
+          "pearson": -0.4328441370347673,
+          "spearman": -0.23773339122883197,
+          "tStat": -3.256565117637002,
+          "n": 48,
+          "significant": true
+        },
+        "6M": {
+          "pearson": -0.20684628366718327,
+          "spearman": -0.08673469387755102,
+          "tStat": -1.4339102786240072,
+          "n": 48,
+          "significant": false
+        }
+      }
+    },
+    "ema50_dev": {
+      "segment": "Technical",
+      "avgAbsR": 0.25873547721923085,
+      "direction": "negative",
+      "sigCount": 2,
+      "horizonResults": {
+        "1M": {
+          "pearson": -0.3709763344529282,
+          "spearman": -0.1646765089014329,
+          "tStat": -2.7094219818140926,
+          "n": 48,
+          "significant": true
+        },
+        "1Y": {
+          "pearson": 0.044062341420632346,
+          "spearman": 0.12244897959183673,
+          "tStat": 0.2991358650606341,
+          "n": 48,
+          "significant": false
+        },
+        "3M": {
+          "pearson": -0.4499610054698272,
+          "spearman": -0.28441163699522365,
+          "tStat": -3.417266847513771,
+          "n": 48,
+          "significant": true
+        },
+        "6M": {
+          "pearson": -0.16994222753353552,
+          "spearman": -0.04135909683022145,
+          "tStat": -1.1696174896420064,
+          "n": 48,
+          "significant": false
+        }
+      }
+    },
+    "ema200_dev": {
+      "segment": "Technical",
+      "avgAbsR": 0.2459677493009039,
+      "direction": "negative",
+      "sigCount": 2,
+      "horizonResults": {
+        "1M": {
+          "pearson": -0.4103216829188232,
+          "spearman": -0.10312635692574902,
+          "tStat": -3.051663984993937,
+          "n": 48,
+          "significant": true
+        },
+        "1Y": {
+          "pearson": -0.005460187637852535,
+          "spearman": 0.11094224924012158,
+          "tStat": -0.037033346383407814,
+          "n": 48,
+          "significant": false
+        },
+        "3M": {
+          "pearson": -0.4109104490232793,
+          "spearman": -0.2393617021276596,
+          "tStat": -3.056931564292502,
+          "n": 48,
+          "significant": true
+        },
+        "6M": {
+          "pearson": -0.15717867762366058,
+          "spearman": -0.0637212331741207,
+          "tStat": -1.0794550888358663,
+          "n": 48,
+          "significant": false
+        }
+      }
+    },
+    "sma10_dev": {
+      "segment": "Technical",
+      "avgAbsR": 0.19854936874504764,
+      "direction": "negative",
+      "sigCount": 1,
+      "horizonResults": {
+        "1M": {
+          "pearson": -0.10717728535090232,
+          "spearman": 0.067629179331307,
+          "tStat": -0.7311230391021707,
+          "n": 48,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": -0.1073933419969648,
+          "spearman": -0.07924446374294399,
+          "tStat": -0.7326140754124496,
+          "n": 48,
+          "significant": false
+        },
+        "3M": {
+          "pearson": -0.3196768062964536,
+          "spearman": -0.1661962657403387,
+          "tStat": -2.2882244039086763,
+          "n": 48,
+          "significant": true
+        },
+        "6M": {
+          "pearson": -0.2599500413358698,
+          "spearman": -0.05579678679982631,
+          "tStat": -1.8258354070114409,
+          "n": 48,
+          "significant": false
+        }
+      }
+    },
+    "sma20_dev": {
+      "segment": "Technical",
+      "avgAbsR": 0.2622133460887844,
+      "direction": "negative",
+      "sigCount": 2,
+      "horizonResults": {
+        "1M": {
+          "pearson": -0.3082240326531198,
+          "spearman": 0.034954407294832825,
+          "tStat": -2.1974632330747204,
+          "n": 48,
+          "significant": true
+        },
+        "1Y": {
+          "pearson": -0.0982067927567556,
+          "spearman": -0.04027355623100304,
+          "tStat": -0.6693062820228172,
+          "n": 48,
+          "significant": false
+        },
+        "3M": {
+          "pearson": -0.4302711301966354,
+          "spearman": -0.2116804168475901,
+          "tStat": -3.2327924515902646,
+          "n": 48,
+          "significant": true
+        },
+        "6M": {
+          "pearson": -0.2121514287486268,
+          "spearman": -0.08282674772036475,
+          "tStat": -1.472397468181325,
+          "n": 48,
+          "significant": false
+        }
+      }
+    },
+    "sma50_dev": {
+      "segment": "Technical",
+      "avgAbsR": 0.25737246546687315,
+      "direction": "negative",
+      "sigCount": 2,
+      "horizonResults": {
+        "1M": {
+          "pearson": -0.37667595934601156,
+          "spearman": -0.18541033434650456,
+          "tStat": -2.757871431177364,
+          "n": 48,
+          "significant": true
+        },
+        "1Y": {
+          "pearson": 0.07988961001959148,
+          "spearman": 0.12939643942683457,
+          "tStat": 0.5435751172865099,
+          "n": 48,
+          "significant": false
+        },
+        "3M": {
+          "pearson": -0.4172643850380971,
+          "spearman": -0.2645462440295267,
+          "tStat": -3.114074626708719,
+          "n": 48,
+          "significant": true
+        },
+        "6M": {
+          "pearson": -0.1556599074637924,
+          "spearman": -0.07805036908380374,
+          "tStat": -1.0687643390524662,
+          "n": 48,
+          "significant": false
+        }
+      }
+    },
+    "sma100_dev": {
+      "segment": "Technical",
+      "avgAbsR": 0.2523033842763339,
+      "direction": "negative",
+      "sigCount": 2,
+      "horizonResults": {
+        "1M": {
+          "pearson": -0.34407226049639356,
+          "spearman": -0.15306122448979592,
+          "tStat": -2.485359795169397,
+          "n": 48,
+          "significant": true
+        },
+        "1Y": {
+          "pearson": 0.09660319685382968,
+          "spearman": 0.18030829353017802,
+          "tStat": 0.6582735209309464,
+          "n": 48,
+          "significant": false
+        },
+        "3M": {
+          "pearson": -0.4316532231830819,
+          "spearman": -0.2650890143291359,
+          "tStat": -3.245549861731554,
+          "n": 48,
+          "significant": true
+        },
+        "6M": {
+          "pearson": -0.13688485657203056,
+          "spearman": 0.006838905775075988,
+          "tStat": -0.9372203545798946,
+          "n": 48,
+          "significant": false
+        }
+      }
+    },
+    "sma200_dev": {
+      "segment": "Technical",
+      "avgAbsR": 0.25313689192024547,
+      "direction": "negative",
+      "sigCount": 2,
+      "horizonResults": {
+        "1M": {
+          "pearson": -0.3869545707464132,
+          "spearman": -0.11658706035605731,
+          "tStat": -2.846174015244804,
+          "n": 48,
+          "significant": true
+        },
+        "1Y": {
+          "pearson": -0.04342207437912468,
+          "spearman": 0.08184976118106817,
+          "tStat": -0.29478086931599057,
+          "n": 48,
+          "significant": false
+        },
+        "3M": {
+          "pearson": -0.40520424533261507,
+          "spearman": -0.24044724272687798,
+          "tStat": -3.0060710837673064,
+          "n": 48,
+          "significant": true
+        },
+        "6M": {
+          "pearson": -0.1769666772228289,
+          "spearman": -0.06990881458966565,
+          "tStat": -1.219493863362099,
+          "n": 48,
+          "significant": false
+        }
+      }
+    },
+    "sharpe_ratio": {
+      "segment": "Technical",
+      "avgAbsR": 0.12337734104756917,
+      "direction": "negative",
+      "sigCount": 0,
+      "horizonResults": {
+        "1M": {
+          "pearson": -0.21144149943992588,
+          "spearman": -0.14513677811550152,
+          "tStat": -1.4672393419328542,
+          "n": 48,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": -0.08529613239113,
+          "spearman": -0.11951801997394702,
+          "tStat": -0.5806225111567556,
+          "n": 48,
+          "significant": false
+        },
+        "3M": {
+          "pearson": -0.09373162546036147,
+          "spearman": -0.08890577507598785,
+          "tStat": -0.6385299416724928,
+          "n": 48,
+          "significant": false
+        },
+        "6M": {
+          "pearson": -0.10304010689885933,
+          "spearman": -0.1744463742943986,
+          "tStat": -0.7025917604341093,
+          "n": 48,
+          "significant": false
+        }
+      }
+    },
+    "max_drawdown_1y": {
+      "segment": "Technical",
+      "avgAbsR": 0.23973419932508644,
+      "direction": "negative",
+      "sigCount": 1,
+      "horizonResults": {
+        "1M": {
+          "pearson": -0.2544889121177434,
+          "spearman": 0.0523230568823274,
+          "tStat": -1.7847907808261252,
+          "n": 48,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": -0.24674983653896446,
+          "spearman": -0.19995657837603126,
+          "tStat": -1.726937070596376,
+          "n": 48,
+          "significant": false
+        },
+        "3M": {
+          "pearson": -0.2970687787491139,
+          "spearman": -0.11962657403386887,
+          "tStat": -2.110075559478778,
+          "n": 48,
+          "significant": true
+        },
+        "6M": {
+          "pearson": -0.16062926989452397,
+          "spearman": -0.10138949196699956,
+          "tStat": -1.1037734195485271,
+          "n": 48,
+          "significant": false
+        }
+      }
+    },
+    "volatility": {
+      "segment": "Technical",
+      "avgAbsR": 0.24312306833791583,
+      "direction": "positive",
+      "sigCount": 1,
+      "horizonResults": {
+        "1M": {
+          "pearson": 0.1333548922096204,
+          "spearman": -0.20603560573165436,
+          "tStat": 0.9126079796499351,
+          "n": 48,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": 0.2616615733956975,
+          "spearman": 0.3258792878853669,
+          "tStat": 1.8387373187667708,
+          "n": 48,
+          "significant": false
+        },
+        "3M": {
+          "pearson": 0.37180165651489533,
+          "spearman": 0.15392965696917066,
+          "tStat": 2.7164153837265075,
+          "n": 48,
+          "significant": true
+        },
+        "6M": {
+          "pearson": 0.20567415123145003,
+          "spearman": 0.12635692574902302,
+          "tStat": 1.4254247878451978,
+          "n": 48,
+          "significant": false
+        }
+      }
+    },
+    "return_1y_ann": {
+      "segment": "Technical",
+      "avgAbsR": 0.17140223267116556,
+      "direction": "negative",
+      "sigCount": 1,
+      "horizonResults": {
+        "1M": {
+          "pearson": -0.3077333057670444,
+          "spearman": -0.1540382110290925,
+          "tStat": -2.193598330271188,
+          "n": 48,
+          "significant": true
+        },
+        "1Y": {
+          "pearson": -0.105848906981481,
+          "spearman": -0.12136343899261832,
+          "tStat": -0.721958013363428,
+          "n": 48,
+          "significant": false
+        },
+        "3M": {
+          "pearson": -0.1618204932092093,
+          "spearman": -0.09161962657403387,
+          "tStat": -1.1121782582358115,
+          "n": 48,
+          "significant": false
+        },
+        "6M": {
+          "pearson": -0.11020622472692754,
+          "spearman": -0.19072948328267478,
+          "tStat": -0.7520358263059556,
+          "n": 48,
+          "significant": false
+        }
+      }
+    },
+    "avg_volume_20d": {
+      "segment": "Price & Volume",
+      "avgAbsR": 0.24912775451508817,
+      "direction": "positive",
+      "sigCount": 2,
+      "horizonResults": {
+        "1M": {
+          "pearson": 0.197961656879094,
+          "spearman": -0.1178897090751194,
+          "tStat": 1.369748934969968,
+          "n": 48,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": 0.11506692175547727,
+          "spearman": -0.06241858445505862,
+          "tStat": 0.7856402588114272,
+          "n": 48,
+          "significant": false
+        },
+        "3M": {
+          "pearson": 0.30464969354464116,
+          "spearman": -0.07414242292661745,
+          "tStat": 2.1693562528359944,
+          "n": 48,
+          "significant": true
+        },
+        "6M": {
+          "pearson": 0.37883274588114024,
+          "spearman": -0.1368866695614416,
+          "tStat": 2.776299767532287,
+          "n": 48,
+          "significant": true
+        }
+      }
+    },
+    "avg_volume_3m": {
+      "segment": "Price & Volume",
+      "avgAbsR": 0.2108394101074339,
+      "direction": "positive",
+      "sigCount": 1,
+      "horizonResults": {
+        "1M": {
+          "pearson": 0.11300301349919999,
+          "spearman": -0.08955709943551889,
+          "tStat": 0.7713645905333062,
+          "n": 48,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": 0.08751132672630925,
+          "spearman": -0.05123751628310899,
+          "tStat": 0.5958165305960857,
+          "n": 48,
+          "significant": false
+        },
+        "3M": {
+          "pearson": 0.24528738438810682,
+          "spearman": -0.11626139817629179,
+          "tStat": 1.7160444340748784,
+          "n": 48,
+          "significant": false
+        },
+        "6M": {
+          "pearson": 0.3975559158161196,
+          "spearman": -0.14285714285714285,
+          "tStat": 2.9385573276381667,
+          "n": 48,
+          "significant": true
+        }
+      }
+    },
+    "rvol": {
+      "segment": "Technical",
+      "avgAbsR": 0.1265667852593779,
+      "direction": "positive",
+      "sigCount": 0,
+      "horizonResults": {
+        "1M": {
+          "pearson": 0.20648636727532235,
+          "spearman": -0.1569691706469822,
+          "tStat": 1.4313040294898667,
+          "n": 48,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": 0.06128085162853736,
+          "spearman": -0.010638297872340425,
+          "tStat": 0.41640957317171445,
+          "n": 48,
+          "significant": false
+        },
+        "3M": {
+          "pearson": 0.19510460714791306,
+          "spearman": 0.004776378636561007,
+          "tStat": 1.3491920068598549,
+          "n": 48,
+          "significant": false
+        },
+        "6M": {
+          "pearson": -0.043395314985738884,
+          "spearman": -0.08619192357794181,
+          "tStat": -0.2945988640895923,
+          "n": 48,
+          "significant": false
+        }
+      }
+    },
+    "volume_surge_20d": {
+      "segment": "Price & Volume",
+      "avgAbsR": 0.14584283934959147,
+      "direction": "positive",
+      "sigCount": 0,
+      "horizonResults": {
+        "1M": {
+          "pearson": 0.19391984580438995,
+          "spearman": 0.2433782023447677,
+          "tStat": 1.340677969370479,
+          "n": 48,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": -0.08605222891237743,
+          "spearman": -0.13243595310464612,
+          "tStat": -0.585807590995773,
+          "n": 48,
+          "significant": false
+        },
+        "3M": {
+          "pearson": 0.13287952624504157,
+          "spearman": 0.027572731220147632,
+          "tStat": 0.9092962552504493,
+          "n": 48,
+          "significant": false
+        },
+        "6M": {
+          "pearson": 0.17051975643655687,
+          "spearman": -0.09867564046895354,
+          "tStat": 1.1737111278067751,
+          "n": 48,
+          "significant": false
+        }
+      }
+    },
+    "price_52w_high_dist": {
+      "segment": "Price & Volume",
+      "avgAbsR": 0.25116765499296134,
+      "direction": "negative",
+      "sigCount": 2,
+      "horizonResults": {
+        "1M": {
+          "pearson": -0.33162994132082285,
+          "spearman": -0.07696482848458533,
+          "tStat": -2.3841434407212447,
+          "n": 48,
+          "significant": true
+        },
+        "1Y": {
+          "pearson": -0.09087827879264017,
+          "spearman": -0.009227095093356492,
+          "tStat": -0.6189275926631325,
+          "n": 48,
+          "significant": false
+        },
+        "3M": {
+          "pearson": -0.3913515066099461,
+          "spearman": -0.22774641771602258,
+          "tStat": -2.884325164104394,
+          "n": 48,
+          "significant": true
+        },
+        "6M": {
+          "pearson": -0.19081089324843617,
+          "spearman": -0.08619192357794181,
+          "tStat": -1.3183650071706765,
+          "n": 48,
+          "significant": false
+        }
+      }
+    },
+    "price_52w_low_dist": {
+      "segment": "Price & Volume",
+      "avgAbsR": 0.07776790189532706,
+      "direction": "negative",
+      "sigCount": 0,
+      "horizonResults": {
+        "1M": {
+          "pearson": -0.194731955698374,
+          "spearman": -0.23805905340859748,
+          "tStat": -1.3465133660309354,
+          "n": 48,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": 0.0021924319641502417,
+          "spearman": -0.0668693009118541,
+          "tStat": 0.014869832784304579,
+          "n": 48,
+          "significant": false
+        },
+        "3M": {
+          "pearson": -0.0002729403166642218,
+          "spearman": -0.03484585323491098,
+          "tStat": -0.0018511713622682737,
+          "n": 48,
+          "significant": false
+        },
+        "6M": {
+          "pearson": -0.11387427960211977,
+          "spearman": -0.18725575336517586,
+          "tStat": -0.777389730602588,
+          "n": 48,
+          "significant": false
+        }
+      }
+    },
+    "price_return_1m": {
+      "segment": "Price & Volume",
+      "avgAbsR": 0.268533125099527,
+      "direction": "negative",
+      "sigCount": 2,
+      "horizonResults": {
+        "1M": {
+          "pearson": -0.4161616316423906,
+          "spearman": -0.17770299609205384,
+          "tStat": -3.104118022937103,
+          "n": 48,
+          "significant": true
+        },
+        "1Y": {
+          "pearson": 0.018454384245374572,
+          "spearman": 0.11105080330004342,
+          "tStat": 0.1251850421807584,
+          "n": 48,
+          "significant": false
+        },
+        "3M": {
+          "pearson": -0.43135189335684604,
+          "spearman": -0.24837168910117238,
+          "tStat": -3.2427660485609566,
+          "n": 48,
+          "significant": true
+        },
+        "6M": {
+          "pearson": -0.20816459115349673,
+          "spearman": -0.12917933130699089,
+          "tStat": -1.443461692754536,
+          "n": 48,
+          "significant": false
+        }
+      }
+    },
+    "price_return_3m": {
+      "segment": "Price & Volume",
+      "avgAbsR": 0.23758513515809834,
+      "direction": "negative",
+      "sigCount": 2,
+      "horizonResults": {
+        "1M": {
+          "pearson": -0.2938967516931601,
+          "spearman": -0.18399913156752062,
+          "tStat": -2.085402000862303,
+          "n": 48,
+          "significant": true
+        },
+        "1Y": {
+          "pearson": 0.16137018626174446,
+          "spearman": 0.21428571428571427,
+          "tStat": 1.1090004714183577,
+          "n": 48,
+          "significant": false
+        },
+        "3M": {
+          "pearson": -0.4194001386359395,
+          "spearman": -0.298523664785063,
+          "tStat": -3.1334054897413357,
+          "n": 48,
+          "significant": true
+        },
+        "6M": {
+          "pearson": -0.07567346404154927,
+          "spearman": 0.06513243595310464,
+          "tStat": -0.514718280229122,
+          "n": 48,
+          "significant": false
+        }
+      }
+    },
+    "price_return_6m": {
+      "segment": "Price & Volume",
+      "avgAbsR": 0.2730643309826872,
+      "direction": "negative",
+      "sigCount": 2,
+      "horizonResults": {
+        "1M": {
+          "pearson": -0.38096540845421617,
+          "spearman": -0.21471993052540164,
+          "tStat": -2.794573911512557,
+          "n": 48,
+          "significant": true
+        },
+        "1Y": {
+          "pearson": -0.12739201402108502,
+          "spearman": -0.07729049066435084,
+          "tStat": -0.8711121091997017,
+          "n": 48,
+          "significant": false
+        },
+        "3M": {
+          "pearson": -0.3702793183380445,
+          "spearman": -0.24858879722101607,
+          "tStat": -2.7035215857240327,
+          "n": 48,
+          "significant": true
+        },
+        "6M": {
+          "pearson": -0.21362058311740306,
+          "spearman": -0.16033434650455927,
+          "tStat": -1.4830796525666468,
+          "n": 48,
+          "significant": false
+        }
+      }
+    },
+    "price_return_1y": {
+      "segment": "Price & Volume",
+      "avgAbsR": 0.17140223267116556,
+      "direction": "negative",
+      "sigCount": 1,
+      "horizonResults": {
+        "1M": {
+          "pearson": -0.3077333057670444,
+          "spearman": -0.1540382110290925,
+          "tStat": -2.193598330271188,
+          "n": 48,
+          "significant": true
+        },
+        "1Y": {
+          "pearson": -0.105848906981481,
+          "spearman": -0.12136343899261832,
+          "tStat": -0.721958013363428,
+          "n": 48,
+          "significant": false
+        },
+        "3M": {
+          "pearson": -0.1618204932092093,
+          "spearman": -0.09161962657403387,
+          "tStat": -1.1121782582358115,
+          "n": 48,
+          "significant": false
+        },
+        "6M": {
+          "pearson": -0.11020622472692754,
+          "spearman": -0.19072948328267478,
+          "tStat": -0.7520358263059556,
+          "n": 48,
+          "significant": false
+        }
+      }
+    },
+    "price_return_3y": {
+      "segment": "Price & Volume",
+      "avgAbsR": 0.08237519702797552,
+      "direction": "positive",
+      "sigCount": 0,
+      "horizonResults": {
+        "1M": {
+          "pearson": -0.04407488489532027,
+          "spearman": 0.11039947894051237,
+          "tStat": -0.29922118747404247,
+          "n": 48,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": 0.08000017326199717,
+          "spearman": 0.24088145896656535,
+          "tStat": 0.5443322404439606,
+          "n": 48,
+          "significant": false
+        },
+        "3M": {
+          "pearson": 0.0768632911011535,
+          "spearman": 0.058619192357794184,
+          "tStat": 0.5228590083345556,
+          "n": 48,
+          "significant": false
+        },
+        "6M": {
+          "pearson": 0.12856243885343113,
+          "spearman": 0.11636995223621363,
+          "tStat": 0.8792494084489434,
+          "n": 48,
+          "significant": false
+        }
+      }
+    },
+    "promoter_holding": {
+      "segment": "Ownership",
+      "avgAbsR": 0.17167100726422513,
+      "direction": "negative",
+      "sigCount": 0,
+      "horizonResults": {
+        "1M": {
+          "pearson": -0.19862847829473715,
+          "spearman": -0.21547980894485455,
+          "tStat": -1.3745520279553136,
+          "n": 48,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": -0.08616131192369025,
+          "spearman": -0.12310030395136778,
+          "tStat": -0.5865557330427996,
+          "n": 48,
+          "significant": false
+        },
+        "3M": {
+          "pearson": -0.23593584464385403,
+          "spearman": -0.21819366044290056,
+          "tStat": -1.6466828604304338,
+          "n": 48,
+          "significant": false
+        },
+        "6M": {
+          "pearson": -0.165958394194619,
+          "spearman": -0.08065566652192792,
+          "tStat": -1.1414128439222369,
+          "n": 48,
+          "significant": false
+        }
+      }
+    },
+    "fii_holding": {
+      "segment": "Ownership",
+      "avgAbsR": 0.17050357725622853,
+      "direction": "positive",
+      "sigCount": 0,
+      "horizonResults": {
+        "1M": {
+          "pearson": 0.16157302866152556,
+          "spearman": 0.19550586191923577,
+          "tStat": 1.1104318288694075,
+          "n": 48,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": 0.13362700755788576,
+          "spearman": 0.08195831524099001,
+          "tStat": 0.914504009710674,
+          "n": 48,
+          "significant": false
+        },
+        "3M": {
+          "pearson": 0.24382487154782892,
+          "spearman": 0.27681285280069473,
+          "tStat": 1.7051638118709396,
+          "n": 48,
+          "significant": false
+        },
+        "6M": {
+          "pearson": 0.14298940125767393,
+          "spearman": 0.05829353017802866,
+          "tStat": 0.9798702346394512,
+          "n": 48,
+          "significant": false
+        }
+      }
+    },
+    "mf_holding": {
+      "segment": "Ownership",
+      "avgAbsR": 0.192032549160715,
+      "direction": "positive",
+      "sigCount": 1,
+      "horizonResults": {
+        "1M": {
+          "pearson": 0.3351931621950484,
+          "spearman": 0.2559704732957013,
+          "tStat": 2.4129830867371944,
+          "n": 48,
+          "significant": true
+        },
+        "1Y": {
+          "pearson": 0.10104391960859693,
+          "spearman": 0.07881024750325662,
+          "tStat": 0.6888387054758351,
+          "n": 48,
+          "significant": false
+        },
+        "3M": {
+          "pearson": 0.21828868631322848,
+          "spearman": 0.14709075119409465,
+          "tStat": 1.5170917223861922,
+          "n": 48,
+          "significant": false
+        },
+        "6M": {
+          "pearson": 0.11360442852598622,
+          "spearman": 0.04722101606600087,
+          "tStat": 0.7755234131032166,
+          "n": 48,
+          "significant": false
+        }
+      }
+    },
+    "dii_holding": {
+      "segment": "Ownership",
+      "avgAbsR": 0.09173506051078362,
+      "direction": "positive",
+      "sigCount": 0,
+      "horizonResults": {
+        "1M": {
+          "pearson": 0.1971239824428345,
+          "spearman": 0.2201476335214937,
+          "tStat": 1.3637179971929811,
+          "n": 48,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": 0.023967012862911873,
+          "spearman": 0.07837603126356926,
+          "tStat": 0.16259889649683404,
+          "n": 48,
+          "significant": false
+        },
+        "3M": {
+          "pearson": 0.10221343281212222,
+          "spearman": 0.10138949196699956,
+          "tStat": 0.696895224823419,
+          "n": 48,
+          "significant": false
+        },
+        "6M": {
+          "pearson": 0.04363581392526587,
+          "spearman": 0.04125054277029961,
+          "tStat": 0.2962346513705912,
+          "n": 48,
+          "significant": false
+        }
+      }
+    },
+    "retail_holding": {
+      "segment": "Ownership",
+      "avgAbsR": 0.03344554041811385,
+      "direction": "positive",
+      "sigCount": 0,
+      "horizonResults": {
+        "1M": {
+          "pearson": 0.024271474544703964,
+          "spearman": 0.16456795484151107,
+          "tStat": 0.16466565932311517,
+          "n": 48,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": -0.010234093845255983,
+          "spearman": -0.045809813287016936,
+          "tStat": -0.0694146367611742,
+          "n": 48,
+          "significant": false
+        },
+        "3M": {
+          "pearson": 0.08903230394037334,
+          "spearman": 0.13254450716456795,
+          "tStat": 0.606254057594446,
+          "n": 48,
+          "significant": false
+        },
+        "6M": {
+          "pearson": 0.010244289342122116,
+          "spearman": 0.08977420755536257,
+          "tStat": 0.06948379686120373,
+          "n": 48,
+          "significant": false
+        }
+      }
+    },
+    "promoter_change_3m": {
+      "segment": "Ownership",
+      "avgAbsR": 0.1772245839826968,
+      "direction": "negative",
+      "sigCount": 1,
+      "horizonResults": {
+        "1M": {
+          "pearson": -0.3261726708989008,
+          "spearman": -0.09335649153278333,
+          "tStat": -2.340195490879926,
+          "n": 48,
+          "significant": true
+        },
+        "1Y": {
+          "pearson": -0.09760727840974195,
+          "spearman": -0.14198871037776814,
+          "tStat": -0.665181004015832,
+          "n": 48,
+          "significant": false
+        },
+        "3M": {
+          "pearson": -0.24207736651532433,
+          "spearman": -0.08890577507598785,
+          "tStat": -1.6921791505886166,
+          "n": 48,
+          "significant": false
+        },
+        "6M": {
+          "pearson": -0.043041020106820226,
+          "spearman": -0.037668258792878856,
+          "tStat": -0.292189171151942,
+          "n": 48,
+          "significant": false
+        }
+      }
+    },
+    "fii_change_3m": {
+      "segment": "Ownership",
+      "avgAbsR": 0.15192382192186935,
+      "direction": "positive",
+      "sigCount": 0,
+      "horizonResults": {
+        "1M": {
+          "pearson": 0.27639054349284153,
+          "spearman": -0.07175423360833695,
+          "tStat": 1.9505549513887466,
+          "n": 48,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": 0.06572611912457008,
+          "spearman": -0.06057316543638732,
+          "tStat": 0.4467422187267657,
+          "n": 48,
+          "significant": false
+        },
+        "3M": {
+          "pearson": 0.12457803790177245,
+          "spearman": -0.04081632653061224,
+          "tStat": 0.8515631984908035,
+          "n": 48,
+          "significant": false
+        },
+        "6M": {
+          "pearson": -0.1410005871682933,
+          "spearman": -0.13113330438558402,
+          "tStat": -0.9659629509830595,
+          "n": 48,
+          "significant": false
+        }
+      }
+    },
+    "mf_change_3m": {
+      "segment": "Ownership",
+      "avgAbsR": 0.10190438091207209,
+      "direction": "negative",
+      "sigCount": 0,
+      "horizonResults": {
+        "1M": {
+          "pearson": -0.08185708127082858,
+          "spearman": 0.08239253148067738,
+          "tStat": -0.557051156857365,
+          "n": 48,
+          "significant": false
+        },
+        "1Y": {
+          "pearson": -0.1678702526793352,
+          "spearman": -0.18617021276595744,
+          "tStat": -1.154941103708937,
+          "n": 48,
+          "significant": false
+        },
+        "3M": {
+          "pearson": 0.031270421337551514,
+          "spearman": 0.11224489795918367,
+          "tStat": 0.21219008549335128,
+          "n": 48,
+          "significant": false
+        },
+        "6M": {
+          "pearson": 0.12661976836057304,
+          "spearman": -0.13156752062527138,
+          "tStat": 0.8657451514159716,
+          "n": 48,
+          "significant": false
+        }
+      }
+    }
+  }
+}

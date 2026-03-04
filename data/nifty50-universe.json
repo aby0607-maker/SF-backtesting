@@ -1,0 +1,408 @@
+{
+  "name": "Nifty 50",
+  "date": "2026-03-04",
+  "count": 50,
+  "stocks": [
+    {
+      "symbol": "RELIANCE",
+      "co_code": 476,
+      "name": "Reliance Industries",
+      "sector": "Refineries",
+      "mcap": "Large Cap",
+      "bsecode": "500325"
+    },
+    {
+      "symbol": "TCS",
+      "co_code": 5400,
+      "name": "TCS",
+      "sector": "IT - Software",
+      "mcap": "Large Cap",
+      "bsecode": "532540"
+    },
+    {
+      "symbol": "HDFCBANK",
+      "co_code": 4987,
+      "name": "HDFC Bank",
+      "sector": "Banks",
+      "mcap": "Large Cap",
+      "bsecode": "500180"
+    },
+    {
+      "symbol": "INFY",
+      "co_code": 2806,
+      "name": "Infosys",
+      "sector": "IT - Software",
+      "mcap": "Large Cap",
+      "bsecode": "500209"
+    },
+    {
+      "symbol": "ICICIBANK",
+      "co_code": 5418,
+      "name": "ICICI Bank",
+      "sector": "Banks",
+      "mcap": "Large Cap",
+      "bsecode": "532174"
+    },
+    {
+      "symbol": "HINDUNILVR",
+      "co_code": 255,
+      "name": "Hind. Unilever",
+      "sector": "FMCG",
+      "mcap": "Large Cap",
+      "bsecode": "500696"
+    },
+    {
+      "symbol": "ITC",
+      "co_code": 301,
+      "name": "ITC",
+      "sector": "Tobacco Products",
+      "mcap": "Large Cap",
+      "bsecode": "500875"
+    },
+    {
+      "symbol": "SBIN",
+      "co_code": 1375,
+      "name": "SBI",
+      "sector": "Banks",
+      "mcap": "Large Cap",
+      "bsecode": "500112"
+    },
+    {
+      "symbol": "BHARTIARTL",
+      "co_code": 15542,
+      "name": "Bharti Airtel",
+      "sector": "Telecom-Service",
+      "mcap": "Large Cap",
+      "bsecode": "532454"
+    },
+    {
+      "symbol": "KOTAKBANK",
+      "co_code": 2330,
+      "name": "Kotak Mah. Bank",
+      "sector": "Banks",
+      "mcap": "Large Cap",
+      "bsecode": "500247"
+    },
+    {
+      "symbol": "LT",
+      "co_code": 348,
+      "name": "Larsen & Toubro",
+      "sector": "Infrastructure Developers & Operators",
+      "mcap": "Large Cap",
+      "bsecode": "500510"
+    },
+    {
+      "symbol": "AXISBANK",
+      "co_code": 5554,
+      "name": "Axis Bank",
+      "sector": "Banks",
+      "mcap": "Large Cap",
+      "bsecode": "532215"
+    },
+    {
+      "symbol": "BAJFINANCE",
+      "co_code": 3722,
+      "name": "Bajaj Finance",
+      "sector": "Finance",
+      "mcap": "Large Cap",
+      "bsecode": "500034"
+    },
+    {
+      "symbol": "MARUTI",
+      "co_code": 5496,
+      "name": "Maruti Suzuki",
+      "sector": "Automobile",
+      "mcap": "Large Cap",
+      "bsecode": "532500"
+    },
+    {
+      "symbol": "HCLTECH",
+      "co_code": 5656,
+      "name": "HCL Technologies",
+      "sector": "IT - Software",
+      "mcap": "Large Cap",
+      "bsecode": "532281"
+    },
+    {
+      "symbol": "SUNPHARMA",
+      "co_code": 4325,
+      "name": "Sun Pharma.Inds.",
+      "sector": "Pharmaceuticals",
+      "mcap": "Large Cap",
+      "bsecode": "524715"
+    },
+    {
+      "symbol": "TITAN",
+      "co_code": 1016,
+      "name": "Titan Company",
+      "sector": "Diamond, Gems and Jewellery",
+      "mcap": "Large Cap",
+      "bsecode": "500114"
+    },
+    {
+      "symbol": "NTPC",
+      "co_code": 12001,
+      "name": "NTPC",
+      "sector": "Power Generation & Distribution",
+      "mcap": "Large Cap",
+      "bsecode": "532555"
+    },
+    {
+      "symbol": "ADANIENT",
+      "co_code": 4244,
+      "name": "Adani Enterp.",
+      "sector": "Trading",
+      "mcap": "Large Cap",
+      "bsecode": "512599"
+    },
+    {
+      "symbol": "ASIANPAINT",
+      "co_code": 34,
+      "name": "Asian Paints",
+      "sector": "Paints/Varnish",
+      "mcap": "Large Cap",
+      "bsecode": "500820"
+    },
+    {
+      "symbol": "POWERGRID",
+      "co_code": 5455,
+      "name": "Power Grid Corpn",
+      "sector": "Power Generation & Distribution",
+      "mcap": "Large Cap",
+      "bsecode": "532898"
+    },
+    {
+      "symbol": "ULTRACEMCO",
+      "co_code": 24951,
+      "name": "UltraTech Cem.",
+      "sector": "Cement",
+      "mcap": "Large Cap",
+      "bsecode": "532538"
+    },
+    {
+      "symbol": "ONGC",
+      "co_code": 6068,
+      "name": "O N G C",
+      "sector": "Crude Oil & Natural Gas",
+      "mcap": "Large Cap",
+      "bsecode": "500312"
+    },
+    {
+      "symbol": "WIPRO",
+      "co_code": 614,
+      "name": "Wipro",
+      "sector": "IT - Software",
+      "mcap": "Large Cap",
+      "bsecode": "507685"
+    },
+    {
+      "symbol": "NESTLEIND",
+      "co_code": 175,
+      "name": "Nestle India",
+      "sector": "FMCG",
+      "mcap": "Large Cap",
+      "bsecode": "500790"
+    },
+    {
+      "symbol": "JSWSTEEL",
+      "co_code": 4764,
+      "name": "JSW Steel",
+      "sector": "Steel",
+      "mcap": "Large Cap",
+      "bsecode": "500228"
+    },
+    {
+      "symbol": "TATASTEEL",
+      "co_code": 566,
+      "name": "Tata Steel",
+      "sector": "Steel",
+      "mcap": "Large Cap",
+      "bsecode": "500470"
+    },
+    {
+      "symbol": "BAJAJFINSV",
+      "co_code": 28075,
+      "name": "Bajaj Finserv",
+      "sector": "Finance",
+      "mcap": "Large Cap",
+      "bsecode": "532978"
+    },
+    {
+      "symbol": "INDUSINDBK",
+      "co_code": 5531,
+      "name": "IndusInd Bank",
+      "sector": "Banks",
+      "mcap": "Mid Cap",
+      "bsecode": "532187"
+    },
+    {
+      "symbol": "TECHM",
+      "co_code": 17215,
+      "name": "Tech Mahindra",
+      "sector": "IT - Software",
+      "mcap": "Large Cap",
+      "bsecode": "532755"
+    },
+    {
+      "symbol": "ADANIPORTS",
+      "co_code": 21281,
+      "name": "Adani Ports",
+      "sector": "Marine Port & Services",
+      "mcap": "Large Cap",
+      "bsecode": "532921"
+    },
+    {
+      "symbol": "M&M",
+      "co_code": 365,
+      "name": "M & M",
+      "sector": "Automobile",
+      "mcap": "Large Cap",
+      "bsecode": "500520"
+    },
+    {
+      "symbol": "COALINDIA",
+      "co_code": 12019,
+      "name": "Coal India",
+      "sector": "Mining & Mineral products",
+      "mcap": "Large Cap",
+      "bsecode": "533278"
+    },
+    {
+      "symbol": "HINDALCO",
+      "co_code": 252,
+      "name": "Hindalco Inds.",
+      "sector": "Non Ferrous Metals",
+      "mcap": "Large Cap",
+      "bsecode": "500440"
+    },
+    {
+      "symbol": "DRREDDY",
+      "co_code": 815,
+      "name": "Dr Reddy's Labs",
+      "sector": "Pharmaceuticals",
+      "mcap": "Mid Cap",
+      "bsecode": "500124"
+    },
+    {
+      "symbol": "APOLLOHOSP",
+      "co_code": 636,
+      "name": "Apollo Hospitals",
+      "sector": "Healthcare",
+      "mcap": "Large Cap",
+      "bsecode": "508869"
+    },
+    {
+      "symbol": "CIPLA",
+      "co_code": 114,
+      "name": "Cipla",
+      "sector": "Pharmaceuticals",
+      "mcap": "Large Cap",
+      "bsecode": "500087"
+    },
+    {
+      "symbol": "EICHERMOT",
+      "co_code": 151,
+      "name": "Eicher Motors",
+      "sector": "Automobile",
+      "mcap": "Large Cap",
+      "bsecode": "505200"
+    },
+    {
+      "symbol": "GRASIM",
+      "co_code": 227,
+      "name": "Grasim Inds",
+      "sector": "Textiles",
+      "mcap": "Large Cap",
+      "bsecode": "500300"
+    },
+    {
+      "symbol": "BPCL",
+      "co_code": 2290,
+      "name": "B P C L",
+      "sector": "Refineries",
+      "mcap": "Large Cap",
+      "bsecode": "500547"
+    },
+    {
+      "symbol": "DIVISLAB",
+      "co_code": 21188,
+      "name": "Divi's Lab.",
+      "sector": "Pharmaceuticals",
+      "mcap": "Large Cap",
+      "bsecode": "532488"
+    },
+    {
+      "symbol": "HEROMOTOCO",
+      "co_code": 237,
+      "name": "Hero Motocorp",
+      "sector": "Automobile",
+      "mcap": "Large Cap",
+      "bsecode": "500182"
+    },
+    {
+      "symbol": "TRENT",
+      "co_code": 345,
+      "name": "Trent",
+      "sector": "Retail",
+      "mcap": "Large Cap",
+      "bsecode": "500251"
+    },
+    {
+      "symbol": "SHRIRAMFIN",
+      "co_code": 1745,
+      "name": "Shriram Finance",
+      "sector": "Finance",
+      "mcap": "Large Cap",
+      "bsecode": "511218"
+    },
+    {
+      "symbol": "SBILIFE",
+      "co_code": 22045,
+      "name": "SBI Life Insuran",
+      "sector": "Insurance",
+      "mcap": "Large Cap",
+      "bsecode": "540719"
+    },
+    {
+      "symbol": "HDFCLIFE",
+      "co_code": 21997,
+      "name": "HDFC Life Insur.",
+      "sector": "Insurance",
+      "mcap": "Large Cap",
+      "bsecode": "540777"
+    },
+    {
+      "symbol": "BAJAJ-AUTO",
+      "co_code": 28074,
+      "name": "Bajaj Auto",
+      "sector": "Automobile",
+      "mcap": "Large Cap",
+      "bsecode": "532977"
+    },
+    {
+      "symbol": "BRITANNIA",
+      "co_code": 93,
+      "name": "Britannia Inds.",
+      "sector": "FMCG",
+      "mcap": "Large Cap",
+      "bsecode": "500825"
+    },
+    {
+      "symbol": "ETERNAL",
+      "co_code": 68117,
+      "name": "Eternal",
+      "sector": "E-Commerce/App based Aggregator",
+      "mcap": "Large Cap",
+      "bsecode": "543320"
+    },
+    {
+      "symbol": "TATAMOTORS",
+      "co_code": 93137,
+      "name": "Tata Motors Ltd",
+      "sector": "Automobile",
+      "mcap": "Large Cap",
+      "bsecode": "544569",
+      "note": "Post-demerger entity (TMCV), nsesymbol=TMCV in CMOTS"
+    }
+  ]
+}

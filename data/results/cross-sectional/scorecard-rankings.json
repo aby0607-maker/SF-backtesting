@@ -1,0 +1,2163 @@
+{
+  "date": "2026-03-04",
+  "universe": "Nifty 50",
+  "stockCount": 48,
+  "rankings": [
+    {
+      "symbol": "ETERNAL",
+      "co_code": 68117,
+      "sector": "E-Commerce/App based Aggregator",
+      "overall": 69.2,
+      "verdict": "BUY",
+      "segments": {
+        "Price & Volume": {
+          "score": 82.8,
+          "weight": 17.1
+        },
+        "Technical": {
+          "score": 94.2,
+          "weight": 14.9
+        },
+        "Profitability": {
+          "score": 80,
+          "weight": 10.6
+        },
+        "Balance Sheet": {
+          "score": 39.5,
+          "weight": 10.5
+        },
+        "Growth": {
+          "score": 70.7,
+          "weight": 9.9
+        },
+        "Financial Ratios": {
+          "score": 40.2,
+          "weight": 9.9
+        },
+        "Ownership": {
+          "score": 63.6,
+          "weight": 8.4
+        },
+        "Valuation": {
+          "score": 68,
+          "weight": 7.6
+        },
+        "Cash Flow": {
+          "score": 59,
+          "weight": 7.4
+        }
+      }
+    },
+    {
+      "symbol": "HDFCBANK",
+      "co_code": 4987,
+      "sector": "Banks",
+      "overall": 65.9,
+      "verdict": "BUY",
+      "segments": {
+        "Price & Volume": {
+          "score": 68.2,
+          "weight": 17.1
+        },
+        "Technical": {
+          "score": 72.9,
+          "weight": 14.9
+        },
+        "Profitability": {
+          "score": 61.3,
+          "weight": 10.6
+        },
+        "Balance Sheet": {
+          "score": 86.3,
+          "weight": 10.5
+        },
+        "Growth": {
+          "score": 63.6,
+          "weight": 9.9
+        },
+        "Financial Ratios": {
+          "score": 83.1,
+          "weight": 9.9
+        },
+        "Ownership": {
+          "score": 71.9,
+          "weight": 8.4
+        },
+        "Valuation": {
+          "score": 41.5,
+          "weight": 7.6
+        },
+        "Cash Flow": {
+          "score": 22.2,
+          "weight": 7.4
+        }
+      }
+    },
+    {
+      "symbol": "TRENT",
+      "co_code": 345,
+      "sector": "Retail",
+      "overall": 65,
+      "verdict": "BUY",
+      "segments": {
+        "Price & Volume": {
+          "score": 69,
+          "weight": 17.1
+        },
+        "Technical": {
+          "score": 88.4,
+          "weight": 14.9
+        },
+        "Profitability": {
+          "score": 43.8,
+          "weight": 10.6
+        },
+        "Balance Sheet": {
+          "score": 44.1,
+          "weight": 10.5
+        },
+        "Growth": {
+          "score": 70.9,
+          "weight": 9.9
+        },
+        "Financial Ratios": {
+          "score": 67.9,
+          "weight": 9.9
+        },
+        "Ownership": {
+          "score": 47,
+          "weight": 8.4
+        },
+        "Valuation": {
+          "score": 64.9,
+          "weight": 7.6
+        },
+        "Cash Flow": {
+          "score": 77.9,
+          "weight": 7.4
+        }
+      }
+    },
+    {
+      "symbol": "HDFCLIFE",
+      "co_code": 21997,
+      "sector": "Insurance",
+      "overall": 61.8,
+      "verdict": "HOLD",
+      "segments": {
+        "Price & Volume": {
+          "score": 48.5,
+          "weight": 17.1
+        },
+        "Technical": {
+          "score": 63.7,
+          "weight": 14.9
+        },
+        "Balance Sheet": {
+          "score": 67.6,
+          "weight": 10.5
+        },
+        "Growth": {
+          "score": 33.3,
+          "weight": 9.9
+        },
+        "Financial Ratios": {
+          "score": 100,
+          "weight": 9.9
+        },
+        "Ownership": {
+          "score": 50.2,
+          "weight": 8.4
+        },
+        "Valuation": {
+          "score": 80,
+          "weight": 7.6
+        },
+        "Cash Flow": {
+          "score": 61.8,
+          "weight": 7.4
+        }
+      }
+    },
+    {
+      "symbol": "KOTAKBANK",
+      "co_code": 2330,
+      "sector": "Banks",
+      "overall": 60.4,
+      "verdict": "HOLD",
+      "segments": {
+        "Price & Volume": {
+          "score": 50.7,
+          "weight": 17.1
+        },
+        "Technical": {
+          "score": 58.9,
+          "weight": 14.9
+        },
+        "Profitability": {
+          "score": 57.1,
+          "weight": 10.6
+        },
+        "Balance Sheet": {
+          "score": 69.6,
+          "weight": 10.5
+        },
+        "Growth": {
+          "score": 53.6,
+          "weight": 9.9
+        },
+        "Financial Ratios": {
+          "score": 82.7,
+          "weight": 9.9
+        },
+        "Ownership": {
+          "score": 70,
+          "weight": 8.4
+        },
+        "Valuation": {
+          "score": 47.8,
+          "weight": 7.6
+        },
+        "Cash Flow": {
+          "score": 59.5,
+          "weight": 7.4
+        }
+      }
+    },
+    {
+      "symbol": "MARUTI",
+      "co_code": 5496,
+      "sector": "Automobile",
+      "overall": 58.9,
+      "verdict": "HOLD",
+      "segments": {
+        "Price & Volume": {
+          "score": 43,
+          "weight": 17.1
+        },
+        "Technical": {
+          "score": 69.1,
+          "weight": 14.9
+        },
+        "Profitability": {
+          "score": 65,
+          "weight": 10.6
+        },
+        "Balance Sheet": {
+          "score": 81.6,
+          "weight": 10.5
+        },
+        "Growth": {
+          "score": 54.2,
+          "weight": 9.9
+        },
+        "Financial Ratios": {
+          "score": 61.9,
+          "weight": 9.9
+        },
+        "Ownership": {
+          "score": 51.2,
+          "weight": 8.4
+        },
+        "Valuation": {
+          "score": 54.2,
+          "weight": 7.6
+        },
+        "Cash Flow": {
+          "score": 50.1,
+          "weight": 7.4
+        }
+      }
+    },
+    {
+      "symbol": "INDUSINDBK",
+      "co_code": 5531,
+      "sector": "Banks",
+      "overall": 58.5,
+      "verdict": "HOLD",
+      "segments": {
+        "Price & Volume": {
+          "score": 39.9,
+          "weight": 17.1
+        },
+        "Technical": {
+          "score": 44.4,
+          "weight": 14.9
+        },
+        "Profitability": {
+          "score": 85.3,
+          "weight": 10.6
+        },
+        "Balance Sheet": {
+          "score": 70,
+          "weight": 10.5
+        },
+        "Growth": {
+          "score": 56.8,
+          "weight": 9.9
+        },
+        "Financial Ratios": {
+          "score": 82.1,
+          "weight": 9.9
+        },
+        "Ownership": {
+          "score": 60.8,
+          "weight": 8.4
+        },
+        "Valuation": {
+          "score": 44.2,
+          "weight": 7.6
+        },
+        "Cash Flow": {
+          "score": 57.2,
+          "weight": 7.4
+        }
+      }
+    },
+    {
+      "symbol": "RELIANCE",
+      "co_code": 476,
+      "sector": "Refineries",
+      "overall": 58.2,
+      "verdict": "HOLD",
+      "segments": {
+        "Price & Volume": {
+          "score": 62.1,
+          "weight": 17.1
+        },
+        "Technical": {
+          "score": 71.4,
+          "weight": 14.9
+        },
+        "Profitability": {
+          "score": 69.1,
+          "weight": 10.6
+        },
+        "Balance Sheet": {
+          "score": 58.9,
+          "weight": 10.5
+        },
+        "Growth": {
+          "score": 54.9,
+          "weight": 9.9
+        },
+        "Financial Ratios": {
+          "score": 44.3,
+          "weight": 9.9
+        },
+        "Ownership": {
+          "score": 58.8,
+          "weight": 8.4
+        },
+        "Valuation": {
+          "score": 49.2,
+          "weight": 7.6
+        },
+        "Cash Flow": {
+          "score": 37.8,
+          "weight": 7.4
+        }
+      }
+    },
+    {
+      "symbol": "AXISBANK",
+      "co_code": 5554,
+      "sector": "Banks",
+      "overall": 58.1,
+      "verdict": "HOLD",
+      "segments": {
+        "Price & Volume": {
+          "score": 34.5,
+          "weight": 17.1
+        },
+        "Technical": {
+          "score": 34.7,
+          "weight": 14.9
+        },
+        "Profitability": {
+          "score": 62.1,
+          "weight": 10.6
+        },
+        "Balance Sheet": {
+          "score": 74.3,
+          "weight": 10.5
+        },
+        "Growth": {
+          "score": 64.6,
+          "weight": 9.9
+        },
+        "Financial Ratios": {
+          "score": 81.8,
+          "weight": 9.9
+        },
+        "Ownership": {
+          "score": 88.4,
+          "weight": 8.4
+        },
+        "Valuation": {
+          "score": 52.9,
+          "weight": 7.6
+        },
+        "Cash Flow": {
+          "score": 61.1,
+          "weight": 7.4
+        }
+      }
+    },
+    {
+      "symbol": "M&M",
+      "co_code": 365,
+      "sector": "Automobile",
+      "overall": 58.1,
+      "verdict": "HOLD",
+      "segments": {
+        "Price & Volume": {
+          "score": 49.1,
+          "weight": 17.1
+        },
+        "Technical": {
+          "score": 71.1,
+          "weight": 14.9
+        },
+        "Profitability": {
+          "score": 65.1,
+          "weight": 10.6
+        },
+        "Balance Sheet": {
+          "score": 62.5,
+          "weight": 10.5
+        },
+        "Growth": {
+          "score": 56.3,
+          "weight": 9.9
+        },
+        "Financial Ratios": {
+          "score": 49.9,
+          "weight": 9.9
+        },
+        "Ownership": {
+          "score": 61.6,
+          "weight": 8.4
+        },
+        "Valuation": {
+          "score": 48.4,
+          "weight": 7.6
+        },
+        "Cash Flow": {
+          "score": 56.4,
+          "weight": 7.4
+        }
+      }
+    },
+    {
+      "symbol": "ICICIBANK",
+      "co_code": 5418,
+      "sector": "Banks",
+      "overall": 58,
+      "verdict": "HOLD",
+      "segments": {
+        "Price & Volume": {
+          "score": 49.1,
+          "weight": 17.1
+        },
+        "Technical": {
+          "score": 53.7,
+          "weight": 14.9
+        },
+        "Profitability": {
+          "score": 52.4,
+          "weight": 10.6
+        },
+        "Balance Sheet": {
+          "score": 86.6,
+          "weight": 10.5
+        },
+        "Growth": {
+          "score": 57.2,
+          "weight": 9.9
+        },
+        "Financial Ratios": {
+          "score": 78.5,
+          "weight": 9.9
+        },
+        "Ownership": {
+          "score": 69.9,
+          "weight": 8.4
+        },
+        "Valuation": {
+          "score": 44.9,
+          "weight": 7.6
+        },
+        "Cash Flow": {
+          "score": 28.5,
+          "weight": 7.4
+        }
+      }
+    },
+    {
+      "symbol": "ASIANPAINT",
+      "co_code": 34,
+      "sector": "Paints/Varnish",
+      "overall": 56.9,
+      "verdict": "HOLD",
+      "segments": {
+        "Price & Volume": {
+          "score": 60.6,
+          "weight": 17.1
+        },
+        "Technical": {
+          "score": 79.9,
+          "weight": 14.9
+        },
+        "Profitability": {
+          "score": 46.6,
+          "weight": 10.6
+        },
+        "Balance Sheet": {
+          "score": 46.5,
+          "weight": 10.5
+        },
+        "Growth": {
+          "score": 42.7,
+          "weight": 9.9
+        },
+        "Financial Ratios": {
+          "score": 56.3,
+          "weight": 9.9
+        },
+        "Ownership": {
+          "score": 53.2,
+          "weight": 8.4
+        },
+        "Valuation": {
+          "score": 60,
+          "weight": 7.6
+        },
+        "Cash Flow": {
+          "score": 53,
+          "weight": 7.4
+        }
+      }
+    },
+    {
+      "symbol": "INFY",
+      "co_code": 2806,
+      "sector": "IT - Software",
+      "overall": 55.8,
+      "verdict": "HOLD",
+      "segments": {
+        "Price & Volume": {
+          "score": 77.4,
+          "weight": 17.1
+        },
+        "Technical": {
+          "score": 90.3,
+          "weight": 14.9
+        },
+        "Profitability": {
+          "score": 22.9,
+          "weight": 10.6
+        },
+        "Balance Sheet": {
+          "score": 48.8,
+          "weight": 10.5
+        },
+        "Growth": {
+          "score": 47.9,
+          "weight": 9.9
+        },
+        "Financial Ratios": {
+          "score": 37.7,
+          "weight": 9.9
+        },
+        "Ownership": {
+          "score": 70.5,
+          "weight": 8.4
+        },
+        "Valuation": {
+          "score": 46.5,
+          "weight": 7.6
+        },
+        "Cash Flow": {
+          "score": 21.3,
+          "weight": 7.4
+        }
+      }
+    },
+    {
+      "symbol": "BAJAJFINSV",
+      "co_code": 28075,
+      "sector": "Finance",
+      "overall": 55.7,
+      "verdict": "HOLD",
+      "segments": {
+        "Price & Volume": {
+          "score": 44.3,
+          "weight": 17.1
+        },
+        "Technical": {
+          "score": 66.3,
+          "weight": 14.9
+        },
+        "Profitability": {
+          "score": 51.3,
+          "weight": 10.6
+        },
+        "Balance Sheet": {
+          "score": 52.7,
+          "weight": 10.5
+        },
+        "Growth": {
+          "score": 66.1,
+          "weight": 9.9
+        },
+        "Financial Ratios": {
+          "score": 60.9,
+          "weight": 9.9
+        },
+        "Ownership": {
+          "score": 35.8,
+          "weight": 8.4
+        },
+        "Valuation": {
+          "score": 58.8,
+          "weight": 7.6
+        },
+        "Cash Flow": {
+          "score": 69.6,
+          "weight": 7.4
+        }
+      }
+    },
+    {
+      "symbol": "BAJFINANCE",
+      "co_code": 3722,
+      "sector": "Finance",
+      "overall": 55.1,
+      "verdict": "HOLD",
+      "segments": {
+        "Price & Volume": {
+          "score": 48.8,
+          "weight": 17.1
+        },
+        "Technical": {
+          "score": 59.2,
+          "weight": 14.9
+        },
+        "Profitability": {
+          "score": 44.7,
+          "weight": 10.6
+        },
+        "Balance Sheet": {
+          "score": 61.1,
+          "weight": 10.5
+        },
+        "Growth": {
+          "score": 68.2,
+          "weight": 9.9
+        },
+        "Financial Ratios": {
+          "score": 65.5,
+          "weight": 9.9
+        },
+        "Ownership": {
+          "score": 35.2,
+          "weight": 8.4
+        },
+        "Valuation": {
+          "score": 49.6,
+          "weight": 7.6
+        },
+        "Cash Flow": {
+          "score": 64.9,
+          "weight": 7.4
+        }
+      }
+    },
+    {
+      "symbol": "ITC",
+      "co_code": 301,
+      "sector": "Tobacco Products",
+      "overall": 54.3,
+      "verdict": "HOLD",
+      "segments": {
+        "Price & Volume": {
+          "score": 83.2,
+          "weight": 17.1
+        },
+        "Technical": {
+          "score": 79.1,
+          "weight": 14.9
+        },
+        "Profitability": {
+          "score": 23.5,
+          "weight": 10.6
+        },
+        "Balance Sheet": {
+          "score": 39.1,
+          "weight": 10.5
+        },
+        "Growth": {
+          "score": 38,
+          "weight": 9.9
+        },
+        "Financial Ratios": {
+          "score": 59.3,
+          "weight": 9.9
+        },
+        "Ownership": {
+          "score": 64.9,
+          "weight": 8.4
+        },
+        "Valuation": {
+          "score": 40.7,
+          "weight": 7.6
+        },
+        "Cash Flow": {
+          "score": 21.4,
+          "weight": 7.4
+        }
+      }
+    },
+    {
+      "symbol": "GRASIM",
+      "co_code": 227,
+      "sector": "Textiles",
+      "overall": 53.2,
+      "verdict": "HOLD",
+      "segments": {
+        "Price & Volume": {
+          "score": 29.3,
+          "weight": 17.1
+        },
+        "Technical": {
+          "score": 57.9,
+          "weight": 14.9
+        },
+        "Profitability": {
+          "score": 72.8,
+          "weight": 10.6
+        },
+        "Balance Sheet": {
+          "score": 62.6,
+          "weight": 10.5
+        },
+        "Growth": {
+          "score": 65.3,
+          "weight": 9.9
+        },
+        "Financial Ratios": {
+          "score": 41,
+          "weight": 9.9
+        },
+        "Ownership": {
+          "score": 41.4,
+          "weight": 8.4
+        },
+        "Valuation": {
+          "score": 55.7,
+          "weight": 7.6
+        },
+        "Cash Flow": {
+          "score": 68.2,
+          "weight": 7.4
+        }
+      }
+    },
+    {
+      "symbol": "ADANIENT",
+      "co_code": 4244,
+      "sector": "Trading",
+      "overall": 52.5,
+      "verdict": "HOLD",
+      "segments": {
+        "Price & Volume": {
+          "score": 45.7,
+          "weight": 17.1
+        },
+        "Technical": {
+          "score": 77.1,
+          "weight": 14.9
+        },
+        "Profitability": {
+          "score": 70.3,
+          "weight": 10.6
+        },
+        "Balance Sheet": {
+          "score": 47,
+          "weight": 10.5
+        },
+        "Growth": {
+          "score": 40.6,
+          "weight": 9.9
+        },
+        "Financial Ratios": {
+          "score": 22.1,
+          "weight": 9.9
+        },
+        "Ownership": {
+          "score": 25.1,
+          "weight": 8.4
+        },
+        "Valuation": {
+          "score": 67.4,
+          "weight": 7.6
+        },
+        "Cash Flow": {
+          "score": 72.9,
+          "weight": 7.4
+        }
+      }
+    },
+    {
+      "symbol": "BHARTIARTL",
+      "co_code": 15542,
+      "sector": "Telecom-Service",
+      "overall": 52.4,
+      "verdict": "HOLD",
+      "segments": {
+        "Price & Volume": {
+          "score": 58.2,
+          "weight": 17.1
+        },
+        "Technical": {
+          "score": 69.8,
+          "weight": 14.9
+        },
+        "Profitability": {
+          "score": 41.1,
+          "weight": 10.6
+        },
+        "Balance Sheet": {
+          "score": 40,
+          "weight": 10.5
+        },
+        "Growth": {
+          "score": 45.1,
+          "weight": 9.9
+        },
+        "Financial Ratios": {
+          "score": 53,
+          "weight": 9.9
+        },
+        "Ownership": {
+          "score": 67.7,
+          "weight": 8.4
+        },
+        "Valuation": {
+          "score": 53.1,
+          "weight": 7.6
+        },
+        "Cash Flow": {
+          "score": 28.4,
+          "weight": 7.4
+        }
+      }
+    },
+    {
+      "symbol": "LT",
+      "co_code": 348,
+      "sector": "Infrastructure Developers & Operators",
+      "overall": 52.3,
+      "verdict": "HOLD",
+      "segments": {
+        "Price & Volume": {
+          "score": 39.4,
+          "weight": 17.1
+        },
+        "Technical": {
+          "score": 51.2,
+          "weight": 14.9
+        },
+        "Profitability": {
+          "score": 66.6,
+          "weight": 10.6
+        },
+        "Balance Sheet": {
+          "score": 51.4,
+          "weight": 10.5
+        },
+        "Growth": {
+          "score": 54.9,
+          "weight": 9.9
+        },
+        "Financial Ratios": {
+          "score": 40.4,
+          "weight": 9.9
+        },
+        "Ownership": {
+          "score": 77.4,
+          "weight": 8.4
+        },
+        "Valuation": {
+          "score": 51.2,
+          "weight": 7.6
+        },
+        "Cash Flow": {
+          "score": 50,
+          "weight": 7.4
+        }
+      }
+    },
+    {
+      "symbol": "BPCL",
+      "co_code": 2290,
+      "sector": "Refineries",
+      "overall": 51.7,
+      "verdict": "HOLD",
+      "segments": {
+        "Price & Volume": {
+          "score": 40,
+          "weight": 17.1
+        },
+        "Technical": {
+          "score": 48,
+          "weight": 14.9
+        },
+        "Profitability": {
+          "score": 66.7,
+          "weight": 10.6
+        },
+        "Balance Sheet": {
+          "score": 54,
+          "weight": 10.5
+        },
+        "Growth": {
+          "score": 54.7,
+          "weight": 9.9
+        },
+        "Financial Ratios": {
+          "score": 69.3,
+          "weight": 9.9
+        },
+        "Ownership": {
+          "score": 54.9,
+          "weight": 8.4
+        },
+        "Valuation": {
+          "score": 35.8,
+          "weight": 7.6
+        },
+        "Cash Flow": {
+          "score": 46.1,
+          "weight": 7.4
+        }
+      }
+    },
+    {
+      "symbol": "TECHM",
+      "co_code": 17215,
+      "sector": "IT - Software",
+      "overall": 51,
+      "verdict": "HOLD",
+      "segments": {
+        "Price & Volume": {
+          "score": 65.1,
+          "weight": 17.1
+        },
+        "Technical": {
+          "score": 88.7,
+          "weight": 14.9
+        },
+        "Profitability": {
+          "score": 48.5,
+          "weight": 10.6
+        },
+        "Balance Sheet": {
+          "score": 24,
+          "weight": 10.5
+        },
+        "Growth": {
+          "score": 19.7,
+          "weight": 9.9
+        },
+        "Financial Ratios": {
+          "score": 33.7,
+          "weight": 9.9
+        },
+        "Ownership": {
+          "score": 54.6,
+          "weight": 8.4
+        },
+        "Valuation": {
+          "score": 47.6,
+          "weight": 7.6
+        },
+        "Cash Flow": {
+          "score": 49.8,
+          "weight": 7.4
+        }
+      }
+    },
+    {
+      "symbol": "HINDALCO",
+      "co_code": 252,
+      "sector": "Non Ferrous Metals",
+      "overall": 50.7,
+      "verdict": "HOLD",
+      "segments": {
+        "Price & Volume": {
+          "score": 36,
+          "weight": 17.1
+        },
+        "Technical": {
+          "score": 41,
+          "weight": 14.9
+        },
+        "Profitability": {
+          "score": 75.1,
+          "weight": 10.6
+        },
+        "Balance Sheet": {
+          "score": 48.8,
+          "weight": 10.5
+        },
+        "Growth": {
+          "score": 38.3,
+          "weight": 9.9
+        },
+        "Financial Ratios": {
+          "score": 53.7,
+          "weight": 9.9
+        },
+        "Ownership": {
+          "score": 62.4,
+          "weight": 8.4
+        },
+        "Valuation": {
+          "score": 50.6,
+          "weight": 7.6
+        },
+        "Cash Flow": {
+          "score": 71,
+          "weight": 7.4
+        }
+      }
+    },
+    {
+      "symbol": "TITAN",
+      "co_code": 1016,
+      "sector": "Diamond, Gems and Jewellery",
+      "overall": 50.6,
+      "verdict": "HOLD",
+      "segments": {
+        "Price & Volume": {
+          "score": 23.8,
+          "weight": 17.1
+        },
+        "Technical": {
+          "score": 34.1,
+          "weight": 14.9
+        },
+        "Profitability": {
+          "score": 62.6,
+          "weight": 10.6
+        },
+        "Balance Sheet": {
+          "score": 45,
+          "weight": 10.5
+        },
+        "Growth": {
+          "score": 76.5,
+          "weight": 9.9
+        },
+        "Financial Ratios": {
+          "score": 73.9,
+          "weight": 9.9
+        },
+        "Ownership": {
+          "score": 38.1,
+          "weight": 8.4
+        },
+        "Valuation": {
+          "score": 66,
+          "weight": 7.6
+        },
+        "Cash Flow": {
+          "score": 68.4,
+          "weight": 7.4
+        }
+      }
+    },
+    {
+      "symbol": "WIPRO",
+      "co_code": 614,
+      "sector": "IT - Software",
+      "overall": 50.6,
+      "verdict": "HOLD",
+      "segments": {
+        "Price & Volume": {
+          "score": 83.7,
+          "weight": 17.1
+        },
+        "Technical": {
+          "score": 90.7,
+          "weight": 14.9
+        },
+        "Profitability": {
+          "score": 36.8,
+          "weight": 10.6
+        },
+        "Balance Sheet": {
+          "score": 23.8,
+          "weight": 10.5
+        },
+        "Growth": {
+          "score": 30.9,
+          "weight": 9.9
+        },
+        "Financial Ratios": {
+          "score": 33.3,
+          "weight": 9.9
+        },
+        "Ownership": {
+          "score": 28.3,
+          "weight": 8.4
+        },
+        "Valuation": {
+          "score": 40.9,
+          "weight": 7.6
+        },
+        "Cash Flow": {
+          "score": 36.3,
+          "weight": 7.4
+        }
+      }
+    },
+    {
+      "symbol": "CIPLA",
+      "co_code": 114,
+      "sector": "Pharmaceuticals",
+      "overall": 50.1,
+      "verdict": "HOLD",
+      "segments": {
+        "Price & Volume": {
+          "score": 55.3,
+          "weight": 17.1
+        },
+        "Technical": {
+          "score": 65.3,
+          "weight": 14.9
+        },
+        "Profitability": {
+          "score": 38.2,
+          "weight": 10.6
+        },
+        "Balance Sheet": {
+          "score": 35.7,
+          "weight": 10.5
+        },
+        "Growth": {
+          "score": 34.5,
+          "weight": 9.9
+        },
+        "Financial Ratios": {
+          "score": 40.2,
+          "weight": 9.9
+        },
+        "Ownership": {
+          "score": 62.8,
+          "weight": 8.4
+        },
+        "Valuation": {
+          "score": 51.8,
+          "weight": 7.6
+        },
+        "Cash Flow": {
+          "score": 62.8,
+          "weight": 7.4
+        }
+      }
+    },
+    {
+      "symbol": "HEROMOTOCO",
+      "co_code": 237,
+      "sector": "Automobile",
+      "overall": 49.3,
+      "verdict": "UNDERPERFORM",
+      "segments": {
+        "Price & Volume": {
+          "score": 31.3,
+          "weight": 17.1
+        },
+        "Technical": {
+          "score": 55.9,
+          "weight": 14.9
+        },
+        "Profitability": {
+          "score": 52.6,
+          "weight": 10.6
+        },
+        "Balance Sheet": {
+          "score": 57.4,
+          "weight": 10.5
+        },
+        "Growth": {
+          "score": 35.2,
+          "weight": 9.9
+        },
+        "Financial Ratios": {
+          "score": 58.8,
+          "weight": 9.9
+        },
+        "Ownership": {
+          "score": 72.3,
+          "weight": 8.4
+        },
+        "Valuation": {
+          "score": 40.4,
+          "weight": 7.6
+        },
+        "Cash Flow": {
+          "score": 51.1,
+          "weight": 7.4
+        }
+      }
+    },
+    {
+      "symbol": "ULTRACEMCO",
+      "co_code": 24951,
+      "sector": "Cement",
+      "overall": 48.5,
+      "verdict": "UNDERPERFORM",
+      "segments": {
+        "Price & Volume": {
+          "score": 30.2,
+          "weight": 17.1
+        },
+        "Technical": {
+          "score": 48.1,
+          "weight": 14.9
+        },
+        "Profitability": {
+          "score": 62.9,
+          "weight": 10.6
+        },
+        "Balance Sheet": {
+          "score": 57.6,
+          "weight": 10.5
+        },
+        "Growth": {
+          "score": 60.7,
+          "weight": 9.9
+        },
+        "Financial Ratios": {
+          "score": 38.1,
+          "weight": 9.9
+        },
+        "Ownership": {
+          "score": 29.6,
+          "weight": 8.4
+        },
+        "Valuation": {
+          "score": 58.5,
+          "weight": 7.6
+        },
+        "Cash Flow": {
+          "score": 66.9,
+          "weight": 7.4
+        }
+      }
+    },
+    {
+      "symbol": "BAJAJ-AUTO",
+      "co_code": 28074,
+      "sector": "Automobile",
+      "overall": 48.1,
+      "verdict": "UNDERPERFORM",
+      "segments": {
+        "Price & Volume": {
+          "score": 25,
+          "weight": 17.1
+        },
+        "Technical": {
+          "score": 42.9,
+          "weight": 14.9
+        },
+        "Profitability": {
+          "score": 48,
+          "weight": 10.6
+        },
+        "Balance Sheet": {
+          "score": 72.2,
+          "weight": 10.5
+        },
+        "Growth": {
+          "score": 61.2,
+          "weight": 9.9
+        },
+        "Financial Ratios": {
+          "score": 63.1,
+          "weight": 9.9
+        },
+        "Ownership": {
+          "score": 36.6,
+          "weight": 8.4
+        },
+        "Valuation": {
+          "score": 42.2,
+          "weight": 7.6
+        },
+        "Cash Flow": {
+          "score": 59.2,
+          "weight": 7.4
+        }
+      }
+    },
+    {
+      "symbol": "TCS",
+      "co_code": 5400,
+      "sector": "IT - Software",
+      "overall": 48,
+      "verdict": "UNDERPERFORM",
+      "segments": {
+        "Price & Volume": {
+          "score": 73,
+          "weight": 17.1
+        },
+        "Technical": {
+          "score": 85.6,
+          "weight": 14.9
+        },
+        "Profitability": {
+          "score": 14.5,
+          "weight": 10.6
+        },
+        "Balance Sheet": {
+          "score": 50.5,
+          "weight": 10.5
+        },
+        "Growth": {
+          "score": 43.2,
+          "weight": 9.9
+        },
+        "Financial Ratios": {
+          "score": 24.2,
+          "weight": 9.9
+        },
+        "Ownership": {
+          "score": 32.7,
+          "weight": 8.4
+        },
+        "Valuation": {
+          "score": 46.1,
+          "weight": 7.6
+        },
+        "Cash Flow": {
+          "score": 16.8,
+          "weight": 7.4
+        }
+      }
+    },
+    {
+      "symbol": "JSWSTEEL",
+      "co_code": 4764,
+      "sector": "Steel",
+      "overall": 47.9,
+      "verdict": "UNDERPERFORM",
+      "segments": {
+        "Price & Volume": {
+          "score": 26.7,
+          "weight": 17.1
+        },
+        "Technical": {
+          "score": 32.8,
+          "weight": 14.9
+        },
+        "Profitability": {
+          "score": 77.9,
+          "weight": 10.6
+        },
+        "Balance Sheet": {
+          "score": 49.6,
+          "weight": 10.5
+        },
+        "Growth": {
+          "score": 53.5,
+          "weight": 9.9
+        },
+        "Financial Ratios": {
+          "score": 50,
+          "weight": 9.9
+        },
+        "Ownership": {
+          "score": 43.8,
+          "weight": 8.4
+        },
+        "Valuation": {
+          "score": 60.6,
+          "weight": 7.6
+        },
+        "Cash Flow": {
+          "score": 62.6,
+          "weight": 7.4
+        }
+      }
+    },
+    {
+      "symbol": "NESTLEIND",
+      "co_code": 175,
+      "sector": "FMCG",
+      "overall": 47.7,
+      "verdict": "UNDERPERFORM",
+      "segments": {
+        "Price & Volume": {
+          "score": 30.3,
+          "weight": 17.1
+        },
+        "Technical": {
+          "score": 51.1,
+          "weight": 14.9
+        },
+        "Profitability": {
+          "score": 39.1,
+          "weight": 10.6
+        },
+        "Balance Sheet": {
+          "score": 55.5,
+          "weight": 10.5
+        },
+        "Growth": {
+          "score": 62.4,
+          "weight": 9.9
+        },
+        "Financial Ratios": {
+          "score": 61,
+          "weight": 9.9
+        },
+        "Ownership": {
+          "score": 34.4,
+          "weight": 8.4
+        },
+        "Valuation": {
+          "score": 49,
+          "weight": 7.6
+        },
+        "Cash Flow": {
+          "score": 58,
+          "weight": 7.4
+        }
+      }
+    },
+    {
+      "symbol": "SBIN",
+      "co_code": 1375,
+      "sector": "Banks",
+      "overall": 47.4,
+      "verdict": "UNDERPERFORM",
+      "segments": {
+        "Price & Volume": {
+          "score": 31,
+          "weight": 17.1
+        },
+        "Technical": {
+          "score": 17.9,
+          "weight": 14.9
+        },
+        "Profitability": {
+          "score": 74.3,
+          "weight": 10.6
+        },
+        "Balance Sheet": {
+          "score": 71.7,
+          "weight": 10.5
+        },
+        "Growth": {
+          "score": 49,
+          "weight": 9.9
+        },
+        "Financial Ratios": {
+          "score": 79,
+          "weight": 9.9
+        },
+        "Ownership": {
+          "score": 48.2,
+          "weight": 8.4
+        },
+        "Valuation": {
+          "score": 50.1,
+          "weight": 7.6
+        },
+        "Cash Flow": {
+          "score": 23.7,
+          "weight": 7.4
+        }
+      }
+    },
+    {
+      "symbol": "SHRIRAMFIN",
+      "co_code": 1745,
+      "sector": "Finance",
+      "overall": 47.3,
+      "verdict": "UNDERPERFORM",
+      "segments": {
+        "Price & Volume": {
+          "score": 33.3,
+          "weight": 17.1
+        },
+        "Technical": {
+          "score": 38.3,
+          "weight": 14.9
+        },
+        "Profitability": {
+          "score": 50.6,
+          "weight": 10.6
+        },
+        "Balance Sheet": {
+          "score": 43,
+          "weight": 10.5
+        },
+        "Growth": {
+          "score": 57.8,
+          "weight": 9.9
+        },
+        "Financial Ratios": {
+          "score": 60.2,
+          "weight": 9.9
+        },
+        "Ownership": {
+          "score": 57.9,
+          "weight": 8.4
+        },
+        "Valuation": {
+          "score": 37.5,
+          "weight": 7.6
+        },
+        "Cash Flow": {
+          "score": 65.9,
+          "weight": 7.4
+        }
+      }
+    },
+    {
+      "symbol": "HCLTECH",
+      "co_code": 5656,
+      "sector": "IT - Software",
+      "overall": 47.2,
+      "verdict": "UNDERPERFORM",
+      "segments": {
+        "Price & Volume": {
+          "score": 64.6,
+          "weight": 17.1
+        },
+        "Technical": {
+          "score": 87.4,
+          "weight": 14.9
+        },
+        "Profitability": {
+          "score": 27.4,
+          "weight": 10.6
+        },
+        "Balance Sheet": {
+          "score": 27.6,
+          "weight": 10.5
+        },
+        "Growth": {
+          "score": 40.7,
+          "weight": 9.9
+        },
+        "Financial Ratios": {
+          "score": 32,
+          "weight": 9.9
+        },
+        "Ownership": {
+          "score": 39.9,
+          "weight": 8.4
+        },
+        "Valuation": {
+          "score": 42,
+          "weight": 7.6
+        },
+        "Cash Flow": {
+          "score": 25,
+          "weight": 7.4
+        }
+      }
+    },
+    {
+      "symbol": "BRITANNIA",
+      "co_code": 93,
+      "sector": "FMCG",
+      "overall": 45.5,
+      "verdict": "UNDERPERFORM",
+      "segments": {
+        "Price & Volume": {
+          "score": 22.5,
+          "weight": 17.1
+        },
+        "Technical": {
+          "score": 50.8,
+          "weight": 14.9
+        },
+        "Profitability": {
+          "score": 37.5,
+          "weight": 10.6
+        },
+        "Balance Sheet": {
+          "score": 50.6,
+          "weight": 10.5
+        },
+        "Growth": {
+          "score": 42.8,
+          "weight": 9.9
+        },
+        "Financial Ratios": {
+          "score": 65.9,
+          "weight": 9.9
+        },
+        "Ownership": {
+          "score": 45.3,
+          "weight": 8.4
+        },
+        "Valuation": {
+          "score": 52.8,
+          "weight": 7.6
+        },
+        "Cash Flow": {
+          "score": 61,
+          "weight": 7.4
+        }
+      }
+    },
+    {
+      "symbol": "HINDUNILVR",
+      "co_code": 255,
+      "sector": "FMCG",
+      "overall": 45.4,
+      "verdict": "UNDERPERFORM",
+      "segments": {
+        "Price & Volume": {
+          "score": 53,
+          "weight": 17.1
+        },
+        "Technical": {
+          "score": 57.7,
+          "weight": 14.9
+        },
+        "Profitability": {
+          "score": 36,
+          "weight": 10.6
+        },
+        "Balance Sheet": {
+          "score": 49.5,
+          "weight": 10.5
+        },
+        "Growth": {
+          "score": 35.3,
+          "weight": 9.9
+        },
+        "Financial Ratios": {
+          "score": 40.9,
+          "weight": 9.9
+        },
+        "Ownership": {
+          "score": 37.6,
+          "weight": 8.4
+        },
+        "Valuation": {
+          "score": 52.1,
+          "weight": 7.6
+        },
+        "Cash Flow": {
+          "score": 31.8,
+          "weight": 7.4
+        }
+      }
+    },
+    {
+      "symbol": "DIVISLAB",
+      "co_code": 21188,
+      "sector": "Pharmaceuticals",
+      "overall": 45.3,
+      "verdict": "UNDERPERFORM",
+      "segments": {
+        "Price & Volume": {
+          "score": 31.5,
+          "weight": 17.1
+        },
+        "Technical": {
+          "score": 47.8,
+          "weight": 14.9
+        },
+        "Profitability": {
+          "score": 37.9,
+          "weight": 10.6
+        },
+        "Balance Sheet": {
+          "score": 40.2,
+          "weight": 10.5
+        },
+        "Growth": {
+          "score": 32.4,
+          "weight": 9.9
+        },
+        "Financial Ratios": {
+          "score": 48.5,
+          "weight": 9.9
+        },
+        "Ownership": {
+          "score": 63.7,
+          "weight": 8.4
+        },
+        "Valuation": {
+          "score": 56.5,
+          "weight": 7.6
+        },
+        "Cash Flow": {
+          "score": 70.3,
+          "weight": 7.4
+        }
+      }
+    },
+    {
+      "symbol": "DRREDDY",
+      "co_code": 815,
+      "sector": "Pharmaceuticals",
+      "overall": 44.9,
+      "verdict": "UNDERPERFORM",
+      "segments": {
+        "Price & Volume": {
+          "score": 34.3,
+          "weight": 17.1
+        },
+        "Technical": {
+          "score": 40,
+          "weight": 14.9
+        },
+        "Profitability": {
+          "score": 39.7,
+          "weight": 10.6
+        },
+        "Balance Sheet": {
+          "score": 43.4,
+          "weight": 10.5
+        },
+        "Growth": {
+          "score": 58.6,
+          "weight": 9.9
+        },
+        "Financial Ratios": {
+          "score": 40.3,
+          "weight": 9.9
+        },
+        "Ownership": {
+          "score": 56.7,
+          "weight": 8.4
+        },
+        "Valuation": {
+          "score": 40,
+          "weight": 7.6
+        },
+        "Cash Flow": {
+          "score": 68,
+          "weight": 7.4
+        }
+      }
+    },
+    {
+      "symbol": "EICHERMOT",
+      "co_code": 151,
+      "sector": "Automobile",
+      "overall": 44.9,
+      "verdict": "UNDERPERFORM",
+      "segments": {
+        "Price & Volume": {
+          "score": 14.4,
+          "weight": 17.1
+        },
+        "Technical": {
+          "score": 32.5,
+          "weight": 14.9
+        },
+        "Profitability": {
+          "score": 34.7,
+          "weight": 10.6
+        },
+        "Balance Sheet": {
+          "score": 68.4,
+          "weight": 10.5
+        },
+        "Growth": {
+          "score": 59.5,
+          "weight": 9.9
+        },
+        "Financial Ratios": {
+          "score": 58.6,
+          "weight": 9.9
+        },
+        "Ownership": {
+          "score": 60.8,
+          "weight": 8.4
+        },
+        "Valuation": {
+          "score": 49.9,
+          "weight": 7.6
+        },
+        "Cash Flow": {
+          "score": 61,
+          "weight": 7.4
+        }
+      }
+    },
+    {
+      "symbol": "APOLLOHOSP",
+      "co_code": 636,
+      "sector": "Healthcare",
+      "overall": 44.1,
+      "verdict": "UNDERPERFORM",
+      "segments": {
+        "Price & Volume": {
+          "score": 16.2,
+          "weight": 17.1
+        },
+        "Technical": {
+          "score": 24.2,
+          "weight": 14.9
+        },
+        "Profitability": {
+          "score": 57.8,
+          "weight": 10.6
+        },
+        "Balance Sheet": {
+          "score": 50.5,
+          "weight": 10.5
+        },
+        "Growth": {
+          "score": 50.2,
+          "weight": 9.9
+        },
+        "Financial Ratios": {
+          "score": 35.3,
+          "weight": 9.9
+        },
+        "Ownership": {
+          "score": 62.5,
+          "weight": 8.4
+        },
+        "Valuation": {
+          "score": 67.8,
+          "weight": 7.6
+        },
+        "Cash Flow": {
+          "score": 78.5,
+          "weight": 7.4
+        }
+      }
+    },
+    {
+      "symbol": "TATASTEEL",
+      "co_code": 566,
+      "sector": "Steel",
+      "overall": 43,
+      "verdict": "UNDERPERFORM",
+      "segments": {
+        "Price & Volume": {
+          "score": 31.2,
+          "weight": 17.1
+        },
+        "Technical": {
+          "score": 22.8,
+          "weight": 14.9
+        },
+        "Profitability": {
+          "score": 79.6,
+          "weight": 10.6
+        },
+        "Balance Sheet": {
+          "score": 40.8,
+          "weight": 10.5
+        },
+        "Growth": {
+          "score": 19.4,
+          "weight": 9.9
+        },
+        "Financial Ratios": {
+          "score": 54.5,
+          "weight": 9.9
+        },
+        "Ownership": {
+          "score": 62.1,
+          "weight": 8.4
+        },
+        "Valuation": {
+          "score": 47.8,
+          "weight": 7.6
+        },
+        "Cash Flow": {
+          "score": 51.7,
+          "weight": 7.4
+        }
+      }
+    },
+    {
+      "symbol": "ADANIPORTS",
+      "co_code": 21281,
+      "sector": "Marine Port & Services",
+      "overall": 42.1,
+      "verdict": "UNDERPERFORM",
+      "segments": {
+        "Price & Volume": {
+          "score": 35.2,
+          "weight": 17.1
+        },
+        "Technical": {
+          "score": 60.4,
+          "weight": 14.9
+        },
+        "Profitability": {
+          "score": 29.4,
+          "weight": 10.6
+        },
+        "Balance Sheet": {
+          "score": 33.9,
+          "weight": 10.5
+        },
+        "Growth": {
+          "score": 54.6,
+          "weight": 9.9
+        },
+        "Financial Ratios": {
+          "score": 32.9,
+          "weight": 9.9
+        },
+        "Ownership": {
+          "score": 23.6,
+          "weight": 8.4
+        },
+        "Valuation": {
+          "score": 51.7,
+          "weight": 7.6
+        },
+        "Cash Flow": {
+          "score": 57.5,
+          "weight": 7.4
+        }
+      }
+    },
+    {
+      "symbol": "SUNPHARMA",
+      "co_code": 4325,
+      "sector": "Pharmaceuticals",
+      "overall": 40.3,
+      "verdict": "UNDERPERFORM",
+      "segments": {
+        "Price & Volume": {
+          "score": 35.3,
+          "weight": 17.1
+        },
+        "Technical": {
+          "score": 40.5,
+          "weight": 14.9
+        },
+        "Profitability": {
+          "score": 40.6,
+          "weight": 10.6
+        },
+        "Balance Sheet": {
+          "score": 34.4,
+          "weight": 10.5
+        },
+        "Growth": {
+          "score": 37.8,
+          "weight": 9.9
+        },
+        "Financial Ratios": {
+          "score": 34.7,
+          "weight": 9.9
+        },
+        "Ownership": {
+          "score": 49.2,
+          "weight": 8.4
+        },
+        "Valuation": {
+          "score": 55.4,
+          "weight": 7.6
+        },
+        "Cash Flow": {
+          "score": 44.5,
+          "weight": 7.4
+        }
+      }
+    },
+    {
+      "symbol": "ONGC",
+      "co_code": 6068,
+      "sector": "Crude Oil & Natural Gas",
+      "overall": 39.7,
+      "verdict": "UNDERPERFORM",
+      "segments": {
+        "Price & Volume": {
+          "score": 39.3,
+          "weight": 17.1
+        },
+        "Technical": {
+          "score": 17.4,
+          "weight": 14.9
+        },
+        "Profitability": {
+          "score": 56.8,
+          "weight": 10.6
+        },
+        "Balance Sheet": {
+          "score": 39.2,
+          "weight": 10.5
+        },
+        "Growth": {
+          "score": 52.5,
+          "weight": 9.9
+        },
+        "Financial Ratios": {
+          "score": 55.2,
+          "weight": 9.9
+        },
+        "Ownership": {
+          "score": 41.2,
+          "weight": 8.4
+        },
+        "Valuation": {
+          "score": 34.7,
+          "weight": 7.6
+        },
+        "Cash Flow": {
+          "score": 27.1,
+          "weight": 7.4
+        }
+      }
+    },
+    {
+      "symbol": "COALINDIA",
+      "co_code": 12019,
+      "sector": "Mining & Mineral products",
+      "overall": 39.5,
+      "verdict": "UNDERPERFORM",
+      "segments": {
+        "Price & Volume": {
+          "score": 45.5,
+          "weight": 17.1
+        },
+        "Technical": {
+          "score": 43,
+          "weight": 14.9
+        },
+        "Profitability": {
+          "score": 22.1,
+          "weight": 10.6
+        },
+        "Balance Sheet": {
+          "score": 45.7,
+          "weight": 10.5
+        },
+        "Growth": {
+          "score": 49.9,
+          "weight": 9.9
+        },
+        "Financial Ratios": {
+          "score": 39.4,
+          "weight": 9.9
+        },
+        "Ownership": {
+          "score": 43.2,
+          "weight": 8.4
+        },
+        "Valuation": {
+          "score": 35.2,
+          "weight": 7.6
+        },
+        "Cash Flow": {
+          "score": 21.5,
+          "weight": 7.4
+        }
+      }
+    },
+    {
+      "symbol": "NTPC",
+      "co_code": 12001,
+      "sector": "Power Generation & Distribution",
+      "overall": 38.7,
+      "verdict": "UNDERPERFORM",
+      "segments": {
+        "Price & Volume": {
+          "score": 38.3,
+          "weight": 17.1
+        },
+        "Technical": {
+          "score": 26.8,
+          "weight": 14.9
+        },
+        "Profitability": {
+          "score": 51.8,
+          "weight": 10.6
+        },
+        "Balance Sheet": {
+          "score": 22.5,
+          "weight": 10.5
+        },
+        "Growth": {
+          "score": 49.8,
+          "weight": 9.9
+        },
+        "Financial Ratios": {
+          "score": 32.3,
+          "weight": 9.9
+        },
+        "Ownership": {
+          "score": 57.9,
+          "weight": 8.4
+        },
+        "Valuation": {
+          "score": 36.9,
+          "weight": 7.6
+        },
+        "Cash Flow": {
+          "score": 41.5,
+          "weight": 7.4
+        }
+      }
+    },
+    {
+      "symbol": "POWERGRID",
+      "co_code": 5455,
+      "sector": "Power Generation & Distribution",
+      "overall": 33.5,
+      "verdict": "AVOID",
+      "segments": {
+        "Price & Volume": {
+          "score": 38,
+          "weight": 17.1
+        },
+        "Technical": {
+          "score": 35.6,
+          "weight": 14.9
+        },
+        "Profitability": {
+          "score": 28.8,
+          "weight": 10.6
+        },
+        "Balance Sheet": {
+          "score": 16.5,
+          "weight": 10.5
+        },
+        "Growth": {
+          "score": 38,
+          "weight": 9.9
+        },
+        "Financial Ratios": {
+          "score": 32.6,
+          "weight": 9.9
+        },
+        "Ownership": {
+          "score": 46.4,
+          "weight": 8.4
+        },
+        "Valuation": {
+          "score": 31.8,
+          "weight": 7.6
+        },
+        "Cash Flow": {
+          "score": 31.7,
+          "weight": 7.4
+        }
+      }
+    }
+  ]
+}
