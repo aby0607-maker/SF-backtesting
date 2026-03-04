@@ -1,0 +1,5 @@
+# Raw API responses — don't commit (contains API data, large files)
+api-cache/
+
+# Keep results tracked (analysis outputs are valuable)
+!results/
