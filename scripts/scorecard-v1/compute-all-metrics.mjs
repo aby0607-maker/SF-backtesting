@@ -99,6 +99,108 @@ function rv(stmtMap, rowno, col) {
   return stmtMap[rowno]?.values?.[col] ?? null
 }
 
+/**
+ * Description-based row resolver.
+ * Consolidated P&L/BS/CF have different row numbers than standalone.
+ * This finds rows by matching description keywords, with rowno fallback.
+ */
+function buildRowResolver(stmtMap) {
+  // Create name → rowno index (lowercase)
+  const nameIndex = {}
+  for (const [rn, entry] of Object.entries(stmtMap)) {
+    const name = entry.name.toLowerCase()
+    nameIndex[name] = parseInt(rn)
+  }
+
+  /**
+   * Resolve a row by trying: exact rowno first, then keyword match in descriptions.
+   * keywords is an array of strings to match (case-insensitive, in order of preference).
+   */
+  return function resolveRow(stmtMap, preferredRowno, keywords, col) {
+    // Try preferred rowno first
+    const val = rv(stmtMap, preferredRowno, col)
+    if (val != null && val !== 0) return val
+
+    // Try keyword matching
+    for (const kw of keywords) {
+      const kwLower = kw.toLowerCase()
+      for (const [name, rn] of Object.entries(nameIndex)) {
+        if (name.includes(kwLower) || name === kwLower) {
+          const v = rv(stmtMap, rn, col)
+          if (v != null && v !== 0) return v
+        }
+      }
+    }
+    return null
+  }
+}
+
+/**
+ * Auto-detect row mapping for P&L, BS, CF.
+ * Returns a mapping object with logical names → actual row numbers.
+ */
+function detectRowMapping(PNL, BS, CF) {
+  const findRow = (stmtMap, keywords) => {
+    for (const [rn, entry] of Object.entries(stmtMap)) {
+      const name = entry.name.toLowerCase()
+      for (const kw of keywords) {
+        if (name === kw.toLowerCase() || name.includes(kw.toLowerCase())) {
+          return parseInt(rn)
+        }
+      }
+    }
+    return null
+  }
+
+  const mapping = {
+    // P&L
+    pnl_revenue_ops: findRow(PNL, ['revenue from operations']),
+    pnl_total_revenue: findRow(PNL, ['total revenue']),
+    pnl_other_income: findRow(PNL, ['other income']),
+    pnl_cogs: findRow(PNL, ['cost of material consumed', 'cost of materials consumed']),
+    pnl_employee_cost: findRow(PNL, ['employee benefits', 'employee benefit']),
+    pnl_finance_costs: findRow(PNL, ['finance costs', 'finance cost']),
+    pnl_da: findRow(PNL, ['depreciation and amortization', 'depreciation and amortisation']),
+    pnl_total_expenses: findRow(PNL, ['total expenses']),
+    pnl_pbt: findRow(PNL, ['profit before tax']),
+    pnl_tax: findRow(PNL, ['taxation']),
+    pnl_pat: findRow(PNL, ['profit after tax']),
+    pnl_pat_attr: findRow(PNL, ['profit attributable to shareholders']),
+    pnl_eps: findRow(PNL, ['earning per share - basic', 'earnings per share - basic']),
+    pnl_ebitda: findRow(PNL, ['operation profit before depreciation', 'operating profit before depreciation']),
+    pnl_dps: findRow(PNL, ['dividend per share']),
+    pnl_exceptional: findRow(PNL, ['exceptional items before tax']),
+    pnl_shares_basic: findRow(PNL, ['weighted average shares - basic']),
+
+    // BS
+    bs_fixed_assets: findRow(BS, ['fixed assets']),
+    bs_inventory: findRow(BS, ['inventories']),
+    bs_current_inv: findRow(BS, ['current investments']),
+    bs_cash: findRow(BS, ['cash and cash equivalents']),
+    bs_trade_recv: findRow(BS, ['trade receivables']),
+    bs_total_ca: findRow(BS, ['total current assets']),
+    bs_total_assets: findRow(BS, ['total assets']),
+    bs_st_borrowings: findRow(BS, ['short term borrowings', 'short-term borrowings']),
+    bs_trade_pay: findRow(BS, ['trade payables']),
+    bs_total_cl: findRow(BS, ['total current liabilities']),
+    bs_lt_borrowings: findRow(BS, ['long term borrowings', 'long-term borrowings']),
+    bs_shareholder_fund: findRow(BS, ["total shareholder's fund", 'total shareholders fund']),
+    bs_total_equity: findRow(BS, ['total equity']),
+    bs_shares: findRow(BS, ['susbcribed & fully paid up shares', 'subscribed & fully paid up shares', 'subscribed and fully paid up shares']),
+    bs_par_value: findRow(BS, ['par value']),
+    bs_equity_capital: findRow(BS, ['equity capital']),
+
+    // CF
+    cf_ocf: findRow(CF, ['net cash generated from (used in) operations', 'net cash from operating']),
+    cf_capex: findRow(CF, ['purchase of fixed assets']),
+    cf_cash_investing: findRow(CF, ['net cash from investing', 'net cash generated from (used in) investing']),
+    cf_div_paid: findRow(CF, ['dividend paid', 'dividends paid']),
+    cf_cash_financing: findRow(CF, ['net cash from financing', 'net cash generated from (used in) financing']),
+  }
+
+  return mapping
+}
+
 /** Parse OHLCV into sorted records */
 function parseOHLCV(data) {
   if (!Array.isArray(data)) return []
@@ -124,7 +226,7 @@ function priceAt(ohlcv, targetDate) {
 }
 
 /** Get price series up to target date */
-function priceSeriesUpTo(ohlcv, targetDate, maxDays = 300) {
+function priceSeriesUpTo(ohlcv, targetDate, maxDays = 800) {
   const target = new Date(targetDate)
   return ohlcv.filter(r => new Date(r.date) <= target).slice(-maxDays)
 }
@@ -306,45 +408,45 @@ function cagr(curr, prev, years) {
  * Compute ALL fundamental metrics at a given FY year column.
  * Maps to metricDefinitions.ts IDs where possible.
  */
-function computeFundamentals(PNL, BS, CF, yearCol, prevYearCol, allYearCols, price, sharesOS) {
+function computeFundamentals(PNL, BS, CF, yearCol, prevYearCol, allYearCols, price, sharesOS, R) {
   const m = {}
 
-  // ── P&L values ──
-  const revenue     = rv(PNL, 10, yearCol) || rv(PNL, 1, yearCol) // TotalRevenue or RevFromOps
-  const revFromOps  = rv(PNL, 1, yearCol)
-  const cogs        = rv(PNL, 12, yearCol)
-  const employeeCost= rv(PNL, 15, yearCol)
-  const otherIncome = rv(PNL, 9, yearCol)
-  const financeCosts= rv(PNL, 20, yearCol)
-  const da          = rv(PNL, 21, yearCol)
-  const pbt         = rv(PNL, 28, yearCol)
-  const tax         = rv(PNL, 29, yearCol)
-  const pat         = rv(PNL, 35, yearCol)
-  const eps         = rv(PNL, 44, yearCol)
-  const ebitda      = rv(PNL, 46, yearCol)
-  const dps         = rv(PNL, 48, yearCol)
+  // ── P&L values (using auto-detected row mapping R) ──
+  const revenue     = rv(PNL, R.pnl_total_revenue, yearCol) || rv(PNL, R.pnl_revenue_ops, yearCol)
+  const revFromOps  = rv(PNL, R.pnl_revenue_ops, yearCol)
+  const cogs        = rv(PNL, R.pnl_cogs, yearCol)
+  const employeeCost= rv(PNL, R.pnl_employee_cost, yearCol)
+  const otherIncome = rv(PNL, R.pnl_other_income, yearCol)
+  const financeCosts= rv(PNL, R.pnl_finance_costs, yearCol)
+  const da          = rv(PNL, R.pnl_da, yearCol)
+  const pbt         = rv(PNL, R.pnl_pbt, yearCol)
+  const tax         = rv(PNL, R.pnl_tax, yearCol)
+  const pat         = rv(PNL, R.pnl_pat, yearCol) || rv(PNL, R.pnl_pat_attr, yearCol)
+  const eps         = rv(PNL, R.pnl_eps, yearCol)
+  const ebitda      = rv(PNL, R.pnl_ebitda, yearCol)
+  const dps         = rv(PNL, R.pnl_dps, yearCol)
 
   // ── Balance Sheet values ──
-  const fixedAssets    = rv(BS, 2, yearCol)
-  const inventory      = rv(BS, 25, yearCol)
-  const currentInv     = rv(BS, 27, yearCol)
-  const cash           = rv(BS, 29, yearCol) ?? rv(BS, 28, yearCol)
-  const tradeRecv      = rv(BS, 31, yearCol)
-  const totalCA        = rv(BS, 41, yearCol)
-  const totalAssets    = rv(BS, 42, yearCol)
-  const stBorrowings   = rv(BS, 44, yearCol)
-  const tradePay       = rv(BS, 46, yearCol)
-  const totalCL        = rv(BS, 55, yearCol)
-  const ltBorrowings   = rv(BS, 58, yearCol)
-  const shareholderFund= rv(BS, 80, yearCol)
-  const sharesOutstanding = sharesOS || rv(BS, 91, yearCol)
+  const fixedAssets    = rv(BS, R.bs_fixed_assets, yearCol)
+  const inventory      = rv(BS, R.bs_inventory, yearCol)
+  const currentInv     = rv(BS, R.bs_current_inv, yearCol)
+  const cash           = rv(BS, R.bs_cash, yearCol)
+  const tradeRecv      = rv(BS, R.bs_trade_recv, yearCol)
+  const totalCA        = rv(BS, R.bs_total_ca, yearCol)
+  const totalAssets    = rv(BS, R.bs_total_assets, yearCol)
+  const stBorrowings   = rv(BS, R.bs_st_borrowings, yearCol)
+  const tradePay       = rv(BS, R.bs_trade_pay, yearCol)
+  const totalCL        = rv(BS, R.bs_total_cl, yearCol)
+  const ltBorrowings   = rv(BS, R.bs_lt_borrowings, yearCol)
+  const shareholderFund= rv(BS, R.bs_shareholder_fund, yearCol)
+  const sharesOutstanding = sharesOS || rv(BS, R.bs_shares, yearCol)
 
   // ── Cash Flow values ──
-  const ocf          = rv(CF, 68, yearCol)
-  const capexRaw     = rv(CF, 72, yearCol) // negative
-  const cashInvesting= rv(CF, 94, yearCol)
-  const divPaid      = rv(CF, 124, yearCol)
-  const cashFinancing= rv(CF, 129, yearCol)
+  const ocf          = rv(CF, R.cf_ocf, yearCol)
+  const capexRaw     = rv(CF, R.cf_capex, yearCol) // negative
+  const cashInvesting= rv(CF, R.cf_cash_investing, yearCol)
+  const divPaid      = rv(CF, R.cf_div_paid, yearCol)
+  const cashFinancing= rv(CF, R.cf_cash_financing, yearCol)
 
   const totalDebt = (stBorrowings || 0) + (ltBorrowings || 0)
   const netDebt = totalDebt - (cash || 0) - (currentInv || 0)
@@ -376,7 +478,8 @@ function computeFundamentals(PNL, BS, CF, yearCol, prevYearCol, allYearCols, pri
   // 5Y averages (computed from all available year columns)
   const roeArr = [], roaArr = []
   for (const yc of allYearCols) {
-    const p = rv(PNL, 35, yc), shf = rv(BS, 80, yc), ta = rv(BS, 42, yc)
+    const p = rv(PNL, R.pnl_pat, yc) || rv(PNL, R.pnl_pat_attr, yc)
+    const shf = rv(BS, R.bs_shareholder_fund, yc), ta = rv(BS, R.bs_total_assets, yc)
     if (p && shf && shf !== 0) roeArr.push((p / shf) * 100)
     if (p && ta && ta !== 0) roaArr.push((p / ta) * 100)
   }
@@ -406,7 +509,7 @@ function computeFundamentals(PNL, BS, CF, yearCol, prevYearCol, allYearCols, pri
   // ICR trend (slope over available years)
   const icrArr = []
   for (const yc of allYearCols) {
-    const eb = rv(PNL, 46, yc), fc = rv(PNL, 20, yc)
+    const eb = rv(PNL, R.pnl_ebitda, yc), fc = rv(PNL, R.pnl_finance_costs, yc)
     if (eb && fc && fc !== 0) icrArr.push(eb / fc)
   }
   m.icr_trend = icrArr.length >= 3
@@ -416,26 +519,26 @@ function computeFundamentals(PNL, BS, CF, yearCol, prevYearCol, allYearCols, pri
   // GROWTH (12 metrics)
   // ══════════════════════════════════════════
   if (prevYearCol) {
-    m.revenue_growth_1y = growth(revenue, rv(PNL, 10, prevYearCol) || rv(PNL, 1, prevYearCol))
-    m.ebitda_growth_1y = growth(ebitda, rv(PNL, 46, prevYearCol))
-    m.pat_growth_1y = growth(pat, rv(PNL, 35, prevYearCol))
-    m.eps_growth_1y = growth(eps, rv(PNL, 44, prevYearCol))
-    m.ocf_growth_1y = growth(ocf, rv(CF, 68, prevYearCol))
-    m.book_value_growth = growth(shareholderFund, rv(BS, 80, prevYearCol))
+    m.revenue_growth_1y = growth(revenue, rv(PNL, R.pnl_total_revenue, prevYearCol) || rv(PNL, R.pnl_revenue_ops, prevYearCol))
+    m.ebitda_growth_1y = growth(ebitda, rv(PNL, R.pnl_ebitda, prevYearCol))
+    m.pat_growth_1y = growth(pat, rv(PNL, R.pnl_pat, prevYearCol) || rv(PNL, R.pnl_pat_attr, prevYearCol))
+    m.eps_growth_1y = growth(eps, rv(PNL, R.pnl_eps, prevYearCol))
+    m.ocf_growth_1y = growth(ocf, rv(CF, R.cf_ocf, prevYearCol))
+    m.book_value_growth = growth(shareholderFund, rv(BS, R.bs_shareholder_fund, prevYearCol))
   }
 
   // CAGRs (3Y and 5Y)
   const ycIdx = allYearCols.indexOf(yearCol)
   if (ycIdx >= 3) {
     const yc3 = allYearCols[ycIdx - 3]
-    m.revenue_growth_3y_cagr = cagr(revenue, rv(PNL, 10, yc3) || rv(PNL, 1, yc3), 3)
-    m.ebitda_growth_3y_cagr = cagr(ebitda, rv(PNL, 46, yc3), 3)
-    m.pat_growth_3y_cagr = cagr(pat, rv(PNL, 35, yc3), 3)
-    m.eps_growth_3y_cagr = cagr(eps, rv(PNL, 44, yc3), 3)
+    m.revenue_growth_3y_cagr = cagr(revenue, rv(PNL, R.pnl_total_revenue, yc3) || rv(PNL, R.pnl_revenue_ops, yc3), 3)
+    m.ebitda_growth_3y_cagr = cagr(ebitda, rv(PNL, R.pnl_ebitda, yc3), 3)
+    m.pat_growth_3y_cagr = cagr(pat, rv(PNL, R.pnl_pat, yc3) || rv(PNL, R.pnl_pat_attr, yc3), 3)
+    m.eps_growth_3y_cagr = cagr(eps, rv(PNL, R.pnl_eps, yc3), 3)
   }
   if (ycIdx >= 4) {
-    const yc5 = allYearCols[ycIdx - 4] // We have 5 year cols, so index 0 → 4 = 4 years gap
-    m.revenue_growth_5y_cagr = cagr(revenue, rv(PNL, 10, yc5) || rv(PNL, 1, yc5), 4) // Actually 4Y with 5 points
+    const yc5 = allYearCols[ycIdx - 4]
+    m.revenue_growth_5y_cagr = cagr(revenue, rv(PNL, R.pnl_total_revenue, yc5) || rv(PNL, R.pnl_revenue_ops, yc5), 4)
   }
 
   // ══════════════════════════════════════════
@@ -476,6 +579,8 @@ function computeFundamentals(PNL, BS, CF, yearCol, prevYearCol, allYearCols, pri
   m.pat = pat
   m.other_income_ratio = pct(otherIncome, revenue)
   m.tax_rate = (pbt && pbt > 0) ? pct(tax, pbt) : null
+  const exceptionalItems = rv(PNL, R.pnl_exceptional, yearCol)
+  m.exceptional_items = exceptionalItems
 
   // ══════════════════════════════════════════
   // BALANCE SHEET (8 metrics)
@@ -490,7 +595,7 @@ function computeFundamentals(PNL, BS, CF, yearCol, prevYearCol, allYearCols, pri
   m.inventory_turnover = div(cogs, inventory)
   m.gross_block_growth = null // Computed if prev year available
   if (prevYearCol) {
-    m.gross_block_growth = growth(fixedAssets, rv(BS, 2, prevYearCol))
+    m.gross_block_growth = growth(fixedAssets, rv(BS, R.bs_fixed_assets, prevYearCol))
   }
 
   // ══════════════════════════════════════════
@@ -526,7 +631,7 @@ function computeFundamentals(PNL, BS, CF, yearCol, prevYearCol, allYearCols, pri
  * Compute technical + price/volume metrics at a snapshot date.
  */
 function computeTechnicals(ohlcv, targetDate, rfRate) {
-  const series = priceSeriesUpTo(ohlcv, targetDate, 300)
+  const series = priceSeriesUpTo(ohlcv, targetDate)
   if (series.length < 30) return {}
 
   const closes = series.map(r => r.close)
@@ -607,6 +712,7 @@ function computeTechnicals(ohlcv, targetDate, rfRate) {
   if (closes.length >= 63) m.price_return_3m = ((lastPrice / closes[closes.length - 63]) - 1) * 100
   if (closes.length >= 126) m.price_return_6m = ((lastPrice / closes[closes.length - 126]) - 1) * 100
   if (closes.length >= 252) m.price_return_1y = ((lastPrice / closes[closes.length - 252]) - 1) * 100
+  if (closes.length >= 756) m.price_return_3y = ((lastPrice / closes[closes.length - 756]) - 1) * 100
 
   return m
 }
@@ -686,7 +792,7 @@ const SEGMENT_MAP = {
   price_52w_high_dist: 'Price & Volume', price_52w_low_dist: 'Price & Volume',
   price_return_1m: 'Price & Volume', price_return_3m: 'Price & Volume',
   price_return_6m: 'Price & Volume', price_return_1y: 'Price & Volume',
-  volume_surge_20d: 'Price & Volume',
+  price_return_3y: 'Price & Volume', volume_surge_20d: 'Price & Volume',
 
   // Technical
   rsi_14: 'Technical', macd_signal: 'Technical', macd_line: 'Technical',
@@ -708,6 +814,7 @@ const SEGMENT_MAP = {
   // Income Statement
   revenue: 'Income Statement', ebitda: 'Income Statement', pat: 'Income Statement',
   other_income_ratio: 'Income Statement', tax_rate: 'Income Statement',
+  exceptional_items: 'Income Statement',
 
   // Balance Sheet
   total_assets: 'Balance Sheet', total_debt: 'Balance Sheet', net_debt: 'Balance Sheet',
@@ -799,20 +906,22 @@ async function main() {
   console.log(`  OHLCV records: ${ohlcv.length} (${ohlcv[0]?.date} → ${ohlcv[ohlcv.length - 1]?.date})`)
   console.log(`  Shareholding quarters: ${Array.isArray(shareholding) ? shareholding.length : 0}`)
 
-  // ── Row Mapping Verification ──
-  console.log('\n  Row mapping verification (consolidated):')
-  const checkRows = [
-    ['P&L', PNL, [[1, 'Revenue'], [10, 'TotalRevenue'], [35, 'PAT'], [44, 'EPS'], [46, 'EBITDA']]],
-    ['BS', BS, [[42, 'TotalAssets'], [55, 'TotalCL'], [80, 'ShareholdersFund'], [91, 'Shares']]],
-    ['CF', CF, [[68, 'OCF'], [72, 'CapEx']]],
+  // ── Auto-detect Row Mapping ──
+  const R = detectRowMapping(PNL, BS, CF)
+  console.log('\n  Auto-detected row mapping:')
+  const latestYC = yearCols[yearCols.length - 1]
+  const keyChecks = [
+    ['Revenue', 'pnl_total_revenue', PNL], ['PAT', 'pnl_pat', PNL], ['PAT(attr)', 'pnl_pat_attr', PNL],
+    ['EPS', 'pnl_eps', PNL], ['EBITDA', 'pnl_ebitda', PNL], ['DPS', 'pnl_dps', PNL],
+    ['TotalAssets', 'bs_total_assets', BS], ['TotalCL', 'bs_total_cl', BS],
+    ['ShareholderFund', 'bs_shareholder_fund', BS], ['Shares', 'bs_shares', BS],
+    ['OCF', 'cf_ocf', CF], ['CapEx', 'cf_capex', CF],
   ]
-  for (const [label, stmtMap, checks] of checkRows) {
-    for (const [rn, desc] of checks) {
-      const row = stmtMap[rn]
-      const latestYC = yearCols[yearCols.length - 1]
-      const val = row?.values?.[latestYC]
-      console.log(`    ${label} R${rn} (${desc}): ${row ? `"${row.name}" = ${val}` : '❌ NOT FOUND'}`)
-    }
+  for (const [label, key, stmtMap] of keyChecks) {
+    const rn = R[key]
+    const row = rn != null ? stmtMap[rn] : null
+    const val = row?.values?.[latestYC]
+    console.log(`    ${label.padEnd(16)} R${String(rn ?? '?').padEnd(4)} "${(row?.name || 'NOT FOUND').slice(0, 45)}" = ${val ?? 'N/A'}`)
   }
 
   // ── ANNUAL SNAPSHOTS ──
@@ -830,13 +939,13 @@ async function main() {
 
     const priceRecord = priceAt(ohlcv, fyEndDate)
     const price = priceRecord?.close ?? null
-    const sharesOS = rv(BS, 91, yc)
+    const sharesOS = rv(BS, R.bs_shares, yc)
 
     const rfKey = `${yr}-${mo.padStart(2, '0')}`
     const rf = rfRates[rfKey] ?? rfRates['2026-03']
 
     // Fundamental metrics
-    const fundMetrics = computeFundamentals(PNL, BS, CF, yc, prevYC, yearCols, price, sharesOS)
+    const fundMetrics = computeFundamentals(PNL, BS, CF, yc, prevYC, yearCols, price, sharesOS, R)
 
     // Technical metrics (at FY end date)
     const techMetrics = computeTechnicals(ohlcv, fyEndDate, rf)
@@ -846,6 +955,27 @@ async function main() {
 
     // Forward returns
     const fwdReturns = computeForwardReturns(ohlcv, fyEndDate)
+
+    // Earnings momentum from quarterly data (latest Q PAT / same Q last year)
+    const qCols = Object.keys(QR[Object.keys(QR)[0]]?.values || {}).filter(k => /^[YQ]\d{6}$/.test(k)).sort()
+    if (qCols.length >= 5) {
+      const latestQ = qCols[qCols.length - 1]
+      const latestQYr = parseInt(latestQ.slice(1, 5))
+      const latestQMo = latestQ.slice(5, 7)
+      // Find same quarter last year
+      const sameQLY = qCols.find(c => c.slice(5, 7) === latestQMo && parseInt(c.slice(1, 5)) === latestQYr - 1)
+      if (sameQLY) {
+        // Find PAT row in quarterly (rowno 30 or by name match)
+        const qPATRow = Object.entries(QR).find(([, e]) => e.name.toLowerCase().includes('net profit after tax'))?.[0]
+        if (qPATRow) {
+          const currPAT = QR[qPATRow]?.values[latestQ]
+          const prevPAT = QR[qPATRow]?.values[sameQLY]
+          if (currPAT && prevPAT && prevPAT !== 0) {
+            fundMetrics.earnings_momentum = ((currPAT / prevPAT) - 1) * 100
+          }
+        }
+      }
+    }
 
     // Merge all
     const allMetrics = { ...fundMetrics, ...techMetrics, ...ownMetrics }
