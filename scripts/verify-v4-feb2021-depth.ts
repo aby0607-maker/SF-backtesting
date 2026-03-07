@@ -1,14 +1,14 @@
 #!/usr/bin/env npx tsx --tsconfig tsconfig.json
 /**
- * V4 Scorecard Data Depth Verification — TCS @ Feb 25, 2021
+ * V4 Scorecard Data Depth Verification — TCS @ March 2, 2021
  *
  * Tests all 3 data sources (CMOTS + DhanHQ + IndianAPI) to determine which
- * V4 metrics can be computed at a historical date of Feb 25, 2021.
+ * V4 metrics can be computed at a historical date of March 2, 2021.
  *
  * For each of the 17 V4 metrics, reports:
  *   - Data source used (CMOTS, IndianAPI, DhanHQ, or N/A)
  *   - Raw value computed (or null if unavailable)
- *   - Year columns available after windowing to Feb 2021
+ *   - Year columns available after windowing to March 2021
  *   - Gap analysis (what's missing and why)
  *
  * Usage: npx tsx --tsconfig tsconfig.json scripts/verify-v4-feb2021-depth.ts
@@ -18,7 +18,7 @@ import { execSync } from 'child_process'
 
 // ─── Config ────────────────────────────────────────
 
-const AS_OF_DATE = '2021-02-25'
+const AS_OF_DATE = '2021-03-02'
 const STOCK_NAME = 'TCS'
 const CMOTS_CO_CODE = 476
 const DHAN_SECURITY_ID = '11536'  // TCS on NSE (DhanHQ security ID)
@@ -176,10 +176,13 @@ const cmotsPnL = extractCMOTSData(fetchCMOTS(`/ProftandLoss/${CMOTS_CO_CODE}/s`)
 const cmotsBS = extractCMOTSData(fetchCMOTS(`/BalanceSheet/${CMOTS_CO_CODE}/s`))
 const cmotsCF = extractCMOTSData(fetchCMOTS(`/CashFlow/${CMOTS_CO_CODE}/s`))
 const cmotsQR = extractCMOTSData(fetchCMOTS(`/QuarterlyResults/${CMOTS_CO_CODE}/s`))
+// New historical quarterly endpoints (25 quarters back to Mar 2018)
+const cmotsQPnL = extractCMOTSData(fetchCMOTS(`/QuarterlyProfitandLoss/${CMOTS_CO_CODE}/S`))
+const cmotsQBS = extractCMOTSData(fetchCMOTS(`/Quarterlybalancesheet/${CMOTS_CO_CODE}/S`))
 
 // DhanHQ — price data: need FY-end prices going back ~7 years for 5Y valuation average
 // IndianAPI has fundamentals from Mar 2014, so we need prices from at least 2013
-const dhanPrices = fetchDhanOHLCV('2013-01-01', '2021-02-25')
+const dhanPrices = fetchDhanOHLCV('2013-01-01', '2021-03-02')
 
 console.log('  IndianAPI:')
 console.log(`    Annual P&L:     ${iaPnL ? Object.keys(iaPnL).length + ' fields' : 'FAILED'}`)
@@ -198,6 +201,17 @@ console.log(`    P&L rows:       ${cmotsPnL?.length ?? 'FAILED'}`)
 console.log(`    BS rows:        ${cmotsBS?.length ?? 'FAILED'}`)
 console.log(`    CF rows:        ${cmotsCF?.length ?? 'FAILED'}`)
 console.log(`    QR rows:        ${cmotsQR?.length ?? 'FAILED'}`)
+
+// CMOTS Quarterly P&L (historical — 25 quarters)
+const cmotsQPnLRevRow = cmotsQPnL?.find((r: Record<string, unknown>) => r.rowno === 1)
+const cmotsQPnLCols = cmotsQPnLRevRow ? windowCMOTSCols(cmotsQPnLRevRow, AS_OF_DATE) : []
+const cmotsQPnLAllCols = cmotsQPnLRevRow
+  ? Object.keys(cmotsQPnLRevRow).filter(k => /^Y\d{6}$/.test(k)).sort((a, b) => b.localeCompare(a))
+  : []
+console.log(`    Q-P&L rows:     ${cmotsQPnL?.length ?? 'FAILED'} (historical quarterly P&L)`)
+console.log(`    Q-P&L all cols: ${cmotsQPnLAllCols.length} → ${cmotsQPnLAllCols.join(', ') || 'NONE'}`)
+console.log(`    Q-P&L ≤ ${AS_OF_DATE}: ${cmotsQPnLCols.length} → ${cmotsQPnLCols.join(', ') || 'NONE'}`)
+console.log(`    Q-BS rows:      ${cmotsQBS?.length ?? 'FAILED'} (historical quarterly BS)`)
 console.log(`    FY cols ≤ ${AS_OF_DATE}: ${cmotsCols.length} → ${cmotsCols.join(', ') || 'NONE'}`)
 console.log()
 
@@ -793,19 +807,88 @@ console.log()
 console.log('SEGMENT: QUARTERLY MOMENTUM (18% of V4)')
 console.log('─'.repeat(80))
 
+// Use CMOTS QuarterlyProfitandLoss (25 historical quarters) for QM
+const qmQCols = cmotsQPnLCols  // Already windowed to ≤ AS_OF_DATE
+console.log(`  CMOTS Quarterly P&L columns ≤ ${AS_OF_DATE}: ${qmQCols.length}`)
+console.log(`    ${qmQCols.join(', ') || 'NONE'}`)
+console.log()
+
+// Helper: extract month from Y-column (e.g., Y202012 → 12)
+function getColMonth(col: string): number { return parseInt(col.slice(5, 7)) }
+function getColYear(col: string): number { return parseInt(col.slice(1, 5)) }
+
+// Find latest 2 quarters and their YoY pairs
+function computeQMMultiplier(
+  rowno: number,
+  qCols: string[],
+  annualCAGR: number | null,
+  label: string,
+): { value: number | null; detail: string; status: 'OK' | 'N/A' | 'DEGRADED' } {
+  if (qCols.length < 8) {
+    return { value: null, detail: `Only ${qCols.length} quarterly columns (need 8)`, status: 'N/A' }
+  }
+  if (annualCAGR == null || annualCAGR <= 0) {
+    return { value: null, detail: `5Y CAGR is ${annualCAGR} (need > 0 for multiplier)`, status: 'N/A' }
+  }
+
+  const row = cmotsQPnL?.find((r: Record<string, unknown>) => r.rowno === rowno) as Record<string, unknown> | undefined
+  if (!row) {
+    return { value: null, detail: `CMOTS Q-P&L rowno=${rowno} not found`, status: 'N/A' }
+  }
+
+  const yoyGrowths: { q: string; yoyQ: string; growth: number }[] = []
+
+  // Try latest 2 quarters for YoY
+  for (let i = 0; i < Math.min(2, qCols.length); i++) {
+    const currentCol = qCols[i]
+    const currentMonth = getColMonth(currentCol)
+    const currentYear = getColYear(currentCol)
+    // Find same month in prior year
+    const yoyCol = qCols.find(c => getColMonth(c) === currentMonth && getColYear(c) === currentYear - 1)
+    if (!yoyCol) continue
+
+    const currentVal = row[currentCol] as number | null
+    const yoyVal = row[yoyCol] as number | null
+    if (currentVal == null || yoyVal == null || yoyVal === 0) continue
+
+    const growth = ((currentVal - yoyVal) / Math.abs(yoyVal)) * 100
+    yoyGrowths.push({ q: currentCol, yoyQ: yoyCol, growth })
+  }
+
+  if (yoyGrowths.length === 0) {
+    return { value: null, detail: `No valid YoY pairs found in latest 2 quarters`, status: 'N/A' }
+  }
+
+  const avgYoY = yoyGrowths.reduce((sum, g) => sum + g.growth, 0) / yoyGrowths.length
+  const multiplier = Math.round((avgYoY / annualCAGR) * 1000) / 1000
+
+  const pairs = yoyGrowths.map(g => `${g.q} vs ${g.yoyQ}: ${g.growth.toFixed(1)}%`).join('; ')
+  const detail = `Avg YoY=${avgYoY.toFixed(1)}% / 5Y CAGR=${annualCAGR.toFixed(1)}% = ${multiplier.toFixed(3)}x | ${pairs}`
+
+  return {
+    value: multiplier,
+    detail,
+    status: yoyGrowths.length >= 2 ? 'OK' : 'DEGRADED',
+  }
+}
+
+// Get 5Y CAGRs already computed above
+const revCAGR = results.find(r => r.id === 'v4_revenue_growth')?.value ?? null
+const ebitdaCAGR = results.find(r => r.id === 'v4_ebitda_growth')?.value ?? null
+
 for (const m of [
-  { id: 'v4_revenue_multiplier', name: 'Revenue Growth Multiplier', weight: '50%', overall: '9.00%' },
-  { id: 'v4_ebitda_multiplier', name: 'EBITDA Growth Multiplier', weight: '50%', overall: '9.00%' },
+  { id: 'v4_revenue_multiplier', name: 'Revenue Growth Multiplier', weight: '50%', overall: '9.00%', rowno: 1, cagr: revCAGR },
+  { id: 'v4_ebitda_multiplier', name: 'EBITDA Growth Multiplier', weight: '50%', overall: '9.00%', rowno: 14, cagr: ebitdaCAGR },
 ]) {
-  const detail = `IndianAPI quarterly starts Dec 2022 — ${wQtr.length} quarters available at ${AS_OF_DATE} (need 8). ` +
-    `CMOTS quarterly also starts ~2023. NO source has quarterly data for 2021.`
+  const qm = computeQMMultiplier(m.rowno, qmQCols, m.cagr, m.name)
   const r: MetricResult = {
     id: m.id, name: m.name, segment: 'Quarterly',
     segWeight: '18%', metricWeight: m.weight, overallWeight: m.overall,
-    value: null, source: 'N/A', yearCount: 0, detail, status: 'N/A',
+    value: qm.value, source: qm.value != null ? 'CMOTS Q-P&L' : 'N/A',
+    yearCount: qmQCols.length, detail: qm.detail, status: qm.status,
   }
   results.push(r)
-  console.log(`  ${r.status.padEnd(8)} ${r.id.padEnd(28)} = null`)
+  console.log(`  ${r.status.padEnd(8)} ${r.id.padEnd(28)} = ${r.value != null ? r.value.toFixed(3) + 'x' : 'null'}`)
   console.log(`           Source: ${r.source} | ${r.detail}`)
 }
 
