@@ -1,0 +1,33 @@
+sector,stock_count,exact_pct,within_10_pct,within_25_pct,rest_pct,cumulative_within_25_pct,avg_deviation_pct,spearman_correlation
+"Automobile",7,14.29,0,42.86,42.86,57.14,24.49,0.464
+"IT - Software",5,0,0,40,60,40,40,-0.300
+"Pharmaceuticals",4,25,0,50,25,75,25,0.400
+"Power Generation & Distribution",4,25,0,25,50,50,37.5,-0.400
+"FMCG",4,25,0,50,25,75,25,0.400
+"Capital Goods - Electrical Equipment",4,0,0,25,75,25,50,-0.800
+"Refineries",3,100,0,0,0,100,0,1.000
+"Steel",3,0,0,0,100,0,44.44,-0.500
+"Aerospace & Defence",2,100,0,0,0,100,0,N/A
+"Non Ferrous Metals",2,0,0,0,100,0,50,N/A
+"Mining & Mineral products",2,100,0,0,0,100,0,N/A
+"Cement",2,0,0,0,100,0,50,N/A
+"Chemicals",1,100,0,0,0,100,0,N/A
+"Trading",1,100,0,0,0,100,0,N/A
+"Diamond, Gems and Jewellery",1,100,0,0,0,100,0,N/A
+"Cables",1,100,0,0,0,100,0,N/A
+"Air Transport Service",1,100,0,0,0,100,0,N/A
+"Paints/Varnish",1,100,0,0,0,100,0,N/A
+"Plantation & Plantation Products",1,100,0,0,0,100,0,N/A
+"Tobacco Products",1,100,0,0,0,100,0,N/A
+"Textiles",1,100,0,0,0,100,0,N/A
+"Crude Oil & Natural Gas",1,100,0,0,0,100,0,N/A
+"Telecom-Service",1,100,0,0,0,100,0,N/A
+"Realty",1,100,0,0,0,100,0,N/A
+"Marine Port & Services",1,100,0,0,0,100,0,N/A
+"Healthcare",1,100,0,0,0,100,0,N/A
+"Telecom Equipment & Infra Services",1,100,0,0,0,100,0,N/A
+"Infrastructure Developers & Operators",1,100,0,0,0,100,0,N/A
+"Retail",1,100,0,0,0,100,0,N/A
+"Insurance",1,100,0,0,0,100,0,N/A
+"E-Commerce/App based Aggregator",1,100,0,0,0,100,0,N/A
+"Finance",1,100,0,0,0,100,0,N/A

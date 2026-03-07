@@ -1,0 +1,31 @@
+sector,stock_count,avg_score,avg_return_pct,winsorized_avg,median_return_pct,correlation
+"Automobile",7,63.01,73.05,73.05,52.64,0.801
+"IT - Software",5,68.87,20.07,20.07,14.09,0.13
+"FMCG",5,60.30,16.11,16.11,8.58,0.113
+"Pharmaceuticals",4,66.05,70.06,70.06,78.52,0.327
+"Capital Goods - Electrical Equipment",4,59.64,105.66,96.20,69.33,0.48
+"Power Generation & Distribution",3,58.41,108.87,108.87,80.45,-0.994
+"Steel",3,63.97,37.63,37.63,39.34,0.938
+"Refineries",3,59.68,34.54,34.54,45.13,-0.998
+"Mining & Mineral products",2,72.38,51.06,51.06,51.06,N/A
+"Non Ferrous Metals",2,71.28,38.76,38.76,38.76,N/A
+"Aerospace & Defence",2,61.55,143.17,143.17,143.17,N/A
+"Cement",2,61.46,29.51,29.51,29.51,N/A
+"Telecom Equipment & Infra Services",1,75.40,93.62,93.62,93.62,N/A
+"Crude Oil & Natural Gas",1,69.71,46.03,46.03,46.03,N/A
+"Infrastructure Developers & Operators",1,68.00,47.02,47.02,47.02,N/A
+"Plantation & Plantation Products",1,67.70,37.45,37.45,37.45,N/A
+"Chemicals",1,67.22,14.63,14.63,14.63,N/A
+"Diamond, Gems and Jewellery",1,64.52,28.43,28.43,28.43,N/A
+"Textiles",1,62.63,45.08,45.08,45.08,N/A
+"Marine Port & Services",1,62.48,56.20,56.20,56.20,N/A
+"Realty",1,61.46,76.42,76.42,76.42,N/A
+"Tobacco Products",1,60.28,8.47,8.47,8.47,N/A
+"Retail",1,60.05,271.79,200.00,271.79,N/A
+"Cables",1,58.03,53.57,53.57,53.57,N/A
+"Healthcare",1,56.76,37.30,37.30,37.30,N/A
+"Paints/Varnish",1,56.18,-22.95,-22.95,-22.95,N/A
+"Air Transport Service",1,52.16,140.05,140.05,140.05,N/A
+"Telecom-Service",1,48.69,9.42,9.42,9.42,N/A
+"Insurance",1,46.22,26.68,26.68,26.68,N/A
+"Finance",1,41.50,298.65,200.00,298.65,N/A

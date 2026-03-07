@@ -1,0 +1,31 @@
+sector,stock_count,exact_pct,within_10_pct,within_25_pct,rest_pct,cumulative_within_25_pct,avg_deviation_pct,spearman_correlation
+"Automobile",7,14.29,0,57.14,28.57,71.43,16.33,0.786
+"IT - Software",5,20,0,0,80,20,32,0.200
+"FMCG",5,20,0,40,40,60,24,0.500
+"Pharmaceuticals",4,0,0,100,0,100,25,0.600
+"Capital Goods - Electrical Equipment",4,25,0,50,25,75,25,0.400
+"Power Generation & Distribution",3,33.33,0,0,66.67,33.33,44.44,-1.000
+"Steel",3,33.33,0,0,66.67,33.33,22.22,0.866
+"Refineries",3,0,0,0,100,0,44.44,-0.500
+"Mining & Mineral products",2,0,0,0,100,0,50,N/A
+"Non Ferrous Metals",2,0,0,0,100,0,50,N/A
+"Aerospace & Defence",2,100,0,0,0,100,0,N/A
+"Cement",2,100,0,0,0,100,0,N/A
+"Telecom Equipment & Infra Services",1,100,0,0,0,100,0,N/A
+"Crude Oil & Natural Gas",1,100,0,0,0,100,0,N/A
+"Infrastructure Developers & Operators",1,100,0,0,0,100,0,N/A
+"Plantation & Plantation Products",1,100,0,0,0,100,0,N/A
+"Chemicals",1,100,0,0,0,100,0,N/A
+"Diamond, Gems and Jewellery",1,100,0,0,0,100,0,N/A
+"Textiles",1,100,0,0,0,100,0,N/A
+"Marine Port & Services",1,100,0,0,0,100,0,N/A
+"Realty",1,100,0,0,0,100,0,N/A
+"Tobacco Products",1,100,0,0,0,100,0,N/A
+"Retail",1,100,0,0,0,100,0,N/A
+"Cables",1,100,0,0,0,100,0,N/A
+"Healthcare",1,100,0,0,0,100,0,N/A
+"Paints/Varnish",1,100,0,0,0,100,0,N/A
+"Air Transport Service",1,100,0,0,0,100,0,N/A
+"Telecom-Service",1,100,0,0,0,100,0,N/A
+"Insurance",1,100,0,0,0,100,0,N/A
+"Finance",1,100,0,0,0,100,0,N/A
