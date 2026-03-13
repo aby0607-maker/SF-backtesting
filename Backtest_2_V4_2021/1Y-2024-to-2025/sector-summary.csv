@@ -1,33 +1,35 @@
 sector,stock_count,avg_score,avg_return_pct,winsorized_avg,median_return_pct,correlation
-"Automobile",7,63.28,8.54,8.54,3.27,0.644
-"IT - Software",5,63.43,-4.66,-4.66,-4.33,-0.318
-"Pharmaceuticals",4,66.36,14.49,14.49,6.14,0.626
-"Power Generation & Distribution",4,55.39,-18.25,-18.25,-12.18,-0.93
-"FMCG",4,60.50,-17.70,-17.70,-18.34,0.531
-"Capital Goods - Electrical Equipment",4,56.51,23.15,23.15,9.36,-0.904
-"Refineries",3,48.52,-25.90,-25.90,-24.09,0.754
-"Steel",3,49.07,1.00,1.00,2.10,-0.233
-"Aerospace & Defence",2,62.34,8.46,8.46,8.46,N/A
-"Non Ferrous Metals",2,62.92,23.17,23.17,23.17,N/A
-"Mining & Mineral products",2,58.44,13.46,13.46,13.46,N/A
-"Cement",2,60.70,-12.27,-12.27,-12.27,N/A
-"Chemicals",1,70.92,-3.07,-3.07,-3.07,N/A
-"Trading",1,68.68,-37.12,-37.12,-37.12,N/A
-"Diamond, Gems and Jewellery",1,67.76,-18.25,-18.25,-18.25,N/A
-"Cables",1,67.46,-1.69,-1.69,-1.69,N/A
-"Air Transport Service",1,66.49,41.70,41.70,41.70,N/A
-"Paints/Varnish",1,65.51,-23.51,-23.51,-23.51,N/A
+"Automobile",8,62.38,2.82,2.82,1.02,0.701
+"Pharmaceuticals",6,62.24,11.58,11.58,6.14,0.345
+"IT - Software",6,63.54,-1.06,-1.06,-1.22,0.338
+"Power Generation & Distribution",5,50.61,-17.11,-17.11,-12.55,-0.488
+"FMCG",4,58.13,-17.70,-17.70,-18.34,0.805
+"Capital Goods - Electrical Equipment",4,55.63,23.15,23.15,9.36,-0.344
+"Aerospace & Defence",3,61.86,14.71,14.71,19.11,0.421
+"Steel",3,55.62,1.00,1.00,2.10,0.237
+"Refineries",3,54.67,-25.90,-25.90,-24.09,0.691
+"Retail",2,59.61,6.04,6.04,6.04,N/A
+"Cement",2,66.66,-12.27,-12.27,-12.27,N/A
+"Mining & Mineral products",2,52.81,13.46,13.46,13.46,N/A
+"Non Ferrous Metals",2,54.72,23.17,23.17,23.17,N/A
+"Finance",2,45.26,1.57,1.57,1.57,N/A
+"Air Transport Service",1,71.88,41.70,41.70,41.70,N/A
+"Chemicals",1,71.22,-3.07,-3.07,-3.07,N/A
+"Diamond, Gems and Jewellery",1,70.38,-18.25,-18.25,-18.25,N/A
+"Cables",1,68.36,-1.69,-1.69,-1.69,N/A
+"Paints/Varnish",1,64.61,-23.51,-23.51,-23.51,N/A
 "Plantation & Plantation Products",1,64.57,-19.18,-19.18,-19.18,N/A
-"Tobacco Products",1,63.54,1.33,1.33,1.33,N/A
-"Textiles",1,60.43,2.71,2.71,2.71,N/A
-"Crude Oil & Natural Gas",1,59.91,-17.16,-17.16,-17.16,N/A
-"Telecom-Service",1,58.33,-48.11,-48.11,-48.11,N/A
-"Realty",1,56.01,-31.14,-31.14,-31.14,N/A
+"Healthcare",1,63.86,-1.32,-1.32,-1.32,N/A
+"Capital Goods-Non Electrical Equipment",1,63.53,-0.68,-0.68,-0.68,N/A
+"Tobacco Products",1,61.36,1.33,1.33,1.33,N/A
+"Textiles",1,60.05,2.71,2.71,2.71,N/A
+"Insurance",1,59.88,-7.52,-7.52,-7.52,N/A
+"Telecom-Service",1,57.84,38.82,38.82,38.82,N/A
+"Trading",1,56.75,-37.12,-37.12,-37.12,N/A
+"Telecom Equipment & Infra Services",1,55.41,21.70,21.70,21.70,N/A
+"Crude Oil & Natural Gas",1,55.34,-17.16,-17.16,-17.16,N/A
 "Marine Port & Services",1,54.29,-20.09,-20.09,-20.09,N/A
-"Healthcare",1,54.26,-1.32,-1.32,-1.32,N/A
-"Telecom Equipment & Infra Services",1,53.46,21.70,21.70,21.70,N/A
 "Infrastructure Developers & Operators",1,51.49,-13.44,-13.44,-13.44,N/A
-"Retail",1,46.34,24.09,24.09,24.09,N/A
-"Insurance",1,43.41,-7.52,-7.52,-7.52,N/A
+"Auto Ancillaries",1,49.45,-34.14,-34.14,-34.14,N/A
+"Realty",1,48.66,-31.14,-31.14,-31.14,N/A
 "E-Commerce/App based Aggregator",1,42.06,32.48,32.48,32.48,N/A
-"Finance",1,33.79,-24.40,-24.40,-24.40,N/A

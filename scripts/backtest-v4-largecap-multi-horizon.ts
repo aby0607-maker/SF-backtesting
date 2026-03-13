@@ -24,7 +24,16 @@ import { scoreStock } from '@/lib/scoringEngine'
 import { V4_NONBANKING_SCORECARD } from '@/data/scorecardTemplates'
 import { getYearColumns } from '@/services/cmots/fundamentals'
 import type { FundamentalsBundle } from '@/services/cmots/fundamentals'
-import type { StockScoreResult } from '@/types/scoring'
+import type { StockScoreResult, CMOTSStatementRow } from '@/types/scoring'
+import {
+  type IndianAPIStatsResponse,
+  PNL_FIELD_MAP,
+  BS_FIELD_MAP,
+  CF_FIELD_MAP,
+  QR_FIELD_MAP,
+  convertToCMOTSRows,
+  synthesizeShareholdersFund,
+} from '@/services/indianapi/fieldMap'
 
 // Use undici with ProxyAgent for environments with https_proxy
 const require = createRequire(import.meta.url)
@@ -50,7 +59,7 @@ const HORIZONS = [
 const OUTPUT_DIR = resolve(__dirname, '..', 'Backtest_2_V4_2021')
 const CMOTS_BASE = 'https://deltastockzapis.cmots.com/api'
 const DHAN_BASE = 'https://api.dhan.co/v2'
-const CONCURRENCY = 4
+const CONCURRENCY = 2  // Reduced from 4 to avoid IndianAPI rate limiting
 const MAX_RETRIES = 2
 const MIN_SECTOR_SIZE = 3 // Large caps have fewer stocks per sector
 
@@ -67,14 +76,17 @@ const BANKING_SECTOR_KEYWORDS = [
 // Read tokens
 let CMOTS_TOKEN: string
 let DHAN_TOKEN: string
+let INDIANAPI_KEY: string
 try {
   const envPath = resolve(__dirname, '..', '.env.local')
   const envContent = readFileSync(envPath, 'utf-8')
   CMOTS_TOKEN = envContent.match(/CMOTS_API_TOKEN=(.+)/)?.[1]?.trim() || ''
   DHAN_TOKEN = envContent.match(/DHAN_ACCESS_TOKEN=(.+)/)?.[1]?.trim() || ''
+  INDIANAPI_KEY = envContent.match(/INDIANAPI_KEY=(.+)/)?.[1]?.trim() || ''
 } catch {
   CMOTS_TOKEN = process.env.CMOTS_API_TOKEN || ''
   DHAN_TOKEN = process.env.DHAN_ACCESS_TOKEN || ''
+  INDIANAPI_KEY = process.env.INDIANAPI_KEY || ''
 }
 if (!CMOTS_TOKEN) {
   console.error('ERROR: CMOTS_API_TOKEN not found.')
@@ -268,6 +280,192 @@ async function loadDhanScripMap(): Promise<Map<string, string>> {
     console.warn('  DhanHQ scrip map load failed:', err)
   }
   return dhanScripMap
+}
+
+// ─── IndianAPI Fallback (12Y depth for 5Y horizon) ───────
+
+const INDIANAPI_BASE = 'https://stock.indianapi.in'
+
+// NSE symbol → IndianAPI stock name (for names that differ)
+const INDIANAPI_SYMBOL_OVERRIDES: Record<string, string> = {
+  'ZOMATO': 'ETERNAL', 'ETERNAL': 'ETERNAL',
+  'AXISBANK': 'Axis Bank', 'HDFCBANK': 'HDFC Bank',
+  'ICICIBANK': 'ICICI Bank', 'SBIN': 'State Bank of India',
+  'KOTAKBANK': 'Kotak Mahindra Bank', 'BHARTIARTL': 'Airtel',
+  'BAJFINANCE': 'Bajaj Finance', 'BAJFINSV': 'Bajaj Finserv',
+  'MARUTI': 'Maruti Suzuki India', 'LT': 'Larsen and Toubro',
+  'HINDUNILVR': 'Hindustan Unilever', 'ASIANPAINT': 'Asian Paints',
+  'TITAN': 'Titan Company', 'NESTLEIND': 'Nestle India',
+  'BRITANNIA': 'Britannia Industries', 'DRREDDY': "Dr. Reddy's Laboratories",
+  'SUNPHARMA': 'Sun Pharmaceutical Industries',
+  'POWERGRID': 'Power Grid Corporation of India',
+  'TATAMOTORS': 'Tata Motors', 'TATASTEEL': 'Tata Steel',
+  'RELIANCE': 'Reliance', 'ADANIENT': 'Adani Enterprises',
+  'ADANIPORTS': 'Adani Ports and Special Economic Zone',
+  'M&M': 'Mahindra and Mahindra', 'BAJAJ-AUTO': 'Bajaj Auto',
+  'DIVISLAB': "Divi's Laboratories", 'EICHERMOT': 'Eicher Motors',
+  'HCLTECH': 'HCL Technologies', 'TECHM': 'Tech Mahindra',
+  'ASHOKLEY': 'Ashok Leyland', 'HEROMOTOCO': 'Hero MotoCorp',
+  'INDIGO': 'InterGlobe Aviation', 'PIDILITIND': 'Pidilite Industries',
+  'TVSMOTOR': 'TVS Motor Company', 'APOLLOHOSP': 'Apollo Hospitals Enterprise',
+  'DMART': 'Avenue Supermarts', 'GRASIM': 'Grasim Industries',
+  'ULTRACEMCO': 'UltraTech Cement', 'DLF': 'DLF',
+  'TATAPOWER': 'Tata Power Company', 'ADANIPOWER': 'Adani Power',
+  'HAL': 'Hindustan Aeronautics', 'VEDL': 'Vedanta',
+  'POLYCAB': 'Polycab India', 'TRENT': 'Trent',
+  'IRFC': 'Indian Railway Finance Corporation',
+  'CHOLAFIN': 'Cholamandalam Investment and Finance Company',
+  'HDFCLIFE': 'HDFC Life Insurance Company',
+  'SBILIFE': 'SBI Life Insurance Company',
+  'IOC': 'Indian Oil Corporation', 'BPCL': 'Bharat Petroleum Corporation',
+  'TORNTPHARM': 'Torrent Pharmaceuticals', 'SIEMENS': 'Siemens',
+  'JINDALSTEL': 'Jindal Steel and Power', 'POWERINDIA': 'Hitachi Energy India',
+  'INDUSTOWER': 'Indus Towers', 'ABB': 'ABB India',
+  'LTM': 'LTIMindtree', 'LTIM': 'LTIMindtree',
+}
+
+async function indianApiFetchStats(
+  stockName: string,
+  stats: string,
+): Promise<IndianAPIStatsResponse | null> {
+  if (!INDIANAPI_KEY) return null
+  try {
+    const qs = new URLSearchParams({ stock_name: stockName, stats }).toString()
+    const url = `${INDIANAPI_BASE}/historical_stats?${qs}`
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), 20000)
+    const res = await proxyFetch(url, {
+      headers: { 'X-Api-Key': INDIANAPI_KEY },
+      signal: controller.signal,
+    })
+    clearTimeout(timeoutId)
+    if (!res.ok) return null
+    const contentType = res.headers.get('content-type') || ''
+    if (contentType.includes('text/html')) return null
+    return await res.json() as IndianAPIStatsResponse
+  } catch {
+    return null
+  }
+}
+
+/**
+ * Fetch IndianAPI fundamentals for a stock (P&L, BS, CF, Quarterly).
+ * Returns CMOTS-compatible rows with 12Y depth.
+ */
+async function fetchIndianAPIFundamentals(symbol: string): Promise<FundamentalsBundle | null> {
+  if (!INDIANAPI_KEY) return null
+  const stockName = INDIANAPI_SYMBOL_OVERRIDES[symbol.toUpperCase()] || symbol
+
+  const [pnlData, bsData, cfData, qrData] = await Promise.all([
+    indianApiFetchStats(stockName, 'yoy_results'),
+    indianApiFetchStats(stockName, 'balancesheet'),
+    indianApiFetchStats(stockName, 'cashflow'),
+    indianApiFetchStats(stockName, 'quarter_results'),
+  ])
+
+  // If primary P&L fails, not worth continuing
+  if (!pnlData) return null
+
+  const pnl = convertToCMOTSRows(pnlData, PNL_FIELD_MAP)
+  const balanceSheet = bsData ? convertToCMOTSRows(bsData, BS_FIELD_MAP) : []
+  const cashFlow = cfData ? convertToCMOTSRows(cfData, CF_FIELD_MAP) : []
+  const quarterly = qrData ? convertToCMOTSRows(qrData, QR_FIELD_MAP) : []
+
+  // Synthesize Shareholders Fund
+  if (bsData) {
+    const shFundRow = synthesizeShareholdersFund(bsData)
+    if (shFundRow) balanceSheet.push(shFundRow)
+  }
+
+  return {
+    ttm: null,
+    finData: [],
+    pnl,
+    balanceSheet,
+    cashFlow,
+    quarterly,
+    shareholding: [],
+  }
+}
+
+/**
+ * Merge IndianAPI rows into CMOTS rows: add historical Y-columns that CMOTS lacks.
+ * CMOTS values always take precedence for overlapping columns.
+ */
+function mergeStatementRows(
+  cmotsRows: CMOTSStatementRow[],
+  indianRows: CMOTSStatementRow[],
+): CMOTSStatementRow[] {
+  if (indianRows.length === 0) return cmotsRows
+  if (cmotsRows.length === 0) return indianRows
+  const cmotsMap = new Map<number, CMOTSStatementRow>()
+  for (const row of cmotsRows) cmotsMap.set(row.rowno, row)
+  const result = [...cmotsRows]
+  for (const iaRow of indianRows) {
+    const existing = cmotsMap.get(iaRow.rowno)
+    if (existing) {
+      for (const [key, value] of Object.entries(iaRow)) {
+        if (/^Y\d{6}$/.test(key) && !(key in existing)) {
+          existing[key] = value
+        }
+      }
+    } else {
+      result.push(iaRow)
+      cmotsMap.set(iaRow.rowno, iaRow)
+    }
+  }
+  return result
+}
+
+/**
+ * Fetch historical price data from IndianAPI (weekly bars, up to 20 years).
+ * Used as fallback when both CMOTS and DhanHQ price endpoints are unavailable.
+ */
+async function indianApiFetchPrices(stockName: string): Promise<PriceBar[]> {
+  if (!INDIANAPI_KEY) return []
+  try {
+    const qs = new URLSearchParams({ stock_name: stockName, period: 'max', filter: 'price' }).toString()
+    const url = `${INDIANAPI_BASE}/historical_data?${qs}`
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), 30000)
+    const res = await proxyFetch(url, {
+      headers: { 'X-Api-Key': INDIANAPI_KEY },
+      signal: controller.signal,
+    })
+    clearTimeout(timeoutId)
+    if (!res.ok) return []
+    const data: any = await res.json()
+    // Response: { datasets: [{ metric: "Price", label: "...", values: [["2005-04-01","39.35"], ...] }] }
+    if (!data?.datasets || !Array.isArray(data.datasets)) return []
+    const priceDataset = data.datasets.find((d: any) => d.metric === 'Price')
+    if (!priceDataset?.values) return []
+    const bars: PriceBar[] = []
+    for (const [date, priceStr] of priceDataset.values) {
+      const price = parseFloat(priceStr)
+      if (date && price > 0) {
+        bars.push({ date, price, volume: 0 })
+      }
+    }
+    return bars.sort((a, b) => a.date.localeCompare(b.date))
+  } catch {
+    return []
+  }
+}
+
+/** Merge IndianAPI data into CMOTS FundamentalsBundle for historical depth */
+function mergeFundamentals(
+  cmots: FundamentalsBundle,
+  indianapi: FundamentalsBundle,
+): FundamentalsBundle {
+  return {
+    ttm: cmots.ttm,
+    finData: cmots.finData,
+    pnl: mergeStatementRows(cmots.pnl, indianapi.pnl),
+    balanceSheet: mergeStatementRows(cmots.balanceSheet, indianapi.balanceSheet),
+    cashFlow: mergeStatementRows(cmots.cashFlow, indianapi.cashFlow),
+    quarterly: mergeStatementRows(cmots.quarterly, indianapi.quarterly),
+    shareholding: cmots.shareholding,
+  }
 }
 
 // ─── Concurrency Helper ──────────────────────────────────
@@ -1043,6 +1241,7 @@ async function main() {
   console.log(`  End Date: ${END_DATE}`)
   console.log(`  Output:   ${OUTPUT_DIR}`)
   console.log(`  Concurrency: ${CONCURRENCY}`)
+  console.log(`  IndianAPI:  ${INDIANAPI_KEY ? 'YES (12Y fallback for 5Y horizon)' : 'NO (5Y horizon may have insufficient data)'}`)
   if (STOCK_LIMIT > 0) console.log(`  Limit: ${STOCK_LIMIT} stocks (testing mode)`)
   console.log('='.repeat(70) + '\n')
 
@@ -1124,8 +1323,11 @@ async function main() {
           skippedCount++; return false
         }
 
-        // Fetch prices from DhanHQ (primary source — CMOTS AdjustedPriceChart currently returns 404)
+        // Fetch prices: try DhanHQ → CMOTS → IndianAPI (triple fallback)
         let priceHistory: PriceBar[] = []
+        const symbol = company.nsesymbol || company.bsecode || ''
+
+        // 1. DhanHQ (daily bars, primary)
         if (company.isin && scripMap.size > 0) {
           const secId = scripMap.get(company.isin)
           if (secId) {
@@ -1133,7 +1335,7 @@ async function main() {
           }
         }
 
-        // Fallback: try CMOTS price endpoint in case it comes back
+        // 2. CMOTS AdjustedPriceChart fallback
         if (priceHistory.length < 10) {
           const priceData = await cmotsFetch<any>(`/AdjustedPriceChart/bse/${coCode}/${extendedFrom}/${END_DATE}`)
           if (priceData.length > 0) {
@@ -1148,6 +1350,12 @@ async function main() {
           }
         }
 
+        // 3. IndianAPI fallback (weekly bars, up to 20 years)
+        if (priceHistory.length < 10 && INDIANAPI_KEY && symbol) {
+          const iaStockName = INDIANAPI_SYMBOL_OVERRIDES[symbol.toUpperCase()] || symbol
+          priceHistory = await indianApiFetchPrices(iaStockName)
+        }
+
         if (priceHistory.length < 10) {
           console.warn(`  [SKIP] ${company.companyname}: insufficient price data (${priceHistory.length} bars)`)
           skippedCount++; return false
@@ -1159,7 +1367,7 @@ async function main() {
         // Merge quarterly: prefer QuarterlyProfitandLoss (25 qtrs) + QR newer columns
         const quarterly = mergeQuarterly(qPnL, qResults)
 
-        const fundamentals: FundamentalsBundle = {
+        let fundamentals: FundamentalsBundle = {
           ttm: ttmArr[0] ?? null,
           finData,
           pnl,
@@ -1167,6 +1375,19 @@ async function main() {
           balanceSheet,
           quarterly,
           shareholding,
+        }
+
+        // IndianAPI fallback: merge 12Y historical data for 5Y horizon scoring
+        // CMOTS annual data only covers 5 years (FY2021-2025), so 5Y horizon (2021-03-02)
+        // can't score without historical data from IndianAPI (12 years back to FY2014)
+        if (INDIANAPI_KEY) {
+          const symbol = company.nsesymbol || company.bsecode
+          if (symbol) {
+            const iaData = await fetchIndianAPIFundamentals(symbol)
+            if (iaData) {
+              fundamentals = mergeFundamentals(fundamentals, iaData)
+            }
+          }
         }
 
         // Score at each horizon
@@ -1201,6 +1422,7 @@ async function main() {
             },
             resolved.context,
           )
+
 
           const returnPct = h.hasReturns
             ? Math.round(((endBar!.price - startBar!.price) / startBar!.price) * 100 * 100) / 100

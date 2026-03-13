@@ -1,0 +1,27 @@
+sector,stock_count,exact_pct,within_10_pct,within_25_pct,rest_pct,cumulative_within_25_pct,avg_deviation_pct,spearman_correlation
+"Automobile",6,0,0,33.33,66.67,33.33,33.33,0.143
+"IT - Software",6,16.67,0,0,83.33,16.67,38.89,-0.200
+"FMCG",5,0,0,20,80,20,48,-0.600
+"Power Generation & Distribution",4,25,0,50,25,75,25,0.400
+"Finance",3,33.33,0,0,66.67,33.33,22.22,0.500
+"Pharmaceuticals",3,100,0,0,0,100,0,1.000
+"Insurance",2,100,0,0,0,100,0,N/A
+"Cement",2,0,0,0,100,0,50,N/A
+"Refineries",2,100,0,0,0,100,0,N/A
+"Non Ferrous Metals",2,0,0,0,100,0,50,N/A
+"Steel",2,100,0,0,0,100,0,N/A
+"Capital Goods - Electrical Equipment",2,0,0,0,100,0,50,N/A
+"Tobacco Products",1,100,0,0,0,100,0,N/A
+"Mining & Mineral products",1,100,0,0,0,100,0,N/A
+"Chemicals",1,100,0,0,0,100,0,N/A
+"Aerospace & Defence",1,100,0,0,0,100,0,N/A
+"Retail",1,100,0,0,0,100,0,N/A
+"Diamond, Gems and Jewellery",1,100,0,0,0,100,0,N/A
+"Telecom Equipment & Infra Services",1,100,0,0,0,100,0,N/A
+"Capital Goods-Non Electrical Equipment",1,100,0,0,0,100,0,N/A
+"Paints/Varnish",1,100,0,0,0,100,0,N/A
+"Crude Oil & Natural Gas",1,100,0,0,0,100,0,N/A
+"Auto Ancillaries",1,100,0,0,0,100,0,N/A
+"Healthcare",1,100,0,0,0,100,0,N/A
+"Textiles",1,100,0,0,0,100,0,N/A
+"Trading",1,100,0,0,0,100,0,N/A
