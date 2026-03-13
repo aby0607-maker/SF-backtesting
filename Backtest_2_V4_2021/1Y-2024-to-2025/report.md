@@ -16,8 +16,8 @@
 | Valuation N/A (excluded) | 8 |
 | Banking stocks excluded | 357 |
 | Stocks skipped (no data) | 4 |
-| Score-Return Correlation (Pearson) | **0.195** |
-| Winsorized Correlation (±200% cap) | **0.195** |
+| Score-Return Correlation (Pearson) | **0.212** |
+| Winsorized Correlation (±200% cap) | **0.212** |
 | Average Return | -0.48% |
 | Median Return | -2.73% |
 | Positive Return Hit Rate | 40.3% |
@@ -31,13 +31,13 @@
 
 | Quintile | Stocks | Avg Score | Avg Return % | Winsorized % | Median % | Hit Rate |
 |----------|--------|-----------|-------------|-------------|----------|----------|
-| Q1 (Top 20%) | 15 | 69.2 | 7.57% | 7.57% | 0.22% | 53.3% |
-| Q2 (20-40%) | 15 | 63.3 | 1.48% | 1.48% | -1.32% | 40.0% |
-| Q3 (40-60%) | 15 | 59.5 | -0.77% | -0.77% | -2.18% | 40.0% |
-| Q4 (60-80%) | 15 | 53.9 | -1.84% | -1.84% | -10.26% | 33.3% |
-| Q5 (Bottom 20%) | 12 | 45.0 | -10.91% | -10.91% | -15.10% | 33.3% |
+| Q1 (Top 20%) | 15 | 69.3 | 8.16% | 8.16% | 0.22% | 53.3% |
+| Q2 (20-40%) | 15 | 63.5 | 2.81% | 2.81% | -0.68% | 46.7% |
+| Q3 (40-60%) | 15 | 59.7 | -1.57% | -1.57% | -2.18% | 40.0% |
+| Q4 (60-80%) | 15 | 54.1 | -3.20% | -3.20% | -12.55% | 26.7% |
+| Q5 (Bottom 20%) | 12 | 44.2 | -10.61% | -10.61% | -14.09% | 33.3% |
 
-**Q1 vs Q5 Spread:** 18.49 percentage points
+**Q1 vs Q5 Spread:** 18.77 percentage points
 
 ---
 
@@ -45,9 +45,9 @@
 
 | Verdict | Stocks | % | Avg Score | Avg Return % | Winsorized % | Median % | Hit Rate |
 |---------|--------|---|-----------|-------------|-------------|----------|----------|
-| BUY | 17 | 23.6% | 68.8 | 6.95% | 6.95% | 0.22% | 52.9% |
-| HOLD | 42 | 58.3% | 58.8 | -0.30% | -0.30% | -3.36% | 38.1% |
-| REVIEW | 13 | 18.1% | 45.3 | -10.76% | -10.76% | -12.55% | 30.8% |
+| BUY | 19 | 26.4% | 68.5 | 6.33% | 6.33% | 0.22% | 52.6% |
+| HOLD | 40 | 55.6% | 58.7 | -0.37% | -0.37% | -3.36% | 37.5% |
+| REVIEW | 13 | 18.1% | 44.6 | -10.76% | -10.76% | -12.55% | 30.8% |
 
 ---
 
@@ -55,10 +55,10 @@
 
 | Segment | Weight | Correlation with Returns |
 |---------|--------|-------------------------|
-| Financial | 30% | 0.003 |
-| Valuation | 45% | 0.126 |
+| Financial | 30% | 0.011 |
+| Valuation | 45% | 0.141 |
 | Technical | 7% | -0.135 |
-| Quarterly Momentum | 18% | 0.26 |
+| Quarterly Momentum | 18% | 0.268 |
 
 ---
 
@@ -66,19 +66,19 @@
 
 | Sector | Stocks | Avg Score | Avg Return % | Winsorized % | Median % | Correlation |
 |--------|--------|-----------|-------------|-------------|----------|-------------|
-| Automobile | 8 | 62.4 | 2.82% | 2.82% | 1.02% | 0.701 |
+| Automobile | 8 | 61.9 | 2.82% | 2.82% | 1.02% | 0.724 |
 | Pharmaceuticals | 6 | 62.2 | 11.58% | 11.58% | 6.14% | 0.345 |
-| IT - Software | 6 | 63.5 | -1.06% | -1.06% | -1.22% | 0.338 |
-| Power Generation & Distribution | 5 | 50.6 | -17.11% | -17.11% | -12.55% | -0.488 |
+| IT - Software | 6 | 63.7 | -1.06% | -1.06% | -1.22% | 0.333 |
+| Power Generation & Distribution | 5 | 50.8 | -17.11% | -17.11% | -12.55% | -0.48 |
 | FMCG | 4 | 58.1 | -17.70% | -17.70% | -18.34% | 0.805 |
-| Capital Goods - Electrical Equipment | 4 | 55.6 | 23.15% | 23.15% | 9.36% | -0.344 |
-| Aerospace & Defence | 3 | 61.9 | 14.71% | 14.71% | 19.11% | 0.421 |
+| Capital Goods - Electrical Equipment | 4 | 56.0 | 23.15% | 23.15% | 9.36% | -0.412 |
+| Aerospace & Defence | 3 | 62.7 | 14.71% | 14.71% | 19.11% | 0.708 |
 | Steel | 3 | 55.6 | 1.00% | 1.00% | 2.10% | 0.237 |
-| Refineries | 3 | 54.7 | -25.90% | -25.90% | -24.09% | 0.691 |
-| Retail | 2 | 59.6 | 6.04% | 6.04% | 6.04% | 0 |
+| Refineries | 3 | 55.0 | -25.90% | -25.90% | -24.09% | 0.784 |
+| Retail | 2 | 56.7 | 6.04% | 6.04% | 6.04% | 0 |
 | Cement | 2 | 66.7 | -12.27% | -12.27% | -12.27% | 0 |
+| Non Ferrous Metals | 2 | 61.0 | 23.17% | 23.17% | 23.17% | 0 |
 | Mining & Mineral products | 2 | 52.8 | 13.46% | 13.46% | 13.46% | 0 |
-| Non Ferrous Metals | 2 | 54.7 | 23.17% | 23.17% | 23.17% | 0 |
 | Finance | 2 | 45.3 | 1.57% | 1.57% | 1.57% | 0 |
 
 ---
@@ -96,17 +96,17 @@
 | 7 | TVS Motor Company Ltd | Automobile | 69.2 | BUY | -1.22% |
 | 8 | UltraTech Cement Ltd | Cement | 68.7 | BUY | 0.22% |
 | 9 | Polycab India Ltd | Cables | 68.4 | BUY | -1.69% |
-| 10 | Dr Reddys Laboratories Ltd | Pharmaceuticals | 67.5 | BUY | -10.52% |
-| 11 | Infosys Ltd | IT - Software | 66.8 | BUY | 1.9% |
+| 10 | Infosys Ltd | IT - Software | 67.7 | BUY | 1.9% |
+| 11 | Dr Reddys Laboratories Ltd | Pharmaceuticals | 67.5 | BUY | -10.52% |
 | 12 | Bharat Electronics Ltd | Aerospace & Defence | 66.4 | BUY | 19.11% |
 | 13 | Tech Mahindra Ltd | IT - Software | 66.3 | BUY | 16.92% |
-| 14 | LTIMindtree Ltd | IT - Software | 65.9 | BUY | -11.88% |
-| 15 | JSW Steel Ltd | Steel | 65.8 | BUY | 12.52% |
-| 16 | Cipla Ltd | Pharmaceuticals | 65.5 | BUY | -5.05% |
-| 17 | Torrent Pharmaceuticals Ltd | Pharmaceuticals | 65.1 | BUY | 9.53% |
-| 18 | Asian Paints Ltd | Paints/Varnish | 64.6 | HOLD | -23.51% |
-| 19 | Ambuja Cements Ltd | Cement | 64.6 | HOLD | -24.75% |
-| 20 | Tata Consumer Products Ltd | Plantation & Plantation Products | 64.6 | HOLD | -19.18% |
+| 14 | Hindalco Industries Ltd | Non Ferrous Metals | 66.1 | BUY | 21.33% |
+| 15 | LTIMindtree Ltd | IT - Software | 65.9 | BUY | -11.88% |
+| 16 | JSW Steel Ltd | Steel | 65.8 | BUY | 12.52% |
+| 17 | Cipla Ltd | Pharmaceuticals | 65.5 | BUY | -5.05% |
+| 18 | Torrent Pharmaceuticals Ltd | Pharmaceuticals | 65.1 | BUY | 9.53% |
+| 19 | Tata Consumer Products Ltd | Plantation & Plantation Products | 65.0 | BUY | -19.18% |
+| 20 | Asian Paints Ltd | Paints/Varnish | 64.6 | HOLD | -23.51% |
 
 ## Top 20 by Return
 
@@ -116,17 +116,17 @@
 | 2 | Divis Laboratories Ltd | Pharmaceuticals | 72.0 | BUY | 56.2% |
 | 3 | Vedanta Ltd | Mining & Mineral products | 61.9 | HOLD | 44.57% |
 | 4 | Interglobe Aviation Ltd | Air Transport Service | 71.9 | BUY | 41.7% |
-| 5 | Bharti Airtel Ltd | Telecom-Service | 57.8 | HOLD | 38.82% |
+| 5 | Bharti Airtel Ltd | Telecom-Service | 58.5 | HOLD | 38.82% |
 | 6 | Eternal Ltd | E-Commerce/App based Aggregator | 42.1 | REVIEW | 32.48% |
 | 7 | Mahindra & Mahindra Ltd | Automobile | 63.4 | HOLD | 31.89% |
 | 8 | Cholamandalam Investment & Finance Company Ltd | Finance | 53.8 | HOLD | 27.53% |
-| 9 | Solar Industries India Ltd | Aerospace & Defence | 60.3 | HOLD | 27.21% |
+| 9 | Solar Industries India Ltd | Aerospace & Defence | 62.7 | HOLD | 27.21% |
 | 10 | Hindustan Zinc Ltd | Non Ferrous Metals | 55.9 | HOLD | 25.02% |
-| 11 | Trent Ltd | Retail | 46.3 | REVIEW | 24.09% |
+| 11 | Trent Ltd | Retail | 40.5 | REVIEW | 24.09% |
 | 12 | Eicher Motors Ltd | Automobile | 75.0 | BUY | 23.66% |
 | 13 | Ashok Leyland Ltd | Automobile | 61.7 | HOLD | 23.52% |
 | 14 | Indus Towers Ltd | Telecom Equipment & Infra Services | 55.4 | HOLD | 21.7% |
-| 15 | Hindalco Industries Ltd | Non Ferrous Metals | 53.5 | HOLD | 21.33% |
+| 15 | Hindalco Industries Ltd | Non Ferrous Metals | 66.1 | BUY | 21.33% |
 | 16 | CG Power & Industrial Solutions Ltd | Capital Goods - Electrical Equipment | 61.6 | HOLD | 21.1% |
 | 17 | Bharat Electronics Ltd | Aerospace & Defence | 66.4 | BUY | 19.11% |
 | 18 | Tech Mahindra Ltd | IT - Software | 66.3 | BUY | 16.92% |

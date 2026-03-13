@@ -7,25 +7,23 @@ stock_id,stock_name,symbol,sector,mcap_type,overall_score,verdict,financial_scor
 28074,"Bajaj Auto Ltd",BAJAJ-AUTO,"Automobile",Large Cap,73.22,BUY,70.75,78.50,82.50,26.00,3732,7902.9,111.76,48.18
 17215,"Tech Mahindra Ltd",TECHM,"IT - Software",Large Cap,72.14,BUY,75.25,82.00,55.00,39.50,1085.15,1487.85,37.11,-26.47
 3616,"Torrent Pharmaceuticals Ltd",TORNTPHARM,"Pharmaceuticals",Large Cap,71.03,BUY,63.50,71.00,100.00,29.00,1493.25,2948.1,97.43,33.85
+337,"Cummins India Ltd",CUMMINSIND,"Capital Goods-Non Electrical Equipment",Large Cap,70.18,BUY,78.75,63.00,70.00,80.00,1599.75,2717.95,69.9,6.32
 502,"Vedanta Ltd",VEDL,"Mining & Mineral products",Large Cap,69.17,BUY,62.75,87.00,55.00,18.50,289.25,394.75,36.47,-27.11
-242,"ABB India Ltd",ABB,"Capital Goods - Electrical Equipment",Large Cap,69.13,BUY,76.75,60.00,70.00,93.00,3328.75,4935.4,48.27,-15.31
 3219,"Pidilite Industries Ltd",PIDILITIND,"Chemicals",Large Cap,68.80,BUY,82.50,80.00,37.50,18.50,1159.38,1328.95,14.63,-48.95
 2163,"Cholamandalam Investment & Finance Company Ltd",CHOLAFIN,"Finance",Large Cap,68.32,BUY,34.00,100.00,55.00,46.00,750.2,1400.75,86.72,23.14
 365,"Mahindra & Mahindra Ltd",M&M,"Automobile",Large Cap,68.24,BUY,74.75,67.50,70.00,40.50,1268.6,2585.1,103.78,40.2
 12019,"Coal India Ltd",COALINDIA,"Mining & Mineral products",Large Cap,68.22,BUY,51.00,67.50,100.00,65.00,222.95,369.35,65.66,2.08
+252,"Hindalco Industries Ltd",HINDALCO,"Non Ferrous Metals",Large Cap,68.19,BUY,67.75,92.50,30.00,12.00,416.9,634.35,52.16,-11.42
 4764,"JSW Steel Ltd",JSWSTEEL,"Steel",Large Cap,68.13,BUY,92.00,82.50,10.00,23.00,682.3,950.7,39.34,-24.24
 348,"Larsen & Toubro Ltd",LT,"Infrastructure Developers & Operators",Large Cap,68.00,BUY,66.00,64.00,85.00,58.50,2152.05,3163.85,47.02,-16.56
-2290,"Bharat Petroleum Corporation Ltd",BPCL,"Refineries",Large Cap,67.97,BUY,81.50,88.50,10.00,27.00,160.7,237.3,47.67,-15.91
-557,"Tata Consumer Products Ltd",TATACONSUM,"Plantation & Plantation Products",Large Cap,67.70,BUY,69.75,80.00,55.00,12.50,701.13,963.7,37.45,-26.13
 114,"Cipla Ltd",CIPLA,"Pharmaceuticals",Large Cap,67.53,BUY,63.75,86.50,55.00,-6.00,878.65,1407.5,60.19,-3.39
 237,"Hero MotoCorp Ltd",HEROMOTOCO,"Automobile",Large Cap,67.39,BUY,45.00,78.50,100.00,8.00,2461.55,3681.1,49.54,-14.04
 12030,"Hindustan Aeronautics Ltd",HAL,"Aerospace & Defence",Large Cap,67.12,BUY,68.00,59.38,80.00,80.00,1346.03,3088.2,129.43,65.85
+2290,"Bharat Petroleum Corporation Ltd",BPCL,"Refineries",Large Cap,67.07,BUY,78.50,88.50,10.00,27.00,160.7,237.3,47.67,-15.91
 815,"Dr Reddys Laboratories Ltd",DRREDDY,"Pharmaceuticals",Large Cap,67.04,BUY,36.25,77.50,100.00,47.00,887.59,1116.5,25.79,-37.79
-252,"Hindalco Industries Ltd",HINDALCO,"Non Ferrous Metals",Large Cap,66.99,BUY,62.25,83.50,55.00,12.00,416.9,634.35,52.16,-11.42
-636,"Apollo Hospitals Enterprise Ltd",APOLLOHOSP,"Healthcare",Large Cap,66.81,BUY,69.25,73.00,60.00,34.00,4408.3,6052.6,37.3,-26.28
-337,"Cummins India Ltd",CUMMINSIND,"Capital Goods-Non Electrical Equipment",Large Cap,66.58,BUY,75.75,57.00,70.00,80.00,1599.75,2717.95,69.9,6.32
 20287,"Jindal Steel Ltd",JINDALSTEL,"Steel",Large Cap,66.11,BUY,84.25,75.00,10.00,75.50,589.05,856.15,45.34,-18.24
 5400,"Tata Consultancy Services Ltd",TCS,"IT - Software",Large Cap,66.06,BUY,72.25,76.50,45.00,26.50,3342.15,3483.25,4.22,-59.36
+242,"ABB India Ltd",ABB,"Capital Goods - Electrical Equipment",Large Cap,65.83,BUY,80.75,60.00,45.00,93.00,3328.75,4935.4,48.27,-15.31
 24951,"UltraTech Cement Ltd",ULTRACEMCO,"Cement",Large Cap,65.70,BUY,72.00,81.50,15.00,67.50,7215.95,10128.45,40.36,-23.22
 18105,"LTIMindtree Ltd",LTM,"IT - Software",Large Cap,65.64,BUY,91.00,74.50,10.00,43.00,4710.35,4665.95,-0.94,-64.52
 3026,"Lupin Ltd",LUPIN,"Pharmaceuticals",Large Cap,65.54,BUY,38.75,78.57,100.00,8.00,662.85,1904.65,187.34,123.76
@@ -34,39 +32,41 @@ stock_id,stock_name,symbol,sector,mcap_type,overall_score,verdict,financial_scor
 175,"Nestle India Ltd",NESTLEIND,"FMCG",Large Cap,65.01,BUY,70.50,88.50,15.00,19.00,922.5,1094.83,18.68,-44.9
 21960,"Godrej Consumer Products Ltd",GODREJCP,"FMCG",Large Cap,64.68,HOLD,58.75,69.00,65.00,61.50,925.75,1005.15,8.58,-55
 2806,"Infosys Ltd",INFY,"IT - Software",Large Cap,64.33,HOLD,73.50,79.00,30.00,19.00,1479.3,1687.7,14.09,-49.49
+15542,"Bharti Airtel Ltd",BHARTIARTL,"Telecom-Service",Large Cap,64.19,HOLD,39.25,71.43,100.00,32.50,764.4,1570.2,105.42,41.84
 12002,"Indian Oil Corporation Ltd",IOC,"Refineries",Large Cap,64.05,HOLD,72.25,83.00,10.00,46.00,78.2,113.49,45.13,-18.45
-21997,"HDFC Life Insurance Company Ltd",HDFCLIFE,"Insurance",Large Cap,63.99,HOLD,23.50,100.00,0.00,6.00,489.95,608.5,24.2,-39.38
 151,"Eicher Motors Ltd",EICHERMOT,"Automobile",Large Cap,63.86,HOLD,80.75,70.50,35.00,23.00,3127.3,4773.6,52.64,-10.94
 6068,"Oil & Natural Gas Corpn Ltd",ONGC,"Crude Oil & Natural Gas",Large Cap,63.86,HOLD,58.75,87.00,10.00,75.50,154.25,225.25,46.03,-17.55
 74646,"Hitachi Energy India Ltd",POWERINDIA,"Capital Goods - Electrical Equipment",Large Cap,63.45,HOLD,44.75,67.00,75.00,91.00,3340,11284.35,237.85,174.27
-5455,"Power Grid Corporation of India Ltd",POWERGRID,"Power Generation & Distribution",Large Cap,63.06,HOLD,64.25,81.00,10.00,79.00,166.58,250.85,50.59,-12.99
 21281,"Adani Ports & Special Economic Zone Ltd",ADANIPORTS,"Marine Port & Services",Large Cap,62.48,HOLD,25.75,90.00,0.00,43.00,684.65,1069.4,56.2,-7.38
 24608,"Varun Beverages Ltd",VBL,"FMCG",Large Cap,61.93,HOLD,63.25,67.00,40.00,80.00,271.7,436.05,60.49,-3.09
 5656,"HCL Technologies Ltd",HCLTECH,"IT - Software",Large Cap,61.92,HOLD,64.00,71.00,25.00,89.50,1119,1575.05,40.76,-22.82
 2298,"Bharat Electronics Ltd",BEL,"Aerospace & Defence",Large Cap,61.69,HOLD,60.25,50.00,100.00,44.50,95.85,246.25,156.91,93.33
 2966,"Samvardhana Motherson International Ltd",MOTHERSON,"Auto Ancillaries",Large Cap,61.31,HOLD,34.75,92.00,20.00,84.00,80.05,79.06,-1.24,-64.82
-25386,"Solar Industries India Ltd",SOLARINDS,"Aerospace & Defence",Large Cap,60.93,HOLD,97.25,50.00,30.00,55.00,3801.85,8710.6,129.11,65.53
 12001,"NTPC Ltd",NTPC,"Power Generation & Distribution",Large Cap,60.86,HOLD,63.75,75.00,15.00,75.50,172.6,311.45,80.45,16.87
+557,"Tata Consumer Products Ltd",TATACONSUM,"Plantation & Plantation Products",Large Cap,60.35,HOLD,63.25,68.00,55.00,12.50,701.13,963.7,37.45,-26.13
 255,"Hindustan Unilever Ltd",HINDUNILVR,"FMCG",Large Cap,60.26,HOLD,72.50,78.00,10.00,23.00,2430.65,2154.48,-11.36,-74.94
-15542,"Bharti Airtel Ltd",BHARTIARTL,"Telecom-Service",Large Cap,60.14,HOLD,36.25,71.43,82.50,32.50,764.4,1570.2,105.42,41.84
-345,"Trent Ltd",TRENT,"Retail",Large Cap,60.05,HOLD,53.25,70.00,50.00,51.00,1304.9,4851.55,271.79,208.21
 1016,"Titan Company Ltd",TITAN,"Diamond, Gems and Jewellery",Large Cap,59.94,HOLD,67.50,72.00,30.00,27.00,2396.1,3077.25,28.43,-35.15
 566,"Tata Steel Ltd",TATASTEEL,"Steel",Large Cap,59.91,HOLD,76.00,75.50,10.00,19.00,107,137.2,28.22,-35.36
+25386,"Solar Industries India Ltd",SOLARINDS,"Aerospace & Defence",Large Cap,59.58,HOLD,77.75,50.00,55.00,55.00,3801.85,8710.6,129.11,65.53
 26603,"Polycab India Ltd",POLYCAB,"Cables",Large Cap,59.38,HOLD,78.75,55.00,30.00,80.00,3069.2,4713.4,53.57,-10.01
+5455,"Power Grid Corporation of India Ltd",POWERGRID,"Power Generation & Distribution",Large Cap,59.30,HOLD,60.75,75.00,10.00,79.00,166.58,250.85,50.59,-12.99
 218,"Ambuja Cements Ltd",AMBUJACEM,"Cement",Large Cap,58.50,HOLD,73.75,72.00,10.00,31.00,391.85,464.95,18.66,-44.92
 93,"Britannia Industries Ltd",BRITANNIA,"FMCG",Large Cap,58.41,HOLD,71.25,63.50,25.00,56.50,4411.95,4595.45,4.16,-59.42
 5496,"Maruti Suzuki India Ltd",MARUTI,"Automobile",Large Cap,57.58,HOLD,48.25,66.50,60.00,34.00,8601.25,11945.85,38.89,-24.69
 476,"Reliance Industries Ltd",RELIANCE,"Refineries",Large Cap,57.53,HOLD,59.75,79.50,10.00,29.00,1082.8,1200.1,10.83,-52.75
 34,"Asian Paints Ltd",ASIANPAINT,"Paints/Varnish",Large Cap,56.86,HOLD,67.50,74.00,10.00,21.50,2828.85,2179.75,-22.95,-86.53
+636,"Apollo Hospitals Enterprise Ltd",APOLLOHOSP,"Healthcare",Large Cap,56.76,HOLD,53.75,75.00,25.00,34.00,4408.3,6052.6,37.3,-26.28
 33159,"Interglobe Aviation Ltd",INDIGO,"Air Transport Service",Large Cap,56.66,HOLD,56.00,80.00,15.00,16.50,1865.15,4477.3,140.05,76.47
 301,"ITC Ltd",ITC,"Tobacco Products",Large Cap,56.53,HOLD,73.00,56.50,20.00,80.00,364.16,395,8.47,-55.11
 227,"Grasim Industries Ltd",GRASIM,"Textiles",Large Cap,55.51,HOLD,44.75,63.00,65.00,29.00,1589.93,2306.65,45.08,-18.5
+345,"Trent Ltd",TRENT,"Retail",Large Cap,54.65,HOLD,35.25,70.00,50.00,51.00,1304.9,4851.55,271.79,208.21
 125,"CG Power & Industrial Solutions Ltd",CGPOWER,"Capital Goods - Electrical Equipment",Large Cap,53.64,HOLD,59.00,50.00,55.00,50.50,300.75,572.6,90.39,26.81
 31,"Ashok Leyland Ltd",ASHOKLEY,"Automobile",Large Cap,52.83,HOLD,47.75,72.50,20.00,32.50,72.53,106.47,46.79,-16.79
-560,"Tata Motors Passenger Vehicles Ltd",TMPV,"Automobile",Large Cap,48.75,REVIEW,33.25,75.00,10.00,46.00,259.1,375.72,45.01,-18.57
+560,"Tata Motors Passenger Vehicles Ltd",TMPV,"Automobile",Large Cap,51.00,HOLD,40.75,75.00,10.00,46.00,259.1,375.72,45.01,-18.57
 514,"Siemens Ltd",SIEMENS,"Capital Goods - Electrical Equipment",Large Cap,48.45,REVIEW,54.25,57.00,10.00,67.50,1572.72,2298.48,46.15,-17.43
 554,"Tata Power Company Ltd",TATAPOWER,"Power Generation & Distribution",Large Cap,48.36,REVIEW,18.25,69.50,0.00,41.50,207.75,339.2,63.27,-0.31
 4325,"Sun Pharmaceutical Industries Ltd",SUNPHARMA,"Pharmaceuticals",Large Cap,48.21,REVIEW,47.75,65.00,10.00,40.50,966.9,1593.25,64.78,1.2
 17808,"Adani Power Ltd",ADANIPOWER,"Power Generation & Distribution",Large Cap,45.61,REVIEW,39.25,65.00,20.00,14.00,33.86,95.79,182.9,119.32
 12854,"Indian Railway Finance Corporation Ltd",IRFC,"Finance",Large Cap,44.42,REVIEW,25.75,70.00,10.00,48.50,28.2,112.42,298.65,235.07
 6890,"DLF Ltd",DLF,"Realty",Large Cap,43.54,REVIEW,28.25,68.00,10.00,38.00,360.25,635.55,76.42,12.84
+21997,"HDFC Life Insurance Company Ltd",HDFCLIFE,"Insurance",Large Cap,36.55,REVIEW,23.50,50.00,0.00,6.00,489.95,608.5,24.2,-39.38

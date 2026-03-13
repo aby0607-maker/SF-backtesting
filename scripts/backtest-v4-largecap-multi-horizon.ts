@@ -1102,6 +1102,168 @@ function generateCrossHorizonReport(
     }
   }
 
+  // E: Sector-by-Sector Cross-Horizon Breakdown
+  r += `\n## 5. Sector-by-Sector Cross-Horizon Breakdown\n\n`
+  r += `Score rank vs return rank alignment by sector across all horizons.\n`
+  r += `Only sectors with ≥3 stocks in at least 2 horizons are shown.\n\n`
+
+  // Collect per-sector metrics for each return horizon
+  interface SectorHorizonMetrics {
+    stockCount: number
+    exactPct: number
+    within10Pct: number
+    within25Pct: number
+    cumulative25Pct: number
+    restPct: number
+    avgDeviation: number
+    spearmanRho: number | null
+    pearsonR: number | null
+    avgScore: number
+    avgReturn: number
+  }
+
+  const sectorCrossData = new Map<string, Map<string, SectorHorizonMetrics>>()
+
+  for (const h of returnHorizons) {
+    const hr = horizonResults.get(h.id)
+    if (!hr || hr.scored.length < 2) continue
+
+    // Group by sector
+    const sectorMap = new Map<string, StockAnalysisResult[]>()
+    for (const s of hr.scored) {
+      if (!sectorMap.has(s.sector)) sectorMap.set(s.sector, [])
+      sectorMap.get(s.sector)!.push(s)
+    }
+
+    for (const [sector, stocks] of sectorMap) {
+      const N = stocks.length
+      if (N < 2) continue  // Need at least 2 for any ranking
+
+      const scores = stocks.map(s => s.scoreResult.normalizedScore)
+      const returns = stocks.map(s => s.returnPct)
+      const scoreRanks = denseRank(scores, true)
+      const returnRanks = denseRank(returns, true)
+
+      let exact = 0, w10 = 0, w25 = 0, rest = 0, totalDev = 0
+      for (let i = 0; i < N; i++) {
+        const diff = Math.abs(scoreRanks[i] - returnRanks[i])
+        const devPct = (diff / N) * 100
+        const bucket = assignBucket(devPct)
+        if (bucket === 'Exact') exact++
+        else if (bucket === 'Within 10%') w10++
+        else if (bucket === 'Within 25%') w25++
+        else rest++
+        totalDev += devPct
+      }
+
+      const spearman = N >= 3 ? spearmanCorrelation(scoreRanks, returnRanks) : null
+      const pearson = N >= 3 ? pearsonCorrelation(scores, returns) : null
+      const avgScore = scores.reduce((a, b) => a + b, 0) / N
+      const avgReturn = returns.reduce((a, b) => a + b, 0) / N
+
+      if (!sectorCrossData.has(sector)) sectorCrossData.set(sector, new Map())
+      sectorCrossData.get(sector)!.set(h.id, {
+        stockCount: N,
+        exactPct: Math.round((exact / N) * 10000) / 100,
+        within10Pct: Math.round((w10 / N) * 10000) / 100,
+        within25Pct: Math.round((w25 / N) * 10000) / 100,
+        cumulative25Pct: Math.round(((exact + w10 + w25) / N) * 10000) / 100,
+        restPct: Math.round((rest / N) * 10000) / 100,
+        avgDeviation: Math.round((totalDev / N) * 100) / 100,
+        spearmanRho: spearman !== null ? Math.round(spearman * 1000) / 1000 : null,
+        pearsonR: pearson !== null ? Math.round(pearson * 1000) / 1000 : null,
+        avgScore: Math.round(avgScore * 10) / 10,
+        avgReturn: Math.round(avgReturn * 100) / 100,
+      })
+    }
+  }
+
+  // Filter: sectors with ≥3 stocks in at least 2 horizons
+  const qualifyingSectors: string[] = []
+  for (const [sector, horizonMap] of sectorCrossData) {
+    const horizonsWithEnough = [...horizonMap.values()].filter(m => m.stockCount >= 3).length
+    if (horizonsWithEnough >= 2) qualifyingSectors.push(sector)
+  }
+
+  // Sort by average cumulative ≤25% across horizons (best alignment first)
+  qualifyingSectors.sort((a, b) => {
+    const aAvg = avgCumulative(sectorCrossData.get(a)!)
+    const bAvg = avgCumulative(sectorCrossData.get(b)!)
+    return bAvg - aAvg
+  })
+
+  function avgCumulative(m: Map<string, SectorHorizonMetrics>): number {
+    const vals = [...m.values()].filter(v => v.stockCount >= 3).map(v => v.cumulative25Pct)
+    return vals.length > 0 ? vals.reduce((a, b) => a + b, 0) / vals.length : 0
+  }
+
+  const hLabels: Record<string, string> = {}
+  for (const h of returnHorizons) hLabels[h.id] = h.label.replace(' Horizon', '')
+
+  // Per-sector detail tables
+  for (const sector of qualifyingSectors) {
+    const horizonMap = sectorCrossData.get(sector)!
+    const counts = returnHorizons.map(h => {
+      const m = horizonMap.get(h.id)
+      return m ? `${hLabels[h.id]}: ${m.stockCount}` : `${hLabels[h.id]}: —`
+    }).join(' | ')
+    r += `\n### ${sector} (${counts})\n\n`
+    r += `| Metric | ${returnHorizons.map(h => `${hLabels[h.id]} (${h.startDate.slice(0, 4)}→${h.endDate.slice(0, 4)})`).join(' | ')} |\n`
+    r += `|--------|${returnHorizons.map(() => '---').join('|')}|\n`
+
+    const getVal = (hId: string, fn: (m: SectorHorizonMetrics) => string): string => {
+      const m = horizonMap.get(hId)
+      return (m && m.stockCount >= 3) ? fn(m) : '—'
+    }
+
+    r += `| Stocks scored | ${returnHorizons.map(h => getVal(h.id, m => String(m.stockCount))).join(' | ')} |\n`
+    r += `| Exact Match | ${returnHorizons.map(h => getVal(h.id, m => m.exactPct + '%')).join(' | ')} |\n`
+    r += `| Within 10% | ${returnHorizons.map(h => getVal(h.id, m => m.within10Pct + '%')).join(' | ')} |\n`
+    r += `| Within 25% | ${returnHorizons.map(h => getVal(h.id, m => m.within25Pct + '%')).join(' | ')} |\n`
+    r += `| **Cumulative ≤25%** | ${returnHorizons.map(h => getVal(h.id, m => '**' + m.cumulative25Pct + '%**')).join(' | ')} |\n`
+    r += `| >25% | ${returnHorizons.map(h => getVal(h.id, m => m.restPct + '%')).join(' | ')} |\n`
+    r += `| Avg Deviation | ${returnHorizons.map(h => getVal(h.id, m => m.avgDeviation + '%')).join(' | ')} |\n`
+    r += `| Spearman rho | ${returnHorizons.map(h => getVal(h.id, m => m.spearmanRho !== null ? String(m.spearmanRho) : 'N/A')).join(' | ')} |\n`
+    r += `| Pearson r (score↔return) | ${returnHorizons.map(h => getVal(h.id, m => m.pearsonR !== null ? String(m.pearsonR) : 'N/A')).join(' | ')} |\n`
+    r += `| Avg Score | ${returnHorizons.map(h => getVal(h.id, m => String(m.avgScore))).join(' | ')} |\n`
+    r += `| Avg Return | ${returnHorizons.map(h => getVal(h.id, m => m.avgReturn + '%')).join(' | ')} |\n`
+  }
+
+  // Summary table
+  r += `\n### Summary: All Sectors × Horizons\n\n`
+  r += `| Sector | ${returnHorizons.map(h => `N(${hLabels[h.id]})`).join(' | ')} | ${returnHorizons.map(h => `≤25%(${hLabels[h.id]})`).join(' | ')} | ${returnHorizons.map(h => `Pearson(${hLabels[h.id]})`).join(' | ')} |\n`
+  r += `|--------|${returnHorizons.map(() => '---').join('|')}|${returnHorizons.map(() => '---').join('|')}|${returnHorizons.map(() => '---').join('|')}|\n`
+
+  for (const sector of qualifyingSectors) {
+    const horizonMap = sectorCrossData.get(sector)!
+    const ns = returnHorizons.map(h => {
+      const m = horizonMap.get(h.id)
+      return (m && m.stockCount >= 3) ? String(m.stockCount) : '—'
+    })
+    const cum25s = returnHorizons.map(h => {
+      const m = horizonMap.get(h.id)
+      return (m && m.stockCount >= 3) ? m.cumulative25Pct + '%' : '—'
+    })
+    const pearsons = returnHorizons.map(h => {
+      const m = horizonMap.get(h.id)
+      return (m && m.stockCount >= 3 && m.pearsonR !== null) ? String(m.pearsonR) : '—'
+    })
+    r += `| ${sector} | ${ns.join(' | ')} | ${cum25s.join(' | ')} | ${pearsons.join(' | ')} |\n`
+  }
+
+  // Generate CSV data for cross-horizon sector breakdown
+  let sectorCSV = 'sector,horizon,stock_count,exact_pct,within_10_pct,within_25_pct,cumulative_25_pct,rest_pct,avg_deviation_pct,spearman_rho,pearson_r,avg_score,avg_return_pct\n'
+  for (const sector of qualifyingSectors) {
+    const horizonMap = sectorCrossData.get(sector)!
+    for (const h of returnHorizons) {
+      const m = horizonMap.get(h.id)
+      if (!m || m.stockCount < 3) continue
+      sectorCSV += `${csvQuote(sector)},${h.id},${m.stockCount},${m.exactPct},${m.within10Pct},${m.within25Pct},${m.cumulative25Pct},${m.restPct},${m.avgDeviation},${m.spearmanRho ?? 'N/A'},${m.pearsonR ?? 'N/A'},${m.avgScore},${m.avgReturn}\n`
+    }
+  }
+  writeFileSync(resolve(OUTPUT_DIR, 'cross-horizon-sector-breakdown.csv'), sectorCSV)
+  console.log('  Written: cross-horizon-sector-breakdown.csv')
+
   return r
 }
 

@@ -2,24 +2,23 @@ sector,stock_count,exact_pct,within_10_pct,within_25_pct,rest_pct,cumulative_wit
 "Automobile",8,37.5,0,50,12.5,87.5,12.5,0.810
 "Pharmaceuticals",6,16.67,0,16.67,66.67,33.33,33.33,0.029
 "IT - Software",6,0,0,33.33,66.67,33.33,27.78,0.486
-"Power Generation & Distribution",5,0,0,20,80,20,48,-0.600
+"Power Generation & Distribution",5,20,0,0,80,20,48,-0.800
 "FMCG",4,50,0,50,0,100,12.5,0.800
 "Capital Goods - Electrical Equipment",4,25,0,25,50,50,37.5,-0.400
 "Aerospace & Defence",3,33.33,0,0,66.67,33.33,22.22,0.500
 "Steel",3,33.33,0,0,66.67,33.33,22.22,0.500
-"Refineries",3,33.33,0,0,66.67,33.33,22.22,0.500
+"Refineries",3,100,0,0,0,100,0,1.000
 "Retail",2,0,0,0,100,0,50,N/A
 "Cement",2,100,0,0,0,100,0,N/A
+"Non Ferrous Metals",2,0,0,0,100,0,50,N/A
 "Mining & Mineral products",2,100,0,0,0,100,0,N/A
-"Non Ferrous Metals",2,100,0,0,0,100,0,N/A
 "Finance",2,100,0,0,0,100,0,N/A
 "Air Transport Service",1,100,0,0,0,100,0,N/A
 "Chemicals",1,100,0,0,0,100,0,N/A
 "Diamond, Gems and Jewellery",1,100,0,0,0,100,0,N/A
 "Cables",1,100,0,0,0,100,0,N/A
-"Paints/Varnish",1,100,0,0,0,100,0,N/A
 "Plantation & Plantation Products",1,100,0,0,0,100,0,N/A
-"Healthcare",1,100,0,0,0,100,0,N/A
+"Paints/Varnish",1,100,0,0,0,100,0,N/A
 "Capital Goods-Non Electrical Equipment",1,100,0,0,0,100,0,N/A
 "Tobacco Products",1,100,0,0,0,100,0,N/A
 "Textiles",1,100,0,0,0,100,0,N/A
@@ -29,6 +28,7 @@ sector,stock_count,exact_pct,within_10_pct,within_25_pct,rest_pct,cumulative_wit
 "Telecom Equipment & Infra Services",1,100,0,0,0,100,0,N/A
 "Crude Oil & Natural Gas",1,100,0,0,0,100,0,N/A
 "Marine Port & Services",1,100,0,0,0,100,0,N/A
+"Healthcare",1,100,0,0,0,100,0,N/A
 "Infrastructure Developers & Operators",1,100,0,0,0,100,0,N/A
 "Auto Ancillaries",1,100,0,0,0,100,0,N/A
 "Realty",1,100,0,0,0,100,0,N/A
