@@ -1,0 +1,33 @@
+sector,stock_count,avg_score,avg_return_pct,winsorized_avg,median_return_pct,correlation
+"Automobile",8,62.44,69.54,69.54,51.09,0.735
+"Pharmaceuticals",6,67.01,87.96,87.96,78.52,0.124
+"IT - Software",6,67.45,22.91,22.91,25.60,0.428
+"FMCG",5,62.06,16.11,16.11,8.58,0.245
+"Capital Goods - Electrical Equipment",4,57.84,105.66,96.20,69.33,0.408
+"Power Generation & Distribution",4,53.53,94.30,94.30,71.86,-0.645
+"Steel",3,64.72,37.63,37.63,39.34,0.831
+"Aerospace & Defence",3,62.80,138.48,138.48,129.43,-0.237
+"Refineries",3,62.88,34.54,34.54,45.13,0.968
+"Non Ferrous Metals",2,70.94,38.76,38.76,38.76,N/A
+"Retail",2,64.17,135.04,99.14,135.04,N/A
+"Mining & Mineral products",2,68.69,51.06,51.06,51.06,N/A
+"Finance",2,56.37,192.69,143.36,192.69,N/A
+"Cement",2,62.10,29.51,29.51,29.51,N/A
+"Insurance",2,50.99,25.44,25.44,25.44,N/A
+"Telecom Equipment & Infra Services",1,79.15,93.62,93.62,93.62,N/A
+"Capital Goods-Non Electrical Equipment",1,70.18,69.90,69.90,69.90,N/A
+"Chemicals",1,68.80,14.63,14.63,14.63,N/A
+"Infrastructure Developers & Operators",1,68.00,47.02,47.02,47.02,N/A
+"Telecom-Service",1,64.19,105.42,105.42,105.42,N/A
+"Crude Oil & Natural Gas",1,63.86,46.03,46.03,46.03,N/A
+"Marine Port & Services",1,62.48,56.20,56.20,56.20,N/A
+"Auto Ancillaries",1,61.31,-1.24,-1.24,-1.24,N/A
+"Plantation & Plantation Products",1,60.35,37.45,37.45,37.45,N/A
+"Diamond, Gems and Jewellery",1,59.94,28.43,28.43,28.43,N/A
+"Cables",1,59.38,53.57,53.57,53.57,N/A
+"Paints/Varnish",1,56.86,-22.95,-22.95,-22.95,N/A
+"Healthcare",1,56.76,37.30,37.30,37.30,N/A
+"Air Transport Service",1,56.66,140.05,140.05,140.05,N/A
+"Tobacco Products",1,56.53,8.47,8.47,8.47,N/A
+"Textiles",1,55.51,45.08,45.08,45.08,N/A
+"Realty",1,43.54,76.42,76.42,76.42,N/A

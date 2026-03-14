@@ -1,0 +1,26 @@
+sector,stock_count,avg_score,avg_return_pct,winsorized_avg,median_return_pct,correlation
+"Automobile",6,71.94,96.42,87.23,75.67,0.12
+"IT - Software",6,64.46,33.65,33.65,26.56,-0.264
+"FMCG",5,69.83,94.92,61.34,32.01,-0.41
+"Finance",4,70.11,120.81,110.56,94.17,0.423
+"Power Generation & Distribution",3,55.55,125.75,118.32,176.35,0.446
+"Pharmaceuticals",3,61.66,121.51,121.51,136.10,0.76
+"Aerospace & Defence",2,76.66,500.12,200.00,500.12,N/A
+"Retail",2,65.16,220.03,103.73,220.03,N/A
+"Cement",2,69.13,60.31,60.31,60.31,N/A
+"Refineries",2,63.41,10.91,10.91,10.91,N/A
+"Steel",2,48.89,99.29,99.29,99.29,N/A
+"Tobacco Products",1,87.83,98.88,98.88,98.88,N/A
+"Mining & Mineral products",1,87.49,138.44,138.44,138.44,N/A
+"Insurance",1,77.70,57.81,57.81,57.81,N/A
+"Chemicals",1,75.56,50.62,50.62,50.62,N/A
+"Diamond, Gems and Jewellery",1,71.21,108.68,108.68,108.68,N/A
+"Telecom Equipment & Infra Services",1,71.20,25.43,25.43,25.43,N/A
+"Paints/Varnish",1,68.79,-9.26,-9.26,-9.26,N/A
+"Crude Oil & Natural Gas",1,68.75,97.59,97.59,97.59,N/A
+"Auto Ancillaries",1,66.62,-31.90,-31.90,-31.90,N/A
+"Plantation & Plantation Products",1,66.28,53.19,53.19,53.19,N/A
+"Non Ferrous Metals",1,65.14,22.87,22.87,22.87,N/A
+"Capital Goods - Electrical Equipment",1,52.93,141.25,141.25,141.25,N/A
+"Textiles",1,46.71,75.69,75.69,75.69,N/A
+"Trading",1,45.53,128.98,128.98,128.98,N/A
